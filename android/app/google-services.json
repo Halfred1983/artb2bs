@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "87564667765",
+    "project_id": "artb2b-34af2",
+    "storage_bucket": "artb2b-34af2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87564667765:android:e242d30b198e5d6b74213c",
+        "android_client_info": {
+          "package_name": "com.extendus.artb2b"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "87564667765-c15qsp3sl1gskun0oq9tsgmcbga0sedv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB96bNY8GJ0t-Kai2fvw56astaaKYuKOaE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "87564667765-c15qsp3sl1gskun0oq9tsgmcbga0sedv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
