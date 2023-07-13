@@ -175,9 +175,13 @@ class _AppTextFieldState extends FormFieldState<String> {
 
     final effectiveDecoration = (widget.decoration ??
         const InputDecoration(
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
+            ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(color: Colors.black, width: 1.0),
+              borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
             ),
             border: OutlineInputBorder()
         )) //

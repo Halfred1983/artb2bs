@@ -46,39 +46,52 @@ class _AppDropdownFieldState<T> extends State<AppDropdownField<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        if (widget.labelText != null) ...[
-          Text(widget.labelText!, style: TextStyles.semiBoldViolet21),
-          verticalMargin8,
-        ],
-        DropdownButtonFormField<T>(
-          focusColor: AppTheme.white,
-          focusNode: _effectiveFocusNode,
-          autofocus: true,
-          autovalidateMode: widget.autoValidateMode,
-          items: widget.items,
-          onChanged: (T? value) {
-            _effectiveFocusNode.requestFocus();
-            widget.onChanged?.call(value);
-          },
-          onSaved: widget.onSaved,
-          decoration: const InputDecoration(
-            // We use this because of the way te borders are calculated
-            contentPadding: EdgeInsets.fromLTRB(10.0, 10.0, 12.0, 10.0),
+    final theme = Theme.of(context);
+
+    return Container(
+      color: AppTheme.white,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (widget.labelText != null) ...[
+            Text(widget.labelText!, style: TextStyles.semiBoldViolet21),
+            verticalMargin8,
+          ],
+          DropdownButtonFormField<T>(
+            dropdownColor: AppTheme.white,
+            focusColor: AppTheme.white,
+            focusNode: _effectiveFocusNode,
+            autofocus: true,
+            autovalidateMode: widget.autoValidateMode,
+            items: widget.items,
+            onChanged: (T? value) {
+              _effectiveFocusNode.requestFocus();
+              widget.onChanged?.call(value);
+            },
+            onSaved: widget.onSaved,
+            decoration: const InputDecoration(
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
+              ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
+                ),
+                border: OutlineInputBorder()
+            ).applyDefaults(theme.inputDecorationTheme),
+            validator: widget.validator,
+            value: widget.value,
+            hint: widget.hint != null ? Text(widget.hint!) : null,
+            style: TextStyles.regularAccent14,
+            // icon: SvgPicture.asset(
+            //   ImageAssets.trolleyIconChevron,
+            //   color: AppTheme.tsBlue001,
+            // ),
           ),
-          validator: widget.validator,
-          value: widget.value,
-          hint: widget.hint != null ? Text(widget.hint!) : null,
-          style: TextStyles.regularGrey14,
-          // icon: SvgPicture.asset(
-          //   ImageAssets.trolleyIconChevron,
-          //   color: AppTheme.tsBlue001,
-          // ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

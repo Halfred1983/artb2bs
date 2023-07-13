@@ -32,14 +32,20 @@ class AppTheme {
 
   static ThemeData get theme {
     return ThemeData(
-        primaryColor: primaryColor,
-        canvasColor: Colors.white,
-        scaffoldBackgroundColor: backgroundColor,
-        splashColor: accentColor.withOpacity(0.2),
-        highlightColor: accentColor.withOpacity(0.2),
-        appBarTheme: _appBarTheme,
-        elevatedButtonTheme: _elevatedButtonTheme,
-        unselectedWidgetColor: primaryColor
+      primaryColor: primaryColor,
+      canvasColor: Colors.white,
+      scaffoldBackgroundColor: backgroundColor,
+      splashColor: accentColor.withOpacity(0.2),
+      highlightColor: accentColor.withOpacity(0.2),
+      appBarTheme: _appBarTheme,
+      elevatedButtonTheme: _elevatedButtonTheme,
+      unselectedWidgetColor: primaryColor,
+      textTheme:  const TextTheme(
+          titleMedium: TextStyle(color: accentColor)
+      ),
+      textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: accentColor
+      ),
     );
   }
 
@@ -72,11 +78,11 @@ class AppTheme {
   }
 
   static const _appBarTheme = AppBarTheme(
-    elevation: 0,
-    // backgroundColor: backgroundGrey,
-    foregroundColor: backgroundGrey,
-    centerTitle: true,
-    color: backgroundGrey
+      elevation: 0,
+      // backgroundColor: backgroundGrey,
+      foregroundColor: backgroundGrey,
+      centerTitle: true,
+      color: backgroundGrey
   );
 
 

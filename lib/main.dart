@@ -35,6 +35,7 @@ class Artb2b extends StatelessWidget {
       child: Builder(
         builder: (context) {
           return MaterialApp.router(
+            // debugShowMaterialGrid: true,
             theme: theme,
             routerConfig: AppRouter(context.read<LoginCubit>()).router,
             title: 'ArtB2B',

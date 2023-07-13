@@ -1,6 +1,6 @@
 import 'package:artb2b/home/view/home_page.dart';
-import 'package:artb2b/personal_info/bloc/personal_info_cubit.dart';
-import 'package:artb2b/personal_info/bloc/personal_info_state.dart';
+import 'package:artb2b/personal_info/cubit/personal_info_cubit.dart';
+import 'package:artb2b/personal_info/cubit/personal_info_state.dart';
 import 'package:artb2b/widgets/app_dropdown.dart';
 import 'package:artb2b/widgets/app_text_field.dart';
 import 'package:database_service/database.dart';
@@ -13,26 +13,27 @@ import '../../app/resources/theme.dart';
 import '../../utils/common.dart';
 import '../../widgets/app_input_validators.dart';
 import '../../widgets/google_places.dart';
+import '../../widgets/loading_screen.dart';
 
 class PersonalInfoView extends StatelessWidget {
   PersonalInfoView({Key? key}) : super(key: key);
 
 
-  String background = "assets/images/pin.png";
+  String background = "";
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PersonalInfoCubit, PersonalInfoState>(
       builder: (context, state) {
         if( state is LoadingState) {
-          return const CircularProgressIndicator();
+          return const LoadingScreen();
         }
         if (state is UserTypeChosen) {
           final userType = state.artb2bUserEntityInfo.userType;
           if (userType == UserType.artist) {
-            background = 'assets/images/artist.jpeg';
+            background = 'assets/images/artist.png';
           }
           else if (userType == UserType.gallery) {
-            background = 'assets/images/gallery.jpeg';
+            background = 'assets/images/gallery.png';
           }
         }
         if(state is DataSaved) {
@@ -44,15 +45,22 @@ class PersonalInfoView extends StatelessWidget {
         return Scaffold(
             body: Container(
                 padding: horizontalPadding24,
-                // decoration: BoxDecoration(
-                //   image: DecorationImage(
-                //       image: AssetImage(background)
-                //   ),
-                // ),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children:  [
+                      SizedBox(height: 100, width: 100,
+                        child: background.toString().length > 2 ? Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(background)
+                            ),
+                          ),
+                        ) : Container()
+                      ),
+                      verticalMargin48,
                       Center(child: Text('Are you an artist or a gallery', style:TextStyles.semiBoldViolet21,),),
+                      Text('', style: TextStyles.semiBoldLightGrey14),
+                      verticalMargin8,
                       const _UserTypeDropdownButton(),
                       verticalMargin48,
                       Center(child: Text('Artist or Gallery name', style:TextStyles.semiBoldViolet21,),),
@@ -99,11 +107,10 @@ class _UserTypeDropdownButton extends StatelessWidget {
               key: const Key('newCarForm_brand_dropdownButton'),
               items: userTypes.isNotEmpty
                   ? userTypes.map((type) {
-                return DropdownMenuItem(value: type, child: Text(type.name));
+                return DropdownMenuItem(value: type, child: Text(type.name.capitalize(), style: TextStyles.regularAccent16,));
               }).toList()
                   : const [],
               value:start ,
-              labelText: '',
               onChanged: (userTypeChosen) {
                 start = userTypeChosen!;
                 context.read<PersonalInfoCubit>().chooseUserType(userTypeChosen!);
@@ -205,6 +212,7 @@ class _LocationTextFieldState extends State<_LocationTextField> {
             MaterialPageRoute(builder: (context) => const GoogleAddressLookup()),
           );
           _locationController.text = _address.formattedAddress;
+          if (!mounted) return;
           context.read<PersonalInfoCubit>().chooseAddress(_address);
         },
         // onChanged:_address;

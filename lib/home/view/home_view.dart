@@ -2,6 +2,7 @@ import 'package:artb2b/home/bloc/user_cubit.dart';
 import 'package:artb2b/home/bloc/user_state.dart';
 import 'package:artb2b/login/cubit/login_cubit.dart';
 import 'package:artb2b/personal_info/view/personal_info_page.dart';
+import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class HomeView extends StatelessWidget {
           builder: (context, state) {
             Widget widget = Container();
             if (state is LoadingState) {
-              return Center(child: CircularProgressIndicator(),);
+              return const LoadingScreen();
             }
             if (state is LoadedState) {
               artb2bUserEntity = state.artb2bUserEntity;

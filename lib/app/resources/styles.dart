@@ -8,10 +8,10 @@ class TextStyles {
   static final regularGreen21 = _baseRegular[TextSize.size21].withColor(AppTheme.primaryColourViolet);
   static final regularWhite16 = _baseRegular[TextSize.size16].withColor(AppTheme.white);
   static final regularAccent24 = _baseRegular[TextSize.size24].withColor(AppTheme.accentColor);
-  static final regularGrey16 = _baseRegular[TextSize.size16].withColor(AppTheme.backgroundGrey);
+  static final regularAccent16 = _baseRegular[TextSize.size16].withColor(AppTheme.accentColor);
   static final regularDarkGrey16 = _baseRegular[TextSize.size16].withColor(AppTheme.black);
   static final regularGrey24 = _baseRegular[TextSize.size24].withColor(AppTheme.backgroundGrey);
-  static final regularGrey14 = _baseRegular[TextSize.size14].withColor(AppTheme.primaryColourViolet);
+  static final regularAccent14 = _baseRegular[TextSize.size14].withColor(AppTheme.accentColor);
 
   // Semi-bold
   static final semiBoldLightGrey14 = _baseSemiBold[TextSize.size14].withColor(AppTheme.fideuramGreenArtist001);

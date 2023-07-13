@@ -95,4 +95,10 @@ const bottomPadding16 = EdgeInsets.only(bottom: 16.0);
 const bottomPadding24 = EdgeInsets.only(bottom: 24.0);
 const bottomPadding32 = EdgeInsets.only(bottom: 32.0);
 const bottomPadding48 = EdgeInsets.only(bottom: 48.0);
-const buttonPadding = EdgeInsets.only(left: 28, right: 28, bottom: 20, top:20);
+const buttonPadding = EdgeInsets.only(left: 28, right: 28, bottom: 40, top:20);
+
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+  }
+}
