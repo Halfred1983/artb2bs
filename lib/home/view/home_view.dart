@@ -32,7 +32,7 @@ class HomeView extends StatelessWidget {
             }
             if (state is LoadedState) {
               artb2bUserEntity = state.artb2bUserEntity;
-              widget =  MapViewTwo(artb2bUserEntityl: artb2bUserEntity!);
+              widget =  MapViewTwo(artb2bUserEntity: artb2bUserEntity!);
               if (artb2bUserEntity!.userStatus == UserStatus.initialised) {
                 return PersonalInfoPage();
               }

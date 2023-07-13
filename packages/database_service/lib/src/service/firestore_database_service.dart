@@ -45,11 +45,11 @@ class FirestoreDatabaseService implements DatabaseService {
   }
 
   @override
-  Future<User> updateUser({required User artb2bUserEntity}) async {
+  Future<User> updateUser({required User user}) async {
     try  {
       await _firestore.collection('users')
-          .doc(artb2bUserEntity.id).update(artb2bUserEntity.toJson());
-      return artb2bUserEntity;
+          .doc(user.id).update(user.toJson());
+      return user;
     } on Exception {
       rethrow;
     }
@@ -58,19 +58,16 @@ class FirestoreDatabaseService implements DatabaseService {
 
   @override
   Stream<List<DocumentSnapshot>> findUsersByTypeAndRadius({
-    required User artb2bUserEntity,
+    required User user,
     required double radius})  {
 
     var collectionReference = _firestore.collection('users');
 
-    String field = 'artb2bUserEntityInfo.address.location';
+    String field = 'userInfo.address.location';
 
     return geoLocation.collection(collectionRef: collectionReference)
-        .within(center: artb2bUserEntity.artb2bUserEntityInfo!.address!.location!,
+        .within(center: user.userInfo!.address!.location!,
         radius: radius, field: field);
   }
-
-
-
 }
 

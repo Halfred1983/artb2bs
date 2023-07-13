@@ -26,7 +26,7 @@ class AppRouter {
         name: 'home',
         path: '/',
         builder: (BuildContext context, GoRouterState state) {
-          return HomaPage();
+          return HomePage();
         },
         // routes: [
         //   GoRoute(

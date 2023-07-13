@@ -192,7 +192,7 @@ class _AppTextFieldState extends FormFieldState<String> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (widget.labelText != null) ...[
-          Text(widget.labelText!, style: TextStyles.semiBoldLightGrey14),
+          Text(widget.labelText!, style: TextStyles.semiBoldViolet14),
           verticalMargin8,
         ],
         AnimatedBuilder(

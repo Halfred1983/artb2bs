@@ -43,12 +43,19 @@ class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        iconTheme: const IconThemeData(
+          color: AppTheme.primaryColourViolet //change your color here
+        ),
+        title: Text("Your location", style: TextStyles.boldAccent24,),
+        centerTitle: true,
+      ),
       body: Container(
         padding: horizontalPadding24,
-        color: AppTheme.white,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            verticalMargin32,
+            verticalMargin12,
             Row(
               children: <Widget>[
                 Expanded(
@@ -81,21 +88,26 @@ class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
                           _predictions = [];
                         });
                       },
-                      child:Text('Cancel',
-                        style: TextStyles.semiBolDarkGrey14,)
+                        style: ButtonStyle(
+                          overlayColor: MaterialStateColor.resolveWith((states) => AppTheme.accentColor),
+                        ),
+                        child:Text('Clear',
+                        style: TextStyles.semiBoldViolet14.copyWith(decoration: TextDecoration.underline),)
                     ),
 
                 )
               ],
             ),
+
             ListView.builder(
+              padding: EdgeInsets.zero,
               itemCount: _predictions.length,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Padding(
                         padding: EdgeInsets.only(right: 4.0),

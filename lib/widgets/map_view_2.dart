@@ -13,9 +13,9 @@ import '../app/resources/theme.dart';
 import '../injection.dart';
 
 class MapViewTwo extends StatefulWidget {
-  const MapViewTwo({super.key, required this.artb2bUserEntityl});
+  const MapViewTwo({super.key, required this.artb2bUserEntity});
 
-  final User artb2bUserEntityl;
+  final User artb2bUserEntity;
 
   @override
   _MapViewTwoState createState() => _MapViewTwoState();
@@ -27,6 +27,7 @@ class _MapViewTwoState extends State<MapViewTwo> {
   late Stream<List<DocumentSnapshot>> stream;
   FirestoreDatabaseService firebaseDatabaseService = locator<FirestoreDatabaseService>();
 
+  late BitmapDescriptor markerIcon;
 
   final radius = BehaviorSubject<double>.seeded(1.0);
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
@@ -41,11 +42,16 @@ class _MapViewTwoState extends State<MapViewTwo> {
       _mapStyle = string;
     });
 
+    BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(size: Size(40, 40)), 'assets/images/marker.png')
+        .then((onValue) {
+      markerIcon = onValue;
+    });
+
     stream = radius.switchMap((rad) {
 
-      return firebaseDatabaseService.findUsersByTypeAndRadius(artb2bUserEntity: widget.artb2bUserEntityl ,
+      return firebaseDatabaseService.findUsersByTypeAndRadius(user: widget.artb2bUserEntity ,
           radius: rad);
-
     });
   }
 
@@ -70,8 +76,8 @@ class _MapViewTwoState extends State<MapViewTwo> {
       onMapCreated: _onMapCreated,
       initialCameraPosition: CameraPosition(
         target: LatLng(
-          widget.artb2bUserEntityl.artb2bUserEntityInfo!.address!.location!.latitude!,
-          widget.artb2bUserEntityl.artb2bUserEntityInfo!.address!.location!.longitude!,
+          widget.artb2bUserEntity.userInfo!.address!.location!.latitude!,
+          widget.artb2bUserEntity.userInfo!.address!.location!.longitude!,
         ),
         zoom: 12.0,
       ),
@@ -130,7 +136,7 @@ class _MapViewTwoState extends State<MapViewTwo> {
     final _marker = Marker(
       markerId: id,
       position: LatLng(lat, lng),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
+      icon: markerIcon,
       infoWindow: InfoWindow(title: 'latLng', snippet: '$lat,$lng'),
     );
     setState(() {
@@ -141,20 +147,20 @@ class _MapViewTwoState extends State<MapViewTwo> {
   void _updateMarkers(List<DocumentSnapshot> documentList) {
     documentList.forEach((DocumentSnapshot document) {
       User user = User.fromJson(document.data() as Map<String, dynamic>);
-      final GeoPoint point = user.artb2bUserEntityInfo!.address!.location!.geoPoint;
+      final GeoPoint point = user.userInfo!.address!.location!.geoPoint;
       _addMarker(point.latitude, point.longitude);
     });
   }
 
-  // double _value = 20.0;
-  // String _label = '';
-  //
-  // changed(value) {
-  //   setState(() {
-  //     _value = value;
-  //     _label = '${_value.toInt().toString()} kms';
-  //     markers.clear();
-  //   });
-  //   radius.add(value);
-  // }
+// double _value = 20.0;
+// String _label = '';
+//
+// changed(value) {
+//   setState(() {
+//     _value = value;
+//     _label = '${_value.toInt().toString()} kms';
+//     markers.clear();
+//   });
+//   radius.add(value);
+// }
 }

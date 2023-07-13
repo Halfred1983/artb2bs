@@ -53,21 +53,21 @@ class PersonalInfoCubit extends Cubit<PersonalInfoState> {
   }
 
   void save() async {
-    UserInfo artb2bUserEntityInfo = this.state.props[0] as UserInfo;
+    UserInfo userInfo = this.state.props[0] as UserInfo;
 
     try {
       emit(LoadingState());
-      User? artb2bUserEntity = await databaseService.getUser(
+      User? user = await databaseService.getUser(
           userId: userId);
 
       //if all is good set to personal info
-      artb2bUserEntity =
-          artb2bUserEntity!.copyWith.artb2bUserEntityInfo(artb2bUserEntityInfo)
+      user =
+          user!.copyWith.userInfo(userInfo)
               .copyWith(userStatus: UserStatus.personalInfo);
-      await databaseService.updateUser(artb2bUserEntity: artb2bUserEntity);
-      emit(DataSaved(artb2bUserEntityInfo));
+      await databaseService.updateUser(user: user);
+      emit(DataSaved(userInfo));
     } catch (e) {
-      emit(ErrorState(artb2bUserEntityInfo));
+      emit(ErrorState(userInfo));
     }
   }
 

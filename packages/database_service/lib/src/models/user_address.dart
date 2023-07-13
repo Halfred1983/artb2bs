@@ -38,7 +38,13 @@ class UserAddress {
   Map<String, dynamic> toJson() => _$UserAddressToJson(this);
 
   static GeoFirePoint? _fromJson(Map<String, dynamic> location) {
-    return GeoFirePoint(location['geopoint']['latitude'], location['geopoint']['longitude']);
+    try {
+      return GeoFirePoint(
+          location['geopoint']['latitude'], location['geopoint']['longitude']);
+    }
+    catch (e){
+      return GeoFirePoint(location['geopoint'].latitude, location['geopoint'].longitude);
+    }
   }
 
   static Map<String, dynamic> _toJson(GeoFirePoint? location) {

@@ -14,11 +14,11 @@ class TextStyles {
   static final regularAccent14 = _baseRegular[TextSize.size14].withColor(AppTheme.accentColor);
 
   // Semi-bold
-  static final semiBoldLightGrey14 = _baseSemiBold[TextSize.size14].withColor(AppTheme.fideuramGreenArtist001);
+  static final semiBoldViolet14 = _baseSemiBold[TextSize.size14].withColor(AppTheme.primaryColourViolet);
   static final semiBoldLightGrey16 = _baseSemiBold[TextSize.size16].withColor(AppTheme.fideuramGreenArtist001);
   static final semiBolDarkGrey16 = _baseSemiBold[TextSize.size16].withColor(AppTheme.black);
   static final semiBolDarkGrey21 = _baseSemiBold[TextSize.size21].withColor(AppTheme.black);
-  static final semiBolDarkGrey14 = _baseSemiBold[TextSize.size14].withColor(AppTheme.black);
+  static final semiBolAccent14 = _baseSemiBold[TextSize.size14].withColor(AppTheme.accentColor);
   static final semiBoldWhite16 = _baseSemiBold[TextSize.size16].withColor(AppTheme.white);
   static final semiBoldViolet21 = _baseSemiBold[TextSize.size21].withColor(AppTheme.primaryColourViolet);
 

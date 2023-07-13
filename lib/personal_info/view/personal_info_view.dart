@@ -37,12 +37,13 @@ class PersonalInfoView extends StatelessWidget {
           }
         }
         if(state is DataSaved) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HomaPage()),
-          );
+          return HomePage();
         }
         return Scaffold(
+            appBar: AppBar(
+              title: Text("About you 1/2", style: TextStyles.boldAccent24,),
+              centerTitle: true,
+            ),
             body: Container(
                 padding: horizontalPadding24,
                 child: Column(
@@ -59,7 +60,7 @@ class PersonalInfoView extends StatelessWidget {
                       ),
                       verticalMargin48,
                       Center(child: Text('Are you an artist or a gallery', style:TextStyles.semiBoldViolet21,),),
-                      Text('', style: TextStyles.semiBoldLightGrey14),
+                      Text('', style: TextStyles.semiBoldViolet14),
                       verticalMargin8,
                       const _UserTypeDropdownButton(),
                       verticalMargin48,
@@ -78,7 +79,8 @@ class PersonalInfoView extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     context.read<PersonalInfoCubit>().save();
-                  }, child: Text("Continue", style: TextStyles.regularWhite16,),)
+                  },
+                  child: Text("Continue", style: TextStyles.regularWhite16,),)
             )
         );
       },
@@ -207,13 +209,17 @@ class _LocationTextFieldState extends State<_LocationTextField> {
         textCapitalization: TextCapitalization.words,
         autoCorrect: false,
         onTap: () async {
-          _address = await Navigator.push(
+
+          var locationResult = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const GoogleAddressLookup()),
           );
-          _locationController.text = _address.formattedAddress;
-          if (!mounted) return;
-          context.read<PersonalInfoCubit>().chooseAddress(_address);
+          if(locationResult != null) {
+            _address = locationResult;
+                _locationController.text = _address.formattedAddress;
+            if (!mounted) return;
+            context.read<PersonalInfoCubit>().chooseAddress(_address);
+          }
         },
         // onChanged:_address;
       );

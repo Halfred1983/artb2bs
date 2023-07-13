@@ -13,10 +13,10 @@ abstract class DatabaseService {
   });
 
   Future<User> updateUser({
-    required User artb2bUserEntity});
+    required User user});
 
   Stream<List<DocumentSnapshot>> findUsersByTypeAndRadius({
-    required User artb2bUserEntity,
+    required User user,
     required double radius});
 
 }

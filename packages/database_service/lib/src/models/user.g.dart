@@ -19,7 +19,7 @@ abstract class _$UserCWProxy {
 
   User userStatus(UserStatus? userStatus);
 
-  User artb2bUserEntityInfo(UserInfo? artb2bUserEntityInfo);
+  User userInfo(UserInfo? userInfo);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `User(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -34,7 +34,7 @@ abstract class _$UserCWProxy {
     String? email,
     String? imageUrl,
     UserStatus? userStatus,
-    UserInfo? artb2bUserEntityInfo,
+    UserInfo? userInfo,
   });
 }
 
@@ -63,8 +63,7 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
   User userStatus(UserStatus? userStatus) => this(userStatus: userStatus);
 
   @override
-  User artb2bUserEntityInfo(UserInfo? artb2bUserEntityInfo) =>
-      this(artb2bUserEntityInfo: artb2bUserEntityInfo);
+  User userInfo(UserInfo? userInfo) => this(userInfo: userInfo);
 
   @override
 
@@ -81,7 +80,7 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
     Object? email = const $CopyWithPlaceholder(),
     Object? imageUrl = const $CopyWithPlaceholder(),
     Object? userStatus = const $CopyWithPlaceholder(),
-    Object? artb2bUserEntityInfo = const $CopyWithPlaceholder(),
+    Object? userInfo = const $CopyWithPlaceholder(),
   }) {
     return User(
       id: id == const $CopyWithPlaceholder() || id == null
@@ -108,10 +107,10 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
           ? _value.userStatus
           // ignore: cast_nullable_to_non_nullable
           : userStatus as UserStatus?,
-      artb2bUserEntityInfo: artb2bUserEntityInfo == const $CopyWithPlaceholder()
-          ? _value.artb2bUserEntityInfo
+      userInfo: userInfo == const $CopyWithPlaceholder()
+          ? _value.userInfo
           // ignore: cast_nullable_to_non_nullable
-          : artb2bUserEntityInfo as UserInfo?,
+          : userInfo as UserInfo?,
     );
   }
 }
@@ -133,10 +132,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       email: json['email'] as String,
       imageUrl: json['imageUrl'] as String,
       userStatus: $enumDecodeNullable(_$UserStatusEnumMap, json['userStatus']),
-      artb2bUserEntityInfo: json['artb2bUserEntityInfo'] == null
+      userInfo: json['userInfo'] == null
           ? null
-          : UserInfo.fromJson(
-              json['artb2bUserEntityInfo'] as Map<String, dynamic>),
+          : UserInfo.fromJson(json['userInfo'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -146,7 +144,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'email': instance.email,
       'imageUrl': instance.imageUrl,
       'userStatus': _$UserStatusEnumMap[instance.userStatus],
-      'artb2bUserEntityInfo': instance.artb2bUserEntityInfo?.toJson(),
+      'userInfo': instance.userInfo?.toJson(),
     };
 
 const _$UserStatusEnumMap = {

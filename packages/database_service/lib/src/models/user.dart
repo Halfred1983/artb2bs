@@ -17,7 +17,7 @@ class User {
   final String email;
   final String imageUrl;
   final UserStatus? userStatus;
-  final UserInfo? artb2bUserEntityInfo;
+  final UserInfo? userInfo;
 
   const User({
     required this.id,
@@ -30,7 +30,7 @@ class User {
         unknownEnumValue: UserStatus.initialised
     )
     required this.userStatus,
-    this.artb2bUserEntityInfo
+    this.userInfo
   });
 
   factory User.fromJson(Map<String, dynamic?> json)
