@@ -36,6 +36,7 @@ class PersonalInfoView extends StatelessWidget {
             background = 'assets/images/gallery.png';
           }
         }
+
         if(state is DataSaved) {
           return HomePage();
         }

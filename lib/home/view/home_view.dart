@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../injection.dart';
 import '../../login/view/login_page.dart';
+import '../../personal_info/view/art_info_page.dart';
 import '../../utils/common.dart';
 
 class HomeView extends StatelessWidget {
@@ -32,6 +33,9 @@ class HomeView extends StatelessWidget {
               widget =  MapView(artb2bUserEntity: artb2bUserEntity!);
               if (artb2bUserEntity!.userStatus == UserStatus.initialised) {
                 return PersonalInfoPage();
+              }
+              if (artb2bUserEntity!.userStatus == UserStatus.personalInfo) {
+                return ArtInfoPage();
               }
             }
             return Scaffold(

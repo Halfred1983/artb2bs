@@ -52,6 +52,7 @@ dependencies:
   cloud_firestore: ^4.8.2
   font_awesome_flutter: ^10.5.0
   lottie: ^2.4.0
+  flutter_chip_tags: ^2.0.2
 
   #  firebase_messaging: ^14.2.0
 #  awesome_notifications: ^0.7.4+1
