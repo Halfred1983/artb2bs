@@ -26,7 +26,7 @@ abstract class AppModule {
   FirebaseAuth get auth => FirebaseAuth.instance;
 
   @injectable
-  FirebaseAuthService get authService;
+  AuthService get authService;
 
   @injectable
   FirestoreDatabaseService get databaseService => FirestoreDatabaseService(database: store);

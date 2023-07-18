@@ -150,7 +150,7 @@ class _MapViewState extends State<MapView> {
       icon: user.userInfo!.userType!.index == 0 ? markerArtistIcon : markerGalleryIcon,
       onTap: () {
         showModalBottomSheet<void>(context: context, builder: (BuildContext context) {
-          return Container(
+          return SizedBox(
               height: 300,
               child: Padding(
                   padding: allPadding32,

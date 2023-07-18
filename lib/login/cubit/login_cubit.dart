@@ -6,9 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit(this._authService, this._databaseService) : super(const LoginState.unauthenticated());
+  LoginCubit(this._authService, this._databaseService) : super( _authService.getUser() != UserEntity.empty() ?
+  const LoginState.authenticated() : const LoginState.unauthenticated());
 
-  final AuthService _authService;
+  final FirebaseAuthService _authService;
   final DatabaseService _databaseService;
 
   void login() async {

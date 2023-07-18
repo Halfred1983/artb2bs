@@ -14,13 +14,11 @@ import '../../login/view/login_page.dart';
 import '../../utils/common.dart';
 
 class HomeView extends StatelessWidget {
-  final FirebaseAuthService authService = locator.get<FirebaseAuthService>();
   final FirestoreDatabaseService firestoreDatabaseService = locator.get<FirestoreDatabaseService>();
 
 
   @override
   Widget build(BuildContext context) {
-    UserEntity userEntity = authService.currentUser;
     User? artb2bUserEntity;
     return
       BlocBuilder<UserCubit, UserState>(

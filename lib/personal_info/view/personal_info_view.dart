@@ -59,12 +59,12 @@ class PersonalInfoView extends StatelessWidget {
                         ) : Container()
                       ),
                       verticalMargin48,
-                      Center(child: Text('Are you an artist or a gallery', style:TextStyles.semiBoldViolet21,),),
+                      Center(child: Text('Are you an artist or a host', style:TextStyles.semiBoldViolet21,),),
                       Text('', style: TextStyles.semiBoldViolet14),
                       verticalMargin8,
                       const _UserTypeDropdownButton(),
                       verticalMargin48,
-                      Center(child: Text('Artist or Gallery name', style:TextStyles.semiBoldViolet21,),),
+                      Center(child: Text('Artist or Host name', style:TextStyles.semiBoldViolet21,),),
                       _UserNameTextField((nameValue) => {
                         context.read<PersonalInfoCubit>().chooseName(nameValue),
                       }),

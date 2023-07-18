@@ -21,7 +21,7 @@ class PersonalInfoPage extends StatelessWidget {
     return BlocProvider<PersonalInfoCubit>(
     create: (context) => PersonalInfoCubit(
       databaseService: databaseService,
-      userId: authService.currentUser.id,
+      userId: authService.getUser().id,
     ),
     child: PersonalInfoView(),
   );

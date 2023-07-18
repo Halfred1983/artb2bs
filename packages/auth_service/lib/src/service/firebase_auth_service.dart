@@ -39,17 +39,24 @@ class FirebaseAuthService implements AuthService {
 
   /// Returns the current cached user.
   /// Defaults to [User.empty] if there is no cached user.
-  UserEntity get currentUser {
-      if(_cache!.getString(userCacheKey) != null) {
-        return UserEntity.fromJson(json.decode(_cache!.getString(userCacheKey)!));
-      }
-      else {
-        return UserEntity.empty();
-      }
+  // UserEntity get currentUser {
+  //     if(_cache!.getString(userCacheKey) != null) {
+  //       return UserEntity.fromJson(json.decode(_cache!.getString(userCacheKey)!));
+  //     }
+  //     else {
+  //       return UserEntity.empty();
+  //     }
+  // }
 
+  UserEntity getUser() {
+    if(_cache!.getString(userCacheKey) != null) {
+      return UserEntity.fromJson(json.decode(_cache!.getString(userCacheKey)!));
+    }
+    else {
+      return UserEntity.empty();
+    }
   }
-  /// Convenience getter to determine whether the current user is not empty.
-  bool get isNotEmpty => currentUser != UserEntity.empty();
+
 
   /// Stream of [User] which will emit the current user when
   /// the authentication state changes.

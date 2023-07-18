@@ -23,7 +23,7 @@ class HomePage extends StatelessWidget {
       BlocProvider<UserCubit>(
         create: (context) => UserCubit(
           databaseService: databaseService,
-          userId: authService.currentUser.id,
+          userId: authService.getUser().id,
         ),
         child:  HomeView(),
       );

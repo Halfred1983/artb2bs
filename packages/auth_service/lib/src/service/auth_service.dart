@@ -15,4 +15,7 @@ abstract class AuthService {
 
   Future<void> logOut();
 
-}
+  UserEntity getUser();
+
+
+  }

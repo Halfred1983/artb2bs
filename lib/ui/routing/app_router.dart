@@ -17,6 +17,7 @@ import '../../login/cubit/login_cubit.dart';
 
 class AppRouter {
   final LoginCubit loginCubit;
+
   AppRouter(this.loginCubit);
 
   late final GoRouter router = GoRouter(
