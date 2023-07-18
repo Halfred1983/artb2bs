@@ -16,15 +16,15 @@ class TextStyles {
   // Semi-bold
   static final semiBoldViolet14 = _baseSemiBold[TextSize.size14].withColor(AppTheme.primaryColourViolet);
   static final semiBoldLightGrey16 = _baseSemiBold[TextSize.size16].withColor(AppTheme.fideuramGreenArtist001);
-  static final semiBolDarkGrey16 = _baseSemiBold[TextSize.size16].withColor(AppTheme.black);
+  static final semiBolViolet16 = _baseSemiBold[TextSize.size16].withColor(AppTheme.primaryColourViolet);
   static final semiBolDarkGrey21 = _baseSemiBold[TextSize.size21].withColor(AppTheme.black);
   static final semiBolAccent14 = _baseSemiBold[TextSize.size14].withColor(AppTheme.accentColor);
-  static final semiBoldWhite16 = _baseSemiBold[TextSize.size16].withColor(AppTheme.white);
+  static final semiBoldAccent16 = _baseSemiBold[TextSize.size16].withColor(AppTheme.accentColor);
   static final semiBoldViolet21 = _baseSemiBold[TextSize.size21].withColor(AppTheme.primaryColourViolet);
 
   // Bold
   static final boldGreen21 = _baseBold[TextSize.size21].withColor(AppTheme.primaryColourViolet);
-  static final boldGreen16 = _baseBold[TextSize.size16].withColor(AppTheme.primaryColourViolet);
+  static final boldViolet16 = _baseBold[TextSize.size16].withColor(AppTheme.primaryColourViolet);
   static final boldAccent24 = _baseBold[TextSize.size24].withColor(AppTheme.accentColor);
   static final boldDarkGrey21 = _baseBold[TextSize.size21].withColor(AppTheme.black);
   static final boldDarkGrey16 = _baseBold[TextSize.size16].withColor(AppTheme.black);
