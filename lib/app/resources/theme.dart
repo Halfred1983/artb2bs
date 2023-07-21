@@ -34,6 +34,7 @@ class AppTheme {
     return ThemeData(
       primaryColor: primaryColor,
       canvasColor: Colors.white,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
       scaffoldBackgroundColor: backgroundColor,
       splashColor: accentColor.withOpacity(0.2),
       highlightColor: accentColor.withOpacity(0.2),

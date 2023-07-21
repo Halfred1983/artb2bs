@@ -15,9 +15,9 @@ import '../app/resources/theme.dart';
 import '../injection.dart';
 
 class MapView extends StatefulWidget {
-  const MapView({super.key, required this.artb2bUserEntity});
+  const MapView({super.key, required this.user});
 
-  final User artb2bUserEntity;
+  final User user;
 
   @override
   _MapViewState createState() => _MapViewState();
@@ -59,7 +59,7 @@ class _MapViewState extends State<MapView> {
 
     stream = radius.switchMap((rad) {
 
-      return firebaseDatabaseService.findUsersByTypeAndRadius(user: widget.artb2bUserEntity ,
+      return firebaseDatabaseService.findUsersByTypeAndRadius(user: widget.user ,
           radius: rad);
     });
   }
@@ -86,8 +86,8 @@ class _MapViewState extends State<MapView> {
       onMapCreated: _onMapCreated,
       initialCameraPosition: CameraPosition(
         target: LatLng(
-          widget.artb2bUserEntity.userInfo!.address!.location!.latitude!,
-          widget.artb2bUserEntity.userInfo!.address!.location!.longitude!,
+          widget.user.userInfo!.address!.location!.latitude!,
+          widget.user.userInfo!.address!.location!.longitude!,
         ),
         zoom: 12.0,
       ),

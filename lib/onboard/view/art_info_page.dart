@@ -1,10 +1,11 @@
-import 'package:artb2b/personal_info/cubit/personal_info_cubit.dart';
+import 'package:artb2b/onboard/cubit/personal_info_cubit.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../injection.dart';
+import '../cubit/art_info_cubit.dart';
 import 'art_info_view.dart';
 
 class ArtInfoPage extends StatelessWidget {
@@ -18,8 +19,8 @@ class ArtInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<PersonalInfoCubit>(
-    create: (context) => PersonalInfoCubit(
+    return BlocProvider<ArtInfoCubit>(
+    create: (context) => ArtInfoCubit(
       databaseService: databaseService,
       userId: authService.getUser().id,
     ),

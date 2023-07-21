@@ -1,6 +1,6 @@
 import 'package:artb2b/home/view/home_page.dart';
-import 'package:artb2b/personal_info/cubit/personal_info_cubit.dart';
-import 'package:artb2b/personal_info/cubit/personal_info_state.dart';
+import 'package:artb2b/onboard/cubit/personal_info_cubit.dart';
+import 'package:artb2b/onboard/cubit/personal_info_state.dart';
 import 'package:artb2b/widgets/app_dropdown.dart';
 import 'package:artb2b/widgets/app_text_field.dart';
 import 'package:database_service/database.dart';
@@ -45,7 +45,7 @@ class PersonalInfoView extends StatelessWidget {
               title: Text("About you 1/2", style: TextStyles.boldAccent24,),
               centerTitle: true,
             ),
-            body: Container(
+            body: Padding(
                 padding: horizontalPadding24,
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -81,7 +81,7 @@ class PersonalInfoView extends StatelessWidget {
                   onPressed: () {
                     context.read<PersonalInfoCubit>().save();
                   },
-                  child: Text("Continue", style: TextStyles.regularWhite16,),)
+                  child: Text("Continue", style: TextStyles.boldWhite16,),)
             )
         );
       },

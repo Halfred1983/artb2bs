@@ -1,26 +1,43 @@
+import 'package:artb2b/app/profile/view/profile_page.dart';
+import 'package:artb2b/app/resources/theme.dart';
+import 'package:artb2b/artwork/view/artwork_page.dart';
 import 'package:artb2b/home/bloc/user_cubit.dart';
 import 'package:artb2b/home/bloc/user_state.dart';
-import 'package:artb2b/login/cubit/login_cubit.dart';
-import 'package:artb2b/personal_info/view/personal_info_page.dart';
+import 'package:artb2b/onboard/view/personal_info_page.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:artb2b/widgets/map_view.dart';
-import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
-import '../../injection.dart';
+import '../../login/cubit/login_cubit.dart';
 import '../../login/view/login_page.dart';
-import '../../personal_info/view/art_info_page.dart';
+import '../../onboard/view/art_info_page.dart';
 import '../../utils/common.dart';
 
-class HomeView extends StatelessWidget {
-  final FirestoreDatabaseService firestoreDatabaseService = locator.get<FirestoreDatabaseService>();
+class HomeView extends StatefulWidget {
+  const HomeView({super.key});
 
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+
+  var _currentIndex = 0;
+
+
+  static List<Widget> _widgetOptions = <Widget>[
+    ArtworkPage(),
+    ArtworkPage(),
+    ArtworkPage(),
+    ProfilePage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    User? artb2bUserEntity;
+    User? user;
     return
       BlocBuilder<UserCubit, UserState>(
           builder: (context, state) {
@@ -29,47 +46,106 @@ class HomeView extends StatelessWidget {
               return const LoadingScreen();
             }
             if (state is LoadedState) {
-              artb2bUserEntity = state.artb2bUserEntity;
-              widget =  MapView(artb2bUserEntity: artb2bUserEntity!);
-              if (artb2bUserEntity!.userStatus == UserStatus.initialised) {
+              user = state.user;
+
+              if (user!.userStatus == UserStatus.initialised) {
                 return PersonalInfoPage();
               }
-              if (artb2bUserEntity!.userStatus == UserStatus.personalInfo) {
+              if (user!.userStatus == UserStatus.personalInfo) {
                 return ArtInfoPage();
               }
+              widget =  MapView(user: user!);
             }
             return Scaffold(
               body: Stack(
                   children: [
-                    widget,
-                    artb2bUserEntity != null ? Padding(
-                      padding: horizontalPadding12 + verticalPadding48,
-                      child: InkWell(
-                        onTap: () => print("test"),
-                        child: Material(
-                          elevation: 10,
-                          borderRadius: const BorderRadius.all(Radius.circular(50)),
-                          child: ClipOval(
-                              child: Image.network(artb2bUserEntity!.imageUrl, width: 70,)
-                          ),
-                        ),
-                      ),
-                    ) : Container()
+                    // ArtworkPage(),
+                    // widget,
+                    _currentIndex == 0 ? widget : _widgetOptions.elementAt(_currentIndex),
+                    // widget,
+                    // user != null ? Padding(
+                    //   padding: horizontalPadding12 + verticalPadding48,
+                    //   child: InkWell(
+                    //     onTap: () => print("test"),
+                    //     child: Material(
+                    //       elevation: 10,
+                    //       borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    //       child: ClipOval(
+                    //           child: Image.network(user!.imageUrl, width: 70,)
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ) : Container(),
+                    // Positioned(
+                    //   top: 800,
+                    //   left: 100,
+                    //   child: ElevatedButton(
+                    //       child: Text("Logout"),
+                    //       onPressed: () =>
+                    //       {
+                    //         context
+                    //             .read<LoginCubit>()
+                    //             .logout(),
+                    //         Navigator.push(
+                    //           context,
+                    //           MaterialPageRoute(builder: (context) => const LoginPage()),
+                    //         )
+                    //       }
+                    //   ),
+                    // ),
                   ]
               ),
-              bottomNavigationBar: ElevatedButton(
-                  child: Text("Logout"),
-                  onPressed: () =>
-                  {
-                    context
-                        .read<LoginCubit>()
-                        .logout(),
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()),
-                    )
-                  }),
+              bottomNavigationBar:
+              Padding(
+                padding: horizontalPadding24,
+                child: SalomonBottomBar(
+                  currentIndex: _currentIndex,
+                  onTap: (i) => setState(() => _currentIndex = i),
+                  items: [
+                    /// Home
+                    SalomonBottomBarItem(
+                      icon: Icon(Icons.home),
+                      title: Text("Home"),
+                      selectedColor: AppTheme.primaryColourViolet,
+                    ),
+
+                    /// Likes
+                    SalomonBottomBarItem(
+                      icon: Icon(Icons.image_rounded),
+                      title: Text("Artwork"),
+                      selectedColor: AppTheme.primaryColourViolet,
+                    ),
+
+                    /// Search
+                    SalomonBottomBarItem(
+                      icon: Icon(Icons.search),
+                      title: Text("Search"),
+                      selectedColor: AppTheme.primaryColourViolet,
+                    ),
+
+                    /// Profile
+                    SalomonBottomBarItem(
+                      icon: Icon(Icons.person),
+                      title: Text("Profile"),
+                      selectedColor: AppTheme.primaryColourViolet,
+                    ),
+                  ],
+                ),
+              ),
             );
+            // bottomNavigationBar: ElevatedButton(
+            //     child: Text("Logout"),
+            //     onPressed: () =>
+            //     {
+            //       context
+            //           .read<LoginCubit>()
+            //           .logout(),
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(builder: (context) => const LoginPage()),
+            //       )
+            //       }),
+            // );
           }
       );
   }

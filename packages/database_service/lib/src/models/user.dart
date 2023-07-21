@@ -1,9 +1,7 @@
 
-import 'package:flutter/foundation.dart';
-import 'package:json_annotation/json_annotation.dart';
-
-import 'user_info.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:database_service/database.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
@@ -18,6 +16,7 @@ class User {
   final String imageUrl;
   final UserStatus? userStatus;
   final UserInfo? userInfo;
+  final UserArtInfo? userArtInfo;
 
   const User({
     required this.id,
@@ -30,7 +29,8 @@ class User {
         unknownEnumValue: UserStatus.initialised
     )
     required this.userStatus,
-    this.userInfo
+    this.userInfo,
+    this.userArtInfo
   });
 
   factory User.fromJson(Map<String, dynamic?> json)

@@ -1,4 +1,4 @@
-import 'package:artb2b/personal_info/cubit/personal_info_state.dart';
+import 'package:artb2b/onboard/cubit/personal_info_state.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

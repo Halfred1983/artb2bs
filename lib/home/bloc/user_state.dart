@@ -15,12 +15,12 @@ class LoadingState extends UserState {
 }
 
 class LoadedState extends UserState {
-  LoadedState(this.artb2bUserEntity);
+  LoadedState(this.user);
 
-  final User artb2bUserEntity;
+  final User user;
 
   @override
-  List<Object> get props => [artb2bUserEntity];
+  List<Object> get props => [user];
 }
 
 class ErrorState extends UserState {
