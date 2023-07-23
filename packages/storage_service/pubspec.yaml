@@ -1,4 +1,4 @@
-name: database_service
+name: storage_service
 description: Flutter Package that provides complete code for email authentication using Firebase
 version: 0.0.1
 
@@ -7,12 +7,8 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  equatable: ^2.0.5
-  json_annotation: ^4.7.0
-  cloud_firestore: ^4.8.2
-  json_serializable: ^6.5.4
-  copy_with_extension_gen: ^5.0.3
-  geoflutterfire2: ^2.3.15
+  firebase_storage: ^11.2.5
+
   flutter:
     sdk: flutter
 

@@ -8,9 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../app/resources/styles.dart';
+import '../../photo/view/photo_page.dart';
 import '../../utils/common.dart';
-import '../../widgets/image_pick.dart';
-import '../../widgets/photo_page.dart';
 
 class ArtworkView extends StatefulWidget {
   const ArtworkView({super.key});
@@ -113,7 +112,7 @@ class AddPhotoButton extends StatelessWidget {
     return InkWell(
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const PhotoPage()),
+        MaterialPageRoute(builder: (context) => PhotoPage()),
       ),
       child: DottedBorder(
         color: AppTheme.primaryColourViolet,

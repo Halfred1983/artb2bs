@@ -7,17 +7,21 @@ part of 'artwork.dart';
 // **************************************************************************
 
 abstract class _$ArtworkCWProxy {
-  Artwork id(String id);
+  Artwork id(String? id);
 
-  Artwork url(String url);
+  Artwork url(String? url);
 
-  Artwork tag(String tag);
+  Artwork tags(List<String>? tags);
 
-  Artwork name(String name);
+  Artwork name(String? name);
 
-  Artwork year(String year);
+  Artwork year(String? year);
 
-  Artwork price(int price);
+  Artwork price(String? price);
+
+  Artwork height(String? height);
+
+  Artwork width(String? width);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Artwork(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -28,10 +32,12 @@ abstract class _$ArtworkCWProxy {
   Artwork call({
     String? id,
     String? url,
-    String? tag,
+    List<String>? tags,
     String? name,
     String? year,
-    int? price,
+    String? price,
+    String? height,
+    String? width,
   });
 }
 
@@ -42,22 +48,28 @@ class _$ArtworkCWProxyImpl implements _$ArtworkCWProxy {
   final Artwork _value;
 
   @override
-  Artwork id(String id) => this(id: id);
+  Artwork id(String? id) => this(id: id);
 
   @override
-  Artwork url(String url) => this(url: url);
+  Artwork url(String? url) => this(url: url);
 
   @override
-  Artwork tag(String tag) => this(tag: tag);
+  Artwork tags(List<String>? tags) => this(tags: tags);
 
   @override
-  Artwork name(String name) => this(name: name);
+  Artwork name(String? name) => this(name: name);
 
   @override
-  Artwork year(String year) => this(year: year);
+  Artwork year(String? year) => this(year: year);
 
   @override
-  Artwork price(int price) => this(price: price);
+  Artwork price(String? price) => this(price: price);
+
+  @override
+  Artwork height(String? height) => this(height: height);
+
+  @override
+  Artwork width(String? width) => this(width: width);
 
   @override
 
@@ -70,36 +82,46 @@ class _$ArtworkCWProxyImpl implements _$ArtworkCWProxy {
   Artwork call({
     Object? id = const $CopyWithPlaceholder(),
     Object? url = const $CopyWithPlaceholder(),
-    Object? tag = const $CopyWithPlaceholder(),
+    Object? tags = const $CopyWithPlaceholder(),
     Object? name = const $CopyWithPlaceholder(),
     Object? year = const $CopyWithPlaceholder(),
     Object? price = const $CopyWithPlaceholder(),
+    Object? height = const $CopyWithPlaceholder(),
+    Object? width = const $CopyWithPlaceholder(),
   }) {
     return Artwork(
-      id: id == const $CopyWithPlaceholder() || id == null
+      id == const $CopyWithPlaceholder()
           ? _value.id
           // ignore: cast_nullable_to_non_nullable
-          : id as String,
-      url: url == const $CopyWithPlaceholder() || url == null
+          : id as String?,
+      url == const $CopyWithPlaceholder()
           ? _value.url
           // ignore: cast_nullable_to_non_nullable
-          : url as String,
-      tag: tag == const $CopyWithPlaceholder() || tag == null
-          ? _value.tag
+          : url as String?,
+      tags == const $CopyWithPlaceholder()
+          ? _value.tags
           // ignore: cast_nullable_to_non_nullable
-          : tag as String,
-      name: name == const $CopyWithPlaceholder() || name == null
+          : tags as List<String>?,
+      name == const $CopyWithPlaceholder()
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
-          : name as String,
-      year: year == const $CopyWithPlaceholder() || year == null
+          : name as String?,
+      year == const $CopyWithPlaceholder()
           ? _value.year
           // ignore: cast_nullable_to_non_nullable
-          : year as String,
-      price: price == const $CopyWithPlaceholder() || price == null
+          : year as String?,
+      price == const $CopyWithPlaceholder()
           ? _value.price
           // ignore: cast_nullable_to_non_nullable
-          : price as int,
+          : price as String?,
+      height == const $CopyWithPlaceholder()
+          ? _value.height
+          // ignore: cast_nullable_to_non_nullable
+          : height as String?,
+      width == const $CopyWithPlaceholder()
+          ? _value.width
+          // ignore: cast_nullable_to_non_nullable
+          : width as String?,
     );
   }
 }
@@ -115,19 +137,23 @@ extension $ArtworkCopyWith on Artwork {
 // **************************************************************************
 
 Artwork _$ArtworkFromJson(Map<String, dynamic> json) => Artwork(
-      id: json['id'] as String,
-      url: json['url'] as String,
-      tag: json['tag'] as String,
-      name: json['name'] as String,
-      year: json['year'] as String,
-      price: json['price'] as int,
+      json['id'] as String?,
+      json['url'] as String?,
+      (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      json['name'] as String?,
+      json['year'] as String?,
+      json['price'] as String?,
+      json['height'] as String?,
+      json['width'] as String?,
     );
 
 Map<String, dynamic> _$ArtworkToJson(Artwork instance) => <String, dynamic>{
       'id': instance.id,
       'url': instance.url,
-      'tag': instance.tag,
+      'tags': instance.tags,
       'name': instance.name,
       'year': instance.year,
       'price': instance.price,
+      'height': instance.height,
+      'width': instance.width,
     };

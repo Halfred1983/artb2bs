@@ -3,6 +3,8 @@ import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:database_service/database.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'artwork.dart';
+
 part 'user.g.dart';
 
 
@@ -17,8 +19,9 @@ class User {
   final UserStatus? userStatus;
   final UserInfo? userInfo;
   final UserArtInfo? userArtInfo;
+  List<Artwork>? artworks;
 
-  const User({
+  User({
     required this.id,
     required this.firstName,
     required this.lastName,
@@ -30,7 +33,8 @@ class User {
     )
     required this.userStatus,
     this.userInfo,
-    this.userArtInfo
+    this.userArtInfo,
+    this.artworks
   });
 
   factory User.fromJson(Map<String, dynamic?> json)
