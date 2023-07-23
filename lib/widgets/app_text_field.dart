@@ -174,8 +174,9 @@ class _AppTextFieldState extends FormFieldState<String> {
     }
 
     final effectiveDecoration = (widget.decoration ??
-         InputDecoration(
-            hintStyle: TextStyles.semiBoldViolet14,
+        InputDecoration(
+            hintText: widget.hintText?? '',
+            hintStyle: TextStyles.semiBoldViolet16,
             focusedBorder: const OutlineInputBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)),
               borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
@@ -185,8 +186,7 @@ class _AppTextFieldState extends FormFieldState<String> {
               borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
             ),
             border: const OutlineInputBorder()
-        )) //
-        .applyDefaults(theme.inputDecorationTheme);
+        )).applyDefaults(theme.inputDecorationTheme);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -215,28 +215,28 @@ class _AppTextFieldState extends FormFieldState<String> {
               child: Stack(
                 alignment: Alignment.centerLeft,
                 children: [
-                  if (widget.hintText != null)
-                    PositionedDirectional(
-                      top: 0,
-                      start: 0,
-                      end: 0,
-                      child: Visibility(
-                        visible: isEmpty && !(effectiveDecoration.prefix != null && isFocused),
-                        maintainState: true,
-                        maintainSize: true,
-                        maintainAnimation: true,
-                        child: IgnorePointer(
-                          child: Padding(
-                            padding: effectiveDecoration.contentPadding ?? EdgeInsets.zero,
-                            child: Text(
-                              widget.hintText!,
-                              textAlign: TextAlign.start,
-                              style: effectiveDecoration.hintStyle,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                  // if (widget.hintText != null)
+                  //   PositionedDirectional(
+                  //     top: 0,
+                  //     start: 0,
+                  //     end: 0,
+                  //     child: Visibility(
+                  //       visible: isEmpty && !(effectiveDecoration.prefix != null && isFocused),
+                  //       maintainState: true,
+                  //       maintainSize: true,
+                  //       maintainAnimation: true,
+                  //       child: IgnorePointer(
+                  //         child: Padding(
+                  //           padding: effectiveDecoration.contentPadding ?? EdgeInsets.zero,
+                  //           child: Text(
+                  //             widget.hintText!,
+                  //             textAlign: TextAlign.start,
+                  //             style: effectiveDecoration.hintStyle,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
                   child!,
                 ],
               ),
@@ -272,7 +272,7 @@ class _AppTextFieldState extends FormFieldState<String> {
                     maxLength: widget.maxLength,
                     maxLengthEnforcement: widget.maxLengthEnforcement,
                     autofillHints: widget.autofillHints,
-                  ),
+                  )
                 ),
               ),
               if (widget.obscureText)
