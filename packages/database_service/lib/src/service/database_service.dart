@@ -19,4 +19,5 @@ abstract class DatabaseService {
     required User user,
     required double radius});
 
+  Stream<DocumentSnapshot> findArtworkByUser({required User user});
 }
