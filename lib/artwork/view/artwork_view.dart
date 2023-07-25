@@ -114,6 +114,7 @@ class AddPhotoButton extends StatelessWidget {
         context,
         MaterialPageRoute(builder: (context) => PhotoPage()),
       ),
+      
       child: DottedBorder(
         color: AppTheme.primaryColourViolet,
         strokeWidth: 4,
