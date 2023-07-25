@@ -90,35 +90,35 @@ class _$ArtworkCWProxyImpl implements _$ArtworkCWProxy {
     Object? width = const $CopyWithPlaceholder(),
   }) {
     return Artwork(
-      id == const $CopyWithPlaceholder()
+      id: id == const $CopyWithPlaceholder()
           ? _value.id
           // ignore: cast_nullable_to_non_nullable
           : id as String?,
-      url == const $CopyWithPlaceholder()
+      url: url == const $CopyWithPlaceholder()
           ? _value.url
           // ignore: cast_nullable_to_non_nullable
           : url as String?,
-      tags == const $CopyWithPlaceholder()
+      tags: tags == const $CopyWithPlaceholder()
           ? _value.tags
           // ignore: cast_nullable_to_non_nullable
           : tags as List<String>?,
-      name == const $CopyWithPlaceholder()
+      name: name == const $CopyWithPlaceholder()
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String?,
-      year == const $CopyWithPlaceholder()
+      year: year == const $CopyWithPlaceholder()
           ? _value.year
           // ignore: cast_nullable_to_non_nullable
           : year as String?,
-      price == const $CopyWithPlaceholder()
+      price: price == const $CopyWithPlaceholder()
           ? _value.price
           // ignore: cast_nullable_to_non_nullable
           : price as String?,
-      height == const $CopyWithPlaceholder()
+      height: height == const $CopyWithPlaceholder()
           ? _value.height
           // ignore: cast_nullable_to_non_nullable
           : height as String?,
-      width == const $CopyWithPlaceholder()
+      width: width == const $CopyWithPlaceholder()
           ? _value.width
           // ignore: cast_nullable_to_non_nullable
           : width as String?,
@@ -137,14 +137,14 @@ extension $ArtworkCopyWith on Artwork {
 // **************************************************************************
 
 Artwork _$ArtworkFromJson(Map<String, dynamic> json) => Artwork(
-      json['id'] as String?,
-      json['url'] as String?,
-      (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      json['name'] as String?,
-      json['year'] as String?,
-      json['price'] as String?,
-      json['height'] as String?,
-      json['width'] as String?,
+      id: json['id'] as String?,
+      url: json['url'] as String?,
+      tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      name: json['name'] as String?,
+      year: json['year'] as String?,
+      price: json['price'] as String?,
+      height: json['height'] as String?,
+      width: json['width'] as String?,
     );
 
 Map<String, dynamic> _$ArtworkToJson(Artwork instance) => <String, dynamic>{

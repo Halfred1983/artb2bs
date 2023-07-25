@@ -17,16 +17,16 @@ part 'artwork.g.dart';
 @JsonSerializable(explicitToJson: true)
 @CopyWith()
 class Artwork {
-  final String? id;
-  final String? url;
-  final List<String>? tags;
-  final String? name;
-  final String? year;
-  final String? price;
-  final String? height;
-  final String? width;
+  String? id;
+  String? url;
+  List<String>? tags;
+  String? name;
+  String? year;
+  String? price;
+  String? height;
+  String? width;
 
-  Artwork([
+  Artwork({
     this.id,
     this.url,
     this.tags,
@@ -35,7 +35,19 @@ class Artwork {
     this.price,
     this.height,
     this.width,
-  ]);
+  });
+
+  factory Artwork.empty() => Artwork(
+      id: "",
+      url: "",
+      tags: List.empty(growable: true),
+      name: "",
+      year: "",
+      price: "",
+      height: "",
+      width: ""
+  );
+
 
   factory Artwork.fromJson(Map<String, dynamic?> json)
   => _$ArtworkFromJson(json);

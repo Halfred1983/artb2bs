@@ -30,7 +30,8 @@ class Artb2b extends StatelessWidget {
     var isInitialised = false;
     var isLoggedIn = false;
     return BlocProvider(
-      create: (context) => LoginCubit(locator.get<FirebaseAuthService>(),
+      create: (context) => LoginCubit(
+          locator.get<FirebaseAuthService>(),
           locator.get<FirestoreDatabaseService>() ),
       child: Builder(
         builder: (context) {

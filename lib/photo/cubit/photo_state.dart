@@ -7,12 +7,10 @@ abstract class PhotoState extends Equatable {
 }
 
 class InitialState extends PhotoState {
-  InitialState(this.artwork);
-
-  final Artwork artwork;
+  const InitialState();
 
   @override
-  List<Object> get props => [artwork];
+  List<Object> get props => [];
 }
 
 class LoadingState extends PhotoState {
@@ -20,13 +18,28 @@ class LoadingState extends PhotoState {
   List<Object> get props => [];
 }
 
-class LoadedState extends PhotoState {
-  LoadedState(this.user);
+class UploadingState extends PhotoState {
+  @override
+  List<Object> get props => [];
+}
 
-  final User user;
+class UploadedState extends PhotoState {
+  UploadedState(this.artwork);
+
+  final Artwork artwork;
 
   @override
-  List<Object> get props => [user];
+  List<Object> get props => [artwork];
+}
+
+class LoadedState extends PhotoState {
+  LoadedState(this.user, this.artwork);
+
+  final User user;
+  final Artwork artwork;
+
+  @override
+  List<Object> get props => [user, artwork];
 }
 
 class ErrorState extends PhotoState {

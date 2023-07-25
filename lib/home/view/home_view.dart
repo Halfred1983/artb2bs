@@ -59,40 +59,7 @@ class _HomeViewState extends State<HomeView> {
             return Scaffold(
               body: Stack(
                   children: [
-                    // ArtworkPage(),
-                    // widget,
                     _currentIndex == 0 ? widget : _widgetOptions.elementAt(_currentIndex),
-                    // widget,
-                    // user != null ? Padding(
-                    //   padding: horizontalPadding12 + verticalPadding48,
-                    //   child: InkWell(
-                    //     onTap: () => print("test"),
-                    //     child: Material(
-                    //       elevation: 10,
-                    //       borderRadius: const BorderRadius.all(Radius.circular(50)),
-                    //       child: ClipOval(
-                    //           child: Image.network(user!.imageUrl, width: 70,)
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ) : Container(),
-                    // Positioned(
-                    //   top: 800,
-                    //   left: 100,
-                    //   child: ElevatedButton(
-                    //       child: Text("Logout"),
-                    //       onPressed: () =>
-                    //       {
-                    //         context
-                    //             .read<LoginCubit>()
-                    //             .logout(),
-                    //         Navigator.push(
-                    //           context,
-                    //           MaterialPageRoute(builder: (context) => const LoginPage()),
-                    //         )
-                    //       }
-                    //   ),
-                    // ),
                   ]
               ),
               bottomNavigationBar:
@@ -133,19 +100,6 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
             );
-            // bottomNavigationBar: ElevatedButton(
-            //     child: Text("Logout"),
-            //     onPressed: () =>
-            //     {
-            //       context
-            //           .read<LoginCubit>()
-            //           .logout(),
-            //       Navigator.push(
-            //         context,
-            //         MaterialPageRoute(builder: (context) => const LoginPage()),
-            //       )
-            //       }),
-            // );
           }
       );
   }

@@ -98,15 +98,18 @@ class _MapViewState extends State<MapView> {
 
 
   void _onMapCreated(GoogleMapController controller) {
-    setState(() {
-      _mapController.complete(controller);
-      _mapController.future.then((controller) => controller.setMapStyle(_mapStyle));
+    if (context.mounted) {
+      setState(() {
+        _mapController.complete(controller);
+        _mapController.future.then((controller) =>
+            controller.setMapStyle(_mapStyle));
 
-      //start listening after map is created
-      stream.listen((List<DocumentSnapshot> documentList) {
-        _updateMarkers(documentList);
+        //start listening after map is created
+        stream.listen((List<DocumentSnapshot> documentList) {
+          _updateMarkers(documentList);
+        });
       });
-    });
+    }
   }
 
   // void _showHome() {
@@ -186,9 +189,11 @@ class _MapViewState extends State<MapView> {
         });
       }
     );
-    setState(() {
-      markers[id] = _marker;
-    });
+    if (mounted) {
+      setState(() {
+        markers[id] = _marker;
+      });
+    }
   }
 
   void _updateMarkers(List<DocumentSnapshot> documentList) {

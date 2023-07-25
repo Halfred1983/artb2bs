@@ -9,10 +9,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chip_tags/flutter_chip_tags.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 
 import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
-import '../../onboard/cubit/art_info_cubit.dart';
 import '../../utils/common.dart';
 import '../../widgets/app_input_validators.dart';
 import '../../widgets/app_text_field.dart';
@@ -30,11 +30,9 @@ class PhotoView extends StatefulWidget {
 class _PhotoViewState extends State<PhotoView> {
 
   GlobalKey<FormState> key = GlobalKey();
-  final List<String> _photoTags = ['Arty', 'Commercial', 'Portrait', 'Happy', 'Sad'];
+  final List<String> _photoTags = [];
   File? _imageFile;
-
-  CollectionReference _reference =
-  FirebaseFirestore.instance.collection('shopping_list');
+  String? _downloadUrl;
 
   String imageUrl = '';
   User? user;
@@ -47,6 +45,9 @@ class _PhotoViewState extends State<PhotoView> {
 
         if( state is LoadingState) {
           return const LoadingScreen();
+        }
+        if( state is UploadedState) {
+          WidgetsBinding.instance.addPostFrameCallback((_) => _showAlertDialog(state.artwork.name!));
         }
         // if(state is DataSaved) {
         //   return HomePage();
@@ -152,7 +153,7 @@ class _PhotoViewState extends State<PhotoView> {
                                   _imageFile!,),
                                 fit: BoxFit.cover
                             ),
-                            borderRadius: BorderRadius.all(Radius.circular(20))
+                            borderRadius: const BorderRadius.all(Radius.circular(20))
                         ),
                         child: Align (
                           alignment: Alignment.topRight,
@@ -174,18 +175,18 @@ class _PhotoViewState extends State<PhotoView> {
 
                       verticalMargin24,
 
-                      _NameTextField((nameValue) => context.read<ArtInfoCubit>().chooseCapacity(nameValue),
+                      _InputTextField((nameValue) => context.read<PhotoCubit>().chooseName(nameValue),
                           'Name of the artwork'),
                       // verticalMargin48,
                       //Year
                       verticalMargin24,
 
-                      _NameTextField((nameValue) => context.read<ArtInfoCubit>().chooseCapacity(nameValue),
+                      _InputTextField((nameValue) => context.read<PhotoCubit>().chooseYear(nameValue),
                           'Year', TextInputType.number),
                       //Price
                       verticalMargin24,
 
-                      _NameTextField((nameValue) => context.read<ArtInfoCubit>().chooseCapacity(nameValue),
+                      _InputTextField((nameValue) => context.read<PhotoCubit>().choosePrice(nameValue),
                           'Price', TextInputType.number),
                       //Size
                       verticalMargin24,
@@ -197,7 +198,7 @@ class _PhotoViewState extends State<PhotoView> {
                           const Icon(FontAwesomeIcons.rulerVertical, color: AppTheme.primaryColourViolet),
                           Expanded(
                             flex: 1,
-                            child: _NameTextField((nameValue) => context.read<ArtInfoCubit>().chooseCapacity(nameValue),
+                            child: _InputTextField((nameValue) => context.read<PhotoCubit>().chooseHeight(nameValue),
                                 'Height (cm)', TextInputType.number),
                           ),
                           horizontalMargin24,
@@ -205,7 +206,7 @@ class _PhotoViewState extends State<PhotoView> {
                           horizontalMargin12,
                           Expanded(
                             flex: 1,
-                            child: _NameTextField((nameValue) => context.read<ArtInfoCubit>().chooseCapacity(nameValue),
+                            child: _InputTextField((nameValue) => context.read<PhotoCubit>().chooseWidth(nameValue),
                                 'Width (cm)', TextInputType.number),
                           ),
                         ],
@@ -235,38 +236,21 @@ class _PhotoViewState extends State<PhotoView> {
                         keyboardType: TextInputType.text,
                       ),
 
-                      LinearProgressIndicator(
-                        backgroundColor: Colors.lightBlueAccent,
-                        color: Colors.red,
-                        minHeight: 15,
-                        value: _progress,
-                      ),
-
-                      // ElevatedButton(
-                      //     onPressed: () async {
-                      //       if (imageUrl.isEmpty) {
-                      //         ScaffoldMessenger.of(context)
-                      //             .showSnackBar(SnackBar(content: Text('Please upload an image')));
-                      //
-                      //         return;
-                      //       }
-                      //
-                      //       // if (key.currentState!.validate()) {
-                      //       //   String itemName = _controllerName.text;
-                      //       //   String itemQuantity = _controllerQuantity.text;
-                      //       //
-                      //       //   //Create a Map of data
-                      //       //   Map<String, String> dataToSend = {
-                      //       //     'name': itemName,
-                      //       //     'quantity': itemQuantity,
-                      //       //     'image': imageUrl,
-                      //       //   };
-                      //       //
-                      //       //   //Add a new item
-                      //       //   _reference.add(dataToSend);
-                      //       // }
-                      //     },
-                      //     child: Text('Submit'))
+                      _progress > 0 ?
+                      Stack(
+                          children: [
+                            LinearProgressIndicator(
+                              backgroundColor: AppTheme.accentColor,
+                              color: AppTheme.primaryColourViolet,
+                              minHeight: 60,
+                              value: _progress,
+                            ),
+                            Positioned(
+                              child: Center(
+                                child: Text('$_progress%', style: TextStyles.boldWhite16,),
+                              ),
+                            ),
+                          ]) : Container(),
                     ],
                   ),
                 ),
@@ -276,7 +260,9 @@ class _PhotoViewState extends State<PhotoView> {
                 padding: buttonPadding,
                 child: ElevatedButton(
                   onPressed: () {
-                    final uploadTask = context.read<PhotoCubit>().storePhoto(user!.id+'/artworks/', _imageFile);
+
+                    final uploadTask = context.read<PhotoCubit>()
+                        .storePhoto(user!.id+'/artworks/'+path.basename(_imageFile!.path), _imageFile);
 
                     // Listen for state changes, errors, and completion of the upload.
                     uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) async {
@@ -284,6 +270,11 @@ class _PhotoViewState extends State<PhotoView> {
                         case TaskState.running:
                           _progress =
                               100.0 * (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
+                          if (context.mounted) {
+                            setState(() {
+
+                            });
+                          }
                           print("Upload is $_progress% complete.");
                           break;
                         case TaskState.paused:
@@ -296,14 +287,13 @@ class _PhotoViewState extends State<PhotoView> {
                         // Handle unsuccessful uploads
                           break;
                         case TaskState.success:
-                          await taskSnapshot.ref.getDownloadURL();
-
-                        // Handle successful uploads on complete
-                        // ...
+                          _downloadUrl = await taskSnapshot.ref.getDownloadURL();
+                          if (context.mounted) {
+                            context.read<PhotoCubit>().savePhoto(_photoTags, _downloadUrl!, user!);
+                          }
                           break;
                       }
                     });
-
                   },
                   child: Text("Upload", style: TextStyles.boldWhite16,),)
             )
@@ -340,30 +330,79 @@ class _PhotoViewState extends State<PhotoView> {
       });
     }
   }
+
+
+  Future<void> _showAlertDialog(String name) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog( // <-- SEE HERE
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          title: const Center(child:Text('Upload Successful')),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                      text: 'Your artwork:\n\n',
+                      style: TextStyles.regularAccent16,
+                      children: <TextSpan>[
+                        TextSpan(text: name,
+                          style:TextStyles.boldViolet16,
+                        ),
+                        TextSpan(text: '\n\nwas uploaded successfully!',
+                          style:TextStyles.regularAccent16,
+                        )
+                      ]
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK', style: TextStyles.semiBoldViolet21.copyWith(
+                  decoration: TextDecoration.underline
+              ),),
+              onPressed: () {
+                Navigator.of(context)..pop()..pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }
 
 
 
-class _NameTextField extends StatefulWidget {
-  const _NameTextField(this.nameChanged, this.hint, [this.textInputType]);
+class _InputTextField extends StatefulWidget {
+  const _InputTextField(this.nameChanged, this.hint, [this.textInputType]);
   final ValueChanged<String> nameChanged;
   final String hint;
   final TextInputType? textInputType;
 
 
   @override
-  State<_NameTextField> createState() =>
-      _NameTextFieldState(nameChanged, hint, textInputType);
+  State<_InputTextField> createState() =>
+      _InputTextFieldState(nameChanged, hint, textInputType);
 }
 
-class _NameTextFieldState extends State<_NameTextField> {
+class _InputTextFieldState extends State<_InputTextField> {
 
   late final TextEditingController _nameController;
   final ValueChanged<String> _nameChanged;
   final String _hint;
   final TextInputType? _textInputType;
 
-  _NameTextFieldState(this._nameChanged, this._hint, this._textInputType);
+  _InputTextFieldState(this._nameChanged, this._hint, this._textInputType);
 
   @override
   void initState() {

@@ -32,7 +32,7 @@ abstract class AppModule {
   FirebaseAuth get auth => FirebaseAuth.instance;
 
   @injectable
-  AuthService get authService;
+  FirebaseAuthService get authService;
 
   @injectable
   FirestoreStorageService get firebaseStorageService => FirestoreStorageService(storage: storage);
