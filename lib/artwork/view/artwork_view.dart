@@ -1,6 +1,7 @@
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/artwork/cubit/artwork_cubit.dart';
 import 'package:artb2b/artwork/cubit/artwork_state.dart';
+import 'package:artb2b/artwork/view/photo_details.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_service/database.dart';
@@ -102,32 +103,38 @@ class _ArtworkViewState extends State<ArtworkView> {
                                       crossAxisCount: 2,
                                       itemBuilder: (context, index) {
                                         if(index == 0) return const AddPhotoButton();
-                                        return Stack(
-                                          children: [
-                                            ShaderMask(
-                                              shaderCallback: (rect) {
-                                                return const LinearGradient(
-                                                  begin: Alignment.center,
-                                                  end: Alignment.bottomCenter,
-                                                  colors: [Colors.transparent, Colors.black],
-                                                ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
-                                              },
-                                              blendMode: BlendMode.darken,
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(10),
-                                                child: Image.network(
-                                                    user.artworks![index - 1].url!,
-                                                    fit: BoxFit.contain
+                                        return InkWell(
+                                          onTap: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => PhotoDetails(artwork: user.artworks![index - 1])),
+                                          ),
+                                          child: Stack(
+                                            children: [
+                                              ShaderMask(
+                                                shaderCallback: (rect) {
+                                                  return const LinearGradient(
+                                                    begin: Alignment.center,
+                                                    end: Alignment.bottomCenter,
+                                                    colors: [Colors.transparent, Colors.black],
+                                                  ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+                                                },
+                                                blendMode: BlendMode.darken,
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  child: Image.network(
+                                                      user.artworks![index - 1].url!,
+                                                      fit: BoxFit.contain
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            Positioned(
-                                              bottom: 15,
-                                              right: 25,
-                                              child: Text(user.artworks![index - 1].name!,
-                                                style: TextStyles.boldWhite14,),
-                                            )
-                                          ],
+                                              Positioned(
+                                                bottom: 15,
+                                                right: 25,
+                                                child: Text(user.artworks![index - 1].name!,
+                                                  style: TextStyles.boldWhite14,),
+                                              )
+                                            ],
+                                          ),
                                         );
 
                                       },
