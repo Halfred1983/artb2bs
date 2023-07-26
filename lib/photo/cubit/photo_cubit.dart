@@ -57,6 +57,16 @@ class PhotoCubit extends Cubit<PhotoState> {
     }
   }
 
+  void chooseTechnique(String technique) {
+    Artwork artwork = this.state.props[1] as Artwork;
+
+    try {
+      artwork.technique = technique;
+    } catch (e) {
+      emit(ErrorState());
+    }
+  }
+
   void chooseHeight(String height) {
     Artwork artwork = this.state.props[1] as Artwork;
 

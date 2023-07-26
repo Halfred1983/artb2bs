@@ -25,6 +25,7 @@ class Artwork {
   String? price;
   String? height;
   String? width;
+  String? technique;
 
   Artwork({
     this.id,
@@ -35,6 +36,7 @@ class Artwork {
     this.price,
     this.height,
     this.width,
+    this.technique,
   });
 
   factory Artwork.empty() => Artwork(
@@ -45,7 +47,8 @@ class Artwork {
       year: "",
       price: "",
       height: "",
-      width: ""
+      width: "",
+      technique: ""
   );
 
 

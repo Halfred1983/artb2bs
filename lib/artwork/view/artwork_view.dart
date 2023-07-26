@@ -80,55 +80,58 @@ class _ArtworkViewState extends State<ArtworkView> {
                               stream: firestoreDatabaseService.findArtworkByUser(user: user!),
                               builder: (context, snapshot){
                                 if (snapshot.hasError) {
-                                  return Text('Something went wrong');
+                                  return const Text('Something went wrong');
                                 }
 
                                 if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return Text("Loading");
+                                  return const Text("Loading");
                                 }
 
                                 if(snapshot.hasData) {
                                   User user = User.fromJson(snapshot.data!.data() as Map<String, dynamic>);
 
-                                  return MasonryGridView.count(
-                                    physics: ClampingScrollPhysics(),
-                                    itemCount: user.artworks!.length + 1,
-                                    scrollDirection: Axis.vertical,
-                                    shrinkWrap: true,
-                                    mainAxisSpacing: 10,
-                                    crossAxisSpacing: 6,
-                                    crossAxisCount: 2,
-                                    itemBuilder: (context, index) {
-                                      if(index == 0) return const AddPhotoButton();
-                                      return ShaderMask(
-                                        shaderCallback: (rect) {
-                                          return const LinearGradient(
-                                            begin: Alignment.center,
-                                            end: Alignment.bottomCenter,
-                                            colors: [Colors.transparent, Colors.black],
-                                          ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
-                                        },
-                                        blendMode: BlendMode.darken,
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(10),
-                                          child: Stack(
-                                            children: [
-                                              Image.network(
-                                                  user.artworks![index - 1].url!,
-                                                  fit: BoxFit.contain
+                                  return SingleChildScrollView(
+                                    physics: const ScrollPhysics(),
+                                    child: MasonryGridView.count(
+                                      physics: const BouncingScrollPhysics(),
+                                      itemCount: user.artworks!.length + 1,
+                                      scrollDirection: Axis.vertical,
+                                      shrinkWrap: true,
+                                      mainAxisSpacing: 10,
+                                      crossAxisSpacing: 6,
+                                      crossAxisCount: 2,
+                                      itemBuilder: (context, index) {
+                                        if(index == 0) return const AddPhotoButton();
+                                        return Stack(
+                                          children: [
+                                            ShaderMask(
+                                              shaderCallback: (rect) {
+                                                return const LinearGradient(
+                                                  begin: Alignment.center,
+                                                  end: Alignment.bottomCenter,
+                                                  colors: [Colors.transparent, Colors.black],
+                                                ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+                                              },
+                                              blendMode: BlendMode.darken,
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(10),
+                                                child: Image.network(
+                                                    user.artworks![index - 1].url!,
+                                                    fit: BoxFit.contain
+                                                ),
                                               ),
-                                              Positioned(
-                                                bottom: 15,
-                                                right: 30,
-                                                child: Text(user.artworks![index - 1].name!,
-                                                  style: TextStyles.boldWhite16,),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      );
+                                            ),
+                                            Positioned(
+                                              bottom: 15,
+                                              right: 25,
+                                              child: Text(user.artworks![index - 1].name!,
+                                                style: TextStyles.boldWhite14,),
+                                            )
+                                          ],
+                                        );
 
-                                    },
+                                      },
+                                    ),
                                   );
                                 }
                                 return Container();

@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chip_tags/flutter_chip_tags.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
@@ -37,6 +38,8 @@ class _PhotoViewState extends State<PhotoView> {
   String imageUrl = '';
   User? user;
   double _progress = 0;
+
+  final TextEditingController _typeAheadController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -186,6 +189,45 @@ class _PhotoViewState extends State<PhotoView> {
                       //Price
                       verticalMargin24,
 
+                      TypeAheadField(
+                          minCharsForSuggestions: 1,
+                          textFieldConfiguration: TextFieldConfiguration(
+                              controller: _typeAheadController,
+                              style: TextStyles.boldViolet16,
+                              decoration: InputDecoration(
+                                  hintText: 'Technique',
+                                  filled: true,
+                                  fillColor: AppTheme.white,
+                                  hintStyle: TextStyles.semiBoldViolet16,
+                                  focusedBorder: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
+                                  ),
+                                  enabledBorder: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                                    borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
+                                  ),
+                                  border: const OutlineInputBorder()
+                              )
+                          ),
+                          suggestionsCallback: (pattern) {
+                            return getSuggestions(pattern);
+                          },
+                          itemBuilder: (context, suggestion) {
+                            return Container(
+                                padding: const EdgeInsets.all(10),
+                                color: AppTheme.white,
+                                child: Text(suggestion, style: TextStyles.semiBoldViolet16)
+                            );
+                          },
+                          onSuggestionSelected: (technique) {
+                            _typeAheadController.text = technique.capitalize();;
+                            context.read<PhotoCubit>().chooseTechnique(technique.capitalize());
+                          }
+                      ),
+                      //Price
+                      verticalMargin24,
+
                       _InputTextField((nameValue) => context.read<PhotoCubit>().choosePrice(nameValue),
                           'Price', TextInputType.number),
                       //Size
@@ -235,22 +277,29 @@ class _PhotoViewState extends State<PhotoView> {
                         ), //
                         keyboardType: TextInputType.text,
                       ),
-
+                      verticalMargin16,
                       _progress > 0 ?
                       Stack(
                           children: [
-                            LinearProgressIndicator(
-                              backgroundColor: AppTheme.accentColor,
-                              color: AppTheme.primaryColourViolet,
-                              minHeight: 60,
-                              value: _progress,
-                            ),
-                            Positioned(
-                              child: Center(
-                                child: Text('$_progress%', style: TextStyles.boldWhite16,),
+                            ClipRRect(
+                              borderRadius: const BorderRadius.all(Radius.circular(10)),
+                              child: LinearProgressIndicator(
+                                backgroundColor: AppTheme.accentColor,
+                                color: AppTheme.primaryColourViolet,
+                                minHeight: 50,
+                                value: _progress,
                               ),
                             ),
-                          ]) : Container(),
+                            Positioned.fill(
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Center(
+                                  child: Text('$_progress%', style: TextStyles.boldWhite16,),
+                                ),
+                              ),
+                            ),
+                          ])
+                          : Container(),
                     ],
                   ),
                 ),
@@ -377,6 +426,48 @@ class _PhotoViewState extends State<PhotoView> {
         );
       },
     );
+  }
+
+  static final List<String> _techniques = [
+    'acrylic painting',
+    'action painting',
+    'aerial perspective',
+    'anamorphosis',
+    'camaieu',
+    'casein painting',
+    'chiaroscuro',
+    'divisionism',
+    'easel painting',
+    'encaustic painting',
+    'foreshortening',
+    'fresco painting',
+    'gouache',
+    'graffiti',
+    'grisaille',
+    'impasto',
+    'miniature painting',
+    'mural',
+    'oil painting',
+    'panel painting',
+    'panorama',
+    'perspective',
+    'plein-air painting',
+    'sand painting',
+    'scroll painting',
+    'sfumato',
+    'sgraffito',
+    'sotto in su',
+    'tachism',
+    'tempera painting',
+    'tenebrism',
+    'tromp l’oeil',
+  ];
+
+  static List<String> getSuggestions(String query) {
+    List<String> matches = List.empty(growable: true);
+    matches.addAll(_techniques);
+    matches.retainWhere((s) => s.toLowerCase().contains(query.toLowerCase()));
+    return matches;
   }
 
 }

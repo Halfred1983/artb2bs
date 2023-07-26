@@ -27,6 +27,7 @@ class TextStyles {
   static final boldGreen21 = _baseBold[TextSize.size21].withColor(AppTheme.primaryColourViolet);
   static final boldViolet16 = _baseBold[TextSize.size16].withColor(AppTheme.primaryColourViolet);
   static final boldAccent16 = _baseBold[TextSize.size16].withColor(AppTheme.accentColor);
+  static final boldWhite14 = _baseBold[TextSize.size14].withColor(AppTheme.white);
   static final boldWhite16 = _baseBold[TextSize.size16].withColor(AppTheme.white);
   static final boldAccent24 = _baseBold[TextSize.size24].withColor(AppTheme.accentColor);
   static final boldDarkGrey21 = _baseBold[TextSize.size21].withColor(AppTheme.black);
@@ -75,6 +76,7 @@ class TextStyles {
     TextSize.size21: createBaseTextStyle(TextWeight.bold, TextSize.size21),
     TextSize.size6: createBaseTextStyle(TextWeight.bold, TextSize.size6),
     TextSize.size24: createBaseTextStyle(TextWeight.bold, TextSize.size24),
+    TextSize.size14: createBaseTextStyle(TextWeight.bold, TextSize.size14),
     TextSize.size8: createBaseTextStyle(TextWeight.bold, TextSize.size8),
   };
 
