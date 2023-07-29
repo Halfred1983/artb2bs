@@ -23,6 +23,16 @@ class FirestoreStorageService implements StorageService {
           .putFile(image, metadata);
 
     } on Exception catch (e) {
+      print('addPhoto $e');
+      throw e;    }
+  }
+
+  @override
+  Future<void> deletePhoto({required String imageUrl}) async {
+    try {
+    _firebaseStorage.refFromURL(imageUrl).delete();
+    } on Exception catch (e) {
+      print('deletePhoto $e');
       throw e;
     }
   }

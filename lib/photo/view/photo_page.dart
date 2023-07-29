@@ -28,7 +28,7 @@ class PhotoPage extends StatelessWidget {
           storageService: storageService,
           userId: authService.getUser().id,
         ),
-        child:  PhotoView(),
+        child: const PhotoView(),
       );
   }
 }

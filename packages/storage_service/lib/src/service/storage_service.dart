@@ -11,4 +11,8 @@ abstract class StorageService {
     required File image
   });
 
+  Future<void> deletePhoto({
+    required String imageUrl
+  });
+
 }

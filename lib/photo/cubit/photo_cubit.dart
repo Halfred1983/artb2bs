@@ -88,20 +88,9 @@ class PhotoCubit extends Cubit<PhotoState> {
     }
   }
 
-  // void chooseTags(List<String> tags) {
-  //   Artwork artwork = this.state.props[0] as Artwork;
-  //
-  //   try {
-  //     artwork = artwork.copyWith(tags: tags);
-  //   } catch (e) {
-  //     emit(ErrorState());
-  //   }
-  // }
-
   UploadTask storePhoto(String path, File? image) {
 
     return storageService.addPhoto(path: path, image: image!);
-
   }
 
   void savePhoto(List<String> photoTags, String downloadUrl, User user) {
@@ -117,5 +106,16 @@ class PhotoCubit extends Cubit<PhotoState> {
     databaseService.updateUser(user: user);
 
     emit(UploadedState(artwork));
+  }
+
+  Future<void> deletePhoto(String imageUrl) {
+    User user = this.state.props[0] as User;
+
+    if(user.artworks != null && user.artworks!.isNotEmpty) {
+      user.artworks?.removeWhere((element) => element.url == imageUrl);
+    }
+    databaseService.updateUser(user: user);
+
+    return storageService.deletePhoto(imageUrl: imageUrl);
   }
 }
