@@ -1,9 +1,6 @@
 
-import 'package:flutter/foundation.dart';
-import 'package:json_annotation/json_annotation.dart';
-
-import 'user_info.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'photo.g.dart';
 
@@ -13,12 +10,12 @@ part 'photo.g.dart';
 class Photo {
   final String id;
   final String url;
-  final String tag;
+  final String description;
 
   const Photo({
     required this.id,
     required this.url,
-    required this.tag,
+    required this.description,
   });
 
   factory Photo.fromJson(Map<String, dynamic?> json)
@@ -26,16 +23,4 @@ class Photo {
 
   Map<String, dynamic> toJson() => _$PhotoToJson(this);
 
-}
-
-
-enum UserStatus {
-  @JsonValue(0)
-  initialised,
-  @JsonValue(1)
-  personalInfo,
-  @JsonValue(2)
-  artInfo,
-  @JsonValue(3)
-  paymentInfo,
 }

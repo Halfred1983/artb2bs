@@ -11,7 +11,7 @@ abstract class _$PhotoCWProxy {
 
   Photo url(String url);
 
-  Photo tag(String tag);
+  Photo description(String description);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Photo(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -22,7 +22,7 @@ abstract class _$PhotoCWProxy {
   Photo call({
     String? id,
     String? url,
-    String? tag,
+    String? description,
   });
 }
 
@@ -39,7 +39,7 @@ class _$PhotoCWProxyImpl implements _$PhotoCWProxy {
   Photo url(String url) => this(url: url);
 
   @override
-  Photo tag(String tag) => this(tag: tag);
+  Photo description(String description) => this(description: description);
 
   @override
 
@@ -52,7 +52,7 @@ class _$PhotoCWProxyImpl implements _$PhotoCWProxy {
   Photo call({
     Object? id = const $CopyWithPlaceholder(),
     Object? url = const $CopyWithPlaceholder(),
-    Object? tag = const $CopyWithPlaceholder(),
+    Object? description = const $CopyWithPlaceholder(),
   }) {
     return Photo(
       id: id == const $CopyWithPlaceholder() || id == null
@@ -63,10 +63,11 @@ class _$PhotoCWProxyImpl implements _$PhotoCWProxy {
           ? _value.url
           // ignore: cast_nullable_to_non_nullable
           : url as String,
-      tag: tag == const $CopyWithPlaceholder() || tag == null
-          ? _value.tag
-          // ignore: cast_nullable_to_non_nullable
-          : tag as String,
+      description:
+          description == const $CopyWithPlaceholder() || description == null
+              ? _value.description
+              // ignore: cast_nullable_to_non_nullable
+              : description as String,
     );
   }
 }
@@ -84,11 +85,11 @@ extension $PhotoCopyWith on Photo {
 Photo _$PhotoFromJson(Map<String, dynamic> json) => Photo(
       id: json['id'] as String,
       url: json['url'] as String,
-      tag: json['tag'] as String,
+      description: json['description'] as String,
     );
 
 Map<String, dynamic> _$PhotoToJson(Photo instance) => <String, dynamic>{
       'id': instance.id,
       'url': instance.url,
-      'tag': instance.tag,
+      'description': instance.description,
     };

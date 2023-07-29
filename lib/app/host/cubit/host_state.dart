@@ -2,19 +2,19 @@ import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class ArtworkState extends Equatable {}
+abstract class HostState extends Equatable {}
 
-class InitialState extends ArtworkState {
+class InitialState extends HostState {
   @override
   List<Object> get props => [];
 }
 
-class LoadingState extends ArtworkState {
+class LoadingState extends HostState {
   @override
   List<Object> get props => [];
 }
 
-class LoadedState extends ArtworkState {
+class LoadedState extends HostState {
   LoadedState(this.user);
 
   final User user;
@@ -23,7 +23,7 @@ class LoadedState extends ArtworkState {
   List<Object> get props => [user];
 }
 
-class CapacityChosen extends ArtworkState {
+class CapacityChosen extends HostState {
   CapacityChosen(this.user);
   final User user;
 
@@ -32,7 +32,7 @@ class CapacityChosen extends ArtworkState {
   List<Object> get props => [user];
 }
 
-class SpacesChosen extends ArtworkState {
+class SpacesChosen extends HostState {
   SpacesChosen(this.user);
   final User user;
 
@@ -41,7 +41,7 @@ class SpacesChosen extends ArtworkState {
   List<Object> get props => [user];
 }
 
-class DataSaved extends ArtworkState {
+class DataSaved extends HostState {
   DataSaved(this.user);
   final User user;
 
@@ -50,7 +50,7 @@ class DataSaved extends ArtworkState {
   List<Object> get props => [user];
 }
 
-class ErrorState extends ArtworkState {
+class ErrorState extends HostState {
   @override
   List<Object> get props => [];
 }

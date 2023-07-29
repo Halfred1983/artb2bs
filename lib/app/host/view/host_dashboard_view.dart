@@ -1,28 +1,27 @@
+import 'package:artb2b/app/host/view/photo_details.dart';
 import 'package:artb2b/app/resources/theme.dart';
-import 'package:artb2b/artwork/cubit/artwork_cubit.dart';
-import 'package:artb2b/artwork/cubit/artwork_state.dart';
-import 'package:artb2b/artwork/view/photo_details.dart';
+import 'package:artb2b/artwork/cubit/artist_cubit.dart';
+import 'package:artb2b/artwork/cubit/artist_state.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_service/database.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-import '../../app/resources/styles.dart';
-import '../../injection.dart';
-import '../../photo/view/photo_page.dart';
-import '../../utils/common.dart';
+import '../../../injection.dart';
+import '../../../utils/common.dart';
+import '../../../widgets/add_photo_button.dart';
+import '../../resources/styles.dart';
 
-class ArtworkView extends StatefulWidget {
-  const ArtworkView({super.key});
+class HostDashboardView extends StatefulWidget {
+  const HostDashboardView({super.key});
 
   @override
-  State<ArtworkView> createState() => _ArtworkViewState();
+  State<HostDashboardView> createState() => _HostDashboardViewState();
 }
 
-class _ArtworkViewState extends State<ArtworkView> {
+class _HostDashboardViewState extends State<HostDashboardView> {
 
   FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
 
@@ -31,9 +30,8 @@ class _ArtworkViewState extends State<ArtworkView> {
   Widget build(BuildContext context) {
     User? user;
     return
-      BlocBuilder<ArtworkCubit, ArtworkState>(
+      BlocBuilder<ArtistCubit, ArtistState>(
           builder: (context, state) {
-            Widget widget = Container();
             if (state is LoadingState) {
               return const LoadingScreen();
             }
@@ -42,8 +40,8 @@ class _ArtworkViewState extends State<ArtworkView> {
 
               return Scaffold(
                   appBar: AppBar(
-                    title: Text(user!.userInfo!.userType == UserType.artist ?
-                    "Your Artwork" : "Your Dashboard", style: TextStyles.boldAccent24,),
+                    title: Text(
+                    "Your Dashboard", style: TextStyles.boldAccent24,),
                     centerTitle: true,
                   ),
                   body: SingleChildScrollView(
@@ -54,16 +52,14 @@ class _ArtworkViewState extends State<ArtworkView> {
                         children: [
                           Row(
                             children: [
-                              user!.userInfo!.userType == UserType.artist ? Image.asset("assets/images/artist.png", width: 60,)
-                                  :Image.asset("assets/images/gallery.png", width: 60,),
+                              Image.asset("assets/images/gallery.png", width: 60,),
                               horizontalMargin16,
                               Text(user!.userInfo!.name!, style: TextStyles.semiBoldViolet16, ),
                             ],
                           ),
                           verticalMargin24,
                           const Divider(thickness: 0.6, color: Colors.black38,),
-                          user!.userInfo!.userType == UserType.artist ? Container()
-                              :  Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text('Capacity: ', style: TextStyles.semiBoldAccent16, ),
@@ -73,10 +69,9 @@ class _ArtworkViewState extends State<ArtworkView> {
                             ],
                           ),
                           verticalMargin24,
+                          Text('Your photos: ', style: TextStyles.semiBoldAccent16, ),
                           const Divider(thickness: 0.6, color: Colors.black38,),
-
-
-
+                          //HOST
                           StreamBuilder(
                               stream: firestoreDatabaseService.findArtworkByUser(user: user!),
                               builder: (context, snapshot){
@@ -95,7 +90,7 @@ class _ArtworkViewState extends State<ArtworkView> {
                                     physics: const ScrollPhysics(),
                                     child: MasonryGridView.count(
                                       physics: const BouncingScrollPhysics(),
-                                      itemCount: user.artworks!.length + 1,
+                                      itemCount: user.photos!.length + 1,
                                       scrollDirection: Axis.vertical,
                                       shrinkWrap: true,
                                       mainAxisSpacing: 10,
@@ -106,7 +101,7 @@ class _ArtworkViewState extends State<ArtworkView> {
                                         return InkWell(
                                           onTap: () => Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => PhotoDetails(artwork: user.artworks![index - 1])),
+                                            MaterialPageRoute(builder: (context) => PhotoDetails(photo: user.photos![index - 1])),
                                           ),
                                           child: Stack(
                                             children: [
@@ -122,7 +117,7 @@ class _ArtworkViewState extends State<ArtworkView> {
                                                 child: ClipRRect(
                                                   borderRadius: BorderRadius.circular(10),
                                                   child: Image.network(
-                                                      user.artworks![index - 1].url!,
+                                                      user.photos![index - 1].url!,
                                                       fit: BoxFit.contain
                                                   ),
                                                 ),
@@ -130,7 +125,7 @@ class _ArtworkViewState extends State<ArtworkView> {
                                               Positioned(
                                                 bottom: 15,
                                                 right: 25,
-                                                child: Text(user.artworks![index - 1].name!,
+                                                child: Text(user.photos![index - 1].description!,
                                                   style: TextStyles.boldWhite14,),
                                               )
                                             ],
@@ -143,84 +138,14 @@ class _ArtworkViewState extends State<ArtworkView> {
                                 }
                                 return Container();
                               }),
-
-                          // ImagePick()
-
                         ],
                       ),
                     ),
                   )
               );
             }
-            return Scaffold(
-                body: Stack(
-                    children: [
-                      widget,
-
-                      user != null ? Padding(
-                        padding: horizontalPadding12 + verticalPadding48,
-                        child: InkWell(
-                          onTap: () => print("test"),
-                          child: Material(
-                            elevation: 10,
-                            borderRadius: const BorderRadius.all(Radius.circular(50)),
-                            child: ClipOval(
-                                child: Image.network(user!.imageUrl, width: 70,)
-                            ),
-                          ),
-                        ),
-                      ) : Container(),
-
-                    ]
-                )
-            );
+            return Container();
           }
       );
-  }
-}
-
-class AddPhotoButton extends StatelessWidget {
-  const AddPhotoButton({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PhotoPage()),
-      ),
-
-      child: DottedBorder(
-        color: AppTheme.primaryColourViolet,
-        strokeWidth: 4,
-        borderType: BorderType.RRect,
-        radius: const Radius.circular(10),
-        dashPattern: const [
-          8,
-          10,
-        ],
-        child: SizedBox(
-          height: 150,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-
-                Text(
-                  "+",
-                  style: TextStyles.boldViolet16.copyWith(fontSize: 20),
-                ),
-                Text(
-                  "Add Photo",
-                  style: TextStyles.boldViolet16,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

@@ -73,17 +73,12 @@ class FirestoreDatabaseService implements DatabaseService {
   @override
   Stream<DocumentSnapshot> findArtworkByUser({required User user}) {
     try {
-      print(user.id);
       return _firestore
           .collection('users')
           .doc(user.id).snapshots();
-          // .map((snapshot) =>
-          // snapshot.docs.map((doc) => Artwork.fromJson(doc.data())));
-
-      // return collection;
     }
     catch (e) {
-      print(e.toString());
+      print('findArtworkByUser $e');
       throw e;
     }
   }

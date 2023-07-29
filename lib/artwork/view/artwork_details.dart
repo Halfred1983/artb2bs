@@ -12,8 +12,8 @@ import '../../photo/cubit/photo_cubit.dart';
 import '../../photo/cubit/photo_state.dart';
 import '../../utils/common.dart';
 
-class PhotoDetails extends StatelessWidget {
-  PhotoDetails({super.key, required this.artwork});
+class ArtworkDetails extends StatelessWidget {
+  ArtworkDetails({super.key, required this.artwork});
 
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
@@ -45,8 +45,6 @@ class PhotoDetails extends StatelessWidget {
 
         child:  BlocBuilder<PhotoCubit, PhotoState>(
             builder: (context, state) {
-
-
               return Scaffold(
                   appBar: AppBar(
                     title: Text("Artwork details", style: TextStyles.boldAccent24,),
@@ -170,7 +168,7 @@ class PhotoDetails extends StatelessWidget {
                         decoration: TextDecoration.underline
                     ),),
                     onPressed: () {
-                      context.read<PhotoCubit>().deletePhoto(artwork.url!);
+                      context.read<PhotoCubit>().deleteArtwork(artwork.url!);
                       Navigator.of(context)..pop()..pop();
                     },
                   ),

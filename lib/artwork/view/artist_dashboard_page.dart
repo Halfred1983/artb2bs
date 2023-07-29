@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../injection.dart';
-import '../cubit/artwork_cubit.dart';
-import 'artwork_view.dart';
+import '../cubit/artist_cubit.dart';
+import 'artist_dashboard_view.dart';
 
-class ArtworkPage extends StatelessWidget {
+class ArtistDashboardPage extends StatelessWidget {
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => ArtworkPage());
+    return MaterialPageRoute<void>(builder: (_) => ArtistDashboardPage());
   }
 
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
@@ -20,12 +20,12 @@ class ArtworkPage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return
-      BlocProvider<ArtworkCubit>(
-        create: (context) => ArtworkCubit(
+      BlocProvider<ArtistCubit>(
+        create: (context) => ArtistCubit(
           databaseService: databaseService,
           userId: authService.getUser().id,
         ),
-        child:  ArtworkView(),
+        child: const ArtistDashboardView(),
       );
   }
 }

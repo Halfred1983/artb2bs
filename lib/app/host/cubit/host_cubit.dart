@@ -1,11 +1,11 @@
 import 'package:database_service/database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'artwork_state.dart';
+import 'host_state.dart';
 
 
-class ArtworkCubit extends Cubit<ArtworkState> {
-  ArtworkCubit({required this.databaseService,
+class HostCubit extends Cubit<HostState> {
+  HostCubit({required this.databaseService,
     required this.userId}) : super(InitialState()) {
     getUser(userId);
   }
