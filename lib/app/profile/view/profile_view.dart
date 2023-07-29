@@ -1,6 +1,6 @@
 import 'package:artb2b/app/resources/theme.dart';
-import 'package:artb2b/artwork/cubit/artwork_cubit.dart';
-import 'package:artb2b/artwork/cubit/artwork_state.dart';
+import 'package:artb2b/artwork/cubit/artist_cubit.dart';
+import 'package:artb2b/artwork/cubit/artist_state.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:artb2b/widgets/map_view.dart';
 import 'package:database_service/database.dart';

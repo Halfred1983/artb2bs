@@ -93,7 +93,7 @@ class PhotoCubit extends Cubit<PhotoState> {
     return storageService.addPhoto(path: path, image: image!);
   }
 
-  void savePhoto(List<String> photoTags, String downloadUrl, User user) {
+  void saveArtwork(List<String> photoTags, String downloadUrl, User user) {
     Artwork artwork = this.state.props[1] as Artwork;
 
     artwork = artwork.copyWith(url: downloadUrl, tags: photoTags);
@@ -108,7 +108,7 @@ class PhotoCubit extends Cubit<PhotoState> {
     emit(UploadedState(artwork));
   }
 
-  Future<void> deletePhoto(String imageUrl) {
+  Future<void> deleteArtwork(String imageUrl) {
     User user = this.state.props[0] as User;
 
     if(user.artworks != null && user.artworks!.isNotEmpty) {

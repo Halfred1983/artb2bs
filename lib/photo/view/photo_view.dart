@@ -52,9 +52,6 @@ class _PhotoViewState extends State<PhotoView> {
         if( state is UploadedState) {
           WidgetsBinding.instance.addPostFrameCallback((_) => _showAlertDialog(state.artwork.name!));
         }
-        // if(state is DataSaved) {
-        //   return HomePage();
-        // }
         if (state is LoadedState) {
           user = state.user;
         }
@@ -101,49 +98,6 @@ class _PhotoViewState extends State<PhotoView> {
                             )
                         ),
                       ) : Container(),
-                      // IconButton(
-                      //     onPressed: () async {
-                      //       /*
-                      // * Step 1. Pick/Capture an image   (image_picker)
-                      // * Step 2. Upload the image to Firebase storage
-                      // * Step 3. Get the URL of the uploaded image
-                      // * Step 4. Store the image URL inside the corresponding
-                      // *         document of the database.
-                      // * Step 5. Display the image on the list
-                      // *
-                      // * */
-                      //
-                      //       /*Step 1:Pick image*/
-                      //       //Install image_picker
-                      //       //Import the corresponding library
-                      //
-                      //       _getFromGallery();
-                      //       //Import dart:core
-                      //
-                      //       /*Step 2: Upload to Firebase storage*/
-                      //       //Install firebase_storage
-                      //       //Import the library
-                      //
-                      //       //Get a reference to storage root
-                      //       // Reference referenceRoot = FirebaseStorage.instance.ref();
-                      //       // Reference referenceDirImages =
-                      //       // referenceRoot.child('images');
-                      //       //
-                      //       // //Create a reference for the image to be stored
-                      //       // Reference referenceImageToUpload =
-                      //       // referenceDirImages.child('name');
-                      //       //
-                      //       // //Handle errors/success
-                      //       // try {
-                      //       //   //Store the file
-                      //       //   await referenceImageToUpload.putFile(File(file!.path));
-                      //       //   //Success: get the download URL
-                      //       //   imageUrl = await referenceImageToUpload.getDownloadURL();
-                      //       // } catch (error) {
-                      //       //   //Some error occurred
-                      //       // }
-                      //     },
-                      //     icon: Icon(Icons.camera_alt)),
                       verticalMargin12,
                       _imageFile != null ?
 
@@ -338,7 +292,7 @@ class _PhotoViewState extends State<PhotoView> {
                         case TaskState.success:
                           _downloadUrl = await taskSnapshot.ref.getDownloadURL();
                           if (context.mounted) {
-                            context.read<PhotoCubit>().savePhoto(_photoTags, _downloadUrl!, user!);
+                            context.read<PhotoCubit>().saveArtwork(_photoTags, _downloadUrl!, user!);
                           }
                           break;
                       }

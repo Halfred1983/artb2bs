@@ -1,6 +1,6 @@
 import 'package:artb2b/app/profile/view/profile_page.dart';
 import 'package:artb2b/app/resources/theme.dart';
-import 'package:artb2b/artwork/view/artwork_page.dart';
+import 'package:artb2b/artwork/view/artist_dashboard_page.dart';
 import 'package:artb2b/home/bloc/user_cubit.dart';
 import 'package:artb2b/home/bloc/user_state.dart';
 import 'package:artb2b/onboard/view/personal_info_page.dart';
@@ -29,9 +29,9 @@ class _HomeViewState extends State<HomeView> {
 
 
   static List<Widget> _widgetOptions = <Widget>[
-    ArtworkPage(),
-    ArtworkPage(),
-    ArtworkPage(),
+    ArtistDashboardPage(),
+    ArtistDashboardPage(),
+    ArtistDashboardPage(),
     ProfilePage(),
   ];
 
