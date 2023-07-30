@@ -23,8 +23,8 @@ class UploadingState extends PhotoState {
   List<Object> get props => [];
 }
 
-class UploadedState extends PhotoState {
-  UploadedState(this.artwork);
+class ArtworkUploadedState extends PhotoState {
+  ArtworkUploadedState(this.artwork);
 
   final Artwork artwork;
 
@@ -32,14 +32,24 @@ class UploadedState extends PhotoState {
   List<Object> get props => [artwork];
 }
 
+class PhotoUploadedState extends PhotoState {
+  PhotoUploadedState(this.photo);
+
+  final Photo photo;
+
+  @override
+  List<Object> get props => [photo];
+}
+
 class LoadedState extends PhotoState {
-  LoadedState(this.user, this.artwork);
+  LoadedState(this.user, this.artwork, this.photo);
 
   final User user;
   final Artwork artwork;
+  final Photo photo;
 
   @override
-  List<Object> get props => [user, artwork];
+  List<Object> get props => [user, artwork, photo];
 }
 
 class ErrorState extends PhotoState {
@@ -49,12 +59,4 @@ class ErrorState extends PhotoState {
 
 //STATES
 
-class NameChosen extends PhotoState {
-  NameChosen(this.artwork);
-  final Artwork artwork;
-
-
-  @override
-  List<Object> get props => [artwork];
-}
 

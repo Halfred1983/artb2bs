@@ -7,8 +7,6 @@ part of 'artwork.dart';
 // **************************************************************************
 
 abstract class _$ArtworkCWProxy {
-  Artwork id(String? id);
-
   Artwork url(String? url);
 
   Artwork tags(List<String>? tags);
@@ -32,7 +30,6 @@ abstract class _$ArtworkCWProxy {
   /// Artwork(...).copyWith(id: 12, name: "My name")
   /// ````
   Artwork call({
-    String? id,
     String? url,
     List<String>? tags,
     String? name,
@@ -49,9 +46,6 @@ class _$ArtworkCWProxyImpl implements _$ArtworkCWProxy {
   const _$ArtworkCWProxyImpl(this._value);
 
   final Artwork _value;
-
-  @override
-  Artwork id(String? id) => this(id: id);
 
   @override
   Artwork url(String? url) => this(url: url);
@@ -86,7 +80,6 @@ class _$ArtworkCWProxyImpl implements _$ArtworkCWProxy {
   /// Artwork(...).copyWith(id: 12, name: "My name")
   /// ````
   Artwork call({
-    Object? id = const $CopyWithPlaceholder(),
     Object? url = const $CopyWithPlaceholder(),
     Object? tags = const $CopyWithPlaceholder(),
     Object? name = const $CopyWithPlaceholder(),
@@ -97,10 +90,6 @@ class _$ArtworkCWProxyImpl implements _$ArtworkCWProxy {
     Object? technique = const $CopyWithPlaceholder(),
   }) {
     return Artwork(
-      id: id == const $CopyWithPlaceholder()
-          ? _value.id
-          // ignore: cast_nullable_to_non_nullable
-          : id as String?,
       url: url == const $CopyWithPlaceholder()
           ? _value.url
           // ignore: cast_nullable_to_non_nullable
@@ -148,7 +137,6 @@ extension $ArtworkCopyWith on Artwork {
 // **************************************************************************
 
 Artwork _$ArtworkFromJson(Map<String, dynamic> json) => Artwork(
-      id: json['id'] as String?,
       url: json['url'] as String?,
       tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
       name: json['name'] as String?,
@@ -160,7 +148,6 @@ Artwork _$ArtworkFromJson(Map<String, dynamic> json) => Artwork(
     );
 
 Map<String, dynamic> _$ArtworkToJson(Artwork instance) => <String, dynamic>{
-      'id': instance.id,
       'url': instance.url,
       'tags': instance.tags,
       'name': instance.name,

@@ -17,7 +17,6 @@ part 'artwork.g.dart';
 @JsonSerializable(explicitToJson: true)
 @CopyWith()
 class Artwork {
-  String? id;
   String? url;
   List<String>? tags;
   String? name;
@@ -28,7 +27,6 @@ class Artwork {
   String? technique;
 
   Artwork({
-    this.id,
     this.url,
     this.tags,
     this.name,
@@ -40,7 +38,6 @@ class Artwork {
   });
 
   factory Artwork.empty() => Artwork(
-      id: "",
       url: "",
       tags: List.empty(growable: true),
       name: "",

@@ -9,8 +9,8 @@ import '../../../injection.dart';
 import '../../../photo/cubit/photo_cubit.dart';
 import '../../../photo/cubit/photo_state.dart';
 import '../../../utils/common.dart';
-import '../../resources/styles.dart';
-import '../../resources/theme.dart';
+import '../../app/resources/styles.dart';
+import '../../app/resources/theme.dart';
 
 class PhotoDetails extends StatelessWidget {
   PhotoDetails({super.key, required this.photo});
@@ -74,7 +74,7 @@ class PhotoDetails extends StatelessWidget {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.network(
-                                    photo.url,
+                                    photo.url!,
                                     fit: BoxFit.contain
                                 ),
                               ),
@@ -132,7 +132,7 @@ class PhotoDetails extends StatelessWidget {
                         decoration: TextDecoration.underline
                     ),),
                     onPressed: () {
-                      context.read<PhotoCubit>().deleteArtwork(photo.url);
+                      context.read<PhotoCubit>().deletePhoto(photo.url!);
                       Navigator.of(context)..pop()..pop();
                     },
                   ),

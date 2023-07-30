@@ -8,14 +8,12 @@ part 'photo.g.dart';
 @JsonSerializable(explicitToJson: true)
 @CopyWith()
 class Photo {
-  final String id;
-  final String url;
-  final String description;
+  String? url;
+  String? description;
 
-  const Photo({
-    required this.id,
-    required this.url,
-    required this.description,
+  Photo({
+    this.url,
+    this.description,
   });
 
   factory Photo.fromJson(Map<String, dynamic?> json)

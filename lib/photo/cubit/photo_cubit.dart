@@ -1,15 +1,15 @@
 import 'dart:io';
 
 import 'package:artb2b/photo/cubit/photo_state.dart';
+import 'package:database_service/database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:database_service/database.dart';
 import 'package:storage_service/storage.dart';
 
 
 class PhotoCubit extends Cubit<PhotoState> {
   PhotoCubit({required this.databaseService, required this.storageService,
-    required this.userId}) : super(InitialState()) {
+    required this.userId}) : super(const InitialState()) {
     getUser(userId);
   }
 
@@ -21,7 +21,7 @@ class PhotoCubit extends Cubit<PhotoState> {
     try {
       emit(LoadingState());
       final user = await databaseService.getUser(userId: userId);
-      emit(LoadedState(user!, Artwork.empty()));
+      emit(LoadedState(user!, Artwork.empty(), Photo()));
     } catch (e) {
       emit(ErrorState());
     }
@@ -35,6 +35,13 @@ class PhotoCubit extends Cubit<PhotoState> {
     } catch (e) {
       emit(ErrorState());
     }
+  }
+
+  void chooseDescription(String description) {
+    Photo photo = this.state.props[2] as Photo;
+
+    photo.description = description;
+
   }
 
   void chooseYear(String year) {
@@ -105,7 +112,22 @@ class PhotoCubit extends Cubit<PhotoState> {
     }
     databaseService.updateUser(user: user);
 
-    emit(UploadedState(artwork));
+    emit(ArtworkUploadedState(artwork));
+  }
+
+  void savePhoto(String downloadUrl, User user) {
+    Photo photo = this.state.props[2] as Photo;
+
+    photo = photo.copyWith(url: downloadUrl);
+    if(user.photos != null && user.photos!.isNotEmpty) {
+      user.photos!.add(photo);
+    }
+    else {
+      user.photos = List.of([photo], growable: true);
+    }
+    databaseService.updateUser(user: user);
+
+    emit(PhotoUploadedState(photo));
   }
 
   Future<void> deleteArtwork(String imageUrl) {
@@ -118,4 +140,19 @@ class PhotoCubit extends Cubit<PhotoState> {
 
     return storageService.deletePhoto(imageUrl: imageUrl);
   }
+
+  Future<void> deletePhoto(String imageUrl) {
+    User user = this.state.props[0] as User;
+
+    if(user.photos != null && user.photos!.isNotEmpty) {
+      user.photos?.removeWhere((element) => element.url == imageUrl);
+    }
+    databaseService.updateUser(user: user);
+
+    return storageService.deletePhoto(imageUrl: imageUrl);
+  }
+
+
+
+
 }

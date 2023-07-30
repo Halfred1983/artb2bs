@@ -1,8 +1,7 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:database_service/database.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,17 +20,16 @@ import '../../widgets/loading_screen.dart';
 import '../cubit/photo_cubit.dart';
 import '../cubit/photo_state.dart';
 
-class PhotoView extends StatefulWidget {
-  const PhotoView({Key? key}) : super(key: key);
+class PhotoUploadView extends StatefulWidget {
+  const PhotoUploadView({Key? key}) : super(key: key);
 
   @override
-  State<PhotoView> createState() => _PhotoViewState();
+  State<PhotoUploadView> createState() => _PhotoUploadViewState();
 }
 
-class _PhotoViewState extends State<PhotoView> {
+class _PhotoUploadViewState extends State<PhotoUploadView> {
 
   GlobalKey<FormState> key = GlobalKey();
-  final List<String> _photoTags = [];
   File? _imageFile;
   String? _downloadUrl;
 
@@ -45,12 +43,12 @@ class _PhotoViewState extends State<PhotoView> {
   Widget build(BuildContext context) {
     return BlocBuilder<PhotoCubit, PhotoState>(
       builder: (context, state) {
-
-        if( state is LoadingState) {
+        if (state is LoadingState) {
           return const LoadingScreen();
         }
-        if( state is UploadedState) {
-          WidgetsBinding.instance.addPostFrameCallback((_) => _showAlertDialog(state.artwork.name!));
+        if (state is PhotoUploadedState) {
+          WidgetsBinding.instance.addPostFrameCallback((_) =>
+              _showAlertDialog(state.photo.description!));
         }
         if (state is LoadedState) {
           user = state.user;
@@ -58,7 +56,7 @@ class _PhotoViewState extends State<PhotoView> {
 
         return Scaffold(
             appBar: AppBar(
-              title: Text("Add your artwork", style: TextStyles.boldAccent24,),
+              title: Text("Add a photo", style: TextStyles.boldAccent24,),
               centerTitle: true,
               iconTheme: const IconThemeData(
                 color: AppTheme.primaryColourViolet, //change your color here
@@ -89,9 +87,11 @@ class _PhotoViewState extends State<PhotoView> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text('Choose from gallery', style: TextStyles.semiBoldViolet16,),
+                                  Text('Choose from gallery',
+                                    style: TextStyles.semiBoldViolet16,),
                                   horizontalMargin16,
-                                  const Icon(FontAwesomeIcons.image, color: AppTheme.primaryColourViolet),
+                                  const Icon(FontAwesomeIcons.image,
+                                      color: AppTheme.primaryColourViolet),
                                 ],
                               ),
 
@@ -110,14 +110,15 @@ class _PhotoViewState extends State<PhotoView> {
                                   _imageFile!,),
                                 fit: BoxFit.cover
                             ),
-                            borderRadius: const BorderRadius.all(Radius.circular(20))
+                            borderRadius: const BorderRadius.all(Radius
+                                .circular(20))
                         ),
-                        child: Align (
+                        child: Align(
                           alignment: Alignment.topRight,
                           child: CircleAvatar(
                             radius: 15,
                             backgroundColor: AppTheme.white,
-                            child: IconButton (
+                            child: IconButton(
                               onPressed: () {
                                 setState(() {
                                   _imageFile = null;
@@ -132,111 +133,20 @@ class _PhotoViewState extends State<PhotoView> {
 
                       verticalMargin24,
 
-                      _InputTextField((nameValue) => context.read<PhotoCubit>().chooseName(nameValue),
-                          'Name of the artwork'),
+                      _InputTextField((description) =>
+                          context.read<PhotoCubit>().chooseDescription(description),
+                          'What is the photo of?'),
                       // verticalMargin48,
                       //Year
                       verticalMargin24,
 
-                      _InputTextField((nameValue) => context.read<PhotoCubit>().chooseYear(nameValue),
-                          'Year', TextInputType.number),
-                      //Price
-                      verticalMargin24,
-
-                      TypeAheadField(
-                          minCharsForSuggestions: 1,
-                          textFieldConfiguration: TextFieldConfiguration(
-                              controller: _typeAheadController,
-                              style: TextStyles.boldViolet16,
-                              decoration: InputDecoration(
-                                  hintText: 'Technique',
-                                  filled: true,
-                                  fillColor: AppTheme.white,
-                                  hintStyle: TextStyles.semiBoldViolet16,
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
-                                  ),
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
-                                  ),
-                                  border: const OutlineInputBorder()
-                              )
-                          ),
-                          suggestionsCallback: (pattern) {
-                            return getSuggestions(pattern);
-                          },
-                          itemBuilder: (context, suggestion) {
-                            return Container(
-                                padding: const EdgeInsets.all(10),
-                                color: AppTheme.white,
-                                child: Text(suggestion, style: TextStyles.semiBoldViolet16)
-                            );
-                          },
-                          onSuggestionSelected: (technique) {
-                            _typeAheadController.text = technique.capitalize();;
-                            context.read<PhotoCubit>().chooseTechnique(technique.capitalize());
-                          }
-                      ),
-                      //Price
-                      verticalMargin24,
-
-                      _InputTextField((nameValue) => context.read<PhotoCubit>().choosePrice(nameValue),
-                          'Price', TextInputType.number),
-                      //Size
-                      verticalMargin24,
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(FontAwesomeIcons.rulerVertical, color: AppTheme.primaryColourViolet),
-                          Expanded(
-                            flex: 1,
-                            child: _InputTextField((nameValue) => context.read<PhotoCubit>().chooseHeight(nameValue),
-                                'Height (cm)', TextInputType.number),
-                          ),
-                          horizontalMargin24,
-                          const Icon(FontAwesomeIcons.rulerHorizontal, color: AppTheme.primaryColourViolet),
-                          horizontalMargin12,
-                          Expanded(
-                            flex: 1,
-                            child: _InputTextField((nameValue) => context.read<PhotoCubit>().chooseWidth(nameValue),
-                                'Width (cm)', TextInputType.number),
-                          ),
-                        ],
-                      ),
-                      verticalMargin24,
-                      ChipTags(
-                        list: _photoTags,
-                        chipColor: AppTheme.secondaryColourRed,
-                        iconColor: Colors.white,
-                        textColor: Colors.white,
-                        separator: ',',
-                        decoration: InputDecoration(
-                            filled: true,
-                            fillColor: AppTheme.white,
-                            hintText: 'Vibes (coma separated)',
-                            hintStyle: TextStyles.semiBolViolet16,
-                            focusedBorder: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
-                            ),
-                            enabledBorder: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
-                            ),
-                            border: const OutlineInputBorder()
-                        ), //
-                        keyboardType: TextInputType.text,
-                      ),
                       verticalMargin16,
                       _progress > 0 ?
                       Stack(
                           children: [
                             ClipRRect(
-                              borderRadius: const BorderRadius.all(Radius.circular(10)),
+                              borderRadius: const BorderRadius.all(
+                                  Radius.circular(10)),
                               child: LinearProgressIndicator(
                                 backgroundColor: AppTheme.accentColor,
                                 color: AppTheme.primaryColourViolet,
@@ -248,7 +158,8 @@ class _PhotoViewState extends State<PhotoView> {
                               child: Align(
                                 alignment: Alignment.centerRight,
                                 child: Center(
-                                  child: Text('$_progress%', style: TextStyles.boldWhite16,),
+                                  child: Text('$_progress%',
+                                    style: TextStyles.boldWhite16,),
                                 ),
                               ),
                             ),
@@ -259,20 +170,23 @@ class _PhotoViewState extends State<PhotoView> {
                 ),
               ),
             ),
-            bottomNavigationBar:  Container(
+            bottomNavigationBar: Container(
                 padding: buttonPadding,
                 child: ElevatedButton(
                   onPressed: () {
-
                     final uploadTask = context.read<PhotoCubit>()
-                        .storePhoto(user!.id+'/artworks/'+path.basename(_imageFile!.path), _imageFile);
+                        .storePhoto(
+                        user!.id + '/photos/' + path.basename(_imageFile!.path),
+                        _imageFile);
 
                     // Listen for state changes, errors, and completion of the upload.
-                    uploadTask.snapshotEvents.listen((TaskSnapshot taskSnapshot) async {
+                    uploadTask.snapshotEvents.listen((
+                        TaskSnapshot taskSnapshot) async {
                       switch (taskSnapshot.state) {
                         case TaskState.running:
                           _progress =
-                              100.0 * (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
+                              100.0 * (taskSnapshot.bytesTransferred /
+                                  taskSnapshot.totalBytes);
                           if (context.mounted) {
                             setState(() {
 
@@ -290,9 +204,11 @@ class _PhotoViewState extends State<PhotoView> {
                         // Handle unsuccessful uploads
                           break;
                         case TaskState.success:
-                          _downloadUrl = await taskSnapshot.ref.getDownloadURL();
+                          _downloadUrl =
+                          await taskSnapshot.ref.getDownloadURL();
                           if (context.mounted) {
-                            context.read<PhotoCubit>().saveArtwork(_photoTags, _downloadUrl!, user!);
+                            context.read<PhotoCubit>().savePhoto(
+                                _downloadUrl!, user!);
                           }
                           break;
                       }
@@ -344,21 +260,21 @@ class _PhotoViewState extends State<PhotoView> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
-          title: const Center(child:Text('Upload Successful')),
+          title: const Center(child: Text('Upload Successful')),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
-                      text: 'Your artwork:\n\n',
+                      text: 'Your photo:\n\n',
                       style: TextStyles.regularAccent16,
                       children: <TextSpan>[
                         TextSpan(text: name,
-                          style:TextStyles.boldViolet16,
+                          style: TextStyles.boldViolet16,
                         ),
                         TextSpan(text: '\n\nwas uploaded successfully!',
-                          style:TextStyles.regularAccent16,
+                          style: TextStyles.regularAccent16,
                         )
                       ]
                   ),
@@ -373,7 +289,8 @@ class _PhotoViewState extends State<PhotoView> {
                   decoration: TextDecoration.underline
               ),),
               onPressed: () {
-                Navigator.of(context)..pop()..pop();
+                Navigator.of(context)
+                  ..pop()..pop();
               },
             ),
           ],
@@ -381,52 +298,7 @@ class _PhotoViewState extends State<PhotoView> {
       },
     );
   }
-
-  static final List<String> _techniques = [
-    'acrylic painting',
-    'action painting',
-    'aerial perspective',
-    'anamorphosis',
-    'camaieu',
-    'casein painting',
-    'chiaroscuro',
-    'divisionism',
-    'easel painting',
-    'encaustic painting',
-    'foreshortening',
-    'fresco painting',
-    'gouache',
-    'graffiti',
-    'grisaille',
-    'impasto',
-    'miniature painting',
-    'mural',
-    'oil painting',
-    'panel painting',
-    'panorama',
-    'perspective',
-    'plein-air painting',
-    'sand painting',
-    'scroll painting',
-    'sfumato',
-    'sgraffito',
-    'sotto in su',
-    'tachism',
-    'tempera painting',
-    'tenebrism',
-    'tromp l’oeil',
-  ];
-
-  static List<String> getSuggestions(String query) {
-    List<String> matches = List.empty(growable: true);
-    matches.addAll(_techniques);
-    matches.retainWhere((s) => s.toLowerCase().contains(query.toLowerCase()));
-    return matches;
-  }
-
 }
-
-
 
 class _InputTextField extends StatefulWidget {
   const _InputTextField(this.nameChanged, this.hint, [this.textInputType]);

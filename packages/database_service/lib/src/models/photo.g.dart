@@ -7,11 +7,9 @@ part of 'photo.dart';
 // **************************************************************************
 
 abstract class _$PhotoCWProxy {
-  Photo id(String id);
+  Photo url(String? url);
 
-  Photo url(String url);
-
-  Photo description(String description);
+  Photo description(String? description);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Photo(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -20,7 +18,6 @@ abstract class _$PhotoCWProxy {
   /// Photo(...).copyWith(id: 12, name: "My name")
   /// ````
   Photo call({
-    String? id,
     String? url,
     String? description,
   });
@@ -33,13 +30,10 @@ class _$PhotoCWProxyImpl implements _$PhotoCWProxy {
   final Photo _value;
 
   @override
-  Photo id(String id) => this(id: id);
+  Photo url(String? url) => this(url: url);
 
   @override
-  Photo url(String url) => this(url: url);
-
-  @override
-  Photo description(String description) => this(description: description);
+  Photo description(String? description) => this(description: description);
 
   @override
 
@@ -50,24 +44,18 @@ class _$PhotoCWProxyImpl implements _$PhotoCWProxy {
   /// Photo(...).copyWith(id: 12, name: "My name")
   /// ````
   Photo call({
-    Object? id = const $CopyWithPlaceholder(),
     Object? url = const $CopyWithPlaceholder(),
     Object? description = const $CopyWithPlaceholder(),
   }) {
     return Photo(
-      id: id == const $CopyWithPlaceholder() || id == null
-          ? _value.id
-          // ignore: cast_nullable_to_non_nullable
-          : id as String,
-      url: url == const $CopyWithPlaceholder() || url == null
+      url: url == const $CopyWithPlaceholder()
           ? _value.url
           // ignore: cast_nullable_to_non_nullable
-          : url as String,
-      description:
-          description == const $CopyWithPlaceholder() || description == null
-              ? _value.description
-              // ignore: cast_nullable_to_non_nullable
-              : description as String,
+          : url as String?,
+      description: description == const $CopyWithPlaceholder()
+          ? _value.description
+          // ignore: cast_nullable_to_non_nullable
+          : description as String?,
     );
   }
 }
@@ -83,13 +71,11 @@ extension $PhotoCopyWith on Photo {
 // **************************************************************************
 
 Photo _$PhotoFromJson(Map<String, dynamic> json) => Photo(
-      id: json['id'] as String,
-      url: json['url'] as String,
-      description: json['description'] as String,
+      url: json['url'] as String?,
+      description: json['description'] as String?,
     );
 
 Map<String, dynamic> _$PhotoToJson(Photo instance) => <String, dynamic>{
-      'id': instance.id,
       'url': instance.url,
       'description': instance.description,
     };

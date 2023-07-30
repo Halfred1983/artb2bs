@@ -4,20 +4,22 @@ import 'package:flutter/material.dart';
 
 import '../app/resources/styles.dart';
 import '../app/resources/theme.dart';
-import '../photo/view/photo_page.dart';
+import '../photo/view/artwork_upload_page.dart';
 
 class AddPhotoButton extends StatelessWidget {
-  const AddPhotoButton({
-    super.key,
+
+  AddPhotoButton({
+    super.key, required this.action,
   });
+
+  final Function action;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => PhotoPage()),
-      ),
+      onTap: () {
+        action();
+      },
 
       child: DottedBorder(
         color: AppTheme.primaryColourViolet,

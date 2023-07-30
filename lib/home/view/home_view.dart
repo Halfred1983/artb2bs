@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
+import '../../host/view/host_dashboard_page.dart';
 import '../../login/cubit/login_cubit.dart';
 import '../../login/view/login_page.dart';
 import '../../onboard/view/art_info_page.dart';
@@ -28,12 +29,7 @@ class _HomeViewState extends State<HomeView> {
   var _currentIndex = 0;
 
 
-  static List<Widget> _widgetOptions = <Widget>[
-    ArtistDashboardPage(),
-    ArtistDashboardPage(),
-    ArtistDashboardPage(),
-    ProfilePage(),
-  ];
+  List<Widget> _widgetOptions = List.empty(growable: true);
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +50,31 @@ class _HomeViewState extends State<HomeView> {
               if (user!.userStatus == UserStatus.personalInfo) {
                 return ArtInfoPage();
               }
+
               widget =  MapView(user: user!);
+
+              if(user!.userInfo!.userType == UserType.artist) {
+                _widgetOptions = <Widget>[
+                  widget,
+                  ArtistDashboardPage(),
+                  ArtistDashboardPage(),
+                  ProfilePage(),
+                ];
+              }
+              else {
+                _widgetOptions = <Widget>[
+                  widget,
+                  HostDashboardPage(),
+                  HostDashboardPage(),
+                  ProfilePage(),
+                ];
+              }
             }
             return Scaffold(
               body: Stack(
                   children: [
-                    _currentIndex == 0 ? widget : _widgetOptions.elementAt(_currentIndex),
+                    // _currentIndex == 0 ? widget : _widgetOptions.elementAt(_currentIndex),
+                    _widgetOptions.elementAt(_currentIndex),
                   ]
               ),
               bottomNavigationBar:
@@ -78,8 +93,8 @@ class _HomeViewState extends State<HomeView> {
 
                     /// Likes
                     SalomonBottomBarItem(
-                      icon: Icon(Icons.image_rounded),
-                      title: Text("Artwork"),
+                      icon: Icon(Icons.dashboard),
+                      title: Text("Dashboard"),
                       selectedColor: AppTheme.primaryColourViolet,
                     ),
 
