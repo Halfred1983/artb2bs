@@ -54,3 +54,12 @@ class ErrorState extends HostState {
   @override
   List<Object> get props => [];
 }
+
+class BookingSettingsDetail extends HostState {
+  BookingSettingsDetail(this.user);
+  final User user;
+
+
+  @override
+  List<Object> get props => [user];
+}

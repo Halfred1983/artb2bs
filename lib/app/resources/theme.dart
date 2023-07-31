@@ -40,6 +40,7 @@ class AppTheme {
       highlightColor: accentColor.withOpacity(0.2),
       appBarTheme: _appBarTheme,
       elevatedButtonTheme: _elevatedButtonTheme,
+      textButtonTheme: _textButtonTheme,
       unselectedWidgetColor: primaryColor,
       textTheme:  const TextTheme(
           titleMedium: TextStyle(color: accentColor)
@@ -126,6 +127,22 @@ class AppTheme {
       padding: const EdgeInsets.all(16.0),
       elevation: 1.0,
       shadowColor: AppTheme.backgroundGrey,
+    ),
+  );
+
+  static final _textButtonTheme = TextButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      // backgroundColor: AppTheme.accentColourOrange,
+      foregroundColor: AppTheme.primaryColourViolet,
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      // minimumSize: const Size(200.0, 48.0),
+      // shape: _buttonCornerRadius,
+      textStyle: TextStyles.semiBoldViolet16.copyWith(
+          decoration: TextDecoration.underline
+      ),
+      // padding: const EdgeInsets.all(16.0),
+      // elevation: 1.0,
+      // shadowColor: AppTheme.backgroundGrey,
     ),
   );
 

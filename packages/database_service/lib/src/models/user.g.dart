@@ -27,6 +27,8 @@ abstract class _$UserCWProxy {
 
   User photos(List<Photo>? photos);
 
+  User bookingSettings(BookingSettings? bookingSettings);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `User(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -44,6 +46,7 @@ abstract class _$UserCWProxy {
     UserArtInfo? userArtInfo,
     List<Artwork>? artworks,
     List<Photo>? photos,
+    BookingSettings? bookingSettings,
   });
 }
 
@@ -84,6 +87,10 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
   User photos(List<Photo>? photos) => this(photos: photos);
 
   @override
+  User bookingSettings(BookingSettings? bookingSettings) =>
+      this(bookingSettings: bookingSettings);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `User(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -102,6 +109,7 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
     Object? userArtInfo = const $CopyWithPlaceholder(),
     Object? artworks = const $CopyWithPlaceholder(),
     Object? photos = const $CopyWithPlaceholder(),
+    Object? bookingSettings = const $CopyWithPlaceholder(),
   }) {
     return User(
       id: id == const $CopyWithPlaceholder() || id == null
@@ -144,6 +152,10 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
           ? _value.photos
           // ignore: cast_nullable_to_non_nullable
           : photos as List<Photo>?,
+      bookingSettings: bookingSettings == const $CopyWithPlaceholder()
+          ? _value.bookingSettings
+          // ignore: cast_nullable_to_non_nullable
+          : bookingSettings as BookingSettings?,
     );
   }
 }
@@ -177,6 +189,10 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       photos: (json['photos'] as List<dynamic>?)
           ?.map((e) => Photo.fromJson(e as Map<String, dynamic>))
           .toList(),
+      bookingSettings: json['bookingSettings'] == null
+          ? null
+          : BookingSettings.fromJson(
+              json['bookingSettings'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -190,6 +206,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'userArtInfo': instance.userArtInfo?.toJson(),
       'artworks': instance.artworks?.map((e) => e.toJson()).toList(),
       'photos': instance.photos?.map((e) => e.toJson()).toList(),
+      'bookingSettings': instance.bookingSettings?.toJson(),
     };
 
 const _$UserStatusEnumMap = {

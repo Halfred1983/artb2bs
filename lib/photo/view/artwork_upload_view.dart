@@ -16,6 +16,7 @@ import '../../app/resources/theme.dart';
 import '../../utils/common.dart';
 import '../../widgets/app_input_validators.dart';
 import '../../widgets/app_text_field.dart';
+import '../../widgets/input_text_widget.dart';
 import '../../widgets/loading_screen.dart';
 import '../cubit/photo_cubit.dart';
 import '../cubit/photo_state.dart';
@@ -131,13 +132,13 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
 
                       verticalMargin24,
 
-                      _InputTextField((nameValue) => context.read<PhotoCubit>().chooseName(nameValue),
+                      InputTextWidget((nameValue) => context.read<PhotoCubit>().chooseName(nameValue),
                           'Name of the artwork'),
                       // verticalMargin48,
                       //Year
                       verticalMargin24,
 
-                      _InputTextField((nameValue) => context.read<PhotoCubit>().chooseYear(nameValue),
+                      InputTextWidget((nameValue) => context.read<PhotoCubit>().chooseYear(nameValue),
                           'Year', TextInputType.number),
                       //Price
                       verticalMargin24,
@@ -181,7 +182,7 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                       //Price
                       verticalMargin24,
 
-                      _InputTextField((nameValue) => context.read<PhotoCubit>().choosePrice(nameValue),
+                      InputTextWidget((nameValue) => context.read<PhotoCubit>().choosePrice(nameValue),
                           'Price', TextInputType.number),
                       //Size
                       verticalMargin24,
@@ -193,7 +194,7 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                           const Icon(FontAwesomeIcons.rulerVertical, color: AppTheme.primaryColourViolet),
                           Expanded(
                             flex: 1,
-                            child: _InputTextField((nameValue) => context.read<PhotoCubit>().chooseHeight(nameValue),
+                            child: InputTextWidget((nameValue) => context.read<PhotoCubit>().chooseHeight(nameValue),
                                 'Height (cm)', TextInputType.number),
                           ),
                           horizontalMargin24,
@@ -201,7 +202,7 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                           horizontalMargin12,
                           Expanded(
                             flex: 1,
-                            child: _InputTextField((nameValue) => context.read<PhotoCubit>().chooseWidth(nameValue),
+                            child: InputTextWidget((nameValue) => context.read<PhotoCubit>().chooseWidth(nameValue),
                                 'Width (cm)', TextInputType.number),
                           ),
                         ],
@@ -423,56 +424,4 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
     return matches;
   }
 
-}
-
-
-
-class _InputTextField extends StatefulWidget {
-  const _InputTextField(this.nameChanged, this.hint, [this.textInputType]);
-  final ValueChanged<String> nameChanged;
-  final String hint;
-  final TextInputType? textInputType;
-
-
-  @override
-  State<_InputTextField> createState() =>
-      _InputTextFieldState(nameChanged, hint, textInputType);
-}
-
-class _InputTextFieldState extends State<_InputTextField> {
-
-  late final TextEditingController _nameController;
-  final ValueChanged<String> _nameChanged;
-  final String _hint;
-  final TextInputType? _textInputType;
-
-  _InputTextFieldState(this._nameChanged, this._hint, this._textInputType);
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController(text: '');
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return  AppTextField(
-      key: const Key('Spaces'),
-      controller: _nameController,
-      hintText: _hint,
-      validator: AppInputValidators.required(
-          'Name required'),
-      textInputAction: TextInputAction.next,
-      keyboardType: _textInputType ?? TextInputType.text,
-      textCapitalization: TextCapitalization.words,
-      autoCorrect: false,
-      onChanged: _nameChanged,
-    );
-  }
 }
