@@ -3,6 +3,7 @@ import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,6 +12,8 @@ import 'injection.dart';
 import 'login/cubit/login_cubit.dart';
 
 void main() async {
+  // debugPaintSizeEnabled=true;
+
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
     await SystemChrome.setPreferredOrientations([

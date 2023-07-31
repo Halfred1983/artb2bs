@@ -11,9 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
+import '../../booking/view/booking_page.dart';
 import '../../host/view/host_dashboard_page.dart';
-import '../../login/cubit/login_cubit.dart';
-import '../../login/view/login_page.dart';
 import '../../onboard/view/art_info_page.dart';
 import '../../utils/common.dart';
 
@@ -57,7 +56,7 @@ class _HomeViewState extends State<HomeView> {
                 _widgetOptions = <Widget>[
                   widget,
                   ArtistDashboardPage(),
-                  ArtistDashboardPage(),
+                  BookingPage(),
                   ProfilePage(),
                 ];
               }
@@ -65,7 +64,7 @@ class _HomeViewState extends State<HomeView> {
                 _widgetOptions = <Widget>[
                   widget,
                   HostDashboardPage(),
-                  HostDashboardPage(),
+                  BookingPage(),
                   ProfilePage(),
                 ];
               }

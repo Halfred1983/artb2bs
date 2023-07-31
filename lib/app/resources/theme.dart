@@ -10,6 +10,8 @@ class AppTheme {
   static const backgroundColor = backgroundGrey;
   static const primaryColourViolet = Color(0xFF8E2E8E);
   static const accentColourOrange = Color(0xFFE85F4A);
+  static const accentColourOrangeOpacity = Color.fromRGBO(232,95,74,0.3);
+  static const primaryColourVioletOpacity = Color.fromRGBO(146,46,142,0.8);
   static const secondaryColourRed = Color(0xFFA40500);
   static const white = Color(0xFFFFFFFF);
   static const backgroundGrey = Color(0xFFF0F0F0);
