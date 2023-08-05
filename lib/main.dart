@@ -6,15 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 
 import 'app/resources/theme.dart';
 import 'injection.dart';
 import 'login/cubit/login_cubit.dart';
 
+import '.env';
+
 void main() async {
   // debugPaintSizeEnabled=true;
 
   WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey = stripePublishableKey;
+  await Stripe.instance.applySettings();
+
   await configureDependencies();
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,

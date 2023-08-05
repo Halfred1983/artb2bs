@@ -65,6 +65,8 @@ dependencies:
 #  booking_calendar: ^1.1.9
   table_calendar: ^3.0.9
   intl: ^0.18.1
+  flutter_stripe: ^9.3.0
+  http: ^0.13.3
 
   #  firebase_messaging: ^14.2.0
 #  awesome_notifications: ^0.7.4+1
