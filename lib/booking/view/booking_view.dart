@@ -1,3 +1,4 @@
+import 'package:artb2b/payment/view/payment_page.dart';
 import 'package:artb2b/widgets/booking_calendar_widget.dart';
 import 'package:artb2b/widgets/common_card_widget.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
@@ -91,7 +92,7 @@ class BookingView extends StatelessWidget {
                                           children: [
                                             Text('From: ', style: TextStyles.semiBoldAccent16, ),
                                             Text(
-                                              DateFormat.MMMEd().format(booking!.from!), style: TextStyles.semiBoldViolet16, ),
+                                              DateFormat.yMMMEd().format(booking!.from!), style: TextStyles.semiBoldViolet16, ),
                                           ]
                                       ),
                                       verticalMargin12,
@@ -99,7 +100,7 @@ class BookingView extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         children: [
                                           Text('To: ', style: TextStyles.semiBoldAccent16, ),
-                                          Text(DateFormat.MMMEd().format(booking!.to!), style: TextStyles.semiBoldViolet16, ),
+                                          Text(DateFormat.yMMMEd().format(booking!.to!), style: TextStyles.semiBoldViolet16, ),
                                         ],
                                       ),
                                       verticalMargin12,
@@ -150,6 +151,10 @@ class BookingView extends StatelessWidget {
                             booking!.to != null &&
                             booking!.spaces != null ?
                             () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const PaymentPage()),
+                              );
                           // context.read<BookingCubit>().save();
                         } : null,
                         child: Text("Book", style: TextStyles.boldWhite16,),)
