@@ -2,24 +2,24 @@ import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class BookingState extends Equatable {}
+abstract class ExhibitionState extends Equatable {}
 
-class InitialState extends BookingState {
+class InitialState extends ExhibitionState {
   @override
   List<Object> get props => [];
 }
 
-class LoadingState extends BookingState {
+class LoadingState extends ExhibitionState {
   @override
   List<Object> get props => [];
 }
 
-class PaymentLoadingState extends BookingState {
+class PaymentLoadingState extends ExhibitionState {
   @override
   List<Object> get props => [];
 }
 
-class LoadedState extends BookingState {
+class LoadedState extends ExhibitionState {
   LoadedState(this.user, this.booking);
 
   final User user;
@@ -29,7 +29,7 @@ class LoadedState extends BookingState {
   List<Object> get props => [user, booking];
 }
 
-class PaymentLoadedState extends BookingState {
+class PaymentLoadedState extends ExhibitionState {
   PaymentLoadedState(this.user, this.booking);
 
   final User user;
@@ -39,7 +39,7 @@ class PaymentLoadedState extends BookingState {
   List<Object> get props => [user, booking];
 }
 
-class DateRangeChosen extends BookingState {
+class DateRangeChosen extends ExhibitionState {
   DateRangeChosen(this.user, this.booking);
 
   final User user;
@@ -50,7 +50,7 @@ class DateRangeChosen extends BookingState {
   List<Object> get props => [user, booking];
 }
 
-class SpacesChosen extends BookingState {
+class SpacesChosen extends ExhibitionState {
   SpacesChosen(this.user, this.booking);
 
   final User user;
@@ -61,7 +61,7 @@ class SpacesChosen extends BookingState {
   List<Object> get props => [user, booking];
 }
 
-class FinaliseBooking extends BookingState {
+class FinaliseBooking extends ExhibitionState {
   FinaliseBooking(this.user, this.booking);
 
   final User user;
@@ -73,7 +73,7 @@ class FinaliseBooking extends BookingState {
 }
 
 
-class DateRangeErrorState extends BookingState {
+class DateRangeErrorState extends ExhibitionState {
   DateRangeErrorState(this.user, this.booking, this.message);
 
   final User user;
@@ -85,7 +85,7 @@ class DateRangeErrorState extends BookingState {
   List<Object> get props => [user, booking, message];
 }
 
-class SpacesErrorState extends BookingState {
+class SpacesErrorState extends ExhibitionState {
   SpacesErrorState(this.user, this.booking, this.message);
 
   final User user;
@@ -97,7 +97,7 @@ class SpacesErrorState extends BookingState {
   List<Object> get props => [user, booking, message];
 }
 
-class ErrorState extends BookingState {
+class ErrorState extends ExhibitionState {
   @override
   // TODO: implement props
   List<Object?> get props => throw UnimplementedError();

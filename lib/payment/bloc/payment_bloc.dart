@@ -34,25 +34,25 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     );
 
     final paymentIntentResult = await _callPayEndpointMethodId(
-      useStripeSdk: true,
-      paymentMethodId: paymentMethod.id,
-      currency: 'usd',
-      items: event.items
+        useStripeSdk: true,
+        paymentMethodId: paymentMethod.id,
+        currency: 'gbp',
+        grandTotal: event.grandTotal
     );
 
     if(paymentIntentResult['error'] != null) {
       emit(state.copyWith(status: PaymentStatus.failure));
     }
 
-    if(paymentIntentResult['client_secret'] != null &&
+    if(paymentIntentResult['clientSecret'] != null &&
         paymentIntentResult['requiresAction'] == null) {
       emit(state.copyWith(status: PaymentStatus.success));
     }
 
-    if(paymentIntentResult['client_secret'] != null &&
+    if(paymentIntentResult['clientSecret'] != null &&
         paymentIntentResult['requiresAction'] != null) {
 
-      final String clientSecret = paymentIntentResult['client_secret'];
+      final String clientSecret = paymentIntentResult['clientSecret'];
       add(PaymentConfirmIntent(clientSecret: clientSecret));
     }
   }
@@ -87,7 +87,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     required String paymentIntentId,
   }) async {
 
-    final url = Uri.parse('https://us-central1-artb2b-34af2.cloudfunctions.net/StripePayEndpointMethodId');
+    final url = Uri.parse('https://us-central1-artb2b-34af2.cloudfunctions.net/StripePayEndpointIntentId');
 
     final response = await http.post(
         url,
@@ -106,21 +106,21 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     required bool useStripeSdk,
     required String paymentMethodId,
     required String currency,
-    List<Map<String, dynamic>>? items}) async {
+    String? grandTotal}) async {
 
-    final url = Uri.parse('https://us-central1-artb2b-34af2.cloudfunctions.net/StripePayEndpointIntentId');
+    final url = Uri.parse('https://us-central1-artb2b-34af2.cloudfunctions.net/StripePayEndpointMethodId');
 
     final response = await http.post(
-      url,
-      headers: {
-        'Content-Type':'application/json'
-      },
-      body: json.encode({
-        'useStripeSdk':useStripeSdk,
-        'paymentMethodId': paymentMethodId,
-        'currency': currency,
-        'items': items,
-      })
+        url,
+        headers: {
+          'Content-Type':'application/json'
+        },
+        body: json.encode({
+          'useStripeSdk':useStripeSdk,
+          'paymentMethodId': paymentMethodId,
+          'currency': currency,
+          'grandTotal': grandTotal,
+        })
     );
 
     return json.decode(response.body);

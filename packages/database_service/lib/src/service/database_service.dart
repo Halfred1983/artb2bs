@@ -20,4 +20,8 @@ abstract class DatabaseService {
     required double radius});
 
   Stream<DocumentSnapshot> findArtworkByUser({required User user});
+
+  Future<String> addBooking({
+    required Booking booking,
+  });
 }

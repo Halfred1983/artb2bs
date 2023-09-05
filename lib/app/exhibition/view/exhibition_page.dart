@@ -3,18 +3,16 @@ import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../injection.dart';
-import '../cubit/booking_cubit.dart';
-import 'booking_view.dart';
+import '../../../../injection.dart';
+import '../cubit/exhibition_cubit.dart';
+import 'exhibition_view.dart';
 
-class BookingPage extends StatelessWidget {
+class ExhibitionPage extends StatelessWidget {
 
-  final User host;
-
-  BookingPage({super.key, required this.host});
+  ExhibitionPage({super.key});
 
   static Route<void> route(User host) {
-    return MaterialPageRoute<void>(builder: (_) => BookingPage(host: host,));
+    return MaterialPageRoute<void>(builder: (_) => ExhibitionPage());
   }
 
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
@@ -24,12 +22,12 @@ class BookingPage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return
-      BlocProvider<BookingCubit>(
-        create: (context) => BookingCubit(
+      BlocProvider<ExhibitionCubit>(
+        create: (context) => ExhibitionCubit(
           databaseService: databaseService,
           userId: authService.getUser().id,
         ),
-        child: BookingView(host: host),
+        child:ExhibitionView()
       );
   }
 }

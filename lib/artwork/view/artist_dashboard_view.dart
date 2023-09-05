@@ -47,17 +47,40 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                     child: Padding(
                       padding: horizontalPadding24,
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Row(
                             children: [
                               Image.asset("assets/images/artist.png", width: 60,),
                               horizontalMargin16,
-                              Text(user!.userInfo!.name!, style: TextStyles.semiBoldViolet16, ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(user!.userInfo!.name!, style: TextStyles.semiBoldViolet16, ),
+                                  verticalMargin12,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text('Location: ', style: TextStyles.semiBoldAccent16, ),
+                                      Text(user!.userInfo!.address!.city, style: TextStyles.semiBoldViolet16, ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
-                          verticalMargin24,
                           const Divider(thickness: 0.6, color: Colors.black38,),
-                          verticalMargin24,
+                          verticalMargin12,
+                          Row(
+                            children: [
+                              Text('Profile Views: ', style: TextStyles.semiBoldAccent16, ),
+                              Text('24', style: TextStyles.semiBoldViolet16, ),
+                              Expanded(child: Container()),
+                              Text('Status: ', style: TextStyles.semiBoldAccent16, ),
+                              Text('Active ✅', style: TextStyles.semiBoldViolet16, ),
+                            ],
+                          ),
+                          verticalMargin32,
                           Text('Your artworks: ', style: TextStyles.semiBoldAccent16, ),
                           const Divider(thickness: 0.6, color: Colors.black38,),
                           //ARTIST

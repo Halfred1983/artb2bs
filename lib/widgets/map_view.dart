@@ -12,6 +12,8 @@ import 'package:rxdart/rxdart.dart';
 
 import '../app/resources/styles.dart';
 import '../app/resources/theme.dart';
+import '../booking/view/booking_page.dart';
+import '../host/view/photo_details.dart';
 import '../injection.dart';
 
 class MapView extends StatefulWidget {
@@ -80,9 +82,15 @@ class _MapViewState extends State<MapView> {
         ..add(Factory<TapGestureRecognizer>(() => TapGestureRecognizer()))
         ..add(Factory<VerticalDragGestureRecognizer>(
                 () => VerticalDragGestureRecognizer())),
+      zoomControlsEnabled: false,
+      zoomGesturesEnabled: true,
+      scrollGesturesEnabled: true,
+      mapToolbarEnabled: false,
+      rotateGesturesEnabled: false,
+      tiltGesturesEnabled: false,
       myLocationEnabled: true,
-      zoomControlsEnabled: true,
-      myLocationButtonEnabled: false,
+      mapType: MapType.normal,
+      compassEnabled: false,
       onMapCreated: _onMapCreated,
       initialCameraPosition: CameraPosition(
         target: LatLng(
@@ -148,46 +156,182 @@ class _MapViewState extends State<MapView> {
 
     final id = MarkerId(point.latitude.toString() + point.longitude.toString());
     final _marker = Marker(
-      markerId: id,
-      position: LatLng(point.latitude, point.longitude),
-      icon: user.userInfo!.userType!.index == 0 ? markerArtistIcon : markerGalleryIcon,
-      onTap: () {
-        showModalBottomSheet<void>(context: context, builder: (BuildContext context) {
-          return SizedBox(
-              height: 300,
-              child: Padding(
-                  padding: allPadding32,
-                  child: Column (
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("More Details", style: TextStyles.boldAccent24, textAlign: TextAlign.left,),
-                      verticalMargin24,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Text("Type: ", style: TextStyles.boldViolet16,),
-                            user.userInfo!.userType!.index == 0 ? Image.asset('assets/images/artist.png', width: 40,) :
-                          Image.asset('assets/images/gallery.png', width: 40,)
-                        ],
-                      ),
-                      verticalMargin12,
-                      const Divider(thickness: 0.5, color: AppTheme.primaryColor,),
-                      verticalMargin12,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Text("Address: ", style: TextStyles.boldViolet16,),
-                          Text(user.userInfo!.address!.formattedAddress, style: TextStyles.semiBolViolet16,),
-                        ],
-                      ),
-                    ],
-                  )
-              )
-          );
-        });
-      }
+        markerId: id,
+        position: LatLng(point.latitude, point.longitude),
+        icon: user.userInfo!.userType!.index == 0 ? markerArtistIcon : markerGalleryIcon,
+        onTap: () {
+          showModalBottomSheet<void>(context: context,
+              isScrollControlled:true,
+              builder: (BuildContext context) {
+                return SizedBox(
+                    height: 600,
+                    child: Padding(
+                        padding: allPadding32,
+                        child: Column (
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Text("More Details", style: TextStyles.boldAccent24, textAlign: TextAlign.left,),
+                            // verticalMargin24,
+                            Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              // mainAxisSize: MainAxisSize.max,
+                              children: [
+                                user.userInfo!.userType!.index == 0 ?
+                                Image.asset('assets/images/artist.png', width: 40,) :
+                                Image.asset('assets/images/gallery.png', width: 40,),
+                                horizontalMargin12,
+                                Text(user.userInfo!.name!, style: TextStyles.boldViolet16,),
+                              ],
+                            ),
+                            verticalMargin12,
+                            const Divider(thickness: 0.5, color: AppTheme.primaryColor,),
+                            verticalMargin12,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text("Address: ", style: TextStyles.boldViolet16,),
+                                Flexible(child: Text(user.userInfo!.address!.formattedAddress,  softWrap: true, style: TextStyles.semiBolViolet16,)),
+                              ],
+                            ),
+                            verticalMargin12,
+                            const Divider(thickness: 0.5, color: AppTheme.primaryColor,),
+                            verticalMargin12,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text("Spaces: ", style: TextStyles.boldViolet16,),
+                                Text(user.userArtInfo!.spaces!, style: TextStyles.semiBolViolet16,),
+                                Expanded(child: Container()),
+                                Text("Capacity: ", style: TextStyles.boldViolet16,),
+                                Text(user.userArtInfo!.capacity!, style: TextStyles.semiBolViolet16,),
+                              ],
+                            ),
+                            verticalMargin12,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Flexible(child: Text("Vibes: ", softWrap: true, style: TextStyles.boldViolet16,)),
+                                Text(user.userArtInfo!.vibes!.join(", "), softWrap: true, style: TextStyles.semiBolViolet16,),
+                              ],
+                            ),
+                            verticalMargin12,
+                            const Divider(thickness: 0.5, color: AppTheme.primaryColor,),
+                            verticalMargin12,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Text("Price per space per day: ", style: TextStyles.boldViolet16,),
+                                Expanded(child: Container()),
+                                Text(user.bookingSettings!.basePrice!+' £', style: TextStyles.boldViolet24,),
+                              ],
+                            ),
+                            verticalMargin12,
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Text("Min. spaces: ", style: TextStyles.boldViolet16,),
+                                  Text(user.bookingSettings!.minSpaces!, style: TextStyles.semiBolViolet16,),
+                                  Expanded(child: Container()),
+                                  Text("Min. days: ", style: TextStyles.boldViolet16,),
+                                  Text(user.bookingSettings!.minLength!, style: TextStyles.semiBolViolet16,),
+                                ]
+                            ),
+
+                            verticalMargin12,
+                            const Divider(thickness: 0.5, color: AppTheme.primaryColor,),
+                            verticalMargin12,
+                            StreamBuilder(
+                                stream: firebaseDatabaseService.findArtworkByUser(user: user),
+                                builder: (context, snapshot){
+                                  if (snapshot.hasError) {
+                                    return const Text('Something went wrong');
+                                  }
+
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const Text("Loading");
+                                  }
+
+                                  if(snapshot.hasData) {
+                                    User user = User.fromJson(snapshot.data!.data() as Map<String, dynamic>);
+
+                                    return user.photos != null && user.photos!.isNotEmpty ?
+                                    Container(
+                                      width: double.infinity,
+                                      height: 100,
+                                      child: ListView.builder(
+                                        itemCount: user.photos!.length,
+                                        physics: const BouncingScrollPhysics(),
+                                        scrollDirection: Axis.horizontal,
+                                        shrinkWrap: true,
+                                        itemBuilder: (context, index) {
+                                          return SizedBox(
+                                            height: 90,
+                                            child: InkWell(
+                                              onTap: () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => PhotoDetails(photo: user.photos![index])),
+                                              ),
+                                              child: Stack(
+                                                children: [
+                                                  ShaderMask(
+                                                    shaderCallback: (rect) {
+                                                      return const LinearGradient(
+                                                        begin: Alignment.center,
+                                                        end: Alignment.bottomCenter,
+                                                        colors: [Colors.transparent, Colors.black],
+                                                      ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+                                                    },
+                                                    blendMode: BlendMode.darken,
+                                                    child: ClipRRect(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      child: Image.network(
+                                                          user.photos![index].url!,
+                                                          fit: BoxFit.contain
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                    bottom: 15,
+                                                    right: 25,
+                                                    child: Text(user.photos![index].description!,
+                                                      style: TextStyles.boldWhite14,),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          );
+
+                                        },
+                                      ),
+                                    ) : Container();
+                                  }
+                                  return Container();
+                                }),
+
+                            verticalMargin32,
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed:() {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => BookingPage(host: user,)),
+                                  );
+                                  // context.read<BookingCubit>().save();
+                                },
+                                child: Text("Book", style: TextStyles.boldWhite16,),),
+                            )
+                          ],
+                        )
+                    )
+                );
+              });
+        }
     );
     if (mounted) {
       setState(() {
@@ -199,7 +343,9 @@ class _MapViewState extends State<MapView> {
   void _updateMarkers(List<DocumentSnapshot> documentList) {
     documentList.forEach((DocumentSnapshot document) {
       User user = User.fromJson(document.data() as Map<String, dynamic>);
-      _addMarker(user);
+      if(user.userInfo!.userType == UserType.gallery) {
+        _addMarker(user);
+      }
     });
   }
 

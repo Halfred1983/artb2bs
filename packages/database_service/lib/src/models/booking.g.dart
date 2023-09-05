@@ -7,7 +7,7 @@ part of 'booking.dart';
 // **************************************************************************
 
 abstract class _$BookingCWProxy {
-  Booking userStatus(BookingStatus? userStatus);
+  Booking bookingStatus(BookingStatus? bookingStatus);
 
   Booking from(DateTime? from);
 
@@ -25,6 +25,8 @@ abstract class _$BookingCWProxy {
 
   Booking totalPrice(String? totalPrice);
 
+  Booking bookingId(String? bookingId);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Booking(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -32,7 +34,7 @@ abstract class _$BookingCWProxy {
   /// Booking(...).copyWith(id: 12, name: "My name")
   /// ````
   Booking call({
-    BookingStatus? userStatus,
+    BookingStatus? bookingStatus,
     DateTime? from,
     DateTime? to,
     String? hostId,
@@ -41,6 +43,7 @@ abstract class _$BookingCWProxy {
     String? price,
     String? commission,
     String? totalPrice,
+    String? bookingId,
   });
 }
 
@@ -51,7 +54,8 @@ class _$BookingCWProxyImpl implements _$BookingCWProxy {
   final Booking _value;
 
   @override
-  Booking userStatus(BookingStatus? userStatus) => this(userStatus: userStatus);
+  Booking bookingStatus(BookingStatus? bookingStatus) =>
+      this(bookingStatus: bookingStatus);
 
   @override
   Booking from(DateTime? from) => this(from: from);
@@ -78,6 +82,9 @@ class _$BookingCWProxyImpl implements _$BookingCWProxy {
   Booking totalPrice(String? totalPrice) => this(totalPrice: totalPrice);
 
   @override
+  Booking bookingId(String? bookingId) => this(bookingId: bookingId);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Booking(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -86,7 +93,7 @@ class _$BookingCWProxyImpl implements _$BookingCWProxy {
   /// Booking(...).copyWith(id: 12, name: "My name")
   /// ````
   Booking call({
-    Object? userStatus = const $CopyWithPlaceholder(),
+    Object? bookingStatus = const $CopyWithPlaceholder(),
     Object? from = const $CopyWithPlaceholder(),
     Object? to = const $CopyWithPlaceholder(),
     Object? hostId = const $CopyWithPlaceholder(),
@@ -95,12 +102,13 @@ class _$BookingCWProxyImpl implements _$BookingCWProxy {
     Object? price = const $CopyWithPlaceholder(),
     Object? commission = const $CopyWithPlaceholder(),
     Object? totalPrice = const $CopyWithPlaceholder(),
+    Object? bookingId = const $CopyWithPlaceholder(),
   }) {
     return Booking(
-      userStatus: userStatus == const $CopyWithPlaceholder()
-          ? _value.userStatus
+      bookingStatus: bookingStatus == const $CopyWithPlaceholder()
+          ? _value.bookingStatus
           // ignore: cast_nullable_to_non_nullable
-          : userStatus as BookingStatus?,
+          : bookingStatus as BookingStatus?,
       from: from == const $CopyWithPlaceholder()
           ? _value.from
           // ignore: cast_nullable_to_non_nullable
@@ -133,6 +141,10 @@ class _$BookingCWProxyImpl implements _$BookingCWProxy {
           ? _value.totalPrice
           // ignore: cast_nullable_to_non_nullable
           : totalPrice as String?,
+      bookingId: bookingId == const $CopyWithPlaceholder()
+          ? _value.bookingId
+          // ignore: cast_nullable_to_non_nullable
+          : bookingId as String?,
     );
   }
 }
@@ -148,8 +160,8 @@ extension $BookingCopyWith on Booking {
 // **************************************************************************
 
 Booking _$BookingFromJson(Map<String, dynamic> json) => Booking(
-      userStatus: $enumDecodeNullable(
-              _$BookingStatusEnumMap, json['userStatus'],
+      bookingStatus: $enumDecodeNullable(
+              _$BookingStatusEnumMap, json['bookingStatus'],
               unknownValue: BookingStatus.pending) ??
           BookingStatus.pending,
       from:
@@ -161,10 +173,11 @@ Booking _$BookingFromJson(Map<String, dynamic> json) => Booking(
       price: json['price'] as String?,
       commission: json['commission'] as String?,
       totalPrice: json['totalPrice'] as String?,
+      bookingId: json['bookingId'] as String?,
     );
 
 Map<String, dynamic> _$BookingToJson(Booking instance) => <String, dynamic>{
-      'userStatus': _$BookingStatusEnumMap[instance.userStatus],
+      'bookingStatus': _$BookingStatusEnumMap[instance.bookingStatus],
       'from': instance.from?.toIso8601String(),
       'to': instance.to?.toIso8601String(),
       'hostId': instance.hostId,
@@ -173,6 +186,7 @@ Map<String, dynamic> _$BookingToJson(Booking instance) => <String, dynamic>{
       'price': instance.price,
       'commission': instance.commission,
       'totalPrice': instance.totalPrice,
+      'bookingId': instance.bookingId,
     };
 
 const _$BookingStatusEnumMap = {

@@ -5,18 +5,23 @@ import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 import '../../app/resources/styles.dart';
+import '../../app/resources/theme.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
 import '../../widgets/input_text_widget.dart';
+import '../../widgets/summary_card.dart';
 import '../cubit/booking_cubit.dart';
 import '../cubit/booking_state.dart';
+import '../service/booking_service.dart';
 
 class BookingView extends StatelessWidget {
 
+  final User host;
   FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
+
+  BookingView({super.key, required this.host});
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +35,14 @@ class BookingView extends StatelessWidget {
             }
 
             if (state is LoadedState || state is DateRangeChosen
-                || state is SpacesChosen) {
+                || state is SpacesChosen || state is DateRangeErrorState || state is SpacesErrorState) {
               user = state.props[0] as User;
               booking = state.props[1] as Booking;
+
+              var errorMessage = '';
+              if(state is DateRangeErrorState || state is SpacesErrorState ) {
+                errorMessage = state.props[2] as String;
+              }
 
               return Scaffold(
                   appBar: AppBar(
@@ -45,99 +55,58 @@ class BookingView extends StatelessWidget {
                       padding: horizontalPadding24,
                       child:Column(
                         children: [
-                          BookingCalendarWidget((dateRangeChoosen) =>
-                              context.read<BookingCubit>().chooseRange(dateRangeChoosen)
+                          CommonCard(
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Image.asset('assets/images/gallery.png', width: 40,),
+                                    horizontalMargin12,
+                                    Text(host.userInfo!.name!, style: TextStyles.boldViolet16,),
+                                  ],
+                                ),
+                                verticalMargin12,
+                                const Divider(thickness: 0.5, color: AppTheme.primaryColor,),
+                                verticalMargin12,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text("Address: ", style: TextStyles.boldViolet16,),
+                                    Flexible(child: Text(host.userInfo!.address!.formattedAddress, softWrap: true, style: TextStyles.semiBolViolet16,)),
+
+                                  ],
+                                ),
+                                verticalMargin12,
+                                Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      Text("Min. spaces: ", style: TextStyles.boldViolet16,),
+                                      Text(host.bookingSettings!.minSpaces!, style: TextStyles.semiBolViolet16,),
+                                      Expanded(child: Container()),
+                                      Text("Min. days: ", style: TextStyles.boldViolet16,),
+                                      Text(host.bookingSettings!.minLength!, style: TextStyles.semiBolViolet16,),
+                                    ]
+                                ),
+                              ],
+                            ),
                           ),
                           verticalMargin12,
-                          InputTextWidget((spaceValue) => context.read<BookingCubit>().chooseSpaces(spaceValue),
+                          errorMessage.length>1 ? Text(errorMessage, style: TextStyles.boldAccent21,) : Container(),
+                          verticalMargin12,
+                          BookingCalendarWidget((dateRangeChoosen) =>
+                              context.read<BookingCubit>().chooseRange(dateRangeChoosen, host)
+                          ),
+                          verticalMargin12,
+                          InputTextWidget((spaceValue) => context.read<BookingCubit>().chooseSpaces(spaceValue, host),
                               'Number of spaces', TextInputType.number),
                           //Price
                           verticalMargin24,
                           booking!.from != null &&
                               booking!.to != null &&
                               booking!.spaces != null ?
-                          CommonCard(
-                              child: Column(
-                                children: [
-                                  Text('Your booking details:', style: TextStyles.semiBoldAccent18, ),
-                                  const Divider(thickness: 0.6, color: Colors.black38,),
-                                  Column(
-                                    children: [
-                                      Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Text('Spaces: ', style: TextStyles.semiBoldAccent16, ),
-                                            Text(booking!.spaces!, style: TextStyles.semiBoldViolet16, ),
-                                          ]
-                                      ),
-                                      verticalMargin12,
-                                      Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Text('Days: ', style: TextStyles.semiBoldAccent16, ),
-                                            Text(daysBetween(booking!.from!, booking!.to!).toString(), style: TextStyles.semiBoldViolet16, ),
-                                          ]
-                                      ),
-                                      verticalMargin12,
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text('Price per day: ', style: TextStyles.semiBoldAccent16, ),
-                                          Text('${double.parse(user!.bookingSettings!.basePrice!)} GBP', style: TextStyles.semiBoldViolet16, ),
-                                        ],
-                                      ),
-                                      verticalMargin12,
-                                      Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            Text('From: ', style: TextStyles.semiBoldAccent16, ),
-                                            Text(
-                                              DateFormat.yMMMEd().format(booking!.from!), style: TextStyles.semiBoldViolet16, ),
-                                          ]
-                                      ),
-                                      verticalMargin12,
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text('To: ', style: TextStyles.semiBoldAccent16, ),
-                                          Text(DateFormat.yMMMEd().format(booking!.to!), style: TextStyles.semiBoldViolet16, ),
-                                        ],
-                                      ),
-                                      verticalMargin12,
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text('Price: ', style: TextStyles.semiBoldAccent16, ),
-                                          // Text('${booking!.spaces!} spaces X ${daysBetween(booking!.from!, booking!.to!)} days X ${int.parse(user!.bookingSettings!.basePrice!).toDouble()} GBP',
-                                          //   style: TextStyles.semiBoldViolet16, ),
-                                          Text('${_calculatePrice(booking!, user!)} GBP',
-                                            style: TextStyles.semiBoldViolet16, ),
-                                        ],
-                                      ),
-                                      verticalMargin12,
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text('Commission (15%): ', style: TextStyles.semiBoldAccent16, ),
-                                          Text('${_calculateCommission(_calculatePrice(booking!, user!))} GBP',
-                                            style: TextStyles.semiBoldViolet16, ),
-                                        ],
-                                      ),
-                                      verticalMargin12,
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Text('Grand Total: ', style: TextStyles.semiBoldAccent16, ),
-                                          Text('${_calculateGrandTotal(_calculatePrice(booking!, user!),
-                                              _calculateCommission(_calculatePrice(booking!, user!)))} GBP',
-                                            style: TextStyles.semiBoldViolet16, ),
-                                        ],
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              )
-                          ) : Container(),
+                          SummaryCard(booking: booking, host: host) : Container(),
                           verticalMargin32
                         ],
                       ),
@@ -149,13 +118,24 @@ class BookingView extends StatelessWidget {
 
                         onPressed: booking!.from != null &&
                             booking!.to != null &&
+                            errorMessage.isEmpty &&
                             booking!.spaces != null ?
                             () {
+                              Booking pendingBooking = context.read<BookingCubit>().finaliseBooking(
+                                  BookingService().calculatePrice(booking!, host).toString(),
+                                  BookingService().calculateCommission(
+                                      BookingService().calculatePrice(booking!, host)).toString(),
+                                  BookingService().calculateGrandTotal(BookingService().calculatePrice(booking!, host),
+                                      BookingService().calculateCommission(BookingService().calculatePrice(booking!, host))).toString(),
+                                  host
+                              );
+
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => const PaymentPage()),
+                                MaterialPageRoute(builder: (context) => PaymentPage(
+                                    booking: pendingBooking, user: user!, host: host)),
                               );
-                          // context.read<BookingCubit>().save();
+
                         } : null,
                         child: Text("Book", style: TextStyles.boldWhite16,),)
                   )
@@ -164,25 +144,5 @@ class BookingView extends StatelessWidget {
             return Container();
           }
       );
-  }
-
-  double _calculatePrice(Booking booking, User user) {
-    int? spaces = int.tryParse(booking.spaces!) ?? 0;
-    int days = daysBetween(booking.from!, booking.to!);
-    return (days * int.parse(user.bookingSettings!.basePrice!) * spaces).toDouble();
-  }
-
-  double _calculateCommission(double price) {
-    return price * 0.15;
-  }
-
-  double _calculateGrandTotal(double price, double commission) {
-    return price + commission;
-  }
-
-  int daysBetween(DateTime from, DateTime to) {
-    from = DateTime(from.year, from.month, from.day);
-    to = DateTime(to.year, to.month, to.day);
-    return (to.difference(from).inHours / 24).round();
   }
 }

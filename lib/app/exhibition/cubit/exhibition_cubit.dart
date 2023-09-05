@@ -2,11 +2,12 @@ import 'package:database_service/database.dart';
 import 'package:flutter/src/material/date.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'booking_state.dart';
+import 'exhibition_state.dart';
 
 
-class BookingCubit extends Cubit<BookingState> {
-  BookingCubit({required this.databaseService,
+
+class ExhibitionCubit extends Cubit<ExhibitionState> {
+  ExhibitionCubit({required this.databaseService,
     required this.userId}) : super(InitialState()) {
     getUser(userId);
   }

@@ -1,10 +1,9 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:database_service/src/models/models.dart';
 import 'package:database_service/src/service/database_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:geoflutterfire2/geoflutterfire2.dart';
+import 'package:uuid/uuid.dart';
 
 
 class FirestoreDatabaseService implements DatabaseService {
@@ -79,6 +78,21 @@ class FirestoreDatabaseService implements DatabaseService {
     }
     catch (e) {
       print('findArtworkByUser $e');
+      throw e;
+    }
+  }
+
+  @override
+  Future<String> addBooking({required Booking booking}) async {
+    try  {
+      String id = const Uuid().v4();
+
+      booking.bookingId = id;
+      await _firestore.collection('bookings')
+          .doc(id)
+          .set(booking.toJson());
+      return id;
+    } on Exception catch (e) {
       throw e;
     }
   }

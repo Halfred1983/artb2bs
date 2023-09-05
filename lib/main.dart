@@ -1,4 +1,5 @@
 import 'package:artb2b/ui/routing/app_router.dart';
+import 'package:artb2b/widgets/dismiss_keyboard.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -38,20 +39,22 @@ class Artb2b extends StatelessWidget {
     var theme = AppTheme.theme;
     var isInitialised = false;
     var isLoggedIn = false;
-    return BlocProvider(
-      create: (context) => LoginCubit(
-          locator.get<FirebaseAuthService>(),
-          locator.get<FirestoreDatabaseService>() ),
-      child: Builder(
-        builder: (context) {
-          return MaterialApp.router(
-            // debugShowMaterialGrid: true,
-            theme: theme,
-            routerConfig: AppRouter(context.read<LoginCubit>()).router,
-            title: 'ArtB2B',
-            debugShowCheckedModeBanner: false,
-          );
-        },
+    return DismissKeyboard(
+      child: BlocProvider(
+        create: (context) => LoginCubit(
+            locator.get<FirebaseAuthService>(),
+            locator.get<FirestoreDatabaseService>() ),
+        child: Builder(
+          builder: (context) {
+            return MaterialApp.router(
+              // debugShowMaterialGrid: true,
+              theme: theme,
+              routerConfig: AppRouter(context.read<LoginCubit>()).router,
+              title: 'ArtB2B',
+              debugShowCheckedModeBanner: false,
+            );
+          },
+        ),
       ),
     );
     //   BlocBuilder<AppBloc, AppState>(

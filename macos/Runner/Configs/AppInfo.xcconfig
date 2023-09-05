@@ -8,7 +8,7 @@
 PRODUCT_NAME = artb2b
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.extendus.artb2b
+PRODUCT_BUNDLE_IDENTIFIER = com.extendus
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2022 com.extendus. All rights reserved.

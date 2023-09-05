@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
+import '../../app/exhibition/view/exhibition_page.dart';
 import '../../booking/view/booking_page.dart';
 import '../../host/view/host_dashboard_page.dart';
 import '../../onboard/view/art_info_page.dart';
@@ -56,7 +57,7 @@ class _HomeViewState extends State<HomeView> {
                 _widgetOptions = <Widget>[
                   widget,
                   ArtistDashboardPage(),
-                  BookingPage(),
+                  ExhibitionPage(),
                   ProfilePage(),
                 ];
               }
@@ -64,7 +65,7 @@ class _HomeViewState extends State<HomeView> {
                 _widgetOptions = <Widget>[
                   widget,
                   HostDashboardPage(),
-                  BookingPage(),
+                  ExhibitionPage(),
                   ProfilePage(),
                 ];
               }
@@ -99,8 +100,8 @@ class _HomeViewState extends State<HomeView> {
 
                     /// Search
                     SalomonBottomBarItem(
-                      icon: Icon(Icons.search),
-                      title: Text("Search"),
+                      icon: Icon(Icons.image_rounded),
+                      title: Text("Exhibitions"),
                       selectedColor: AppTheme.primaryColourViolet,
                     ),
 

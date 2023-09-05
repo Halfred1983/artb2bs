@@ -12,7 +12,7 @@ class Booking {
       defaultValue: BookingStatus.pending,
       unknownEnumValue: BookingStatus.pending
   )
-  BookingStatus? userStatus;
+  BookingStatus? bookingStatus;
   DateTime? from;
   DateTime? to;
   String? hostId;
@@ -21,9 +21,10 @@ class Booking {
   String? price;
   String? commission;
   String? totalPrice;
+  String? bookingId;
 
   Booking({
-    this.userStatus,
+    this.bookingStatus,
     this.from,
     this.to,
     this.hostId,
@@ -31,7 +32,8 @@ class Booking {
     this.spaces,
     this.price,
     this.commission,
-    this.totalPrice
+    this.totalPrice,
+    this.bookingId
   });
 
 
