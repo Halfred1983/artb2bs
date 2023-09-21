@@ -96,7 +96,7 @@ class BookingView extends StatelessWidget {
                           errorMessage.length>1 ? Text(errorMessage, style: TextStyles.boldAccent21,) : Container(),
                           verticalMargin12,
                           BookingCalendarWidget((dateRangeChoosen) =>
-                              context.read<BookingCubit>().chooseRange(dateRangeChoosen, host)
+                              context.read<BookingCubit>().chooseRange(dateRangeChoosen, host), host: host, 
                           ),
                           verticalMargin12,
                           InputTextWidget((spaceValue) => context.read<BookingCubit>().chooseSpaces(spaceValue, host),

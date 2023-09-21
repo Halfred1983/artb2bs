@@ -96,5 +96,49 @@ class FirestoreDatabaseService implements DatabaseService {
       throw e;
     }
   }
+
+  @override
+  Stream<QuerySnapshot> findBookings({required User user, DateTime? dateFrom}) {
+    try {
+      // Reference to your Firestore collection
+      CollectionReference collection = _firestore.collection('bookings');
+
+      // Build the base query
+      Query query = collection
+          .where(FieldPath.documentId, whereIn: user.bookings);
+
+      return query.snapshots();
+    } catch (e) {
+      print('findArtworkByUser $e');
+      throw e;
+    }
+  }
+
+
+  @override
+  Future<List<Booking>> retrieveBookingList({required User user, DateTime? dateFrom}) async {
+    try {
+      List<Booking> dataList = [];
+
+      // Reference to your Firestore collection
+      CollectionReference collection = _firestore.collection('bookings');
+
+      // Build the base query
+      Query query = collection
+          .where(FieldPath.documentId, whereIn: user.bookings);
+
+      QuerySnapshot querySnapshot = await query.get();
+
+      querySnapshot.docs.forEach((document) {
+        dataList.add(Booking.fromJson(
+            document.data() as Map<String, dynamic>));
+      });
+
+      return dataList;
+    } catch (e) {
+      print('retrieveBookingList $e');
+      throw e;
+    }
+  }
 }
 

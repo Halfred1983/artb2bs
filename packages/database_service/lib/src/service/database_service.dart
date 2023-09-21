@@ -24,4 +24,7 @@ abstract class DatabaseService {
   Future<String> addBooking({
     required Booking booking,
   });
+
+  Stream<QuerySnapshot> findBookings({required User user});
+
 }

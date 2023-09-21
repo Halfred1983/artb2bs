@@ -1,3 +1,4 @@
+import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 // import 'package:booking_calendar/booking_calendar.dart';
 import 'package:flutter/rendering.dart';
@@ -7,14 +8,15 @@ import 'package:table_calendar/table_calendar.dart' as tc
     show StartingDayOfWeek;
 
 import '../app/resources/theme.dart';
+import '../injection.dart';
 import '../utils/common.dart';
 import 'common_card_widget.dart';
 
 class BookingCalendarWidget extends StatefulWidget {
-  const BookingCalendarWidget(this.rangeStartChanged);
+  BookingCalendarWidget(this.rangeStartChanged, {super.key, required this.host});
 
   final ValueChanged<DateTimeRange> rangeStartChanged;
-
+  final User host;
 
   @override
   State<BookingCalendarWidget> createState() => _BookingCalendarWidgetState(rangeStartChanged);
@@ -24,13 +26,17 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
   final now = DateTime.now();
 
   _BookingCalendarWidgetState(this._rangeStartChanged);
-  // late BookingService mockBookingService;
+  FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
 
   @override
   void initState() {
     super.initState();
     initializeDateFormatting();
-    _disabledDates = generateDisabledDates();
+    generateDisabledDates().then((dates) {
+      setState(() {
+        _disabledDates = dates;
+      });
+    });
     // DateTime.now().startOfDay
     // DateTime.now().endOfDay
     // mockBookingService = BookingService(
@@ -88,14 +94,34 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     ];
   }
 
-  List<DateTime> generateDisabledDates() {
-    return [now.add(Duration(days: 1)), now.add(Duration(days: 2)),
-      now.add(Duration(days: 3)), now.add(Duration(days: 14))];
+  Future<List<DateTime>> generateDisabledDates() async {
+    List<Booking> bookings = await firestoreDatabaseService.retrieveBookingList(user: widget.host);
+    List<DateTime> unavailableDates = [];
+
+    for (var booking in bookings) {
+      unavailableDates.addAll(generateDateList(booking.from!, booking.to!));
+    }
+
+    return unavailableDates;
   }
 
   void debugDumpRenderTree() {
     debugPrint(RendererBinding.instance.renderView.toStringDeep());
   }
+
+  List<DateTime> generateDateList(DateTime start, DateTime end) {
+    List<DateTime> dateList = [];
+
+    // Loop through the dates and add them to the list
+    for (var date = start; date.isBefore(end) || date.isAtSameMomentAs(end); date = date.add(Duration(days: 1))) {
+      dateList.add(date);
+    }
+
+    return dateList;
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
