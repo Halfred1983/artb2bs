@@ -1,5 +1,6 @@
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/artwork/view/artist_dashboard_page.dart';
+import 'package:artb2b/booking_requests/view/booking_request_page.dart';
 import 'package:artb2b/exhibition/view/exhibition_page.dart';
 import 'package:artb2b/home/bloc/user_cubit.dart';
 import 'package:artb2b/home/bloc/user_state.dart';
@@ -64,6 +65,7 @@ class _HomeViewState extends State<HomeView> {
                 _widgetOptions = <Widget>[
                   widget,
                   HostDashboardPage(),
+                  BookingRequestPage(),
                   ExhibitionPage(),
                   ProfilePage(),
                 ];
@@ -77,48 +79,47 @@ class _HomeViewState extends State<HomeView> {
                   ]
               ),
               bottomNavigationBar:
-              Padding(
-                padding: horizontalPadding24,
-                child: SalomonBottomBar(
-                  currentIndex: _currentIndex,
-                  onTap: (i) => setState(() => _currentIndex = i),
-                  items: [
-                    /// Home
-                    SalomonBottomBarItem(
-                      icon: Icon(Icons.home),
-                      title: Text("Home"),
-                      selectedColor: AppTheme.primaryColourViolet,
-                    ),
+              SalomonBottomBar(
+                currentIndex: _currentIndex,
+                onTap: (i) => setState(() => _currentIndex = i),
+                items: [
+                  /// Home
+                  SalomonBottomBarItem(
+                    icon: Icon(Icons.home),
+                    title: Text("Home"),
+                    selectedColor: AppTheme.primaryColourViolet,
+                  ),
 
-                    /// Likes
-                    SalomonBottomBarItem(
-                      icon: Icon(Icons.dashboard),
-                      title: Text("Dashboard"),
-                      selectedColor: AppTheme.primaryColourViolet,
-                    ),
+                  /// Likes
+                  SalomonBottomBarItem(
+                    icon: Icon(Icons.dashboard),
+                    title: Text("Dashboard"),
+                    selectedColor: AppTheme.primaryColourViolet,
+                  ),
 
-                    /// Requests
-                    // SalomonBottomBarItem(
-                    //   icon: Icon(Icons.add_alert_sharp),
-                    //   title: Text("Booking Requests"),
-                    //   selectedColor: AppTheme.primaryColourViolet,
-                    // ),
-
-                    /// Calendar
+                  /// Requests
+                  if(user!.userInfo!.userType != UserType.artist) ...[
                     SalomonBottomBarItem(
-                      icon: Icon(Icons.calendar_month),
-                      title: Text("Exhibitions"),
-                      selectedColor: AppTheme.primaryColourViolet,
-                    ),
-
-                    /// Profile
-                    SalomonBottomBarItem(
-                      icon: Icon(Icons.person),
-                      title: Text("Profile"),
+                      icon: Icon(Icons.add_alert_sharp),
+                      title: Text("Requests"),
                       selectedColor: AppTheme.primaryColourViolet,
                     ),
                   ],
-                ),
+
+                  /// Calendar
+                  SalomonBottomBarItem(
+                    icon: Icon(Icons.calendar_month),
+                    title: Text("Calendar"),
+                    selectedColor: AppTheme.primaryColourViolet,
+                  ),
+
+                  /// Profile
+                  SalomonBottomBarItem(
+                    icon: Icon(Icons.person),
+                    title: Text("Profile"),
+                    selectedColor: AppTheme.primaryColourViolet,
+                  ),
+                ],
               ),
             );
           }

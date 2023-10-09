@@ -304,21 +304,11 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
 
   late DateTime? _selectedDay = calculateFirstDay();
   late DateTime _focusedDay = calculateFirstDay();
-  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
-      .toggledOff; // Can be toggled on/off by longpressing a date
+  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff; // Can be toggled on/off by longpressing a date
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
 
-  List<DateTime> _disabledDates = List.empty();
-
   DateTime calculateFirstDay() {
     return DateTime.now();
-    // if (widget.disabledDays != null) {
-    //   return widget.disabledDays!.contains(now.weekday)
-    //       ? now.add(Duration(days: getFirstMissingDay(now.weekday)))
-    //       : now;
-    // } else {
-    //   return DateTime.now();
-    // }
   }
 }
