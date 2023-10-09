@@ -2,6 +2,7 @@
 const functions = require("firebase-functions");
 const stripe = require("stripe")(functions.config().stripe.testkey);
 const admin = require('firebase-admin');
+const moment = require('moment');
 admin.initializeApp();
 
 const generatedResponse = function(intent) {
@@ -89,7 +90,13 @@ exports.sendBookingNotification = functions.firestore
 
       // Fetch the artist's last name from the "users" collection
       const artistDoc = await admin.firestore().collection('users').doc(artistId).get();
-      const artistLastName = artistDoc.data().lastName;
+      const artistName = artistDoc.data().userInfo.name;
+
+      const totalPrice = bookingData.totalPrice;
+
+      // Format the Date to "DD-MM-YYYY" format
+      const from = moment(bookingData.from.toDate()).format('DD-MM-YYYY');
+      const to = moment(bookingData.to.toDate()).format('DD-MM-YYYY');
 
       // Fetch the host's FCM token from the "fcmTokens" collection
       const hostTokenDoc = await admin.firestore().collection('fcmTokens').doc(hostId).get();
@@ -98,20 +105,15 @@ exports.sendBookingNotification = functions.firestore
       // Prepare the push notification payload
       const payload = {
         notification: {
-          title: 'New Booking',
-          body: `${artistLastName} has booked with you.`,
+          title: 'New Booking Request',
+          body: `Congratulations ! ${artistName} has sent you a booking request from ${from} to ${to} for ${totalPrice} £. `,
+          content_available : 'true',
+          priority : 'high',
         },
         data: {
               messageID: 'messageID',
               messageTimestamp: '12341232132',
             },
-        apns: {
-          payload: {
-            aps: {
-              sound: "default",
-            },
-          },
-        },
       };
 
       console.log('Token. '+ hostFcmToken+' payload '+payload);

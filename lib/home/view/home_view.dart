@@ -98,9 +98,16 @@ class _HomeViewState extends State<HomeView> {
                       selectedColor: AppTheme.primaryColourViolet,
                     ),
 
-                    /// Search
+                    /// Requests
+                    // SalomonBottomBarItem(
+                    //   icon: Icon(Icons.add_alert_sharp),
+                    //   title: Text("Booking Requests"),
+                    //   selectedColor: AppTheme.primaryColourViolet,
+                    // ),
+
+                    /// Calendar
                     SalomonBottomBarItem(
-                      icon: Icon(Icons.image_rounded),
+                      icon: Icon(Icons.calendar_month),
                       title: Text("Exhibitions"),
                       selectedColor: AppTheme.primaryColourViolet,
                     ),
