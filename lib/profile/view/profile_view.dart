@@ -1,3 +1,4 @@
+import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/artwork/cubit/artist_cubit.dart';
 import 'package:artb2b/artwork/cubit/artist_state.dart';
@@ -11,7 +12,6 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import '../../../login/cubit/login_cubit.dart';
 import '../../../login/view/login_page.dart';
 import '../../../utils/common.dart';
-import '../../resources/styles.dart';
 
 
 class ProfileView extends StatelessWidget {

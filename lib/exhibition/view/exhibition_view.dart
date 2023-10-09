@@ -1,21 +1,12 @@
-import 'package:artb2b/payment/view/payment_page.dart';
-import 'package:artb2b/widgets/booking_calendar_widget.dart';
-import 'package:artb2b/widgets/common_card_widget.dart';
+import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
-import '../../../booking/service/booking_service.dart';
 import '../../../injection.dart';
 import '../../../utils/common.dart';
-import '../../../widgets/input_text_widget.dart';
 import '../../../widgets/reservation_calendar_widget.dart';
-import '../../../widgets/summary_card.dart';
-import '../../resources/styles.dart';
-import '../../resources/theme.dart';
 import '../cubit/exhibition_cubit.dart';
 import '../cubit/exhibition_state.dart';
 

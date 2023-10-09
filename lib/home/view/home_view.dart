@@ -1,9 +1,10 @@
-import 'package:artb2b/app/profile/view/profile_page.dart';
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/artwork/view/artist_dashboard_page.dart';
+import 'package:artb2b/exhibition/view/exhibition_page.dart';
 import 'package:artb2b/home/bloc/user_cubit.dart';
 import 'package:artb2b/home/bloc/user_state.dart';
 import 'package:artb2b/onboard/view/personal_info_page.dart';
+import 'package:artb2b/profile/view/profile_page.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:artb2b/widgets/map_view.dart';
 import 'package:database_service/database.dart';
@@ -11,8 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
-import '../../app/exhibition/view/exhibition_page.dart';
-import '../../booking/view/booking_page.dart';
 import '../../host/view/host_dashboard_page.dart';
 import '../../onboard/view/art_info_page.dart';
 import '../../utils/common.dart';
