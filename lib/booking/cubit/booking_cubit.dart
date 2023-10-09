@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'booking_state.dart';
 
-
 class BookingCubit extends Cubit<BookingState> {
   BookingCubit({required this.databaseService,
     required this.userId}) : super(InitialState()) {
@@ -34,7 +33,9 @@ class BookingCubit extends Cubit<BookingState> {
     }
     else {
       booking = booking.copyWith(
-          from: dateRangeChosen.start, to: dateRangeChosen.end);
+          from: dateRangeChosen.start,
+          to: dateRangeChosen.end
+      );
 
       emit(DateRangeChosen(user, booking));
     }
@@ -79,7 +80,7 @@ class BookingCubit extends Cubit<BookingState> {
         booking.bookingId = bookingId;
 
         if(user.bookings != null && user.bookings!.isNotEmpty) {
-          user.bookings!.add(bookingId);
+          user.bookings!.insert(0, bookingId);
         }
         else {
           user.bookings = List.of([bookingId], growable: true);
@@ -87,7 +88,7 @@ class BookingCubit extends Cubit<BookingState> {
         databaseService.updateUser(user: user);
 
         if(host.bookings != null && host.bookings!.isNotEmpty) {
-          host.bookings!.add(bookingId);
+          host.bookings!.insert(0, bookingId);
         }
         else {
           host.bookings = List.of([bookingId], growable: true);

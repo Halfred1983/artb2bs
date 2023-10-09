@@ -1,15 +1,8 @@
 /* eslint-disable */
 const functions = require("firebase-functions");
-//// All available logging functions
-//const {
-//  log,
-//  info,
-//  debug,
-//  warn,
-//  error,
-//  write,
-//} = require("firebase-functions/logger");
 const stripe = require("stripe")(functions.config().stripe.testkey);
+const admin = require('firebase-admin');
+admin.initializeApp();
 
 const generatedResponse = function(intent) {
     switch (intent.status) {
@@ -84,4 +77,53 @@ exports.StripePayEndpointIntentId = functions.https.onRequest(async (req, res) =
         return res.send({error: e.message});
     }
 });
+
+exports.sendBookingNotification = functions.firestore
+  .document('bookings/{bookingId}')
+  .onCreate(async (snapshot, context) => {
+    try {
+      // Get the booking data
+      const bookingData = snapshot.data();
+      const artistId = bookingData.artistId;
+      const hostId = bookingData.hostId;
+
+      // Fetch the artist's last name from the "users" collection
+      const artistDoc = await admin.firestore().collection('users').doc(artistId).get();
+      const artistLastName = artistDoc.data().lastName;
+
+      // Fetch the host's FCM token from the "fcmTokens" collection
+      const hostTokenDoc = await admin.firestore().collection('fcmTokens').doc(hostId).get();
+      const hostFcmToken = hostTokenDoc.data().token;
+
+      // Prepare the push notification payload
+      const payload = {
+        notification: {
+          title: 'New Booking',
+          body: `${artistLastName} has booked with you.`,
+        },
+        data: {
+              messageID: 'messageID',
+              messageTimestamp: '12341232132',
+            },
+        apns: {
+          payload: {
+            aps: {
+              sound: "default",
+            },
+          },
+        },
+      };
+
+      console.log('Token. '+ hostFcmToken+' payload '+payload);
+
+
+      // Send the push notification to the host using FCM
+      await admin.messaging().sendToDevice(hostFcmToken, payload);
+
+      console.log('Push notification sent successfully.');
+    } catch (error) {
+      console.error('Error sending push notification:', error);
+    }
+  });
+
 /* eslint-disable */

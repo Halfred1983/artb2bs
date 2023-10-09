@@ -127,6 +127,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
   Widget build(BuildContext context) {
     return CommonCard(
       child: TableCalendar(
+        availableCalendarFormats: const {CalendarFormat.month: 'Month'},
         startingDayOfWeek: tc.StartingDayOfWeek.monday,
         rangeStartDay: _rangeStart,
         rangeEndDay: _rangeEnd,

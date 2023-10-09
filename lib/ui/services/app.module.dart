@@ -7,6 +7,7 @@ import 'package:database_service/database.dart';
 // import 'package:artb2b/ui/services/notification.service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:notification_service/notifications.dart';
 import 'package:storage_service/storage.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +28,8 @@ abstract class AppModule {
   @injectable
   FirebaseStorage get storage => FirebaseStorage.instance;
 
+  @injectable
+  NotificationService get notificationService => NotificationService(database: store);
 
   @injectable
   FirebaseAuth get auth => FirebaseAuth.instance;

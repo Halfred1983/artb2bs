@@ -37,14 +37,13 @@ class _InputTextWidgetState extends State<InputTextWidget> {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return  AppTextField(
       key: const Key('Spaces'),
       controller: _nameController,
       hintText: _hint,
-      validator: AppInputValidators.required(
-          'Name required'),
       textInputAction: TextInputAction.next,
       keyboardType: _textInputType ?? TextInputType.text,
       textCapitalization: TextCapitalization.words,

@@ -98,14 +98,21 @@ class FirestoreDatabaseService implements DatabaseService {
   }
 
   @override
-  Stream<QuerySnapshot> findBookings({required User user, DateTime? dateFrom}) {
+  Stream<QuerySnapshot> findBookings({
+    required User user,
+    required int fromIndex,
+    required int toIndex}) {
     try {
+      
       // Reference to your Firestore collection
       CollectionReference collection = _firestore.collection('bookings');
 
       // Build the base query
       Query query = collection
-          .where(FieldPath.documentId, whereIn: user.bookings);
+          .where(FieldPath.documentId, whereIn: user.bookings!.sublist(
+          fromIndex, user.bookings!.length > toIndex
+          ? toIndex : user.bookings!.length)
+      );
 
       return query.snapshots();
     } catch (e) {
@@ -129,10 +136,10 @@ class FirestoreDatabaseService implements DatabaseService {
 
       QuerySnapshot querySnapshot = await query.get();
 
-      querySnapshot.docs.forEach((document) {
+      for (var document in querySnapshot.docs) {
         dataList.add(Booking.fromJson(
             document.data() as Map<String, dynamic>));
-      });
+      }
 
       return dataList;
     } catch (e) {

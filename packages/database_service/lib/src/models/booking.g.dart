@@ -164,9 +164,10 @@ Booking _$BookingFromJson(Map<String, dynamic> json) => Booking(
               _$BookingStatusEnumMap, json['bookingStatus'],
               unknownValue: BookingStatus.pending) ??
           BookingStatus.pending,
-      from:
-          json['from'] == null ? null : DateTime.parse(json['from'] as String),
-      to: json['to'] == null ? null : DateTime.parse(json['to'] as String),
+      from: _$JsonConverterFromJson<Timestamp, DateTime>(
+          json['from'], const TimestampConverter().fromJson),
+      to: _$JsonConverterFromJson<Timestamp, DateTime>(
+          json['to'], const TimestampConverter().fromJson),
       hostId: json['hostId'] as String?,
       artistId: json['artistId'] as String?,
       spaces: json['spaces'] as String?,
@@ -178,8 +179,10 @@ Booking _$BookingFromJson(Map<String, dynamic> json) => Booking(
 
 Map<String, dynamic> _$BookingToJson(Booking instance) => <String, dynamic>{
       'bookingStatus': _$BookingStatusEnumMap[instance.bookingStatus],
-      'from': instance.from?.toIso8601String(),
-      'to': instance.to?.toIso8601String(),
+      'from': _$JsonConverterToJson<Timestamp, DateTime>(
+          instance.from, const TimestampConverter().toJson),
+      'to': _$JsonConverterToJson<Timestamp, DateTime>(
+          instance.to, const TimestampConverter().toJson),
       'hostId': instance.hostId,
       'artistId': instance.artistId,
       'spaces': instance.spaces,
@@ -195,3 +198,15 @@ const _$BookingStatusEnumMap = {
   BookingStatus.rejected: 2,
   BookingStatus.cancelled: 3,
 };
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) =>
+    json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) =>
+    value == null ? null : toJson(value);

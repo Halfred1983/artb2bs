@@ -21,7 +21,7 @@ class FirebaseAuthService implements AuthService {
   //   required auth.FirebaseAuth authService,
   //   // required Future<SharedPreferences> sharedPreferences
   // }) : _firebaseAuth = authService;
-        // _cache = sharedPreferences;
+  // _cache = sharedPreferences;
 
   final auth.FirebaseAuth? _firebaseAuth;
   final SharedPreferences? _cache;
@@ -165,10 +165,10 @@ class FirebaseAuthService implements AuthService {
 
   Future<void> logOut() async {
     try {
+      _cache!.remove(userCacheKey);
       await Future.wait([
-        _firebaseAuth!.signOut(),
         _googleSignIn.signOut(),
-        _cache!.remove(userCacheKey)
+        _firebaseAuth!.signOut(),
       ]);
     } catch (_) {
       throw LogOutFailure();

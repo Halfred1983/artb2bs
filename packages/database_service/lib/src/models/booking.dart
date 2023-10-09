@@ -1,4 +1,5 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -13,7 +14,9 @@ class Booking {
       unknownEnumValue: BookingStatus.pending
   )
   BookingStatus? bookingStatus;
+  @TimestampConverter()
   DateTime? from;
+  @TimestampConverter()
   DateTime? to;
   String? hostId;
   String? artistId;
@@ -55,4 +58,17 @@ enum BookingStatus {
   @JsonValue(3)
   cancelled,
 }
+
+class TimestampConverter implements JsonConverter<DateTime, Timestamp> {
+  const TimestampConverter();
+
+  @override
+  DateTime fromJson(Timestamp timestamp) {
+    return timestamp.toDate();
+  }
+
+  @override
+  Timestamp toJson(DateTime date) => Timestamp.fromDate(date);
+}
+
 

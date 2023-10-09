@@ -37,6 +37,8 @@ dependencies:
     path: packages/database_service
   storage_service:
     path: packages/storage_service
+  notification_service:
+    path: packages/notification_service
   google_maps_flutter: ^2.3.1
   google_place: ^0.4.7
   geoflutterfire2: ^2.3.15

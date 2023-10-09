@@ -1,4 +1,5 @@
 import 'package:artb2b/payment/view/payment_page.dart';
+import 'package:artb2b/widgets/app_input_validators.dart';
 import 'package:artb2b/widgets/booking_calendar_widget.dart';
 import 'package:artb2b/widgets/common_card_widget.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
@@ -39,15 +40,22 @@ class BookingView extends StatelessWidget {
               user = state.props[0] as User;
               booking = state.props[1] as Booking;
 
-              var errorMessage = '';
-              if(state is DateRangeErrorState || state is SpacesErrorState ) {
-                errorMessage = state.props[2] as String;
+              var dataRangeError = '';
+              if(state is DateRangeErrorState) {
+                dataRangeError = state.props[2] as String;
+              }
+              var spaceError = '';
+              if(state is SpacesErrorState ) {
+                spaceError = state.props[2] as String;
               }
 
               return Scaffold(
                   appBar: AppBar(
                     title: Text("Booking Page", style: TextStyles.boldAccent24,),
                     centerTitle: true,
+                    iconTheme: const IconThemeData(
+                      color: AppTheme.primaryColourViolet, //change your color here
+                    ),
                   ),
                   body: SingleChildScrollView(
                     physics: const ClampingScrollPhysics(),
@@ -93,14 +101,16 @@ class BookingView extends StatelessWidget {
                             ),
                           ),
                           verticalMargin12,
-                          errorMessage.length>1 ? Text(errorMessage, style: TextStyles.boldAccent21,) : Container(),
+                          dataRangeError.length>1 ? Text(dataRangeError, style: TextStyles.boldAccent21,) : Container(),
                           verticalMargin12,
                           BookingCalendarWidget((dateRangeChoosen) =>
-                              context.read<BookingCubit>().chooseRange(dateRangeChoosen, host), host: host, 
+                              context.read<BookingCubit>().chooseRange(dateRangeChoosen, host), host: host,
                           ),
                           verticalMargin12,
+
                           InputTextWidget((spaceValue) => context.read<BookingCubit>().chooseSpaces(spaceValue, host),
                               'Number of spaces', TextInputType.number),
+                          spaceError.length>1 ? Text(spaceError, style: TextStyles.boldAccent21,) : Container(),
                           //Price
                           verticalMargin24,
                           booking!.from != null &&
@@ -115,31 +125,36 @@ class BookingView extends StatelessWidget {
                   bottomNavigationBar: Container(
                       padding: buttonPadding,
                       child: ElevatedButton(
-
                         onPressed: booking!.from != null &&
                             booking!.to != null &&
-                            errorMessage.isEmpty &&
+                            dataRangeError.isEmpty &&
+                            spaceError.isEmpty &&
                             booking!.spaces != null ?
                             () {
-                              Booking pendingBooking = context.read<BookingCubit>().finaliseBooking(
-                                  BookingService().calculatePrice(booking!, host).toString(),
-                                  BookingService().calculateCommission(
-                                      BookingService().calculatePrice(booking!, host)).toString(),
-                                  BookingService().calculateGrandTotal(BookingService().calculatePrice(booking!, host),
-                                      BookingService().calculateCommission(BookingService().calculatePrice(booking!, host))).toString(),
-                                  host
-                              );
 
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => PaymentPage(
-                                    booking: pendingBooking, user: user!, host: host)),
-                              );
+                          Booking pendingBooking = context.read<BookingCubit>().finaliseBooking(
+                              BookingService().calculatePrice(booking!, host).toString(),
+                              BookingService().calculateCommission(
+                                  BookingService().calculatePrice(booking!, host)).toString(),
+                              BookingService().calculateGrandTotal(BookingService().calculatePrice(booking!, host),
+                                  BookingService().calculateCommission(BookingService().calculatePrice(booking!, host))).toString(),
+                              host
+                          );
+
+
+
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => PaymentPage(
+                                booking: pendingBooking, user: user!, host: host)),
+                          );
 
                         } : null,
                         child: Text("Book", style: TextStyles.boldWhite16,),)
                   )
               );
+
             }
             return Container();
           }

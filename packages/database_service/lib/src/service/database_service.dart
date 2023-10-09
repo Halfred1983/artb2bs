@@ -25,6 +25,11 @@ abstract class DatabaseService {
     required Booking booking,
   });
 
-  Stream<QuerySnapshot> findBookings({required User user});
+  Stream<QuerySnapshot> findBookings({required User user,
+    required int fromIndex,
+    required int toIndex});
 
-}
+  Future<List<Booking>> retrieveBookingList({required User user, DateTime? dateFrom});
+
+
+  }

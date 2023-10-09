@@ -29,7 +29,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.87564667765-55llulnh55ofp0kgmer63rrq3jumplfq</string>
+				<string>com.googleusercontent.apps.87564667765-1fjh0dgamc3m717ju0qk4qfc9hab6pr9</string>
 			</array>
 		</dict>
 	</array>
@@ -45,8 +45,19 @@
 	<string>Upload images for screen background</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<string>YES</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+    <string>Your location is required so you can find artists and hosts around you</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Your location is required so you can find artists and hosts around you</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
