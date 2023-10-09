@@ -85,38 +85,38 @@ class _HomeViewState extends State<HomeView> {
                 items: [
                   /// Home
                   SalomonBottomBarItem(
-                    icon: Icon(Icons.home),
-                    title: Text("Home"),
+                    icon: const Icon(Icons.home),
+                    title: const Text("Home"),
                     selectedColor: AppTheme.primaryColourViolet,
                   ),
 
                   /// Likes
                   SalomonBottomBarItem(
-                    icon: Icon(Icons.dashboard),
-                    title: Text("Dashboard"),
+                    icon: const Icon(Icons.dashboard),
+                    title: const Text("Dashboard"),
                     selectedColor: AppTheme.primaryColourViolet,
                   ),
 
                   /// Requests
                   if(user!.userInfo!.userType != UserType.artist) ...[
                     SalomonBottomBarItem(
-                      icon: Icon(Icons.add_alert_sharp),
-                      title: Text("Requests"),
+                      icon: const Icon(Icons.add_alert_sharp),
+                      title: const Text("Requests"),
                       selectedColor: AppTheme.primaryColourViolet,
                     ),
                   ],
 
                   /// Calendar
                   SalomonBottomBarItem(
-                    icon: Icon(Icons.calendar_month),
-                    title: Text("Calendar"),
+                    icon: const Icon(Icons.calendar_month),
+                    title: const Text("Calendar"),
                     selectedColor: AppTheme.primaryColourViolet,
                   ),
 
                   /// Profile
                   SalomonBottomBarItem(
-                    icon: Icon(Icons.person),
-                    title: Text("Profile"),
+                    icon: const Icon(Icons.person),
+                    title: const Text("Profile"),
                     selectedColor: AppTheme.primaryColourViolet,
                   ),
                 ],
