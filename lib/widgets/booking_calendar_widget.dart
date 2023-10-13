@@ -99,7 +99,9 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     List<DateTime> unavailableDates = [];
 
     for (var booking in bookings) {
-      unavailableDates.addAll(generateDateList(booking.from!, booking.to!));
+      if(booking.bookingStatus == BookingStatus.accepted) {
+        unavailableDates.addAll(generateDateList(booking.from!, booking.to!));
+      }
     }
 
     return unavailableDates;

@@ -29,7 +29,12 @@ abstract class DatabaseService {
     required int fromIndex,
     required int toIndex});
 
-  Future<List<Booking>> retrieveBookingList({required User user, DateTime? dateFrom});
+  Future<List<Booking>> retrieveBookingList({required User user, DateTime? dateFrom, DateTime? dateTo});
 
+  Future<void> updateBooking({required Booking booking});
 
-  }
+  Future<void> createRefundRequest(Refund refundRequest);
+
+  Future<void> createAccepted(Accepted accepted);
+
+}

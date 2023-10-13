@@ -14,8 +14,8 @@ import '../../../login/view/login_page.dart';
 import '../../../utils/common.dart';
 
 
-class ProfileView extends StatelessWidget {
-  const ProfileView({super.key});
+class UserProfileView extends StatelessWidget {
+  const UserProfileView({super.key});
 
   @override
   Widget build(BuildContext context) {

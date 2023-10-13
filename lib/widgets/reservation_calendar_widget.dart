@@ -1,9 +1,11 @@
+import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 // import 'package:booking_calendar/booking_calendar.dart';
 import 'package:flutter/rendering.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:table_calendar/table_calendar.dart' as tc
     show StartingDayOfWeek;
@@ -52,10 +54,12 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
 
   Future<Map<String, DateTimeRange>> generateDateTimeRage() async {
     _bookings = await firestoreDatabaseService.retrieveBookingList(user: widget.user);
+    _bookings = _bookings.where((element) => element.bookingStatus == BookingStatus.accepted).toList();
 
     Map<String, DateTimeRange> bookingDateRange = {};
     for (var booking in _bookings) {
-      bookingDateRange[booking.bookingId!] = DateTimeRange(start: booking.from!, end: booking.to!);
+        bookingDateRange[booking.bookingId!] =
+            DateTimeRange(start: booking.from!, end: booking.to!);
     }
 
     return bookingDateRange;
@@ -287,7 +291,11 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                               );
                             }
                             else {
-                              return const CircularProgressIndicator();
+                              return Center(
+                                  child: Lottie.asset(
+                                  'assets/loading.json',
+                                  fit: BoxFit.fill,
+                              ));
                             }
                           }
                       );

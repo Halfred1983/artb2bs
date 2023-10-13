@@ -1,5 +1,6 @@
 import 'package:database_service/database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 
 import 'booking_request_state.dart';
 
@@ -18,42 +19,61 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
     try {
       emit(LoadingState());
       final user = await databaseService.getUser(userId: userId);
-      emit(LoadedState(user!, Booking(bookingStatus:BookingStatus.pending )));
+      emit(LoadedState(user!));
     } catch (e) {
       emit(ErrorState());
     }
   }
 
-  void completeBooking(Booking booking, User user, User host) async {
+  void acceptBooking(Booking booking, User user) async {
       try {
-        emit(PaymentLoadingState());
-        booking = booking.copyWith(bookingStatus: BookingStatus.accepted );
-        String bookingId = await databaseService.addBooking(booking: booking);
+        emit(LoadingState());
 
-        booking.bookingId = bookingId;
+        var overlap = '';
+        var bookings = await databaseService.retrieveBookingList(user: user);
 
-        if(user.bookings != null && user.bookings!.isNotEmpty) {
-          user.bookings!.add(bookingId);
+        for(var book in bookings) {
+          if(booking.from!.isBefore(book.to!) && booking.to!.isAfter(book.from!)
+              && booking.bookingId != book.bookingId && book.bookingStatus == BookingStatus.accepted) {
+
+            overlap = 'from ${DateFormat.yMMMEd().format(booking.from!)} \nto ${DateFormat.yMMMEd().format(booking.to!)}';
+          }
+        }
+
+        if(overlap.length > 1) {
+          emit(OverlapErrorState('There is already a booking confirmed in the dates:\n $overlap', user));
         }
         else {
-          user.bookings = List.of([bookingId], growable: true);
+          booking = booking.copyWith(bookingStatus: BookingStatus.accepted );
+          await databaseService.updateBooking(booking: booking);
+          Accepted accepted = Accepted(hostId: booking.hostId,
+              artistId: booking.artistId, bookingId: booking.bookingId,
+          acceptedTimestamp: DateTime.now());
+          await databaseService.createAccepted(accepted);
+          emit(LoadedState(user));
         }
-        databaseService.updateUser(user: user);
-
-        if(host.bookings != null && host.bookings!.isNotEmpty) {
-          host.bookings!.add(bookingId);
-        }
-        else {
-          host.bookings = List.of([bookingId], growable: true);
-        }
-        databaseService.updateUser(user: host);
-
-
-        emit(PaymentLoadedState(user, booking));
       } catch (e) {
         emit(ErrorState());
       }
+  }
 
+  void rejectBooking(Booking booking, User user) async {
+    try {
+      emit(LoadingState());
+      booking = booking.copyWith(bookingStatus: BookingStatus.rejected );
+      Refund refund = Refund(bookingId: booking.bookingId, paymentIntentId: booking.paymentIntentId,
+          refundStatus: RefundStatus.pending, refundTimestamp: DateTime.now(),
+          artistId: booking.artistId, hostId: booking.hostId);
+      await databaseService.updateBooking(booking: booking);
+      await databaseService.createRefundRequest(refund);
+      emit(LoadedState(user));
+    } catch (e) {
+      emit(ErrorState());
+    }
+  }
+
+  void exitAlert(User user) {
+    emit(LoadedState(user));
   }
 
 }

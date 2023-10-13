@@ -20,13 +20,13 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   void _onPaymentStart(
       PaymentStart event,
       Emitter<PaymentState> emit) {
-    emit(state.copyWith(status: PaymentStatus.initial));
+    emit(state.copyWith(status: PaymentStatus.initial, paymentIntentId: ''));
   }
 
   void _onPaymentCreateIntent(
       PaymentCreateIntent event,
       Emitter<PaymentState> emit) async {
-    emit(state.copyWith(status: PaymentStatus.loading));
+    emit(state.copyWith(status: PaymentStatus.loading, paymentIntentId: ''));
 
     final paymentMethod = await Stripe.instance.createPaymentMethod(
         params: PaymentMethodParams.card(paymentMethodData:
@@ -41,12 +41,15 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     );
 
     if(paymentIntentResult['error'] != null) {
-      emit(state.copyWith(status: PaymentStatus.failure));
+      emit(state.copyWith(status: PaymentStatus.failure, paymentIntentId: ''));
     }
 
     if(paymentIntentResult['clientSecret'] != null &&
         paymentIntentResult['requiresAction'] == null) {
-      emit(state.copyWith(status: PaymentStatus.success));
+
+      PaymentState newState = state.copyWith(status: PaymentStatus.success,
+          paymentIntentId: paymentIntentResult['paymentIntentId']);
+      emit(newState);
     }
 
     if(paymentIntentResult['clientSecret'] != null &&
@@ -69,16 +72,16 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
         );
 
         if(results['error'] != null) {
-          emit(state.copyWith(status: PaymentStatus.failure));
+          emit(state.copyWith(status: PaymentStatus.failure, paymentIntentId: ''));
         }
         else {
-          emit(state.copyWith(status: PaymentStatus.success));
+          emit(state.copyWith(status: PaymentStatus.success, paymentIntentId: paymentIntent.id));
         }
       }
     }
     catch(e) {
       print(e);
-      emit(state.copyWith(status: PaymentStatus.failure));
+      emit(state.copyWith(status: PaymentStatus.failure, paymentIntentId: ''));
     }
   }
 

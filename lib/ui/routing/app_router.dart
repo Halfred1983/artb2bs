@@ -2,13 +2,12 @@ import 'dart:async';
 
 import 'package:artb2b/home/view/home_view.dart';
 import 'package:artb2b/login/view/login_view.dart';
+import 'package:artb2b/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../home/view/home_page.dart';
 import '../../login/cubit/login_cubit.dart';
-// import '../cubit/cubit/login_cubit.dart';
-// import '../screens/screens.dart';
 
 // This example shows how to use redirect to handle a sign-in flow.
 // The GoRouter.redirect method is called before the app is navigate to a
@@ -48,6 +47,13 @@ class AppRouter {
         builder: (BuildContext context, GoRouterState state) =>
             LoginView(),
       ),
+      GoRoute(
+        path: "/profile/:userId",
+        name: "profile",
+        builder: (context, state) => ProfilePage(
+          userId: state.pathParameters["userId"].toString(),
+        ),
+      )
     ],
     redirect: (BuildContext context, GoRouterState state) {
       final bool loggedIn = loginCubit.state.status == AuthStatus.authenticated;

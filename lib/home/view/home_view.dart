@@ -1,3 +1,4 @@
+import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/artwork/view/artist_dashboard_page.dart';
 import 'package:artb2b/booking_requests/view/booking_request_page.dart';
@@ -5,7 +6,6 @@ import 'package:artb2b/exhibition/view/exhibition_page.dart';
 import 'package:artb2b/home/bloc/user_cubit.dart';
 import 'package:artb2b/home/bloc/user_state.dart';
 import 'package:artb2b/onboard/view/personal_info_page.dart';
-import 'package:artb2b/profile/view/profile_page.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:artb2b/widgets/map_view.dart';
 import 'package:database_service/database.dart';
@@ -15,6 +15,7 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 import '../../host/view/host_dashboard_page.dart';
 import '../../onboard/view/art_info_page.dart';
+import '../../user_profile/view/user_profile_page.dart';
 import '../../utils/common.dart';
 
 class HomeView extends StatefulWidget {
@@ -58,7 +59,7 @@ class _HomeViewState extends State<HomeView> {
                   widget,
                   ArtistDashboardPage(),
                   ExhibitionPage(),
-                  ProfilePage(),
+                  UserProfilePage(),
                 ];
               }
               else {
@@ -67,7 +68,7 @@ class _HomeViewState extends State<HomeView> {
                   HostDashboardPage(),
                   BookingRequestPage(),
                   ExhibitionPage(),
-                  ProfilePage(),
+                  UserProfilePage(),
                 ];
               }
             }
@@ -85,38 +86,38 @@ class _HomeViewState extends State<HomeView> {
                 items: [
                   /// Home
                   SalomonBottomBarItem(
-                    icon: const Icon(Icons.home),
-                    title: const Text("Home"),
+                    icon: const Icon(Icons.home, size: 18,),
+                    title: Text("Home", style: TextStyles.semiBoldViolet14,),
                     selectedColor: AppTheme.primaryColourViolet,
                   ),
 
                   /// Likes
                   SalomonBottomBarItem(
-                    icon: const Icon(Icons.dashboard),
-                    title: const Text("Dashboard"),
+                    icon: const Icon(Icons.dashboard, size: 18,),
+                    title: Text("Dashboard", style: TextStyles.semiBoldViolet14,),
                     selectedColor: AppTheme.primaryColourViolet,
                   ),
 
                   /// Requests
                   if(user!.userInfo!.userType != UserType.artist) ...[
                     SalomonBottomBarItem(
-                      icon: const Icon(Icons.add_alert_sharp),
-                      title: const Text("Requests"),
+                      icon: const Icon(Icons.add_alert_sharp, size: 18),
+                      title:  Text("Requests", style: TextStyles.semiBoldViolet14,),
                       selectedColor: AppTheme.primaryColourViolet,
                     ),
                   ],
 
                   /// Calendar
                   SalomonBottomBarItem(
-                    icon: const Icon(Icons.calendar_month),
-                    title: const Text("Calendar"),
+                    icon: const Icon(Icons.calendar_month, size: 18),
+                    title: Text("Calendar", style: TextStyles.semiBoldViolet14,),
                     selectedColor: AppTheme.primaryColourViolet,
                   ),
 
                   /// Profile
                   SalomonBottomBarItem(
-                    icon: const Icon(Icons.person),
-                    title: const Text("Profile"),
+                    icon: const Icon(Icons.person, size: 18),
+                    title: Text("Profile", style: TextStyles.semiBoldViolet14,),
                     selectedColor: AppTheme.primaryColourViolet,
                   ),
                 ],

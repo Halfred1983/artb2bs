@@ -27,6 +27,10 @@ abstract class _$BookingCWProxy {
 
   Booking bookingId(String? bookingId);
 
+  Booking paymentIntentId(String? paymentIntentId);
+
+  Booking bookingTime(DateTime? bookingTime);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Booking(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -44,6 +48,8 @@ abstract class _$BookingCWProxy {
     String? commission,
     String? totalPrice,
     String? bookingId,
+    String? paymentIntentId,
+    DateTime? bookingTime,
   });
 }
 
@@ -85,6 +91,13 @@ class _$BookingCWProxyImpl implements _$BookingCWProxy {
   Booking bookingId(String? bookingId) => this(bookingId: bookingId);
 
   @override
+  Booking paymentIntentId(String? paymentIntentId) =>
+      this(paymentIntentId: paymentIntentId);
+
+  @override
+  Booking bookingTime(DateTime? bookingTime) => this(bookingTime: bookingTime);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Booking(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -103,6 +116,8 @@ class _$BookingCWProxyImpl implements _$BookingCWProxy {
     Object? commission = const $CopyWithPlaceholder(),
     Object? totalPrice = const $CopyWithPlaceholder(),
     Object? bookingId = const $CopyWithPlaceholder(),
+    Object? paymentIntentId = const $CopyWithPlaceholder(),
+    Object? bookingTime = const $CopyWithPlaceholder(),
   }) {
     return Booking(
       bookingStatus: bookingStatus == const $CopyWithPlaceholder()
@@ -145,6 +160,14 @@ class _$BookingCWProxyImpl implements _$BookingCWProxy {
           ? _value.bookingId
           // ignore: cast_nullable_to_non_nullable
           : bookingId as String?,
+      paymentIntentId: paymentIntentId == const $CopyWithPlaceholder()
+          ? _value.paymentIntentId
+          // ignore: cast_nullable_to_non_nullable
+          : paymentIntentId as String?,
+      bookingTime: bookingTime == const $CopyWithPlaceholder()
+          ? _value.bookingTime
+          // ignore: cast_nullable_to_non_nullable
+          : bookingTime as DateTime?,
     );
   }
 }
@@ -175,6 +198,9 @@ Booking _$BookingFromJson(Map<String, dynamic> json) => Booking(
       commission: json['commission'] as String?,
       totalPrice: json['totalPrice'] as String?,
       bookingId: json['bookingId'] as String?,
+      paymentIntentId: json['paymentIntentId'] as String?,
+      bookingTime: _$JsonConverterFromJson<Timestamp, DateTime>(
+          json['bookingTime'], const TimestampConverter().fromJson),
     );
 
 Map<String, dynamic> _$BookingToJson(Booking instance) => <String, dynamic>{
@@ -190,6 +216,9 @@ Map<String, dynamic> _$BookingToJson(Booking instance) => <String, dynamic>{
       'commission': instance.commission,
       'totalPrice': instance.totalPrice,
       'bookingId': instance.bookingId,
+      'paymentIntentId': instance.paymentIntentId,
+      'bookingTime': _$JsonConverterToJson<Timestamp, DateTime>(
+          instance.bookingTime, const TimestampConverter().toJson),
     };
 
 const _$BookingStatusEnumMap = {

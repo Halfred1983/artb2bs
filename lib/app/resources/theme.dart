@@ -42,6 +42,7 @@ class AppTheme {
       highlightColor: accentColor.withOpacity(0.2),
       appBarTheme: _appBarTheme,
       elevatedButtonTheme: _elevatedButtonTheme,
+      outlinedButtonTheme: _outlineButtonTheme,
       textButtonTheme: _textButtonTheme,
       unselectedWidgetColor: primaryColor,
       textTheme:  const TextTheme(
@@ -63,6 +64,7 @@ class AppTheme {
         highlightColor: accentColor.withOpacity(0.2),
         appBarTheme: _appBarTheme,
         elevatedButtonTheme: _elevatedButtonTheme,
+        // outlinedButtonTheme: _outlineButtonTheme,
         unselectedWidgetColor: fideuramGreyArtist001
     );
   }
@@ -116,6 +118,19 @@ class AppTheme {
 
   );
 
+  static final _outlineButtonTheme = OutlinedButtonThemeData(
+    style: OutlinedButton.styleFrom(
+      backgroundColor: AppTheme.white,
+      foregroundColor: AppTheme.primaryColourViolet,
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      minimumSize: const Size(200.0, 48.0),
+      shape: _buttonCornerRadius,
+      textStyle: TextStyles.regularWhite16,
+      // padding: const EdgeInsets.all(16.0),
+      elevation: 1.0,
+      // shadowColor: AppTheme.backgroundGrey,
+    ),
+  );
 
 
   static final _elevatedButtonTheme = ElevatedButtonThemeData(
@@ -126,7 +141,7 @@ class AppTheme {
       minimumSize: const Size(200.0, 48.0),
       shape: _buttonCornerRadius,
       textStyle: TextStyles.regularWhite16,
-      padding: const EdgeInsets.all(16.0),
+      // padding: const EdgeInsets.all(16.0),
       elevation: 1.0,
       shadowColor: AppTheme.backgroundGrey,
     ),

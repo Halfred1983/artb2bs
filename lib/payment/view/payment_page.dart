@@ -99,7 +99,7 @@ class PaymentPage extends StatelessWidget {
                 );
               }
               if(state.status == PaymentStatus.success) {
-                context.read<BookingCubit>().completeBooking(booking, user, host);
+                context.read<BookingCubit>().completeBooking(booking, user, host, state.paymentIntentId!);
 
                 return BlocBuilder<BookingCubit, BookingState>(
                     builder: (context, state) {

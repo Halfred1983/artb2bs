@@ -5,6 +5,8 @@ import 'package:database_service/src/service/database_service.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:uuid/uuid.dart';
 
+import '../models/refund.dart';
+
 
 class FirestoreDatabaseService implements DatabaseService {
   FirestoreDatabaseService({
@@ -109,9 +111,7 @@ class FirestoreDatabaseService implements DatabaseService {
 
       // Build the base query
       Query query = collection
-          .where(FieldPath.documentId, whereIn: user.bookings!.sublist(
-          fromIndex, user.bookings!.length > toIndex
-          ? toIndex : user.bookings!.length)
+          .where(FieldPath.documentId, whereIn: user.bookings
       );
 
       return query.snapshots();
@@ -123,7 +123,7 @@ class FirestoreDatabaseService implements DatabaseService {
 
 
   @override
-  Future<List<Booking>> retrieveBookingList({required User user, DateTime? dateFrom}) async {
+  Future<List<Booking>> retrieveBookingList({required User user, DateTime? dateFrom, DateTime? dateTo}) async {
     try {
       List<Booking> dataList = [];
 
@@ -144,6 +144,38 @@ class FirestoreDatabaseService implements DatabaseService {
       return dataList;
     } catch (e) {
       print('retrieveBookingList $e');
+      throw e;
+    }
+  }
+
+  @override
+  Future<void> updateBooking({required Booking booking}) async {
+    try  {
+      await _firestore.collection('bookings')
+          .doc(booking.bookingId).update(booking.toJson());
+    } on Exception {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> createRefundRequest(Refund refundRequest) async {
+    try  {
+      await _firestore.collection('refunds')
+          .doc(refundRequest.bookingId)
+          .set(refundRequest.toJson());
+    } on Exception catch (e) {
+      throw e;
+    }
+  }
+
+  @override
+  Future<void> createAccepted(Accepted accepted) async {
+    try  {
+      await _firestore.collection('accepted')
+          .doc(accepted.bookingId)
+          .set(accepted.toJson());
+    } on Exception catch (e) {
       throw e;
     }
   }

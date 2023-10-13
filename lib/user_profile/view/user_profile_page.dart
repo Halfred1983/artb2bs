@@ -1,14 +1,14 @@
-import 'package:artb2b/profile/view/profile_view.dart';
+import 'package:artb2b/user_profile/view/user_profile_view.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 
 import '../../../injection.dart';
 
-class ProfilePage extends StatelessWidget {
+class UserProfilePage extends StatelessWidget {
 
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => ProfilePage());
+    return MaterialPageRoute<void>(builder: (_) => UserProfilePage());
   }
 
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
@@ -17,7 +17,7 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return ProfileView();
+    return const UserProfileView();
       // BlocProvider<ArtworkCubit>(
       //   create: (context) => ArtworkCubit(
       //     databaseService: databaseService,
