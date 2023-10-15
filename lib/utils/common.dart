@@ -102,3 +102,12 @@ extension StringExtension on String {
     return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
   }
 }
+
+
+extension DateUtils on DateTime {
+  bool isSameDay(DateTime date) {
+    return this.year == date.year &&
+        this.month == date.month &&
+        this.day == date.day;
+  }
+}

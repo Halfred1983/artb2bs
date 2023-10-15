@@ -58,8 +58,8 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
 
     Map<String, DateTimeRange> bookingDateRange = {};
     for (var booking in _bookings) {
-        bookingDateRange[booking.bookingId!] =
-            DateTimeRange(start: booking.from!, end: booking.to!);
+      bookingDateRange[booking.bookingId!] =
+          DateTimeRange(start: booking.from!, end: booking.to!);
     }
 
     return bookingDateRange;
@@ -77,7 +77,8 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
   }
 
   bool _isDateTimeWithinRange(DateTime dateTime, DateTimeRange dateRange) {
-    return dateRange.start.isBefore(dateTime) && dateRange.end.isAfter(dateTime);
+    return (dateRange.start.isBefore(dateTime) && dateRange.end.isAfter(dateTime)) ||
+        dateRange.start.isSameDay(dateTime) || dateRange.end.isSameDay(dateTime);
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -141,183 +142,183 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
           ),
           const SizedBox(height: 8.0),
           Expanded(
-            child: ValueListenableBuilder<List<Booking>>(
-              valueListenable: _selectedEvents,
-              builder: (context, value, _) {
-                      return ListView.builder(
-                        itemCount: value.length,
-                        itemBuilder: (context, index) {
-                          return FutureBuilder<User?>(
-                              future: widget.user.userInfo!.userType == UserType.gallery ?
-                              firestoreDatabaseService.getUser(userId: value[index].artistId!) :
-                              firestoreDatabaseService.getUser(userId: value[index].hostId!),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData &&
-                                snapshot.connectionState ==
-                                    ConnectionState.done) {
-                              return Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Image.asset(widget.user.userInfo!.userType! == UserType.gallery ?
-                                        'assets/images/artist.png' : 'assets/images/gallery.png',
-                                          width: 40,),
-                                        horizontalMargin12,
-                                        Text(snapshot.data!.userInfo!.name!,
-                                          style: TextStyles.boldViolet16,),
-                                      ],
-                                    ),
-                                    // verticalMargin12,
-                                    // const Divider(thickness: 0.5, color: AppTheme.primaryColor,),
-                                    // verticalMargin12,
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        if(snapshot.data!.userInfo!.userType! == UserType.artist) ...[
-                            Text("City: ",
-                            style: TextStyles.boldViolet16,),
-                            Flexible(child: Text(snapshot.data!
-                                .userInfo!.address!
-                                .city,
-                            softWrap: true, style: TextStyles
-                                .semiBolViolet16,))
-                                        ] else ...[
-                                          Text("Address: ",
+              child: ValueListenableBuilder<List<Booking>>(
+                valueListenable: _selectedEvents,
+                builder: (context, value, _) {
+                  return ListView.builder(
+                      itemCount: value.length,
+                      itemBuilder: (context, index) {
+                        return FutureBuilder<User?>(
+                            future: widget.user.userInfo!.userType == UserType.gallery ?
+                            firestoreDatabaseService.getUser(userId: value[index].artistId!) :
+                            firestoreDatabaseService.getUser(userId: value[index].hostId!),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData &&
+                                  snapshot.connectionState ==
+                                      ConnectionState.done) {
+                                return Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Image.asset(widget.user.userInfo!.userType! == UserType.gallery ?
+                                          'assets/images/artist.png' : 'assets/images/gallery.png',
+                                            width: 40,),
+                                          horizontalMargin12,
+                                          Text(snapshot.data!.userInfo!.name!,
                                             style: TextStyles.boldViolet16,),
-                                          Flexible(child: Text(snapshot.data!
-                                              .userInfo!.address!
-                                              .formattedAddress,
-                                            softWrap: true, style: TextStyles
-                                                .semiBolViolet16,)),
-                                        ]
+                                        ],
+                                      ),
+                                      // verticalMargin12,
+                                      // const Divider(thickness: 0.5, color: AppTheme.primaryColor,),
+                                      // verticalMargin12,
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          if(snapshot.data!.userInfo!.userType! == UserType.artist) ...[
+                                            Text("City: ",
+                                              style: TextStyles.boldViolet16,),
+                                            Flexible(child: Text(snapshot.data!
+                                                .userInfo!.address!
+                                                .city,
+                                              softWrap: true, style: TextStyles
+                                                  .semiBolViolet16,))
+                                          ] else ...[
+                                            Text("Address: ",
+                                              style: TextStyles.boldViolet16,),
+                                            Flexible(child: Text(snapshot.data!
+                                                .userInfo!.address!
+                                                .formattedAddress,
+                                              softWrap: true, style: TextStyles
+                                                  .semiBolViolet16,)),
+                                          ]
 
-                                      ],
-                                    ),
-                                    verticalMargin12,
-                                    const Divider(
-                                      thickness: 0.6, color: Colors.black38,),
-                                    Column(
-                                      children: [
-                                        Row(
+                                        ],
+                                      ),
+                                      verticalMargin12,
+                                      const Divider(
+                                        thickness: 0.6, color: Colors.black38,),
+                                      Column(
+                                        children: [
+                                          Row(
+                                              mainAxisAlignment: MainAxisAlignment
+                                                  .start,
+                                              children: [
+                                                Text('Spaces: ',
+                                                  style: TextStyles
+                                                      .semiBoldAccent16,),
+                                                Text(value[index].spaces!,
+                                                  style: TextStyles
+                                                      .semiBoldViolet16,),
+                                              ]
+                                          ),
+                                          verticalMargin12,
+                                          Row(
+                                              mainAxisAlignment: MainAxisAlignment
+                                                  .start,
+                                              children: [
+                                                Text('Days: ', style: TextStyles
+                                                    .semiBoldAccent16,),
+                                                Text(
+                                                  BookingService()
+                                                      .daysBetween(
+                                                      value[index].from!,
+                                                      value[index].to!)
+                                                      .toString(),
+                                                  style: TextStyles
+                                                      .semiBoldViolet16,),
+                                              ]
+                                          ),
+
+                                          verticalMargin12,
+                                          Row(
+                                              mainAxisAlignment: MainAxisAlignment
+                                                  .start,
+                                              children: [
+                                                Text('From: ', style: TextStyles
+                                                    .semiBoldAccent16,),
+                                                Text(
+                                                  DateFormat.yMMMEd().format(
+                                                      value[index].from!),
+                                                  style: TextStyles
+                                                      .semiBoldViolet16,),
+                                              ]
+                                          ),
+                                          verticalMargin12,
+                                          Row(
                                             mainAxisAlignment: MainAxisAlignment
                                                 .start,
                                             children: [
-                                              Text('Spaces: ',
+                                              Text('To: ', style: TextStyles
+                                                  .semiBoldAccent16,),
+                                              Text(DateFormat.yMMMEd().format(
+                                                  value[index].to!),
+                                                style: TextStyles
+                                                    .semiBoldViolet16,),
+                                            ],
+                                          ),
+                                          verticalMargin12,
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment
+                                                .start,
+                                            children: [
+                                              Text('Price: ', style: TextStyles
+                                                  .semiBoldAccent16,),
+                                              // Text('${booking!.spaces!} spaces X ${daysBetween(booking!.from!, booking!.to!)} days X ${int.parse(user!.bookingSettings!.basePrice!).toDouble()} GBP',
+                                              //   style: TextStyles.semiBoldViolet16, ),
+                                              Text('${value[index].price!} GBP',
+                                                style: TextStyles
+                                                    .semiBoldViolet16,),
+                                            ],
+                                          ),
+                                          verticalMargin12,
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment
+                                                .start,
+                                            children: [
+                                              Text('Commission (15%): ',
                                                 style: TextStyles
                                                     .semiBoldAccent16,),
-                                              Text(value[index].spaces!,
+                                              Text(
+                                                '${value[index].commission!} GBP',
                                                 style: TextStyles
                                                     .semiBoldViolet16,),
-                                            ]
-                                        ),
-                                        verticalMargin12,
-                                        Row(
+                                            ],
+                                          ),
+                                          verticalMargin12,
+                                          Row(
                                             mainAxisAlignment: MainAxisAlignment
                                                 .start,
                                             children: [
-                                              Text('Days: ', style: TextStyles
-                                                  .semiBoldAccent16,),
+                                              Text('Total price: ',
+                                                style: TextStyles
+                                                    .semiBoldAccent16,),
                                               Text(
-                                                BookingService()
-                                                    .daysBetween(
-                                                    value[index].from!,
-                                                    value[index].to!)
-                                                    .toString(),
+                                                '${value[index].totalPrice!} GBP',
                                                 style: TextStyles
                                                     .semiBoldViolet16,),
-                                            ]
-                                        ),
-
-                                        verticalMargin12,
-                                        Row(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .start,
-                                            children: [
-                                              Text('From: ', style: TextStyles
-                                                  .semiBoldAccent16,),
-                                              Text(
-                                                DateFormat.yMMMEd().format(
-                                                    value[index].from!),
-                                                style: TextStyles
-                                                    .semiBoldViolet16,),
-                                            ]
-                                        ),
-                                        verticalMargin12,
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .start,
-                                          children: [
-                                            Text('To: ', style: TextStyles
-                                                .semiBoldAccent16,),
-                                            Text(DateFormat.yMMMEd().format(
-                                                value[index].to!),
-                                              style: TextStyles
-                                                  .semiBoldViolet16,),
-                                          ],
-                                        ),
-                                        verticalMargin12,
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .start,
-                                          children: [
-                                            Text('Price: ', style: TextStyles
-                                                .semiBoldAccent16,),
-                                            // Text('${booking!.spaces!} spaces X ${daysBetween(booking!.from!, booking!.to!)} days X ${int.parse(user!.bookingSettings!.basePrice!).toDouble()} GBP',
-                                            //   style: TextStyles.semiBoldViolet16, ),
-                                            Text('${value[index].price!} GBP',
-                                              style: TextStyles
-                                                  .semiBoldViolet16,),
-                                          ],
-                                        ),
-                                        verticalMargin12,
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .start,
-                                          children: [
-                                            Text('Commission (15%): ',
-                                              style: TextStyles
-                                                  .semiBoldAccent16,),
-                                            Text(
-                                              '${value[index].commission!} GBP',
-                                              style: TextStyles
-                                                  .semiBoldViolet16,),
-                                          ],
-                                        ),
-                                        verticalMargin12,
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .start,
-                                          children: [
-                                            Text('Total price: ',
-                                              style: TextStyles
-                                                  .semiBoldAccent16,),
-                                            Text(
-                                              '${value[index].totalPrice!} GBP',
-                                              style: TextStyles
-                                                  .semiBoldViolet16,),
-                                          ],
-                                        ),
-                                      ],
-                                    )
-                                  ]
-                              );
+                                            ],
+                                          ),
+                                        ],
+                                      )
+                                    ]
+                                );
+                              }
+                              else {
+                                return Center(
+                                    child: Lottie.asset(
+                                      'assets/loading.json',
+                                      fit: BoxFit.fill,
+                                    ));
+                              }
                             }
-                            else {
-                              return Center(
-                                  child: Lottie.asset(
-                                  'assets/loading.json',
-                                  fit: BoxFit.fill,
-                              ));
-                            }
-                          }
-                      );
-                    });
-                  },
-                )
+                        );
+                      });
+                },
+              )
 
-            ),
+          ),
         ],
       ),
     );
