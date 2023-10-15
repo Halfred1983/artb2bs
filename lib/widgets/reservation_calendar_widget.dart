@@ -148,7 +148,9 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                         itemCount: value.length,
                         itemBuilder: (context, index) {
                           return FutureBuilder<User?>(
-                              future: firestoreDatabaseService.getUser(userId: value[index].hostId!),
+                              future: widget.user.userInfo!.userType == UserType.gallery ?
+                              firestoreDatabaseService.getUser(userId: value[index].artistId!) :
+                              firestoreDatabaseService.getUser(userId: value[index].hostId!),
                           builder: (context, snapshot) {
                             if (snapshot.hasData &&
                                 snapshot.connectionState ==
@@ -157,7 +159,8 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                                   children: [
                                     Row(
                                       children: [
-                                        Image.asset('assets/images/gallery.png',
+                                        Image.asset(widget.user.userInfo!.userType! == UserType.gallery ?
+                                        'assets/images/artist.png' : 'assets/images/gallery.png',
                                           width: 40,),
                                         horizontalMargin12,
                                         Text(snapshot.data!.userInfo!.name!,
@@ -172,13 +175,24 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                                           .start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Text("Address: ",
-                                          style: TextStyles.boldViolet16,),
-                                        Flexible(child: Text(snapshot.data!
-                                            .userInfo!.address!
-                                            .formattedAddress,
-                                          softWrap: true, style: TextStyles
-                                              .semiBolViolet16,)),
+                                        if(snapshot.data!.userInfo!.userType! == UserType.artist) ...[
+                            Text("City: ",
+                            style: TextStyles.boldViolet16,),
+                            Flexible(child: Text(snapshot.data!
+                                .userInfo!.address!
+                                .city,
+                            softWrap: true, style: TextStyles
+                                .semiBolViolet16,))
+                                        ] else ...[
+                                          Text("Address: ",
+                                            style: TextStyles.boldViolet16,),
+                                          Flexible(child: Text(snapshot.data!
+                                              .userInfo!.address!
+                                              .formattedAddress,
+                                            softWrap: true, style: TextStyles
+                                                .semiBolViolet16,)),
+                                        ]
+
                                       ],
                                     ),
                                     verticalMargin12,
