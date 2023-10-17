@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:artb2b/booking_requests/view/booking_request_page.dart';
 import 'package:artb2b/home/view/home_view.dart';
 import 'package:artb2b/login/view/login_view.dart';
 import 'package:artb2b/profile/profile.dart';
@@ -53,6 +54,11 @@ class AppRouter {
         builder: (context, state) => ProfilePage(
           userId: state.pathParameters["userId"].toString(),
         ),
+      ),
+      GoRoute(
+        path: "/bookingRequests",
+        name: "bookingRequests",
+        builder: (context, state) => BookingRequestPage(),
       )
     ],
     redirect: (BuildContext context, GoRouterState state) {

@@ -1,4 +1,5 @@
 import 'package:artb2b/host/cubit/host_cubit.dart';
+import 'package:artb2b/host/view/host_dashboard_page.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,10 @@ class HostDashboardEditPage extends StatelessWidget {
         child:  BlocBuilder<HostCubit, HostState>(
             builder: (context, state) {
               if(state is DataSaved) {
-                WidgetsBinding.instance.addPostFrameCallback((_) => Navigator.of(context).pop());
+                WidgetsBinding.instance.addPostFrameCallback((_) => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HostDashboardPage()),
+                ));
               }
 
               if (state is LoadingState) {

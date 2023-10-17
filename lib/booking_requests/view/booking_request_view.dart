@@ -80,7 +80,7 @@ class BookingRequestView extends StatelessWidget {
                                 }
                               }
 
-                              if(_bookings.length > 0) {
+                              if(_bookings.isNotEmpty) {
                                 return ListView.builder(
                                     itemCount: _bookings.length,
                                     itemBuilder: (context, index) {

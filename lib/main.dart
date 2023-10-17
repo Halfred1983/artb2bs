@@ -2,14 +2,12 @@ import 'package:artb2b/ui/routing/app_router.dart';
 import 'package:artb2b/widgets/dismiss_keyboard.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:go_router/go_router.dart';
 import 'package:notification_service/notifications.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '.env';
 import 'app/resources/theme.dart';
@@ -58,25 +56,6 @@ class Artb2b extends StatelessWidget {
                 ),
           ),
         ],
-        child: BlocListener<NotificationBloc, NotificationState>(
-          listenWhen: (previous, current) {
-            return previous != current &&
-                current.notification != null &&
-                current.appState != null;
-          },
-          listener: (context, state) {
-            final notification = state.notification!;
-            if (state.appState!.isForeground) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: ListTile(
-                    title: Text(notification.title),
-                    subtitle: Text(notification.body),
-                  ),
-                ),
-              );
-            }
-          },
           child: Builder(
             builder: (context) {
               return MaterialApp.router(
@@ -89,7 +68,6 @@ class Artb2b extends StatelessWidget {
             },
           ),
         ),
-      ),
     );
   }
 }

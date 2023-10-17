@@ -120,9 +120,11 @@ exports.processRefund = functions.firestore.document('refunds/{refundId}')
                 priority : 'high',
               },
               data: {
-                    messageID: 'messageID',
-                    messageTimestamp: '12341232132',
-                  },
+                    title: 'Your booking request was refunded',
+                    body: `Unfortunately ${hostName} has rejected your booking request. We refunded your booking.`,
+                    click_action: 'FLUTTER_NOTIFICATION_CLICK',
+                    screen: "homePage",//or secondScreen or thirdScreen
+                },
             };
 
             console.log('Token. '+ artistFcmToken+' payload '+payload);
@@ -176,8 +178,10 @@ exports.processRefund = functions.firestore.document('accepted/{acceptedId}')
                 priority : 'high',
               },
               data: {
-                    messageID: 'messageID',
-                    messageTimestamp: '12341232132',
+                    title: 'Your booking request has been accepted!',
+                    body: `Congratulations! ${hostName} accepted your booking request! Get ready for your exhibition!`,
+                    click_action: 'FLUTTER_NOTIFICATION_CLICK',
+                    screen: "homePage",//or secondScreen or thirdScreen
                   },
             };
 
@@ -235,8 +239,10 @@ exports.sendBookingNotification = functions.firestore
           priority : 'high',
         },
         data: {
-              messageID: 'messageID',
-              messageTimestamp: '12341232132',
+              title: 'New Booking Request',
+              body: `Congratulations ! ${artistName} has sent you a booking request from ${from} to ${to} for ${totalPrice} £. `,
+              click_action: 'FLUTTER_NOTIFICATION_CLICK',
+              screen: "bookingRequests",//or secondScreen or thirdScreen
             },
       };
 

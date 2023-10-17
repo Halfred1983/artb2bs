@@ -22,7 +22,6 @@ class NotificationService {
   })  : _vapidKey = vapidKey,
         _firebaseMessaging = firebaseMessaging ?? FirebaseMessaging.instance,
         _firestore = database,
-        _userId = userId,
         _onForegroundNotification =
             onForegroundNotification ?? FirebaseMessaging.onMessage,
         _onNotificationOpenedController = BehaviorSubject<Notification>() {
@@ -34,11 +33,7 @@ class NotificationService {
   final Stream<RemoteMessage> _onForegroundNotification;
   final BehaviorSubject<Notification> _onNotificationOpenedController;
   final firestore.FirebaseFirestore? _firestore;
-  String? _userId;
 
-  set userId(String userId) {
-    _userId = userId;
-  }
 
   Future<void> _initialize(Stream<RemoteMessage> onNotificationOpened) async {
     final response = await _firebaseMessaging.requestPermission();
@@ -75,8 +70,9 @@ class NotificationService {
     if (notification != null) {
       _onNotificationOpenedController.sink.add(
         Notification(
-          title: notification.title ?? '',
-          body: notification.body ?? '',
+            title: notification.title ?? '',
+            body: notification.body ?? '',
+            screen: message.data['screen'] ?? ''
         ),
       );
     }
@@ -100,8 +96,9 @@ class NotificationService {
         return null;
       }
       return Notification(
-        title: notification.title ?? '',
-        body: notification.body ?? '',
+          title: notification.title ?? '',
+          body: notification.body ?? '',
+          screen: message.data['screen'] ?? ''
       );
     });
   }
