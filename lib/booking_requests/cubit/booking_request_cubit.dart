@@ -29,19 +29,22 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
       try {
         emit(LoadingState());
 
-        var overlap = '';
         var bookings = await databaseService.retrieveBookingList(user: user);
 
+        int freeSpaces = int.parse(user.userArtInfo!.spaces!) -  int.parse(booking.spaces!);
         for(var book in bookings) {
           if(booking.from!.isBefore(book.to!) && booking.to!.isAfter(book.from!)
-              && booking.bookingId != book.bookingId && book.bookingStatus == BookingStatus.accepted) {
+              && booking.bookingId != book.bookingId &&
+              book.bookingStatus == BookingStatus.accepted) {
 
-            overlap = 'from ${DateFormat.yMMMEd().format(booking.from!)} \nto ${DateFormat.yMMMEd().format(booking.to!)}';
+            freeSpaces = freeSpaces - int.parse(book.spaces!);
           }
         }
 
-        if(overlap.length > 1) {
-          emit(OverlapErrorState('There is already a booking confirmed in the dates:\n $overlap', user));
+        if(freeSpaces < 0) {
+          emit(OverlapErrorState('There are not enough free spaces for '
+              'the dates:\n from ${DateFormat.yMMMEd().format(booking.from!)} \n'
+              'to ${DateFormat.yMMMEd().format(booking.to!)}', user));
         }
         else {
           booking = booking.copyWith(bookingStatus: BookingStatus.accepted );

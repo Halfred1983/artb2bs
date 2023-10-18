@@ -116,14 +116,14 @@ class _HomeViewState extends State<HomeView> {
                   items: [
                     /// Home
                     SalomonBottomBarItem(
-                      icon: const Icon(Icons.home, size: 18,),
+                      icon: const Icon(Icons.home, size: 20,),
                       title: Text("Home", style: TextStyles.semiBoldViolet14,),
                       selectedColor: AppTheme.primaryColourViolet,
                     ),
 
                     /// Likes
                     SalomonBottomBarItem(
-                      icon: const Icon(Icons.dashboard, size: 18,),
+                      icon: const Icon(Icons.dashboard, size: 20,),
                       title: Text("Dashboard", style: TextStyles.semiBoldViolet14,),
                       selectedColor: AppTheme.primaryColourViolet,
                     ),
@@ -131,7 +131,7 @@ class _HomeViewState extends State<HomeView> {
                     /// Requests
                     if(user!.userInfo!.userType != UserType.artist) ...[
                       SalomonBottomBarItem(
-                        icon: const Icon(Icons.add_alert_sharp, size: 18),
+                        icon: const Icon(Icons.add_alert_sharp, size: 20),
                         title:  Text("Requests", style: TextStyles.semiBoldViolet14,),
                         selectedColor: AppTheme.primaryColourViolet,
                       ),
@@ -139,14 +139,14 @@ class _HomeViewState extends State<HomeView> {
 
                     /// Calendar
                     SalomonBottomBarItem(
-                      icon: const Icon(Icons.calendar_month, size: 18),
+                      icon: const Icon(Icons.calendar_month, size: 20),
                       title: Text("Calendar", style: TextStyles.semiBoldViolet14,),
                       selectedColor: AppTheme.primaryColourViolet,
                     ),
 
                     /// Profile
                     SalomonBottomBarItem(
-                      icon: const Icon(Icons.person, size: 18),
+                      icon: const Icon(Icons.person, size: 20),
                       title: Text("Profile", style: TextStyles.semiBoldViolet14,),
                       selectedColor: AppTheme.primaryColourViolet,
                     ),

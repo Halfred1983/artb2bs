@@ -14,7 +14,7 @@ import 'common_card_widget.dart';
 class BookingCalendarWidget extends StatefulWidget {
   BookingCalendarWidget(this.rangeStartChanged, {super.key, required this.host});
 
-  final ValueChanged<DateTimeRange> rangeStartChanged;
+  final ValueChanged<DateTimeRangeWithInt> rangeStartChanged;
   final User host;
 
   @override
@@ -42,50 +42,10 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
         _bookingDateRange = dates;
       });
     });
-    // DateTime.now().startOfDay
-    // DateTime.now().endOfDay
-    // mockBookingService = BookingService(
-    //     serviceName: 'Mock Service',
-    //     serviceDuration: 30,
-    //     bookingEnd: DateTime(now.year, now.month, now.day, 18, 0),
-    //     bookingStart: DateTime(now.year, now.month, now.day, 8, 0));
   }
 
 
   List<DateTimeRange> converted = [];
-
-  List<DateTimeRange> convertStreamResultMock({required dynamic streamResult}) {
-    ///here you can parse the streamresult and convert to [List<DateTimeRange>]
-    ///take care this is only mock, so if you add today as disabledDays it will still be visible on the first load
-    ///disabledDays will properly work with real data
-    DateTime first = now;
-    DateTime tomorrow = now.add(Duration(days: 1));
-    DateTime second = now.add(const Duration(minutes: 55));
-    DateTime third = now.subtract(const Duration(minutes: 240));
-    DateTime fourth = now.subtract(const Duration(minutes: 500));
-    converted.add(
-        DateTimeRange(start: first, end: now.add(const Duration(minutes: 30))));
-    converted.add(DateTimeRange(
-        start: second, end: second.add(const Duration(minutes: 23))));
-    converted.add(DateTimeRange(
-        start: third, end: third.add(const Duration(minutes: 15))));
-    converted.add(DateTimeRange(
-        start: fourth, end: fourth.add(const Duration(minutes: 50))));
-
-    //book whole day example
-    converted.add(DateTimeRange(
-        start: DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 5, 0),
-        end: DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 23, 0)));
-    return converted;
-  }
-
-  List<DateTimeRange> generatePauseSlots() {
-    return [
-      DateTimeRange(
-          start: DateTime(now.year, now.month, now.day, 12, 0),
-          end: DateTime(now.year, now.month, now.day, 13, 0))
-    ];
-  }
 
   Future<Map<DateTime, int>> generateDisabledDates() async {
     List<Booking> bookings = await firestoreDatabaseService.retrieveBookingList(user: widget.host);
@@ -150,44 +110,15 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
               Booking b = e as Booking;
               freeSpaces = freeSpaces - int.parse(b.spaces!);
             }
-            return ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: events.length,
-                itemBuilder: (context, index) {
-                  Booking booking = events[index] as Booking;
-                  return Container(
+            return Container(
                     margin: const EdgeInsets.only(top: 38),
                     padding: const EdgeInsets.all(1),
                     child: Text(freeSpaces.toString(), style: TextStyles
                         .semiBoldViolet12),
                   );
-                });
           },
-
-          // singleMarkerBuilder: (context, date, event) {
-          //   return Container(
-          //     decoration: const BoxDecoration(
-          //         shape: BoxShape.circle,
-          //         color: Colors.red
-          //     ),
-          //     width: 7.0,
-          //     height: 7.0,
-          //     margin: const EdgeInsets.symmetric(horizontal: 1.5),
-          //   );
-          // },
         ),
-        // holidayPredicate: (day) {
-        //   if (_disabledDates == null) return false;
-        //
-        //   bool isHoliday = false;
-        //   for (var holiday in _disabledDates!) {
-        //     if (isSameDay(day, holiday)) {
-        //       isHoliday = true;
-        //     }
-        //   }
-        //   return isHoliday;
-        // },
+
         eventLoader: (day) {
           return _getEventsForDay(day);
         },
@@ -195,9 +126,14 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
           if (_disabledDates.isEmpty) return true;
 
           bool isEnabled = true;
-          _disabledDates.forEach((key, value) {
-            if (isSameDay(day, key)) {
-              if (value <= 0) isEnabled = false;
+          _disabledDates.forEach((date, spaces) {
+            if (isSameDay(day, date)) {
+
+              if (spaces <= 0 ||
+                  spaces < int.parse(widget.host.bookingSettings!.minSpaces!)) {
+                isEnabled = false;
+              }
+
             }
           });
 
@@ -232,15 +168,6 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
         selectedDayPredicate: (day) {
           return isSameDay(_selectedDay, day);
         },
-        // onDaySelected: (selectedDay, focusedDay) {
-        //   if (!isSameDay(_selectedDay, selectedDay)) {
-        //     setState(() {
-        //       _selectedDay = selectedDay;
-        //       _focusedDay = focusedDay;
-        //     });
-        //     // selectNewDateRange();
-        //   }
-        // },
         onDaySelected: (selectedDay, focusedDay) {
           if (!isSameDay(_selectedDay, selectedDay)) {
             setState(() {
@@ -265,13 +192,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
             _rangeSelectionMode = RangeSelectionMode.toggledOn;
           });
         },
-        // onFormatChanged: (format) {
-        //   if (_calendarFormat != format) {
-        //     setState(() {
-        //       _calendarFormat = format;
-        //     });
-        //   }
-        // },
+
         onPageChanged: (focusedDay) {
           _focusedDay = focusedDay;
         },
@@ -281,7 +202,9 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
 
   void _rangeDateChange() {
     var range = DateTimeRange(start: _rangeStart!, end: _rangeEnd!);
-    _rangeStartChanged(range);
+    int maxSpaces = findMinimumValueInDateRange(_disabledDates, _rangeStart, _rangeEnd);
+    DateTimeRangeWithInt dateTimeRangeWithInt = DateTimeRangeWithInt(range, maxSpaces);
+    _rangeStartChanged(dateTimeRangeWithInt);
   }
 
   late DateTime? _selectedDay = calculateFirstDay();
@@ -291,18 +214,11 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
 
-  final ValueChanged<DateTimeRange> _rangeStartChanged;
+  final ValueChanged<DateTimeRangeWithInt> _rangeStartChanged;
   Map<DateTime, int> _disabledDates = {};
 
   DateTime calculateFirstDay() {
     return DateTime.now();
-    // if (widget.disabledDays != null) {
-    //   return widget.disabledDays!.contains(now.weekday)
-    //       ? now.add(Duration(days: getFirstMissingDay(now.weekday)))
-    //       : now;
-    // } else {
-    //   return DateTime.now();
-    // }
   }
 
   List<Booking> _bookings = [];
@@ -335,4 +251,28 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     return (dateRange.start.isBefore(dateTime) && dateRange.end.isAfter(dateTime)) ||
         dateRange.start.isSameDay(dateTime) || dateRange.end.isSameDay(dateTime);
   }
+
+  int findMinimumValueInDateRange(
+      Map<DateTime, int> dataMap, DateTime? startDate, DateTime? endDate) {
+    int minValue = int.parse(widget.host.userArtInfo!.spaces!); // Initialize to null
+
+    if(startDate != null && endDate != null) {
+      dataMap.forEach((dateTime, value) {
+        if (dateTime.isAfter(startDate) && dateTime.isBefore(endDate)) {
+          // Check if the DateTime is within the specified range
+          if (minValue == null || value < minValue) {
+            minValue = value;
+          }
+        }
+      });
+    }
+    return minValue; // Return the minimum value or 0 if no value is found
+  }
+}
+
+class DateTimeRangeWithInt {
+  final DateTimeRange dateTimeRange;
+  final int maxSpacesAvailable;
+
+  DateTimeRangeWithInt(this.dateTimeRange, this.maxSpacesAvailable);
 }

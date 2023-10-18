@@ -115,7 +115,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                             int bookedSpaces = 0;
                             for(Object? e in events) {
                               Booking b = e as Booking;
-                              bookedSpaces = int.parse(b.spaces!);
+                              bookedSpaces = bookedSpaces + int.parse(b.spaces!);
                             }
                             return Container(
                               margin: const EdgeInsets.only(top: 40),

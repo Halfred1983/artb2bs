@@ -40,14 +40,15 @@ class PaymentLoadedState extends BookingState {
 }
 
 class DateRangeChosen extends BookingState {
-  DateRangeChosen(this.user, this.booking);
+  DateRangeChosen(this.user, this.booking, this.maxSpacesForRange);
 
   final User user;
   final Booking booking;
+  final int maxSpacesForRange;
 
 
   @override
-  List<Object> get props => [user, booking];
+  List<Object> get props => [user, booking, maxSpacesForRange];
 }
 
 class SpacesChosen extends BookingState {

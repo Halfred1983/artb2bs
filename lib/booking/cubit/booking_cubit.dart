@@ -1,3 +1,4 @@
+import 'package:artb2b/widgets/booking_calendar_widget.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/src/material/date.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,25 +24,25 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
-  chooseRange(DateTimeRange dateRangeChosen, User host) {
+  chooseRange(DateTimeRangeWithInt dateRangeChosen, User host) {
 
     Booking booking = this.state.props[1] as Booking;
     User user = this.state.props[0] as User;
 
-    if(dateRangeChosen.duration.inDays < int.parse(host.bookingSettings!.minLength!) ) {
+    if(dateRangeChosen.dateTimeRange.duration.inDays < int.parse(host.bookingSettings!.minLength!) ) {
       emit(DateRangeErrorState(user, booking, 'You need to book at least ${host.bookingSettings!.minLength!} days'));
     }
     else {
       booking = booking.copyWith(
-          from: dateRangeChosen.start,
-          to: dateRangeChosen.end
+          from: dateRangeChosen.dateTimeRange.start,
+          to: dateRangeChosen.dateTimeRange.end
       );
 
-      emit(DateRangeChosen(user, booking));
+      emit(DateRangeChosen(user, booking, dateRangeChosen.maxSpacesAvailable));
     }
   }
 
-  chooseSpaces(String spaceValue, User host) {
+  chooseSpaces(String spaceValue, User host, int maxSpaceAvailable) {
     Booking booking = this.state.props[1] as Booking;
     User user = this.state.props[0] as User;
 
@@ -50,6 +51,9 @@ class BookingCubit extends Cubit<BookingState> {
     }
     else if(spaceValue.length == 0) {
       emit(SpacesErrorState(user, booking, 'Please choose how many spaces you need. At least ${host.bookingSettings!.minSpaces!}'));
+    }
+    else if(int.parse(spaceValue) > maxSpaceAvailable) {
+      emit(SpacesErrorState(user, booking, 'There are only ${maxSpaceAvailable} available for the selected dates'));
     }
     else {
       booking = booking.copyWith(spaces: spaceValue);

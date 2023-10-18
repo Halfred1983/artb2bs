@@ -28,6 +28,7 @@ class BookingView extends StatelessWidget {
   Widget build(BuildContext context) {
     User? user;
     Booking? booking;
+    int maxSpacesAvailable = int.parse(host.userArtInfo!.spaces!);
     return
       BlocBuilder<BookingCubit, BookingState>(
           builder: (context, state) {
@@ -39,6 +40,10 @@ class BookingView extends StatelessWidget {
                 || state is SpacesChosen || state is DateRangeErrorState || state is SpacesErrorState) {
               user = state.props[0] as User;
               booking = state.props[1] as Booking;
+
+              if(state is DateRangeChosen) {
+                maxSpacesAvailable = state.maxSpacesForRange;
+              }
 
               var dataRangeError = '';
               if(state is DateRangeErrorState) {
@@ -105,16 +110,16 @@ class BookingView extends StatelessWidget {
                             ),
                           ),
                           verticalMargin12,
-                          dataRangeError.length>1 ? Text(dataRangeError, style: TextStyles.boldAccent21,) : Container(),
+                          dataRangeError.length>1 ? Text(dataRangeError, style: TextStyles.boldAccent16,) : Container(),
                           verticalMargin12,
                           BookingCalendarWidget((dateRangeChoosen) =>
                               context.read<BookingCubit>().chooseRange(dateRangeChoosen, host), host: host,
                           ),
                           verticalMargin12,
 
-                          InputTextWidget((spaceValue) => context.read<BookingCubit>().chooseSpaces(spaceValue, host),
+                          InputTextWidget((spaceValue) => context.read<BookingCubit>().chooseSpaces(spaceValue, host, maxSpacesAvailable),
                               'Number of spaces', TextInputType.number),
-                          spaceError.length>1 ? Text(spaceError, style: TextStyles.boldAccent21,) : Container(),
+                          spaceError.length>1 ? Text(spaceError, style: TextStyles.boldAccent16,) : Container(),
                           //Price
                           verticalMargin24,
                           booking!.from != null &&
@@ -144,9 +149,6 @@ class BookingView extends StatelessWidget {
                                   BookingService().calculateCommission(BookingService().calculatePrice(booking!, host))).toString(),
                               host
                           );
-
-
-
 
                           Navigator.push(
                             context,
