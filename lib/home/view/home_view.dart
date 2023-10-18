@@ -42,6 +42,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     User? user;
+    int? pendingRequests;
     return  BlocListener<NotificationBloc, NotificationState>(
         listenWhen: (previous, current) {
           return previous != current &&
@@ -74,6 +75,7 @@ class _HomeViewState extends State<HomeView> {
               }
               if (state is LoadedState) {
                 user = state.user;
+                pendingRequests = state.pendingRequests;
 
                 if (user!.userStatus == UserStatus.initialised) {
                   return PersonalInfoPage();
@@ -131,7 +133,11 @@ class _HomeViewState extends State<HomeView> {
                     /// Requests
                     if(user!.userInfo!.userType != UserType.artist) ...[
                       SalomonBottomBarItem(
-                        icon: const Icon(Icons.add_alert_sharp, size: 20),
+                        icon: pendingRequests != null && pendingRequests! > 0 ?
+                        Badge(
+                            label: Text(pendingRequests!.toString()),
+                            child: const Icon(Icons.add_alert_sharp, size: 22)
+                        ) : const Icon(Icons.add_alert_sharp, size: 22,),
                         title:  Text("Requests", style: TextStyles.semiBoldViolet14,),
                         selectedColor: AppTheme.primaryColourViolet,
                       ),

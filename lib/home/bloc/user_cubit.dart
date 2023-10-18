@@ -15,7 +15,10 @@ class UserCubit extends Cubit<UserState> {
     try {
       emit(LoadingState());
       final user = await databaseService.getUser(userId: userId);
-      emit(LoadedState(user!));
+      final bookings = await databaseService.retrieveBookingList(user: user!);
+      int pendingRequests = bookings.where((booking) => booking.bookingStatus! == BookingStatus.pending)
+                  .toList().length;
+      emit(LoadedState(user!, pendingRequests: pendingRequests));
     } catch (e) {
       emit(ErrorState());
     }
