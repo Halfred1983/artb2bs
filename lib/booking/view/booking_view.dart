@@ -80,8 +80,9 @@ class BookingView extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text("Address: ", style: TextStyles.boldViolet16,),
-                                    Flexible(child: Text(host.userInfo!.address!.formattedAddress, softWrap: true, style: TextStyles.semiBolViolet16,)),
+                                    Text("Address: ", style: TextStyles.boldViolet14,),
+                                    Flexible(child: Text(host.userInfo!.address!.formattedAddress, softWrap: true,
+                                      style: TextStyles.semiBoldViolet14,)),
 
                                   ],
                                 ),
@@ -90,11 +91,14 @@ class BookingView extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
-                                      Text("Min. spaces: ", style: TextStyles.boldViolet16,),
-                                      Text(host.bookingSettings!.minSpaces!, style: TextStyles.semiBolViolet16,),
+                                      Text("Spaces: ", style: TextStyles.boldViolet14,),
+                                      Text(host.userArtInfo!.spaces!, style: TextStyles.semiBoldViolet14,),
                                       Expanded(child: Container()),
-                                      Text("Min. days: ", style: TextStyles.boldViolet16,),
-                                      Text(host.bookingSettings!.minLength!, style: TextStyles.semiBolViolet16,),
+                                      Text("Min. spaces: ", style: TextStyles.boldViolet14,),
+                                      Text(host.bookingSettings!.minSpaces!, style: TextStyles.semiBoldViolet14,),
+                                      Expanded(child: Container()),
+                                      Text("Min. days: ", style: TextStyles.boldViolet14,),
+                                      Text(host.bookingSettings!.minLength!, style: TextStyles.semiBoldViolet14,),
                                     ]
                                 ),
                               ],

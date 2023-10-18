@@ -10,8 +10,8 @@ class AppTheme {
   static const backgroundColor = backgroundGrey;
   static const primaryColourViolet = Color(0xFF8E2E8E);
   static const accentColourOrange = Color(0xFFE85F4A);
-  static const accentColourOrangeOpacity = Color.fromRGBO(232,95,74,0.3);
-  static const primaryColourVioletOpacity = Color.fromRGBO(146,46,142,0.8);
+  static const accentColourOrangeOpacity = Color.fromRGBO(232,95,74,0.5);
+  static const primaryColourVioletOpacity = Color.fromRGBO(146,46,142,0.6);
   static const secondaryColourRed = Color(0xFFA40500);
   static const white = Color(0xFFFFFFFF);
   static const backgroundGrey = Color(0xFFF0F0F0);
@@ -19,8 +19,8 @@ class AppTheme {
 
 
 
-  static const primaryColorArtist = fideuramGreenArtist001;
-  static const fideuramGreenArtist001 = Color(0xB2E3BDFF);
+  static const primaryColorArtist = primaryCalendarViolet;
+  static const primaryCalendarViolet = Color(0xB2E3BDFF);
   static const accentColorArtist = Color(0x95C8ECFF);
   static const backgroundColorArtist = Color(0x95C8ECFF);
   static const fideuramGreyArtist001 = Color(0x95C8ECFF);

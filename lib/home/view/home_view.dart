@@ -20,10 +20,12 @@ import '../../onboard/view/art_info_page.dart';
 import '../../user_profile/view/user_profile_page.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+  HomeView({super.key, this.index});
+
+  int? index;
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  State<HomeView> createState() => _HomeViewState(index);
 }
 
 class _HomeViewState extends State<HomeView> {
@@ -32,6 +34,10 @@ class _HomeViewState extends State<HomeView> {
 
 
   List<Widget> _widgetOptions = List.empty(growable: true);
+
+  _HomeViewState(int? index) {
+    _currentIndex = index ?? 0;
+  }
 
   @override
   Widget build(BuildContext context) {

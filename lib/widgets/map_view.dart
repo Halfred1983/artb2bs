@@ -164,7 +164,7 @@ class _MapViewState extends State<MapView> {
               isScrollControlled:true,
               builder: (BuildContext context) {
                 return SizedBox(
-                    height: 600,
+                    height: 640,
                     child: Padding(
                         padding: allPadding32,
                         child: Column (
@@ -190,8 +190,9 @@ class _MapViewState extends State<MapView> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Text("Address: ", style: TextStyles.boldViolet16,),
-                                Flexible(child: Text(user.userInfo!.address!.formattedAddress,  softWrap: true, style: TextStyles.semiBolViolet16,)),
+                                Text("Address: ", style: TextStyles.boldViolet14,),
+                                Flexible(child: Text(user.userInfo!.address!.formattedAddress,
+                                  softWrap: true, style: TextStyles.semiBoldViolet14,)),
                               ],
                             ),
                             verticalMargin12,
@@ -201,11 +202,11 @@ class _MapViewState extends State<MapView> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Text("Spaces: ", style: TextStyles.boldViolet16,),
-                                Text(user.userArtInfo!.spaces!, style: TextStyles.semiBolViolet16,),
+                                Text("Spaces: ", style: TextStyles.boldViolet14,),
+                                Text(user.userArtInfo!.spaces!, style: TextStyles.semiBoldViolet14,),
                                 Expanded(child: Container()),
-                                Text("Capacity: ", style: TextStyles.boldViolet16,),
-                                Text(user.userArtInfo!.capacity!, style: TextStyles.semiBolViolet16,),
+                                Text("Capacity: ", style: TextStyles.boldViolet14,),
+                                Text(user.userArtInfo!.capacity!, style: TextStyles.semiBoldViolet14,),
                               ],
                             ),
                             verticalMargin12,
@@ -213,10 +214,11 @@ class _MapViewState extends State<MapView> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Flexible(child: Text("Vibes: ", softWrap: true, style: TextStyles.boldViolet16,)),
-                                Text(user.userArtInfo!.vibes!.join(", "), softWrap: true, style: TextStyles.semiBolViolet16,),
+                                Flexible(flex: 1, child: Text("Vibes: ", softWrap: true, style: TextStyles.boldViolet14,)),
                               ],
                             ),
+                            Text(user.userArtInfo!.vibes!.join(", "), softWrap: true, style: TextStyles.semiBoldViolet14,),
+
                             verticalMargin12,
                             const Divider(thickness: 0.5, color: AppTheme.primaryColor,),
                             verticalMargin12,
@@ -224,7 +226,7 @@ class _MapViewState extends State<MapView> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Text("Price per space per day: ", style: TextStyles.boldViolet16,),
+                                Text("Price per space per day: ", style: TextStyles.boldViolet14,),
                                 Expanded(child: Container()),
                                 Text(user.bookingSettings!.basePrice!+' £', style: TextStyles.boldViolet24,),
                               ],
@@ -234,11 +236,11 @@ class _MapViewState extends State<MapView> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Text("Min. spaces: ", style: TextStyles.boldViolet16,),
-                                  Text(user.bookingSettings!.minSpaces!, style: TextStyles.semiBolViolet16,),
+                                  Text("Min. spaces: ", style: TextStyles.boldViolet14,),
+                                  Text(user.bookingSettings!.minSpaces!, style: TextStyles.semiBoldViolet14,),
                                   Expanded(child: Container()),
-                                  Text("Min. days: ", style: TextStyles.boldViolet16,),
-                                  Text(user.bookingSettings!.minLength!, style: TextStyles.semiBolViolet16,),
+                                  Text("Min. days: ", style: TextStyles.boldViolet14,),
+                                  Text(user.bookingSettings!.minLength!, style: TextStyles.semiBoldViolet14,),
                                 ]
                             ),
 
@@ -308,9 +310,9 @@ class _MapViewState extends State<MapView> {
 
                                         },
                                       ),
-                                    ) : Container();
+                                    ) : SizedBox(height: 90, child: Center(child: Text("Gallery has no photos",  style: TextStyles.semiBolViolet16)));
                                   }
-                                  return Container();
+                                  return SizedBox(height: 90, child: Center(child: Text("Gallery has no photos" , style: TextStyles.semiBolViolet16,)));
                                 }),
 
                             verticalMargin32,

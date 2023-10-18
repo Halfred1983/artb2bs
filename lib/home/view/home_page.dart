@@ -8,7 +8,9 @@ import '../../injection.dart';
 import 'home_view.dart';
 
 class HomePage extends StatelessWidget {
+  HomePage({this.index});
 
+  int? index = 0;
   static Route<void> route() {
     return MaterialPageRoute<void>(builder: (_) => HomePage());
   }
@@ -25,7 +27,8 @@ class HomePage extends StatelessWidget {
           databaseService: databaseService,
           userId: authService.getUser().id,
         ),
-        child:  HomeView(),
+        child:  HomeView(index: index ?? 0),
       );
   }
+
 }

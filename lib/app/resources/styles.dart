@@ -15,6 +15,7 @@ class TextStyles {
 
   // Semi-bold
   static final semiBoldViolet14 = _baseSemiBold[TextSize.size14].withColor(AppTheme.primaryColourViolet);
+  static final semiBoldViolet12 = _baseSemiBold[TextSize.size12].withColor(AppTheme.primaryColourViolet);
   static final semiBoldViolet16 = _baseSemiBold[TextSize.size16].withColor(AppTheme.primaryColourViolet);
   static final semiBoldWhite16 = _baseSemiBold[TextSize.size16].withColor(AppTheme.white);
   static final semiBoldViolet18 = _baseSemiBold[TextSize.size18].withColor(AppTheme.primaryColourViolet);
@@ -29,6 +30,7 @@ class TextStyles {
   // Bold
   static final boldGreen21 = _baseBold[TextSize.size21].withColor(AppTheme.primaryColourViolet);
   static final boldViolet16 = _baseBold[TextSize.size16].withColor(AppTheme.primaryColourViolet);
+  static final boldViolet14 = _baseBold[TextSize.size14].withColor(AppTheme.primaryColourViolet);
   static final boldAccent16 = _baseBold[TextSize.size16].withColor(AppTheme.accentColor);
   static final boldWhite14 = _baseBold[TextSize.size14].withColor(AppTheme.white);
   static final boldWhite16 = _baseBold[TextSize.size16].withColor(AppTheme.white);
@@ -71,6 +73,7 @@ class TextStyles {
     TextSize.size21: createBaseTextStyle(TextWeight.semiBold, TextSize.size21),
     TextSize.size6: createBaseTextStyle(TextWeight.semiBold, TextSize.size6),
     TextSize.size24: createBaseTextStyle(TextWeight.semiBold, TextSize.size24),
+    TextSize.size12: createBaseTextStyle(TextWeight.semiBold, TextSize.size12),
     TextSize.size8: createBaseTextStyle(TextWeight.semiBold, TextSize.size8),
   };
 
@@ -120,6 +123,7 @@ class TextStyles {
   static const _fontSizes = <TextSize, double>{
     TextSize.size0: 13.0,
     TextSize.size14: 14.0,
+    TextSize.size12: 12.0,
     TextSize.size1: 12.0,
     TextSize.size2: 16.0,
     TextSize.size16: 16.0,
@@ -133,6 +137,7 @@ class TextStyles {
   static const _lineHeights = <TextSize, double>{
     TextSize.size0: 19.0,
     TextSize.size14: 19.0,
+    TextSize.size12: 12.0,
     TextSize.size1: 19.0,
     TextSize.size2: 19.0,
     TextSize.size16: 19.0,
@@ -144,7 +149,7 @@ class TextStyles {
   };
 }
 
-enum TextSize { size0, size1, size2, size16, size18, size21, size6, size24, size8, size14 }
+enum TextSize { size0, size1, size2, size16, size18, size21, size6, size24, size8, size14, size12 }
 
 enum TextWeight { light, regular, semiBold, bold }
 

@@ -1,3 +1,4 @@
+import 'package:artb2b/home/view/home_page.dart';
 import 'package:artb2b/host/cubit/host_cubit.dart';
 import 'package:artb2b/host/view/host_dashboard_page.dart';
 import 'package:auth_service/auth.dart';
@@ -34,7 +35,7 @@ class HostDashboardEditPage extends StatelessWidget {
               if(state is DataSaved) {
                 WidgetsBinding.instance.addPostFrameCallback((_) => Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HostDashboardPage()),
+                  MaterialPageRoute(builder: (context) => HomePage(index: 1)),
                 ));
               }
 

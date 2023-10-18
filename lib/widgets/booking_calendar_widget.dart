@@ -1,7 +1,6 @@
+import 'package:artb2b/app/resources/styles.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
-// import 'package:booking_calendar/booking_calendar.dart';
-import 'package:flutter/rendering.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:table_calendar/table_calendar.dart' as tc
@@ -27,6 +26,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
 
   _BookingCalendarWidgetState(this._rangeStartChanged);
   FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
+  Map<String, DateTimeRange> _bookingDateRange = {};
 
   @override
   void initState() {
@@ -35,6 +35,11 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     generateDisabledDates().then((dates) {
       setState(() {
         _disabledDates = dates;
+      });
+    });
+    generateDateTimeRage().then((dates) {
+      setState(() {
+        _bookingDateRange = dates;
       });
     });
     // DateTime.now().startOfDay
@@ -46,18 +51,6 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     //     bookingStart: DateTime(now.year, now.month, now.day, 8, 0));
   }
 
-  Stream<dynamic>? getBookingStreamMock(
-      {required DateTime end, required DateTime start}) {
-    return Stream.value([]);
-  }
-
-  // Future<dynamic> uploadBookingMock(
-  //     {required BookingService newBooking}) async {
-  //   await Future.delayed(const Duration(seconds: 1));
-  //   converted.add(DateTimeRange(
-  //       start: newBooking.bookingStart, end: newBooking.bookingEnd));
-  //   print('${newBooking.toJson()} has been uploaded');
-  // }
 
   List<DateTimeRange> converted = [];
 
@@ -94,22 +87,29 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     ];
   }
 
-  Future<List<DateTime>> generateDisabledDates() async {
+  Future<Map<DateTime, int>> generateDisabledDates() async {
     List<Booking> bookings = await firestoreDatabaseService.retrieveBookingList(user: widget.host);
-    List<DateTime> unavailableDates = [];
+
+    Map<DateTime, int> dateSpaces = {};
+    int availableSpaces = int.parse(widget.host.userArtInfo!.spaces!);
 
     for (var booking in bookings) {
       if(booking.bookingStatus == BookingStatus.accepted) {
-        unavailableDates.addAll(generateDateList(booking.from!, booking.to!));
+
+        generateDateList(booking.from!, booking.to!).forEach((dateTime) {
+          if(dateSpaces.containsKey(dateTime)) {
+            dateSpaces[dateTime] = dateSpaces[dateTime]! - int.parse(booking.spaces!);
+          }
+          else {
+            dateSpaces[dateTime] = availableSpaces - int.parse(booking.spaces!);
+          }
+        });
       }
     }
 
-    return unavailableDates;
+    return dateSpaces;
   }
 
-  void debugDumpRenderTree() {
-    debugPrint(RendererBinding.instance.renderView.toStringDeep());
-  }
 
   List<DateTime> generateDateList(DateTime start, DateTime end) {
     List<DateTime> dateList = [];
@@ -134,6 +134,49 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
         rangeStartDay: _rangeStart,
         rangeEndDay: _rangeEnd,
         rangeSelectionMode: _rangeSelectionMode,
+        calendarBuilders: CalendarBuilders(
+          markerBuilder: (BuildContext context, date, events) {
+            int freeSpaces = int.parse(widget.host.userArtInfo!.spaces!);
+
+            if (events.isEmpty) {
+              return Container(
+                margin: const EdgeInsets.only(top: 40),
+                padding: const EdgeInsets.all(1),
+                child: Text(freeSpaces.toString(), style: TextStyles
+                    .semiBoldViolet12),
+              );
+            }
+            for(Object? e in events) {
+              Booking b = e as Booking;
+              freeSpaces = freeSpaces - int.parse(b.spaces!);
+            }
+            return ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemCount: events.length,
+                itemBuilder: (context, index) {
+                  Booking booking = events[index] as Booking;
+                  return Container(
+                    margin: const EdgeInsets.only(top: 38),
+                    padding: const EdgeInsets.all(1),
+                    child: Text(freeSpaces.toString(), style: TextStyles
+                        .semiBoldViolet12),
+                  );
+                });
+          },
+
+          // singleMarkerBuilder: (context, date, event) {
+          //   return Container(
+          //     decoration: const BoxDecoration(
+          //         shape: BoxShape.circle,
+          //         color: Colors.red
+          //     ),
+          //     width: 7.0,
+          //     height: 7.0,
+          //     margin: const EdgeInsets.symmetric(horizontal: 1.5),
+          //   );
+          // },
+        ),
         // holidayPredicate: (day) {
         //   if (_disabledDates == null) return false;
         //
@@ -145,17 +188,18 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
         //   }
         //   return isHoliday;
         // },
+        eventLoader: (day) {
+          return _getEventsForDay(day);
+        },
         enabledDayPredicate: (day) {
           if (_disabledDates.isEmpty) return true;
 
           bool isEnabled = true;
-          for (var unavailable in _disabledDates) {
-            if (isSameDay(day, unavailable)) {
-              isEnabled = false;
+          _disabledDates.forEach((key, value) {
+            if (isSameDay(day, key)) {
+              if (value <= 0) isEnabled = false;
             }
-
-            // if (!isEnabled) return false;
-          }
+          });
 
           return isEnabled;
         },
@@ -167,8 +211,12 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
         calendarStyle: const CalendarStyle(
           rangeHighlightColor: AppTheme.accentColourOrangeOpacity,
           isTodayHighlighted: true,
+          selectedDecoration:  BoxDecoration(
+            color: AppTheme.primaryCalendarViolet,
+            shape: BoxShape.circle,
+          ),
           todayDecoration: BoxDecoration(
-            color: AppTheme.accentColourOrange,
+            color: AppTheme.accentColourOrangeOpacity,
             shape: BoxShape.circle,
           ),
           rangeStartDecoration: BoxDecoration(
@@ -244,7 +292,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
   DateTime? _rangeEnd;
 
   final ValueChanged<DateTimeRange> _rangeStartChanged;
-  List<DateTime> _disabledDates = List.empty();
+  Map<DateTime, int> _disabledDates = {};
 
   DateTime calculateFirstDay() {
     return DateTime.now();
@@ -255,5 +303,36 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     // } else {
     //   return DateTime.now();
     // }
+  }
+
+  List<Booking> _bookings = [];
+
+  Future<Map<String, DateTimeRange>> generateDateTimeRage() async {
+    _bookings =
+    await firestoreDatabaseService.retrieveBookingList(user: widget.host);
+    _bookings = _bookings.where((element) => element.bookingStatus ==
+        BookingStatus.accepted).toList();
+
+    Map<String, DateTimeRange> bookingDateRange = {};
+    for (var booking in _bookings) {
+      bookingDateRange[booking.bookingId!] =
+          DateTimeRange(start: booking.from!, end: booking.to!);
+    }
+    return bookingDateRange;
+
+  }
+
+  List<Booking> _getEventsForDay(DateTime day) {
+    List<Booking> result = [];
+    _bookingDateRange.forEach((bookingId, dateRange) {
+      if(_isDateTimeWithinRange(day, dateRange)) {
+        result.add(_bookings.where((booking) => booking.bookingId! == bookingId).first);
+      }
+    });
+    return result;
+  }
+  bool _isDateTimeWithinRange(DateTime dateTime, DateTimeRange dateRange) {
+    return (dateRange.start.isBefore(dateTime) && dateRange.end.isAfter(dateTime)) ||
+        dateRange.start.isSameDay(dateTime) || dateRange.end.isSameDay(dateTime);
   }
 }
