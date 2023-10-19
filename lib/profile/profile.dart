@@ -17,7 +17,6 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return FutureBuilder<User?>(
         future: databaseService.getUser(userId: userId),
         builder: (context, snapshot) {
@@ -69,7 +68,21 @@ class ProfilePage extends StatelessWidget {
                                 Row(
                                   children: [
                                     Text('Profile Views: ', style: TextStyles.semiBoldAccent16, ),
-                                    Text('24', style: TextStyles.semiBoldViolet16, ),
+                                    FutureBuilder(
+                                        future: databaseService.updateViewCounter(userId),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState == ConnectionState.waiting) {
+                                            return const CircularProgressIndicator(color: AppTheme.primaryColourViolet,);
+                                          } else if (snapshot.connectionState == ConnectionState.active
+                                              || snapshot.connectionState == ConnectionState.done) {
+                                            if (snapshot.hasData && snapshot.data != null) {
+                                              return Text(snapshot.data.toString(), style: TextStyles.semiBoldViolet16, );
+                                            }
+                                            return Text('n/a', style: TextStyles.semiBoldViolet16, );
+                                          }
+                                          return Text('n/a', style: TextStyles.semiBoldViolet16, );
+                                        }
+                                    ),
                                     Expanded(child: Container()),
                                     Text('Status: ', style: TextStyles.semiBoldAccent16, ),
                                     Text('Active ✅', style: TextStyles.semiBoldViolet16, ),

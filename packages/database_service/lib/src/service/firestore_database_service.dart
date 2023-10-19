@@ -179,5 +179,20 @@ class FirestoreDatabaseService implements DatabaseService {
       throw e;
     }
   }
+
+  @override
+  Future<int> updateViewCounter(String userId) async {
+      final cRef = FirebaseFirestore.instance.collection('views');
+      await cRef
+          .doc(userId)
+          .set({"count": FieldValue.increment(1)}, SetOptions(merge: true));
+
+      // Retrieve the updated counter value
+      final snapshot = await cRef.doc(userId).get();
+      // Extract the counter value from the snapshot
+      final counter = snapshot.data()!['count'] as int;
+      
+      return counter;
+  }
 }
 

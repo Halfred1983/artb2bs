@@ -37,4 +37,6 @@ abstract class DatabaseService {
 
   Future<void> createAccepted(Accepted accepted);
 
+  Future<void> updateViewCounter(String userId);
+
 }
