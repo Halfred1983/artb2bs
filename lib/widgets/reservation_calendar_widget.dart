@@ -201,7 +201,8 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                       onPageChanged: (focusedDay) {
                         _focusedDay = focusedDay;
                       },
-                    ), ]
+                    ),
+                  ]
               )
           ),
 

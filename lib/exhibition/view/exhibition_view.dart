@@ -1,4 +1,5 @@
 import 'package:artb2b/app/resources/styles.dart';
+import 'package:artb2b/calendar_availability/view/calendar_availability_page.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,21 @@ class ExhibitionView extends StatelessWidget {
                 ),
                 body: Padding(
                   padding: horizontalPadding24,
-                  child: ReservationCalendarWidget(user: user!)
+                  child: Column(
+                    children: [
+                      if(user!.userInfo!.userType == UserType.gallery) ...[
+                        TextButton(onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => CalendarAvailabilityPage(user: user!)),
+                        ),
+                          child: Text('Adjust your calendar availability' ,style: TextStyles.semiBoldViolet16.copyWith(
+                              decoration: TextDecoration.underline
+                          ),),
+                        )
+                      ],
+                      ReservationCalendarWidget(user: user!),
+                    ],
+                  )
                 ),
 
               );

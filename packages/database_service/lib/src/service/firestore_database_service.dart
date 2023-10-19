@@ -191,7 +191,7 @@ class FirestoreDatabaseService implements DatabaseService {
       final snapshot = await cRef.doc(userId).get();
       // Extract the counter value from the snapshot
       final counter = snapshot.data()!['count'] as int;
-      
+
       return counter;
   }
 }
