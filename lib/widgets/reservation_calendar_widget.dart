@@ -35,6 +35,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
   late final ValueNotifier<List<Booking>> _selectedEvents;
   Map<String, DateTimeRange> _bookingDateRange = {};
   List<Booking> _bookings = [];
+  List<DateTime> _unavailableDates = [];
 
   @override
   void initState() {
@@ -44,6 +45,13 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
       setState(() {
         _bookingDateRange = dates;
       });
+    });
+    firestoreDatabaseService.getDisabledDates(widget.user.id).then((
+        unavailableDates) =>
+    {
+      setState(() {
+        _unavailableDates = retrieveUnavailableDates(unavailableDates);
+      })
     });
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
   }
@@ -95,6 +103,29 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
 
       _selectedEvents.value = _getEventsForDay(selectedDay);
     }
+  }
+
+  List<DateTime> retrieveUnavailableDates(List<Unavailable> unavailableDates) {
+    List<DateTime> unavailableDateList = [];
+
+
+    unavailableDates.forEach((unavailable) {
+      unavailableDateList.addAll(generateDateList(unavailable.from!,
+          unavailable.to!));
+    });
+
+    return unavailableDateList;
+  }
+
+  List<DateTime> generateDateList(DateTime start, DateTime end) {
+    List<DateTime> dateList = [];
+
+    // Loop through the dates and add them to the list
+    for (var date = start; date.isBefore(end) || date.isAtSameMomentAs(end);
+    date = date.add(Duration(days: 1))) {
+      dateList.add(date);
+    }
+    return dateList;
   }
 
   @override
@@ -207,6 +238,18 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                       onPageChanged: (focusedDay) {
                         _focusedDay = focusedDay;
                       },
+                        enabledDayPredicate: (day) {
+                          if (_unavailableDates.isEmpty) return true;
+
+                          bool isEnabled = true;
+                          _unavailableDates.forEach((date) {
+                            if (isSameDay(day, date)) {
+                              isEnabled = false;
+                            }
+                          });
+
+                          return isEnabled;
+                        }
                     ),
                   ]
               )

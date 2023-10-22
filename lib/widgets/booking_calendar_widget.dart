@@ -27,6 +27,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
   _BookingCalendarWidgetState(this._rangeStartChanged);
   FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
   Map<String, DateTimeRange> _bookingDateRange = {};
+  List<DateTime> _unavailableDates = [];
 
   @override
   void initState() {
@@ -41,6 +42,13 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
       setState(() {
         _bookingDateRange = dates;
       });
+    });
+    firestoreDatabaseService.getDisabledDates(widget.host.id).then((
+        unavailableDates) =>
+    {
+      setState(() {
+        _unavailableDates = retrieveUnavailableDates(unavailableDates);
+      })
     });
   }
 
@@ -68,6 +76,18 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     }
 
     return dateSpaces;
+  }
+
+  List<DateTime> retrieveUnavailableDates(List<Unavailable> unavailableDates) {
+    List<DateTime> unavailableDateList = [];
+
+
+    unavailableDates.forEach((unavailable) {
+      unavailableDateList.addAll(generateDateList(unavailable.from!,
+          unavailable.to!));
+    });
+
+    return unavailableDateList;
   }
 
 
@@ -123,7 +143,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
           return _getEventsForDay(day);
         },
         enabledDayPredicate: (day) {
-          if (_disabledDates.isEmpty) return true;
+          if (_disabledDates.isEmpty && _unavailableDates.isEmpty) return true;
 
           bool isEnabled = true;
           _disabledDates.forEach((date, spaces) {
@@ -134,6 +154,11 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
                 isEnabled = false;
               }
 
+            }
+          });
+          _unavailableDates.forEach((date) {
+            if (isSameDay(day, date)) {
+              isEnabled = false;
             }
           });
 
@@ -198,6 +223,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
             _rangeSelectionMode = RangeSelectionMode.toggledOn;
           });
         },
+
 
         onPageChanged: (focusedDay) {
           _focusedDay = focusedDay;
