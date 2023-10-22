@@ -126,7 +126,7 @@ class BookingRequestView extends StatelessWidget {
                                                                     .userInfo!.address!
                                                                     .city,
                                                                   softWrap: true, style: TextStyles
-                                                                      .semiBolViolet16,)),
+                                                                      .semiBoldViolet16,)),
                                                               ],
                                                             ),
                                                             verticalMargin12,

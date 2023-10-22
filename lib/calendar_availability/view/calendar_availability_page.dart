@@ -1,5 +1,6 @@
 import 'package:artb2b/booking_requests/cubit/booking_request_cubit.dart';
 import 'package:artb2b/booking_requests/view/booking_request_view.dart';
+import 'package:artb2b/calendar_availability/cubit/calendar_availability_cubit.dart';
 import 'package:artb2b/calendar_availability/view/calendar_availability_view.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
@@ -21,8 +22,8 @@ class CalendarAvailabilityPage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return
-      BlocProvider<BookingRequestCubit>(
-        create: (context) => BookingRequestCubit(
+      BlocProvider<CalendarAvailabilityCubit>(
+        create: (context) => CalendarAvailabilityCubit(
           databaseService: databaseService,
           userId: authService.getUser().id,
         ),

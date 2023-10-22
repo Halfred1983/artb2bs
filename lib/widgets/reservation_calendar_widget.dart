@@ -174,6 +174,12 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                       lastDay: DateTime.now().add(const Duration(days: 1000)),
                       focusedDay: _focusedDay,
                       calendarFormat: CalendarFormat.month,
+                      headerStyle: const HeaderStyle(
+                          leftChevronIcon: Icon(Icons.chevron_left, color: AppTheme.primaryColourViolet,),
+                          rightChevronIcon: Icon(Icons.chevron_right, color: AppTheme.primaryColourViolet,),
+                          titleTextStyle: TextStyle(fontSize: 17.0, color: AppTheme.primaryColourViolet),
+                          titleCentered: true
+                      ),
                       calendarStyle: const CalendarStyle(
                         rangeHighlightColor: AppTheme.accentColourOrangeOpacity,
                         isTodayHighlighted: true,
@@ -247,20 +253,20 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                                       children: [
                                         if(snapshot.data!.userInfo!.userType! == UserType.artist) ...[
                                           Text("City: ",
-                                            style: TextStyles.boldViolet16,),
+                                            style: TextStyles.boldViolet14,),
                                           Flexible(child: Text(snapshot.data!
                                               .userInfo!.address!
                                               .city,
                                             softWrap: true, style: TextStyles
-                                                .semiBolViolet16,))
+                                                .semiBoldViolet14,))
                                         ] else ...[
                                           Text("Address: ",
-                                            style: TextStyles.boldViolet16,),
+                                            style: TextStyles.boldViolet14,),
                                           Flexible(child: Text(snapshot.data!
                                               .userInfo!.address!
                                               .formattedAddress,
                                             softWrap: true, style: TextStyles
-                                                .semiBolViolet16,)),
+                                                .semiBoldViolet14,)),
                                         ]
 
                                       ],
@@ -279,7 +285,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                                                     .semiBoldAccent16,),
                                               Text(value[index].spaces!,
                                                 style: TextStyles
-                                                    .semiBoldViolet16,),
+                                                    .semiBoldViolet14,),
                                             ]
                                         ),
                                         verticalMargin12,
@@ -296,7 +302,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                                                     value[index].to!)
                                                     .toString(),
                                                 style: TextStyles
-                                                    .semiBoldViolet16,),
+                                                    .semiBoldViolet14,),
                                             ]
                                         ),
 
@@ -311,7 +317,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                                                 DateFormat.yMMMEd().format(
                                                     value[index].from!),
                                                 style: TextStyles
-                                                    .semiBoldViolet16,),
+                                                    .semiBoldViolet14,),
                                             ]
                                         ),
                                         verticalMargin12,
@@ -324,7 +330,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                                             Text(DateFormat.yMMMEd().format(
                                                 value[index].to!),
                                               style: TextStyles
-                                                  .semiBoldViolet16,),
+                                                  .semiBoldViolet14,),
                                           ],
                                         ),
                                         verticalMargin12,
@@ -338,7 +344,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                                             //   style: TextStyles.semiBoldViolet16, ),
                                             Text('${value[index].price!} GBP',
                                               style: TextStyles
-                                                  .semiBoldViolet16,),
+                                                  .semiBoldViolet14,),
                                           ],
                                         ),
                                         verticalMargin12,
@@ -352,7 +358,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                                             Text(
                                               '${value[index].commission!} GBP',
                                               style: TextStyles
-                                                  .semiBoldViolet16,),
+                                                  .semiBoldViolet14,),
                                           ],
                                         ),
                                         verticalMargin12,
@@ -366,7 +372,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                                             Text(
                                               '${value[index].totalPrice!} GBP',
                                               style: TextStyles
-                                                  .semiBoldViolet16,),
+                                                  .semiBoldViolet14,),
                                           ],
                                         ),
                                       ],

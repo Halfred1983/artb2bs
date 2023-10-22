@@ -310,9 +310,9 @@ class _MapViewState extends State<MapView> {
 
                                         },
                                       ),
-                                    ) : SizedBox(height: 90, child: Center(child: Text("Gallery has no photos",  style: TextStyles.semiBolViolet16)));
+                                    ) : SizedBox(height: 90, child: Center(child: Text("Gallery has no photos",  style: TextStyles.semiBoldViolet16)));
                                   }
-                                  return SizedBox(height: 90, child: Center(child: Text("Gallery has no photos" , style: TextStyles.semiBolViolet16,)));
+                                  return SizedBox(height: 90, child: Center(child: Text("Gallery has no photos" , style: TextStyles.semiBoldViolet16,)));
                                 }),
 
                             verticalMargin32,

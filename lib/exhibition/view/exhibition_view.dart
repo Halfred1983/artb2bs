@@ -35,23 +35,26 @@ class ExhibitionView extends StatelessWidget {
                   title: Text("Your Bookings", style: TextStyles.boldAccent24,),
                   centerTitle: true,
                 ),
-                body: Padding(
-                  padding: horizontalPadding24,
-                  child: Column(
-                    children: [
-                      if(user!.userInfo!.userType == UserType.gallery) ...[
-                        TextButton(onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => CalendarAvailabilityPage(user: user!)),
-                        ),
-                          child: Text('Adjust your calendar availability' ,style: TextStyles.semiBoldViolet16.copyWith(
-                              decoration: TextDecoration.underline
-                          ),),
-                        )
+                body: SingleChildScrollView(
+                  child: Padding(
+                    padding: horizontalPadding24,
+                    child: Column(
+                      children: [
+                        if(user!.userInfo!.userType == UserType.gallery) ...[
+                          TextButton(onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => CalendarAvailabilityPage(user: user!)),
+                          ),
+                            child: Text('Adjust your calendar availability' ,style: TextStyles.semiBoldViolet16.copyWith(
+                                decoration: TextDecoration.underline
+                            ),),
+                          ),
+                          verticalMargin12
+                        ],
+                        ReservationCalendarWidget(user: user!),
                       ],
-                      ReservationCalendarWidget(user: user!),
-                    ],
-                  )
+                    )
+                  ),
                 ),
 
               );

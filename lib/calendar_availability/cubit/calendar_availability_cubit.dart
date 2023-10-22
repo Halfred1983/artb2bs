@@ -25,6 +25,26 @@ class CalendarAvailabilityCubit extends Cubit<CalendarAvailabilityState> {
     }
   }
 
+  Future<void> setDates(User user, Unavailable unavailable) async {
+    try {
+      emit(LoadingState());
+      await databaseService.setDisabledDates(user.id, unavailable);
+      emit(LoadedState(user));
+    } catch (e) {
+      emit(ErrorState());
+    }
+  }
+
+  void saveDates(User user, List<Unavailable> unavailableList) async {
+    try {
+      emit(LoadingState());
+      await databaseService.saveDisabledDates(user.id, unavailableList);
+      emit(LoadedState(user));
+    } catch (e) {
+      emit(ErrorState());
+    }
+  }
+
 
 
 }

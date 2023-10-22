@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:database_service/src/models/models.dart';
 import 'package:database_service/src/service/database_service.dart';
+import 'package:flutter/material.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:uuid/uuid.dart';
 
@@ -105,7 +106,7 @@ class FirestoreDatabaseService implements DatabaseService {
     required int fromIndex,
     required int toIndex}) {
     try {
-      
+
       // Reference to your Firestore collection
       CollectionReference collection = _firestore.collection('bookings');
 
@@ -182,17 +183,74 @@ class FirestoreDatabaseService implements DatabaseService {
 
   @override
   Future<int> updateViewCounter(String userId) async {
-      final cRef = FirebaseFirestore.instance.collection('views');
-      await cRef
-          .doc(userId)
-          .set({"count": FieldValue.increment(1)}, SetOptions(merge: true));
+    final cRef = _firestore.collection('views');
+    await cRef
+        .doc(userId)
+        .set({"count": FieldValue.increment(1)}, SetOptions(merge: true));
 
-      // Retrieve the updated counter value
-      final snapshot = await cRef.doc(userId).get();
-      // Extract the counter value from the snapshot
-      final counter = snapshot.data()!['count'] as int;
+    // Retrieve the updated counter value
+    final snapshot = await cRef.doc(userId).get();
+    // Extract the counter value from the snapshot
+    final counter = snapshot.data()!['count'] as int;
 
-      return counter;
+    return counter;
+  }
+
+
+  @override
+  Future<void> setDisabledDates(String userId, Unavailable unavailable) async {
+    try {
+      final DocumentReference userDocRef = _firestore.collection('disabledDates')
+          .doc(userId);
+
+      // Retrieve the current list of Unavailiable items from Firestore
+      final DocumentSnapshot userDoc = await userDocRef.get();
+      List<Unavailable>? currentUnavailiableList = [];
+
+      if (userDoc.exists) {
+        final List<dynamic>? unavailableDataList =
+            (userDoc.data() as Map<String, dynamic>)['unavailableDate'] ?? [];
+
+        currentUnavailiableList = unavailableDataList!.map((data) => Unavailable.fromJson(data)).toList();
+      }
+
+      // Add the new Unavailiable item to the list
+      currentUnavailiableList.add(unavailable);
+
+      // Update the Firestore document with the updated list
+      await userDocRef.set({'unavailableDate': currentUnavailiableList.map((e) => e.toJson()).toList()});
+    } on Exception catch (e) {
+      throw e;
+    }
+  }
+
+  @override
+  Future<List<Unavailable>> getDisabledDates(String userId) async {
+    final cRef = _firestore.collection('disabledDates');
+    final DocumentSnapshot snapshot = await cRef
+        .doc(userId)
+        .get();
+
+    if(snapshot.exists) {
+      final List<dynamic>? unavailableDataList =
+      (snapshot.data() as Map<String, dynamic>)['unavailableDate'];
+
+      return unavailableDataList!.map((data) => Unavailable.fromJson(data)).toList();
+    } else {
+      return [];
+    }
+  }
+
+  @override
+  Future<void> saveDisabledDates(String userId, List<Unavailable> unavailableList) async {
+    try {
+      final DocumentReference userDocRef = _firestore.collection('disabledDates')
+          .doc(userId);
+
+      await userDocRef.set({'unavailableDate': unavailableList.map((e) => e.toJson()).toList()});
+    } on Exception catch (e) {
+      throw e;
+    }
   }
 }
 

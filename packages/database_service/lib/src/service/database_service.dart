@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 import '../models/models.dart';
 
@@ -38,5 +39,11 @@ abstract class DatabaseService {
   Future<void> createAccepted(Accepted accepted);
 
   Future<void> updateViewCounter(String userId);
+
+  Future<void> setDisabledDates(String userId, Unavailable unavailable);
+
+  Future<List<Unavailable>> getDisabledDates(String userId);
+
+  Future<void> saveDisabledDates(String id, List<Unavailable> unavailableList);
 
 }

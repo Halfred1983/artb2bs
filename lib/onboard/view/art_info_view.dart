@@ -59,7 +59,7 @@ class ArtInfoView extends StatelessWidget {
                             filled: true,
                             fillColor: AppTheme.white,
                             hintText: 'Your vibes coma separated',
-                            hintStyle: TextStyles.semiBolViolet16,
+                            hintStyle: TextStyles.semiBoldViolet16,
                             focusedBorder: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(Radius.circular(10)),
                               borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
@@ -126,7 +126,7 @@ class ArtInfoView extends StatelessWidget {
                           filled: true,
                             fillColor: AppTheme.white,
                             hintText: 'Your vibes coma separated',
-                            hintStyle: TextStyles.semiBolViolet16,
+                            hintStyle: TextStyles.semiBoldViolet16,
                             focusedBorder: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(Radius.circular(10)),
                               borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),

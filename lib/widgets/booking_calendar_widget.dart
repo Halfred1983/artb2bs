@@ -144,6 +144,12 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
         lastDay: DateTime.now().add(const Duration(days: 1000)),
         focusedDay: _focusedDay,
         calendarFormat: CalendarFormat.month,
+        headerStyle: const HeaderStyle(
+            leftChevronIcon: Icon(Icons.chevron_left, color: AppTheme.primaryColourViolet,),
+            rightChevronIcon: Icon(Icons.chevron_right, color: AppTheme.primaryColourViolet,),
+            titleTextStyle: TextStyle(fontSize: 17.0, color: AppTheme.primaryColourViolet),
+            titleCentered: true
+        ),
         calendarStyle: const CalendarStyle(
           rangeHighlightColor: AppTheme.accentColourOrangeOpacity,
           isTodayHighlighted: true,
