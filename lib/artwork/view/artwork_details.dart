@@ -13,7 +13,7 @@ import '../../photo/cubit/photo_state.dart';
 import '../../utils/common.dart';
 
 class ArtworkDetails extends StatelessWidget {
-  ArtworkDetails({super.key, required this.artwork});
+  ArtworkDetails({super.key, required this.artwork, this.isOwner = false});
 
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
@@ -21,6 +21,7 @@ class ArtworkDetails extends StatelessWidget {
 
 
   final Artwork artwork;
+  final bool isOwner;
 
 
   void handleClick(int item, BuildContext context) {
@@ -52,16 +53,16 @@ class ArtworkDetails extends StatelessWidget {
                     iconTheme: const IconThemeData(
                       color: AppTheme.primaryColourViolet, //change your color here
                     ),
-                    actions: [
+                    actions: isOwner == true ? [
                       PopupMenuButton<int>(
                         icon: const Icon(Icons.more_vert),
                         onSelected: (item) => handleClick(item, context),
                         itemBuilder: (context) => [
                           const PopupMenuItem<int>(value: 0, child: Text('Delete')),
                           const PopupMenuItem<int>(value: 1, child: Text('Edit')),
-                        ],
+                        ] ,
                       ),
-                    ],
+                    ] : [],
                   ),
                   body: SingleChildScrollView(
                       child: Padding(

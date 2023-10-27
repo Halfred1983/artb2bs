@@ -13,7 +13,7 @@ import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
 
 class PhotoDetails extends StatelessWidget {
-  PhotoDetails({super.key, required this.photo});
+  PhotoDetails({super.key, required this.photo, this.isOwner = false});
 
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
@@ -21,6 +21,7 @@ class PhotoDetails extends StatelessWidget {
 
 
   final Photo photo;
+  final bool isOwner;
 
 
   void handleClick(int item, BuildContext context) {
@@ -52,7 +53,7 @@ class PhotoDetails extends StatelessWidget {
                     iconTheme: const IconThemeData(
                       color: AppTheme.primaryColourViolet, //change your color here
                     ),
-                    actions: [
+                    actions: isOwner ? [
                       PopupMenuButton<int>(
                         icon: const Icon(Icons.more_vert),
                         onSelected: (item) => handleClick(item, context),
@@ -61,7 +62,7 @@ class PhotoDetails extends StatelessWidget {
                           // const PopupMenuItem<int>(value: 1, child: Text('Edit')),
                         ],
                       ),
-                    ],
+                    ] : [],
                   ),
                   body: SingleChildScrollView(
                       child: Padding(

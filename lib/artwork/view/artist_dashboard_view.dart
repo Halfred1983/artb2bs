@@ -1,3 +1,4 @@
+import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/artwork/cubit/artist_cubit.dart';
 import 'package:artb2b/artwork/cubit/artist_state.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
@@ -72,12 +73,28 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                           const Divider(thickness: 0.6, color: Colors.black38,),
                           verticalMargin12,
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text('Profile Views: ', style: TextStyles.semiBoldAccent16, ),
-                              Text('24', style: TextStyles.semiBoldViolet16, ),
-                              Expanded(child: Container()),
-                              Text('Status: ', style: TextStyles.semiBoldAccent16, ),
-                              Text('Active ✅', style: TextStyles.semiBoldViolet16, ),
+                              FutureBuilder(
+                                  future: firestoreDatabaseService.getViewCounter(user!.id),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return const CircularProgressIndicator(color: AppTheme.primaryColourViolet,);
+                                    } else if (snapshot.connectionState == ConnectionState.active
+                                        || snapshot.connectionState == ConnectionState.done) {
+                                      if (snapshot.hasData && snapshot.data != null) {
+                                        return Text(snapshot.data.toString(), style: TextStyles.semiBoldViolet16, );
+                                      }
+                                      return Text('n/a', style: TextStyles.semiBoldViolet16, );
+                                    }
+                                    return Text('n/a', style: TextStyles.semiBoldViolet16, );
+                                  }
+                              ),
+                              // Expanded(child: Container()),
+                              // Expanded(child: Container()),
+                              // Text('Status: ', style: TextStyles.semiBoldAccent16, ),
+                              // Text('Active ✅', style: TextStyles.semiBoldViolet16, ),
                             ],
                           ),
                           verticalMargin32,
@@ -122,7 +139,7 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                         return InkWell(
                                           onTap: () => Navigator.push(
                                             context,
-                                            MaterialPageRoute(builder: (context) => ArtworkDetails(artwork: user.artworks![index - 1])),
+                                            MaterialPageRoute(builder: (context) => ArtworkDetails(artwork: user.artworks![index - 1], isOwner: true)),
                                           ),
                                           child: Stack(
                                             children: [

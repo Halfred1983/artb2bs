@@ -367,7 +367,7 @@ class _MapViewState extends State<MapView> {
                                             child: InkWell(
                                               onTap: () => Navigator.push(
                                                 context,
-                                                MaterialPageRoute(builder: (context) => PhotoDetails(photo: user.photos![index])),
+                                                MaterialPageRoute(builder: (context) => PhotoDetails(photo: user.photos![index], isOwner: false)),
                                               ),
                                               child: Stack(
                                                 children: [

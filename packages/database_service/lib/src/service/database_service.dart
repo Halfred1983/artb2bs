@@ -36,6 +36,8 @@ abstract class DatabaseService {
 
   Future<void> updateViewCounter(String userId);
 
+  Future<void> getViewCounter(String userId);
+
   Future<void> setDisabledDates(String userId, Unavailable unavailable);
 
   Future<List<Unavailable>> getDisabledDates(String userId);

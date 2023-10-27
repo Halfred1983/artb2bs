@@ -129,7 +129,7 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                                       return InkWell(
                                         onTap: () => Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => PhotoDetails(photo: user.photos![index - 1])),
+                                          MaterialPageRoute(builder: (context) => PhotoDetails(photo: user.photos![index - 1], isOwner: true)),
                                         ),
                                         child: Stack(
                                           children: [

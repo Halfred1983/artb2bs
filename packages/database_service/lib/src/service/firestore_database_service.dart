@@ -257,6 +257,18 @@ class FirestoreDatabaseService implements DatabaseService {
     return counter;
   }
 
+  @override
+  Future<int> getViewCounter(String userId) async {
+    final cRef = _firestore.collection('views');
+
+    // Retrieve the updated counter value
+    final snapshot = await cRef.doc(userId).get();
+    // Extract the counter value from the snapshot
+    final counter = snapshot.data()!['count'] as int;
+
+    return counter;
+  }
+
 
   @override
   Future<void> setDisabledDates(String userId, Unavailable unavailable) async {

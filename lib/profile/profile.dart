@@ -106,7 +106,7 @@ class ProfilePage extends StatelessWidget {
                                       return InkWell(
                                         onTap: () => Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => ArtworkDetails(artwork: snapshot.data!.artworks![index])),
+                                          MaterialPageRoute(builder: (context) => ArtworkDetails(artwork: snapshot.data!.artworks![index], isOwner: false,), ),
                                         ),
                                         child: Stack(
                                           children: [
