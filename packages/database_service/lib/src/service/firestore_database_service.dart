@@ -59,18 +59,79 @@ class FirestoreDatabaseService implements DatabaseService {
   }
 
   @override
-  Stream<List<DocumentSnapshot>> findUsersByTypeAndRadius({
-    required User user,
-    required double radius})  {
+  Stream<List<DocumentSnapshot>> getHostsStream()  {
 
     var collectionReference = _firestore.collection('users');
 
-    String field = 'userInfo.address.location';
-
-    return geoLocation.collection(collectionRef: collectionReference)
-        .within(center: user.userInfo!.address!.location!,
-        radius: radius, field: field);
+    return collectionReference.snapshots().map((querySnapshot) {
+      return querySnapshot.docs.toList();
+    });
   }
+
+  // @override
+  // Stream<List<DocumentSnapshot>> findUsersByTypeAndRadius({
+  //   required User user,
+  //   required double radius})  {
+  //
+  //   var collectionReference = _firestore.collection('users');
+  //
+  //   String field = 'userInfo.address.location';
+  //
+  //   return geoLocation.collection(collectionRef: collectionReference)
+  //       .within(center: user.userInfo!.address!.location!,
+  //       radius: radius, field: field)
+  //       .map((document) {
+  //     return document.where((element) {
+  //       var user = User.fromJson(element.data() as Map<String, dynamic>);
+  //       return user.userInfo!.userType! == UserType.artist;
+  //     }).toList();
+  //   });
+  //
+  // }
+
+  @override
+  List<DocumentSnapshot> filterUsersByRadiusAndPriceAndDays(
+      User user,
+      List<DocumentSnapshot> users,
+      double radius,
+      String priceInput,
+      String daysInput,
+      ) {
+
+
+    final geo = GeoFlutterFire();
+    final geoFirePoint = geo.point(
+      latitude: user.userInfo!.address!.location!.latitude,
+      longitude: user.userInfo!.address!.location!.longitude,
+    );
+
+    return users.where((element) {
+      var user = User.fromJson(element.data() as Map<String, dynamic>);
+      if (user.userInfo!.userType != UserType.gallery) {
+        return false; // Skip non-artist users
+      }
+
+      if(priceInput.isNotEmpty) {
+        int price = int.parse(priceInput);
+        if (int.parse(user.bookingSettings!.basePrice!) > price) {
+          return false; // Price is not within the specified range
+        }
+      }
+
+      if(daysInput.isNotEmpty) {
+        int days = int.parse(daysInput);
+        if (int.parse(user.bookingSettings!.minLength!) > days) {
+          return false; // User is not available for the specified number of days
+        }
+      }
+
+      // Check if the user is within the specified radius
+      final distance = geoFirePoint.distance(lat: user.userInfo!.address!.location!.latitude,
+          lng: user.userInfo!.address!.location!.longitude);
+      return distance <= radius;
+    }).toList();
+  }
+
 
   @override
   Stream<DocumentSnapshot> findArtworkByUser({required User user}) {

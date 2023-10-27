@@ -1,13 +1,7 @@
 import 'package:artb2b/app/resources/styles.dart';
-import 'package:artb2b/app/resources/theme.dart';
-import 'package:artb2b/artwork/cubit/artist_cubit.dart';
-import 'package:artb2b/artwork/cubit/artist_state.dart';
-import 'package:artb2b/widgets/loading_screen.dart';
-import 'package:artb2b/widgets/map_view.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 import '../../../login/cubit/login_cubit.dart';
 import '../../../login/view/login_page.dart';

@@ -45,6 +45,11 @@ class AppTheme {
       outlinedButtonTheme: _outlineButtonTheme,
       textButtonTheme: _textButtonTheme,
       unselectedWidgetColor: primaryColor,
+      sliderTheme:  SliderThemeData(
+        showValueIndicator: ShowValueIndicator.always,
+          valueIndicatorTextStyle:  TextStyles.boldViolet16,
+          valueIndicatorColor: accentColourOrangeOpacity
+      ),
       textTheme:  const TextTheme(
           titleMedium: TextStyle(color: accentColor)
       ),

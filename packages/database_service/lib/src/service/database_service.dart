@@ -16,10 +16,6 @@ abstract class DatabaseService {
   Future<User> updateUser({
     required User user});
 
-  Stream<List<DocumentSnapshot>> findUsersByTypeAndRadius({
-    required User user,
-    required double radius});
-
   Stream<DocumentSnapshot> findArtworkByUser({required User user});
 
   Future<String> addBooking({
@@ -45,5 +41,14 @@ abstract class DatabaseService {
   Future<List<Unavailable>> getDisabledDates(String userId);
 
   Future<void> saveDisabledDates(String id, List<Unavailable> unavailableList);
+
+  Stream<List<DocumentSnapshot>> getHostsStream();
+
+  List<DocumentSnapshot> filterUsersByRadiusAndPriceAndDays(User user,
+  List<DocumentSnapshot> users,
+      double radius,
+  String priceInput,
+      String daysInput,
+  );
 
 }

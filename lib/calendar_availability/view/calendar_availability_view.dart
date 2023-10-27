@@ -174,7 +174,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
               return Scaffold(
                 appBar: AppBar(
                   title: Text(
-                    "Calendar Availability", style: TextStyles.boldAccent24,),
+                    "Availability Calendar", style: TextStyles.boldAccent24,),
                   centerTitle: true,
                   iconTheme: const IconThemeData(
                     color: AppTheme

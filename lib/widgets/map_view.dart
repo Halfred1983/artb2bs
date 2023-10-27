@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:artb2b/utils/common.dart';
+import 'package:artb2b/widgets/input_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/foundation.dart';
@@ -28,13 +29,18 @@ class MapView extends StatefulWidget {
 class _MapViewState extends State<MapView> {
   final Completer<GoogleMapController> _mapController = Completer();
 
-  late Stream<List<DocumentSnapshot>> stream;
   FirestoreDatabaseService firebaseDatabaseService = locator<FirestoreDatabaseService>();
 
   late BitmapDescriptor markerArtistIcon;
   late BitmapDescriptor markerGalleryIcon;
 
-  final radius = BehaviorSubject<double>.seeded(3.0);
+  late Stream<List<DocumentSnapshot>> usersStream;
+  late Stream<List<DocumentSnapshot>> updatedStream;
+
+  final radiusInputSubject = BehaviorSubject<double>.seeded(10.0);
+  final priceInputSubject = BehaviorSubject<String>.seeded('');
+  final daysInputSubject = BehaviorSubject<String>.seeded('');
+
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
   _MapViewState();
@@ -59,51 +65,115 @@ class _MapViewState extends State<MapView> {
       markerGalleryIcon = onValue;
     });
 
-    stream = radius.switchMap((rad) {
+    usersStream = firebaseDatabaseService.getHostsStream();
 
-      return firebaseDatabaseService.findUsersByTypeAndRadius(user: widget.user ,
-          radius: rad);
-    });
+    updatedStream = combineBehaviorSubjects(radiusInputSubject,
+        priceInputSubject, daysInputSubject, usersStream );
+
   }
+
+
 
   @override
   void dispose() {
-    radius.close();
+    radiusInputSubject.close();
+    daysInputSubject.close();
+    priceInputSubject.close();
     super.dispose();
   }
 
 
   @override
   Widget build(BuildContext context) {
-    return GoogleMap(
-      gestureRecognizers: Set()
-        ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer()))
-        ..add(Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()))
-        ..add(Factory<TapGestureRecognizer>(() => TapGestureRecognizer()))
-        ..add(Factory<VerticalDragGestureRecognizer>(
-                () => VerticalDragGestureRecognizer())),
-      zoomControlsEnabled: false,
-      zoomGesturesEnabled: true,
-      scrollGesturesEnabled: true,
-      mapToolbarEnabled: false,
-      rotateGesturesEnabled: false,
-      tiltGesturesEnabled: false,
-      myLocationEnabled: true,
-      mapType: MapType.normal,
-      compassEnabled: false,
-      onMapCreated: _onMapCreated,
-      initialCameraPosition: CameraPosition(
-        target: LatLng(
-          widget.user.userInfo!.address!.location!.latitude!,
-          widget.user.userInfo!.address!.location!.longitude!,
+    return Stack(
+      children: [
+
+        GoogleMap(
+          gestureRecognizers: Set()
+            ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer()))
+            ..add(Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()))
+            ..add(Factory<TapGestureRecognizer>(() => TapGestureRecognizer()))
+            ..add(Factory<VerticalDragGestureRecognizer>(
+                    () => VerticalDragGestureRecognizer())),
+          zoomControlsEnabled: false,
+          zoomGesturesEnabled: true,
+          scrollGesturesEnabled: true,
+          mapToolbarEnabled: false,
+          rotateGesturesEnabled: false,
+          tiltGesturesEnabled: false,
+          myLocationEnabled: true,
+          mapType: MapType.normal,
+          compassEnabled: false,
+          onMapCreated: _onMapCreated,
+          initialCameraPosition: CameraPosition(
+            target: LatLng(
+              widget.user.userInfo!.address!.location!.latitude!,
+              widget.user.userInfo!.address!.location!.longitude!,
+            ),
+            zoom: 12.0,
+          ),
+          markers: Set<Marker>.of(markers.values),
         ),
-        zoom: 12.0,
-      ),
-      markers: Set<Marker>.of(markers.values),
+        Padding(
+          padding: horizontalPadding24,
+          child: SafeArea(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
+                      child: InputTextWidget((priceValue) {
+                        setState(() {
+                          markers.clear();
+                        });
+                        priceInputSubject.add(priceValue);
+
+                      },
+                          'Max Price', TextInputType.number),
+                    ),
+                    horizontalMargin12,
+                    Expanded(
+                      child: InputTextWidget((daysValue) {
+                        setState(() {
+                          markers.clear();
+                        });
+                        daysInputSubject.add(daysValue);
+                      } ,
+                          'Days', TextInputType.number),
+                    ),
+                  ],
+                ),
+                verticalMargin12,
+                Slider(
+                  min: 1,
+                  max: 200,
+                  divisions: 4,
+                  value: _value,
+                  label: 'Radius: $_label',
+                  activeColor: AppTheme.primaryColourVioletOpacity,
+                  inactiveColor: AppTheme.accentColourOrangeOpacity,
+                  onChanged: (double value) => changed(value) ,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
   String _mapStyle = '';
+  double _value = 10.0;
+  String _label = '';
 
+  changed(value) {
+    setState(() {
+      _value = value;
+      _label = '${_value.toInt().toString()} km';
+      markers.clear();
+    });
+    radiusInputSubject.add(value);
+  }
 
   void _onMapCreated(GoogleMapController controller) {
     if (context.mounted) {
@@ -113,12 +183,33 @@ class _MapViewState extends State<MapView> {
             controller.setMapStyle(_mapStyle));
 
         //start listening after map is created
-        stream.listen((List<DocumentSnapshot> documentList) {
+        updatedStream .listen((List<DocumentSnapshot> documentList) {
           _updateMarkers(documentList);
         });
       });
     }
   }
+
+  Stream<List<DocumentSnapshot>> combineBehaviorSubjects(
+      BehaviorSubject<double> radiusStream,
+      BehaviorSubject<String> priceInputStream,
+      BehaviorSubject<String> daysInputStream,
+      Stream<List<DocumentSnapshot>> usersStream, // The original stream of users
+      ) {
+    return Rx.combineLatest4(
+      radiusStream.stream,
+      priceInputStream.stream,
+      daysInputStream.stream,
+      usersStream,
+          (double radius, String priceInput, String daysInput, List<DocumentSnapshot> users) {
+        // Combine the results from the streams and filter as needed
+        return firebaseDatabaseService.filterUsersByRadiusAndPriceAndDays(widget.user, users, radius, priceInput, daysInput);
+      },
+    );
+  }
+
+
+
 
   // void _showHome() {
   //   _mapController.complete.animateCamera(CameraUpdate.newCameraPosition(
@@ -350,16 +441,4 @@ class _MapViewState extends State<MapView> {
       }
     });
   }
-
-// double _value = 20.0;
-// String _label = '';
-//
-// changed(value) {
-//   setState(() {
-//     _value = value;
-//     _label = '${_value.toInt().toString()} kms';
-//     markers.clear();
-//   });
-//   radius.add(value);
-// }
 }
