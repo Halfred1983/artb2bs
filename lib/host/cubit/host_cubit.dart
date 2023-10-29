@@ -148,6 +148,27 @@ class HostCubit extends Cubit<HostState> {
     }
   }
 
+  void setActive(bool active) async {
+    User user = this.state.props[0] as User;
+
+    try {
+      if (user.bookingSettings != null) {
+        user = user.copyWith(bookingSettings: user.bookingSettings!.copyWith(
+            active: active));
+      }
+      else {
+        user = user.copyWith(
+            bookingSettings: BookingSettings(active: active));
+      }
+      await databaseService.updateUser(user: user);
+      emit(LoadedState(user));
+
+    } catch (e) {
+      emit(ErrorState());
+    }
+  }
+
+
   Future<void> saveBookingSettings() async {
     User user = this.state.props[0] as User;
 

@@ -13,6 +13,8 @@ abstract class _$BookingSettingsCWProxy {
 
   BookingSettings minSpaces(String? minSpaces);
 
+  BookingSettings active(bool? active);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `BookingSettings(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -23,6 +25,7 @@ abstract class _$BookingSettingsCWProxy {
     String? basePrice,
     String? minLength,
     String? minSpaces,
+    bool? active,
   });
 }
 
@@ -42,6 +45,9 @@ class _$BookingSettingsCWProxyImpl implements _$BookingSettingsCWProxy {
   BookingSettings minSpaces(String? minSpaces) => this(minSpaces: minSpaces);
 
   @override
+  BookingSettings active(bool? active) => this(active: active);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `BookingSettings(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -53,6 +59,7 @@ class _$BookingSettingsCWProxyImpl implements _$BookingSettingsCWProxy {
     Object? basePrice = const $CopyWithPlaceholder(),
     Object? minLength = const $CopyWithPlaceholder(),
     Object? minSpaces = const $CopyWithPlaceholder(),
+    Object? active = const $CopyWithPlaceholder(),
   }) {
     return BookingSettings(
       basePrice: basePrice == const $CopyWithPlaceholder()
@@ -67,6 +74,10 @@ class _$BookingSettingsCWProxyImpl implements _$BookingSettingsCWProxy {
           ? _value.minSpaces
           // ignore: cast_nullable_to_non_nullable
           : minSpaces as String?,
+      active: active == const $CopyWithPlaceholder()
+          ? _value.active
+          // ignore: cast_nullable_to_non_nullable
+          : active as bool?,
     );
   }
 }
@@ -86,6 +97,7 @@ BookingSettings _$BookingSettingsFromJson(Map<String, dynamic> json) =>
       basePrice: json['basePrice'] as String?,
       minLength: json['minLength'] as String?,
       minSpaces: json['minSpaces'] as String?,
+      active: json['active'] as bool?,
     );
 
 Map<String, dynamic> _$BookingSettingsToJson(BookingSettings instance) =>
@@ -93,4 +105,5 @@ Map<String, dynamic> _$BookingSettingsToJson(BookingSettings instance) =>
       'basePrice': instance.basePrice,
       'minLength': instance.minLength,
       'minSpaces': instance.minSpaces,
+      'active': instance.active,
     };

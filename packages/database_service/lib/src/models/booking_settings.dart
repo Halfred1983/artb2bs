@@ -11,11 +11,13 @@ class BookingSettings {
   String? basePrice;
   String? minLength;
   String? minSpaces;
+  bool? active = true;
 
   BookingSettings({
     this.basePrice,
     this.minLength,
     this.minSpaces,
+    this.active
   });
 
 
