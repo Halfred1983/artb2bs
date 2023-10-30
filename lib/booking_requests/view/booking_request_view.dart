@@ -62,7 +62,7 @@ class BookingRequestView extends StatelessWidget {
                   body: Padding(
                     padding: horizontalPadding24,
                     child: StreamBuilder(
-                        stream: firestoreDatabaseService.findBookings(user: user!, fromIndex: 3, toIndex: 12),
+                        stream: firestoreDatabaseService.getUserStream(user!.id),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
                             return const LoadingScreen();
@@ -71,24 +71,17 @@ class BookingRequestView extends StatelessWidget {
 
                             if (snapshot.hasData && snapshot.data != null) {
 
-                              var _bookings = [];
-                              for(var doc in snapshot.data!.docs) {
-                                Booking booking = Booking.fromJson(
-                                    doc.data() as Map<String, dynamic>);
-                                if(booking.bookingStatus! == BookingStatus.pending ) {
-                                  _bookings.add(booking);
-                                }
-                              }
+                              User user = User.fromJson(snapshot.data?.data() as Map<String, dynamic>);
 
-                              if(_bookings.isNotEmpty) {
+                              if(user.bookings != null && user.bookings!.isNotEmpty) {
                                 return ListView.builder(
-                                    itemCount: _bookings.length,
+                                    itemCount: user.bookings!.length,
                                     itemBuilder: (context, index) {
 
-                                      if(_bookings[index].bookingStatus! == BookingStatus.pending) {
+                                      if(user.bookings![index].bookingStatus! == BookingStatus.pending) {
                                         return FutureBuilder<User?>(
                                             future: firestoreDatabaseService.getUser(
-                                                userId: _bookings[index].artistId!),
+                                                userId: user.bookings![index].artistId!),
                                             builder: (context, snapshot) {
                                               if (snapshot.hasData &&
                                                   snapshot.connectionState ==
@@ -98,7 +91,7 @@ class BookingRequestView extends StatelessWidget {
                                                   child: InkWell(
                                                     onTap: () => context.pushNamed(
                                                       'profile',
-                                                      pathParameters: {'userId': _bookings[index].artistId!},
+                                                      pathParameters: {'userId': user.bookings![index].artistId!},
                                                     ),
                                                     child: CommonCard(
                                                       child: Column(
@@ -141,7 +134,7 @@ class BookingRequestView extends StatelessWidget {
                                                                       Text('Spaces: ',
                                                                         style: TextStyles
                                                                             .semiBoldAccent16,),
-                                                                      Text(_bookings[index].spaces!,
+                                                                      Text(user.bookings![index].spaces!,
                                                                         style: TextStyles
                                                                             .semiBoldViolet16,),
                                                                     ]
@@ -156,8 +149,8 @@ class BookingRequestView extends StatelessWidget {
                                                                       Text(
                                                                         BookingService()
                                                                             .daysBetween(
-                                                                            _bookings[index].from!,
-                                                                            _bookings[index].to!)
+                                                                            user.bookings![index].from!,
+                                                                            user.bookings![index].to!)
                                                                             .toString(),
                                                                         style: TextStyles
                                                                             .semiBoldViolet16,),
@@ -173,7 +166,7 @@ class BookingRequestView extends StatelessWidget {
                                                                           .semiBoldAccent16,),
                                                                       Text(
                                                                         DateFormat.yMMMEd().format(
-                                                                            _bookings[index].from!),
+                                                                            user.bookings![index].from!),
                                                                         style: TextStyles
                                                                             .semiBoldViolet16,),
                                                                     ]
@@ -186,7 +179,7 @@ class BookingRequestView extends StatelessWidget {
                                                                     Text('To: ', style: TextStyles
                                                                         .semiBoldAccent16,),
                                                                     Text(DateFormat.yMMMEd().format(
-                                                                        _bookings[index].to!),
+                                                                        user.bookings![index].to!),
                                                                       style: TextStyles
                                                                           .semiBoldViolet16,),
                                                                   ],
@@ -200,7 +193,7 @@ class BookingRequestView extends StatelessWidget {
                                                                         .semiBoldAccent16,),
                                                                     // Text('${booking!.spaces!} spaces X ${daysBetween(booking!.from!, booking!.to!)} days X ${int.parse(user!.bookingSettings!.basePrice!).toDouble()} GBP',
                                                                     //   style: TextStyles.semiBoldViolet16, ),
-                                                                    Text('${_bookings[index].price!} GBP',
+                                                                    Text('${user.bookings![index].price!} GBP',
                                                                       style: TextStyles
                                                                           .semiBoldViolet16,),
                                                                   ],
@@ -214,7 +207,7 @@ class BookingRequestView extends StatelessWidget {
                                                                       style: TextStyles
                                                                           .semiBoldAccent16,),
                                                                     Text(
-                                                                      '${_bookings[index].commission!} GBP',
+                                                                      '${user.bookings![index].commission!} GBP',
                                                                       style: TextStyles
                                                                           .semiBoldViolet16,),
                                                                   ],
@@ -228,7 +221,7 @@ class BookingRequestView extends StatelessWidget {
                                                                       style: TextStyles
                                                                           .semiBoldAccent16,),
                                                                     Text(
-                                                                      '${_bookings[index].totalPrice!} GBP',
+                                                                      '${user.bookings![index].totalPrice!} GBP',
                                                                       style: TextStyles
                                                                           .semiBoldViolet16,),
                                                                   ],
@@ -241,7 +234,7 @@ class BookingRequestView extends StatelessWidget {
                                                                       child: SizedBox(
                                                                         height: 40,
                                                                         child: OutlinedButton(
-                                                                          onPressed: () => context.read<BookingRequestCubit>().rejectBooking(_bookings[index], user!),
+                                                                          onPressed: () => context.read<BookingRequestCubit>().rejectBooking(user.bookings![index], user!),
                                                                           child: Text('Reject' ,style: TextStyles.semiBoldAccent16.copyWith(
                                                                               decoration: TextDecoration.underline
                                                                           ),),
@@ -254,7 +247,7 @@ class BookingRequestView extends StatelessWidget {
                                                                       child: SizedBox(
                                                                         height: 40,
                                                                         child: ElevatedButton(
-                                                                          onPressed: () => context.read<BookingRequestCubit>().acceptBooking(_bookings[index], user!),
+                                                                          onPressed: () => context.read<BookingRequestCubit>().acceptBooking(user.bookings![index], user!),
                                                                           child: Text("Accept", style: TextStyles.boldWhite16,),
                                                                         ),
                                                                       ),

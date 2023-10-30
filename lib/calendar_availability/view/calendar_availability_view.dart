@@ -99,8 +99,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
   }
 
   Future<List<DateTime>> retrieveBookedDates() async {
-    List<Booking> bookings = await firestoreDatabaseService
-        .retrieveBookingList(user: widget.user);
+    List<Booking> bookings = widget.user.bookings ?? [];
 
     List<DateTime> dateSpaces = [];
 

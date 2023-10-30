@@ -63,7 +63,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
   }
 
   Future<Map<String, DateTimeRange>> generateDateTimeRage() async {
-    _bookings = await firestoreDatabaseService.retrieveBookingList(user: widget.user);
+    _bookings = widget.user.bookings ?? [];
     _bookings = _bookings.where((element) => element.bookingStatus == BookingStatus.accepted).toList();
 
     Map<String, DateTimeRange> bookingDateRange = {};

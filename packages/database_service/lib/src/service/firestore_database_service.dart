@@ -55,7 +55,6 @@ class FirestoreDatabaseService implements DatabaseService {
     } on Exception {
       rethrow;
     }
-
   }
 
   @override
@@ -65,6 +64,18 @@ class FirestoreDatabaseService implements DatabaseService {
 
     return collectionReference.snapshots().map((querySnapshot) {
       return querySnapshot.docs.toList();
+    });
+  }
+
+  @override
+  Stream<DocumentSnapshot> getUserStream(String userId)  {
+
+    var collectionReference = _firestore.collection('users');
+
+    return collectionReference
+        .where('userId', isEqualTo: userId)
+        .snapshots().map((querySnapshot) {
+      return querySnapshot.docs.toList().first;
     });
   }
 
@@ -108,6 +119,12 @@ class FirestoreDatabaseService implements DatabaseService {
     return users.where((element) {
       var user = User.fromJson(element.data() as Map<String, dynamic>);
       if (user.userInfo!.userType != UserType.gallery) {
+        return false; // Skip non-artist users
+      }
+
+      if (user.bookingSettings != null &&
+          user.bookingSettings!.active != null &&
+          user.bookingSettings!.active == false) {
         return false; // Skip non-artist users
       }
 
@@ -161,54 +178,32 @@ class FirestoreDatabaseService implements DatabaseService {
     }
   }
 
-  @override
-  Stream<QuerySnapshot> findBookings({
-    required User user,
-    required int fromIndex,
-    required int toIndex}) {
-    try {
 
-      // Reference to your Firestore collection
-      CollectionReference collection = _firestore.collection('bookings');
-
-      // Build the base query
-      Query query = collection
-          .where(FieldPath.documentId, whereIn: user.bookings
-      );
-
-      return query.snapshots();
-    } catch (e) {
-      print('findArtworkByUser $e');
-      throw e;
-    }
-  }
-
-
-  @override
-  Future<List<Booking>> retrieveBookingList({required User user, DateTime? dateFrom, DateTime? dateTo}) async {
-    try {
-      List<Booking> dataList = [];
-
-      // Reference to your Firestore collection
-      CollectionReference collection = _firestore.collection('bookings');
-
-      // Build the base query
-      Query query = collection
-          .where(FieldPath.documentId, whereIn: user.bookings);
-
-      QuerySnapshot querySnapshot = await query.get();
-
-      for (var document in querySnapshot.docs) {
-        dataList.add(Booking.fromJson(
-            document.data() as Map<String, dynamic>));
-      }
-
-      return dataList;
-    } catch (e) {
-      print('retrieveBookingList $e');
-      throw e;
-    }
-  }
+  // @override
+  // Future<List<Booking>> retrieveBookingList({required User user, DateTime? dateFrom, DateTime? dateTo}) async {
+  //   try {
+  //     List<Booking> dataList = [];
+  //
+  //     // Reference to your Firestore collection
+  //     CollectionReference collection = _firestore.collection('bookings');
+  //
+  //     // Build the base query
+  //     Query query = collection
+  //         .where(FieldPath.documentId, whereIn: user.bookings);
+  //
+  //     QuerySnapshot querySnapshot = await query.get();
+  //
+  //     for (var document in querySnapshot.docs) {
+  //       dataList.add(Booking.fromJson(
+  //           document.data() as Map<String, dynamic>));
+  //     }
+  //
+  //     return dataList;
+  //   } catch (e) {
+  //     print('retrieveBookingList $e');
+  //     throw e;
+  //   }
+  // }
 
   @override
   Future<void> updateBooking({required Booking booking}) async {

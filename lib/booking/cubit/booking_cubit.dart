@@ -84,18 +84,18 @@ class BookingCubit extends Cubit<BookingState> {
         booking.bookingId = bookingId;
 
         if(user.bookings != null && user.bookings!.isNotEmpty) {
-          user.bookings!.insert(0, bookingId);
+          user.bookings!.insert(0, booking);
         }
         else {
-          user.bookings = List.of([bookingId], growable: true);
+          user.bookings = List.of([booking], growable: true);
         }
         databaseService.updateUser(user: user);
 
         if(host.bookings != null && host.bookings!.isNotEmpty) {
-          host.bookings!.insert(0, bookingId);
+          host.bookings!.insert(0, booking);
         }
         else {
-          host.bookings = List.of([bookingId], growable: true);
+          host.bookings = List.of([booking], growable: true);
         }
         databaseService.updateUser(user: host);
 

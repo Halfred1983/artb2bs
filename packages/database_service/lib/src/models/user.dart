@@ -24,7 +24,7 @@ class User {
   List<Artwork>? artworks;
   List<Photo>? photos;
   BookingSettings? bookingSettings;
-  List<String>? bookings;
+  List<Booking>? bookings;
 
   User({
     required this.id,

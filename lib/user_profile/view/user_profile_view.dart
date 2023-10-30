@@ -44,26 +44,17 @@ class UserProfileView extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                      ClipRRect(
-                      borderRadius: BorderRadius.circular(30.0),
-                        child: CachedNetworkImage(
-                                    fit: BoxFit.cover,
-                                    width: 60,
-                                    height: 60,
-                                    placeholder: (context, url) => Image.asset(user!.userInfo!.userType! == UserType.gallery ?
-                                    'assets/images/gallery.png': 'assets/images/artist.png'),
-                                    imageUrl: user!.imageUrl
-                        )),
-
-                                // Image(
-                                //   image:FadeInImage(
-                                //   placeholder: AssetImage('assets/placeholder.png'),
-                                //   image: NetworkImage(user!.imageUrl),
-                                //   fadeInDuration: Duration(milliseconds: 300),
-                                // ).image),
-                                //
-                                //
-                                // backgroundColor: Colors.transparent,),
+                              ClipRRect(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  child: CachedNetworkImage(
+                                      fit: BoxFit.cover,
+                                      width: 60,
+                                      height: 60,
+                                      placeholder: (context, url) => Image.asset(user!.userInfo!.userType! == UserType.gallery ?
+                                      'assets/images/gallery.png': 'assets/images/artist.png'),
+                                      imageUrl: user!.imageUrl
+                                  )
+                              ),
                               horizontalMargin24,
                               Text('Hello, ', style: TextStyles.semiBoldAccent18,),
                               Text(user!.firstName, style: TextStyles.boldAccent16,),
@@ -89,7 +80,7 @@ class UserProfileView extends StatelessWidget {
                         title: Text('Active', style: TextStyles.semiBoldAccent18,),
                       ),
                     ),
-                    ],
+                  ],
                   Expanded(child: Container()),
                   SettingItem(text: 'Help', onPressed: () => logout(context)),
                   SettingItem(text: 'About Artb2b', onPressed: () => logout(context)),

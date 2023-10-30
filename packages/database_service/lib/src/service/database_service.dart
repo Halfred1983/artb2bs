@@ -13,8 +13,7 @@ abstract class DatabaseService {
     required String userId,
   });
 
-  Future<User> updateUser({
-    required User user});
+  Stream<DocumentSnapshot> getUserStream(String userId);
 
   Stream<DocumentSnapshot> findArtworkByUser({required User user});
 
@@ -22,11 +21,11 @@ abstract class DatabaseService {
     required Booking booking,
   });
 
-  Stream<QuerySnapshot> findBookings({required User user,
-    required int fromIndex,
-    required int toIndex});
+  // Stream<QuerySnapshot> findBookings({required User user,
+  //   required int fromIndex,
+  //   required int toIndex});
 
-  Future<List<Booking>> retrieveBookingList({required User user, DateTime? dateFrom, DateTime? dateTo});
+  // Future<List<Booking>> retrieveBookingList({required User user, DateTime? dateFrom, DateTime? dateTo});
 
   Future<void> updateBooking({required Booking booking});
 
@@ -52,5 +51,7 @@ abstract class DatabaseService {
   String priceInput,
       String daysInput,
   );
+
+  Future<User> updateUser({required User user});
 
 }
