@@ -40,6 +40,7 @@ class ArtInfoView extends StatelessWidget {
 
           if(user!.userInfo!.userType == UserType.artist) {
             return Scaffold(
+                resizeToAvoidBottomInset: false,
                 appBar: AppBar(
                   title: Text("About you 2/2", style: TextStyles.boldAccent24,),
                   centerTitle: true,
@@ -87,6 +88,7 @@ class ArtInfoView extends StatelessWidget {
           }
           if(user!.userInfo!.userType == UserType.gallery) {
             return Scaffold(
+                resizeToAvoidBottomInset: false,
                 appBar: AppBar(
                   title: Text("About you 2/2", style: TextStyles.boldAccent24,),
                   centerTitle: true,
@@ -110,7 +112,7 @@ class ArtInfoView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Center(child: Text('Available Spaces (1sq meter each) ', style:TextStyles.semiBoldViolet21,),),
+                          Flexible(child: Text('Available Spaces (1sq meter each) ', style:TextStyles.semiBoldViolet21,)),
                           const Icon(FontAwesomeIcons.rulerCombined, color: AppTheme.primaryColourViolet),
                         ],
                       ),

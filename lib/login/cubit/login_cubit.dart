@@ -14,7 +14,7 @@ class LoginCubit extends Cubit<LoginState> {
   final DatabaseService _databaseService;
   final NotificationService _notificationService;
 
-  void login() async {
+  Future<void> login() async {
     try {
       UserEntity userEntity = await _authService.signInWithGoogle();
 

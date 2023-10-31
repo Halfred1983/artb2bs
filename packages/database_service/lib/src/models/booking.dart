@@ -28,6 +28,8 @@ class Booking {
   String? paymentIntentId;
   @TimestampConverter()
   DateTime? bookingTime;
+  @TimestampConverter()
+  DateTime? reviewdTime;
 
   Booking({
     this.bookingStatus,
@@ -41,7 +43,8 @@ class Booking {
     this.totalPrice,
     this.bookingId,
     this.paymentIntentId,
-    this.bookingTime
+    this.bookingTime,
+    this.reviewdTime
   });
 
 

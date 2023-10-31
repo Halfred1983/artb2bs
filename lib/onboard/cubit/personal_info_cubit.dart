@@ -14,13 +14,13 @@ class PersonalInfoCubit extends Cubit<PersonalInfoState> {
     UserInfo artb2bUserEntityInfo = this.state.props[0] as UserInfo;
 
     try {
-      emit(LoadingState());
+      if(userType == UserType.unknown) emit(ErrorState(artb2bUserEntityInfo, "Chose gallery or artist"));
 
       artb2bUserEntityInfo = artb2bUserEntityInfo.copyWith(userType: userType);
 
       emit(UserTypeChosen(artb2bUserEntityInfo));
     } catch (e) {
-      emit(ErrorState(artb2bUserEntityInfo));
+      emit(ErrorState(artb2bUserEntityInfo, "Invalid value for user type"));
     }
   }
 
@@ -28,13 +28,12 @@ class PersonalInfoCubit extends Cubit<PersonalInfoState> {
     UserInfo artb2bUserEntityInfo = this.state.props[0] as UserInfo;
 
     try {
-      emit(LoadingState());
-
+      if(name.isEmpty) emit(ErrorState(artb2bUserEntityInfo, "Chose a valid user name"));
       artb2bUserEntityInfo = artb2bUserEntityInfo.copyWith(name: name);
 
       emit(NameChosen(artb2bUserEntityInfo));
     } catch (e) {
-      emit(ErrorState(artb2bUserEntityInfo));
+      emit(ErrorState(artb2bUserEntityInfo, "Chose a valid user name"));
     }
   }
 
@@ -42,32 +41,50 @@ class PersonalInfoCubit extends Cubit<PersonalInfoState> {
     UserInfo artb2bUserEntityInfo = this.state.props[0] as UserInfo;
 
     try {
-      emit(LoadingState());
-
       artb2bUserEntityInfo = artb2bUserEntityInfo.copyWith(address: artb2bUserEntityAddress);
 
       emit(AddressChosen(artb2bUserEntityInfo));
     } catch (e) {
-      emit(ErrorState(artb2bUserEntityInfo));
+      emit(ErrorState(artb2bUserEntityInfo, "Error in setting the address of the user"));
     }
   }
 
   void save() async {
-    UserInfo userInfo = this.state.props[0] as UserInfo;
+    UserInfo? userInfo = this.state.props[0] as UserInfo;
+    emit(LoadingState()); //needed to capture the cahnge of state
 
-    try {
-      emit(LoadingState());
-      User? user = await databaseService.getUser(
-          userId: userId);
+    if(userInfo.userType == UserType.unknown ) {
+    emit(ErrorState(userInfo, "Chose a valid user type: Gallery or Artist"));
+    }
+    else if(userInfo.name == null || userInfo.name!.isEmpty) {
+      emit(ErrorState(userInfo, "Chose a valid user name"));
+    }
 
-      //if all is good set to personal info
-      user =
-          user!.copyWith.userInfo(userInfo)
-              .copyWith(userStatus: UserStatus.personalInfo);
-      await databaseService.updateUser(user: user);
-      emit(DataSaved(userInfo));
-    } catch (e) {
-      emit(ErrorState(userInfo));
+    else if(userInfo.address == null || userInfo.address!.formattedAddress.isEmpty ) {
+      emit(ErrorState(userInfo, "Chose a valid address"));
+    }
+
+
+
+    else {
+      try {
+
+        emit(LoadingState());
+        User? user = await databaseService.getUser(
+            userId: userId);
+
+        //if all is good set to personal info
+        user =
+            user!.copyWith.userInfo(userInfo)
+                .copyWith(userStatus: UserStatus.personalInfo);
+        await databaseService.updateUser(user: user);
+        emit(DataSaved(userInfo));
+
+      }
+      catch (e) {
+          emit(ErrorState(userInfo, "Error in saving the user details"));
+        }
+      }
     }
   }
 
@@ -81,4 +98,3 @@ class PersonalInfoCubit extends Cubit<PersonalInfoState> {
 //     emit(ErrorState());
 //   }
 // }
-}

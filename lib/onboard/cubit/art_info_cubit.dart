@@ -18,7 +18,7 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
       final user = await databaseService.getUser(userId: userId);
       emit(LoadedState(user!));
     } catch (e) {
-      emit(ErrorState());
+      emit(ErrorState("Something went wrong in loading the user details"));
     }
   }
 
@@ -27,17 +27,21 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
 
     try {
       // emit(LoadingState());
-
-      if(user.userArtInfo != null) {
-        user = user.copyWith(userArtInfo: user.userArtInfo!.copyWith(capacity: capacity));
+      if(capacity.isNotEmpty && int.parse(capacity) > 0) {
+        if (user.userArtInfo != null) {
+          user = user.copyWith(
+              userArtInfo: user.userArtInfo!.copyWith(capacity: capacity));
+        }
+        else {
+          user = user.copyWith(userArtInfo: UserArtInfo(capacity: capacity));
+        }
       }
       else {
-        user = user.copyWith(userArtInfo: UserArtInfo(capacity: capacity));
+        emit(ErrorState("Capacity value not valid"));
       }
-
       // emit(CapacityChosen(user));
     } catch (e) {
-      emit(ErrorState());
+      emit(ErrorState("Capacity value not valid"));
     }
   }
 
@@ -45,18 +49,21 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
     User user = this.state.props[0] as User;
 
     try {
-      // emit(LoadingState());
-
-      if(user.userArtInfo != null) {
-        user = user.copyWith(userArtInfo: user.userArtInfo!.copyWith(spaces: spaces));
+      if(spaces.isNotEmpty && int.parse(spaces) > 0) {
+        if (user.userArtInfo != null) {
+          user = user.copyWith(
+              userArtInfo: user.userArtInfo!.copyWith(spaces: spaces));
+        }
+        else {
+          user = user.copyWith(userArtInfo: UserArtInfo(spaces: spaces));
+        }
       }
       else {
-        user = user.copyWith(userArtInfo: UserArtInfo(spaces: spaces));
+        emit(ErrorState("Spaces value not valid"));
       }
 
-      // emit(SpacesChosen(user));
     } catch (e) {
-      emit(ErrorState());
+      emit(ErrorState("Spaces value not valid"));
     }
   }
 
@@ -82,7 +89,7 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
       await databaseService.updateUser(user: user);
       emit(DataSaved(user));
     } catch (e) {
-      emit(ErrorState());
+      emit(ErrorState("Error saving the art details"));
     }
   }
 }

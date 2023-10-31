@@ -55,12 +55,13 @@ class DataSaved extends PersonalInfoState {
 
 
 class ErrorState extends PersonalInfoState {
-  final UserInfo artb2bUserEntityInfo;
+  final UserInfo userInfo;
+  final String errorMessage;
 
-  ErrorState(this.artb2bUserEntityInfo);
+  ErrorState(this.userInfo, this.errorMessage);
 
   @override
-  List<Object> get props => [artb2bUserEntityInfo];
+  List<Object> get props => [userInfo, errorMessage];
 }
 
 class LoadingState extends PersonalInfoState {

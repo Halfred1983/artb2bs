@@ -47,7 +47,7 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
               'to ${DateFormat.yMMMEd().format(booking.to!)}', user));
         }
         else {
-          booking = booking.copyWith(bookingStatus: BookingStatus.accepted );
+          booking = booking.copyWith(bookingStatus: BookingStatus.accepted , reviewdTime: DateTime.now());
           await databaseService.updateBooking(booking: booking);
           Accepted accepted = Accepted(hostId: booking.hostId,
               artistId: booking.artistId, bookingId: booking.bookingId,
@@ -63,7 +63,7 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
   void rejectBooking(Booking booking, User user) async {
     try {
       emit(LoadingState());
-      booking = booking.copyWith(bookingStatus: BookingStatus.rejected );
+      booking = booking.copyWith(bookingStatus: BookingStatus.rejected , reviewdTime: DateTime.now());
       Refund refund = Refund(bookingId: booking.bookingId, paymentIntentId: booking.paymentIntentId,
           refundStatus: RefundStatus.pending, refundTimestamp: DateTime.now(),
           artistId: booking.artistId, hostId: booking.hostId);

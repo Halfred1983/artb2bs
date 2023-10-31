@@ -78,7 +78,8 @@ class BookingCubit extends Cubit<BookingState> {
   void completeBooking(Booking booking, User user, User host, String paymentIntentId) async {
       try {
         emit(PaymentLoadingState());
-        booking = booking.copyWith(bookingStatus: BookingStatus.pending, paymentIntentId: paymentIntentId );
+        booking = booking.copyWith(bookingStatus: BookingStatus.pending,
+            paymentIntentId: paymentIntentId, bookingTime: DateTime.now());
         String bookingId = await databaseService.addBooking(booking: booking);
 
         booking.bookingId = bookingId;

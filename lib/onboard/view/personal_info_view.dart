@@ -17,6 +17,7 @@ import '../../widgets/loading_screen.dart';
 
 class PersonalInfoView extends StatelessWidget {
   PersonalInfoView({Key? key}) : super(key: key);
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 
   String background = "";
@@ -36,55 +37,72 @@ class PersonalInfoView extends StatelessWidget {
             background = 'assets/images/gallery.png';
           }
         }
-
-        if(state is DataSaved) {
-          return HomePage();
-        }
-        return Scaffold(
-            appBar: AppBar(
-              title: Text("About you 1/2", style: TextStyles.boldAccent24,),
-              centerTitle: true,
-            ),
-            body: Padding(
-                padding: horizontalPadding24,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children:  [
-                      SizedBox(height: 100, width: 100,
-                        child: background.toString().length > 2 ? Container(
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage(background)
-                            ),
-                          ),
-                        ) : Container()
-                      ),
-                      verticalMargin48,
-                      Center(child: Text('Are you an artist or a host', style:TextStyles.semiBoldViolet21,),),
-                      Text('', style: TextStyles.semiBoldViolet14),
-                      verticalMargin8,
-                      const _UserTypeDropdownButton(),
-                      verticalMargin48,
-                      Center(child: Text('Artist or Host name', style:TextStyles.semiBoldViolet21,),),
-                      _UserNameTextField((nameValue) => {
-                        context.read<PersonalInfoCubit>().chooseName(nameValue),
-                      }),
-                      verticalMargin48,
-                      Center(child: Text('Your location', style:TextStyles.semiBoldViolet21,),),
-                      const _LocationTextField(),
-                    ]
-                )
-            ),
-            bottomNavigationBar: Container(
-                padding: buttonPadding,
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.read<PersonalInfoCubit>().save();
-                  },
-                  child: Text("Continue", style: TextStyles.boldWhite16,),)
-            )
+        return BlocListener<PersonalInfoCubit, PersonalInfoState>(
+          listener: (context, state) {
+            if (state is ErrorState) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.errorMessage, style: TextStyles.semiBoldAccent18),
+                ),
+              );
+            }
+          },
+          child: _buildContent(context, state),
         );
       },
+    );
+  }
+
+
+  Widget _buildContent(BuildContext context, PersonalInfoState state) {
+    if (state is DataSaved) {
+      return HomePage();
+    }
+
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text("About you 1/2", style: TextStyles.boldAccent24,),
+          centerTitle: true,
+        ),
+        body: Padding(
+            padding: horizontalPadding24,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:  [
+                  SizedBox(height: 100, width: 100,
+                      child: background.toString().length > 2 ? Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage(background)
+                          ),
+                        ),
+                      ) : Container()
+                  ),
+                  verticalMargin48,
+                  Center(child: Text('Are you an artist or a host', style:TextStyles.semiBoldViolet21,),),
+                  Text('', style: TextStyles.semiBoldViolet14),
+                  verticalMargin8,
+                  const _UserTypeDropdownButton(),
+                  verticalMargin48,
+                  Center(child: Text('Artist or Host name', style:TextStyles.semiBoldViolet21,),),
+                  _UserNameTextField((nameValue) => {
+                    context.read<PersonalInfoCubit>().chooseName(nameValue),
+                  }),
+                  verticalMargin48,
+                  Center(child: Text('Your location', style:TextStyles.semiBoldViolet21,),),
+                  const _LocationTextField(),
+                ]
+            )
+        ),
+        bottomNavigationBar: Container(
+            padding: buttonPadding,
+            child: ElevatedButton(
+              onPressed: () {
+                context.read<PersonalInfoCubit>().save();
+              },
+              child: Text("Continue", style: TextStyles.boldWhite16,),)
+        )
     );
   }
 }
@@ -217,7 +235,7 @@ class _LocationTextFieldState extends State<_LocationTextField> {
           );
           if(locationResult != null) {
             _address = locationResult;
-                _locationController.text = _address.formattedAddress;
+            _locationController.text = _address.formattedAddress;
             if (!mounted) return;
             context.read<PersonalInfoCubit>().chooseAddress(_address);
           }

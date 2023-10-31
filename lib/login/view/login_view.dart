@@ -46,7 +46,21 @@ class _LoginForm extends StatelessWidget {
   }
 }
 
-class _GoogleLoginButton extends StatelessWidget {
+class _GoogleLoginButton extends StatefulWidget {
+  @override
+  State<_GoogleLoginButton> createState() => _GoogleLoginButtonState();
+}
+
+class _GoogleLoginButtonState extends State<_GoogleLoginButton> {
+  var _isLoading = false;
+
+  void _onSubmit() {
+    setState(() => _isLoading = true);
+    context
+        .read<LoginCubit>()
+        .login().then((value) => setState(() => _isLoading = false));
+  }
+
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
@@ -57,15 +71,22 @@ class _GoogleLoginButton extends StatelessWidget {
         ),
         style: ButtonStyle(
             overlayColor: MaterialStateProperty.all(AppTheme.primaryColor),
-            backgroundColor: MaterialStateProperty.all(AppTheme.accentColor),
+            backgroundColor:_isLoading ?  MaterialStateProperty.all(AppTheme.grey) : MaterialStateProperty.all(AppTheme.accentColor),
             shape:  MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
             ))
         ),
-        icon: const Icon(FontAwesomeIcons.google, color: Colors.white),
-        onPressed: () =>  context
-            .read<LoginCubit>()
-            .login()
+        icon: _isLoading
+            ? Container(
+          width: 24,
+          height: 24,
+          padding: const EdgeInsets.all(2.0),
+          child: const CircularProgressIndicator(
+            color: Colors.white,
+            strokeWidth: 3,
+          ),
+        ) :  const Icon(FontAwesomeIcons.google, color: Colors.white),
+        onPressed: () =>   _isLoading ? null : _onSubmit()
     );
   }
 }

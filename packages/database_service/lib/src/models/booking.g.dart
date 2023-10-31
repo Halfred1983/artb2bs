@@ -31,6 +31,8 @@ abstract class _$BookingCWProxy {
 
   Booking bookingTime(DateTime? bookingTime);
 
+  Booking reviewdTime(DateTime? reviewdTime);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Booking(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -50,6 +52,7 @@ abstract class _$BookingCWProxy {
     String? bookingId,
     String? paymentIntentId,
     DateTime? bookingTime,
+    DateTime? reviewdTime,
   });
 }
 
@@ -98,6 +101,9 @@ class _$BookingCWProxyImpl implements _$BookingCWProxy {
   Booking bookingTime(DateTime? bookingTime) => this(bookingTime: bookingTime);
 
   @override
+  Booking reviewdTime(DateTime? reviewdTime) => this(reviewdTime: reviewdTime);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Booking(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -118,6 +124,7 @@ class _$BookingCWProxyImpl implements _$BookingCWProxy {
     Object? bookingId = const $CopyWithPlaceholder(),
     Object? paymentIntentId = const $CopyWithPlaceholder(),
     Object? bookingTime = const $CopyWithPlaceholder(),
+    Object? reviewdTime = const $CopyWithPlaceholder(),
   }) {
     return Booking(
       bookingStatus: bookingStatus == const $CopyWithPlaceholder()
@@ -168,6 +175,10 @@ class _$BookingCWProxyImpl implements _$BookingCWProxy {
           ? _value.bookingTime
           // ignore: cast_nullable_to_non_nullable
           : bookingTime as DateTime?,
+      reviewdTime: reviewdTime == const $CopyWithPlaceholder()
+          ? _value.reviewdTime
+          // ignore: cast_nullable_to_non_nullable
+          : reviewdTime as DateTime?,
     );
   }
 }
@@ -201,6 +212,8 @@ Booking _$BookingFromJson(Map<String, dynamic> json) => Booking(
       paymentIntentId: json['paymentIntentId'] as String?,
       bookingTime: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['bookingTime'], const TimestampConverter().fromJson),
+      reviewdTime: _$JsonConverterFromJson<Timestamp, DateTime>(
+          json['reviewdTime'], const TimestampConverter().fromJson),
     );
 
 Map<String, dynamic> _$BookingToJson(Booking instance) => <String, dynamic>{
@@ -219,6 +232,8 @@ Map<String, dynamic> _$BookingToJson(Booking instance) => <String, dynamic>{
       'paymentIntentId': instance.paymentIntentId,
       'bookingTime': _$JsonConverterToJson<Timestamp, DateTime>(
           instance.bookingTime, const TimestampConverter().toJson),
+      'reviewdTime': _$JsonConverterToJson<Timestamp, DateTime>(
+          instance.reviewdTime, const TimestampConverter().toJson),
     };
 
 const _$BookingStatusEnumMap = {
