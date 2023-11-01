@@ -74,9 +74,7 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                         Text('Your booking settings', style: TextStyles.semiBoldAccent18, ),
                         const Divider(thickness: 0.6, color: Colors.black38,),
                         verticalMargin24,
-
-                        user!.bookingSettings != null ?
-                        _BookingSettings(user: user) : Container(),
+                        _BookingSettings(user: user),
                         verticalMargin24,
                         TextButton(onPressed: () => Navigator.push(
                           context,
@@ -198,7 +196,7 @@ class _BookingSettings extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text('Base price per space: ', style: TextStyles.semiBoldAccent16, ),
-              Text('${user!.bookingSettings!.basePrice!} £', style: TextStyles.semiBoldViolet16, ),
+              Text('${user!.bookingSettings!.basePrice ?? 'n/a'} £', style: TextStyles.semiBoldViolet16, ),
             ]
         ),
         verticalMargin12,
@@ -206,7 +204,7 @@ class _BookingSettings extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text('Minimum length: ', style: TextStyles.semiBoldAccent16, ),
-              Text('${user!.bookingSettings!.minLength!} days', style: TextStyles.semiBoldViolet16, ),
+              Text('${user!.bookingSettings!.minLength ?? 'n/a'} days', style: TextStyles.semiBoldViolet16, ),
             ]
         ),
         verticalMargin12,
@@ -214,7 +212,7 @@ class _BookingSettings extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Text('Minimum spaces: ', style: TextStyles.semiBoldAccent16, ),
-            Text(user!.bookingSettings!.minLength!, style: TextStyles.semiBoldViolet16, ),
+            Text(user!.bookingSettings!.minLength ?? 'n/a', style: TextStyles.semiBoldViolet16, ),
           ],
         ),
       ],
