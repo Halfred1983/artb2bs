@@ -35,129 +35,133 @@ class ArtInfoView extends StatelessWidget {
         if(state is DataSaved) {
           return HomePage();
         }
-        if (state is LoadedState) {
-          user = state.user;
 
-          if(user!.userInfo!.userType == UserType.artist) {
-            return Scaffold(
-                resizeToAvoidBottomInset: false,
-                appBar: AppBar(
-                  title: Text("About you 2/2", style: TextStyles.boldAccent24,),
-                  centerTitle: true,
-                ),
-                body: Padding(
-                  padding: horizontalPadding24,
-                  child: Column(
-                    children: [
-                      verticalMargin48,
-                      ChipTags(
-                        list: _hostTags,
-                        chipColor: AppTheme.secondaryColourRed,
-                        iconColor: Colors.white,
-                        textColor: Colors.white,
-                        separator: ',',
-                        decoration: InputDecoration(
-                            filled: true,
-                            fillColor: AppTheme.white,
-                            hintText: 'Your vibes coma separated',
-                            hintStyle: TextStyles.semiBoldViolet16,
-                            focusedBorder: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
-                            ),
-                            enabledBorder: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
-                            ),
-                            border: const OutlineInputBorder()
-                        ), //
-                        keyboardType: TextInputType.text,
-                      ),
-                    ],
-                  ),
-                ),
-                bottomNavigationBar: Container(
-                    padding: buttonPadding,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.read<ArtInfoCubit>().save(_artistTags);
-                      },
-                      child: Text("Continue", style: TextStyles.boldWhite16,),)
-                )
-            );
-          }
-          if(user!.userInfo!.userType == UserType.gallery) {
-            return Scaffold(
-                resizeToAvoidBottomInset: false,
-                appBar: AppBar(
-                  title: Text("About you 2/2", style: TextStyles.boldAccent24,),
-                  centerTitle: true,
-                ),
-                body: Padding(
-                  padding: horizontalPadding24,
-                  child: Column(
-                    children: [
-                      verticalMargin48,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Center(child: Text('Capacity of your venue ', style:TextStyles.semiBoldViolet21,),),
-                          const Icon(FontAwesomeIcons.users, color: AppTheme.primaryColourViolet),
-                        ],
-                      ),
-                      _CapacityTextField((nameValue) => context.read<ArtInfoCubit>().chooseCapacity(nameValue),),
-                      verticalMargin48,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(child: Text('Available Spaces (1sq meter each) ', style:TextStyles.semiBoldViolet21,)),
-                          const Icon(FontAwesomeIcons.rulerCombined, color: AppTheme.primaryColourViolet),
-                        ],
-                      ),
-                      _SpacesTextField((nameValue) => context.read<ArtInfoCubit>().chooseSpaces(nameValue),),
-                      verticalMargin48,
-                      ChipTags(
-                        list: _hostTags,
-                        chipColor: AppTheme.secondaryColourRed,
-                        iconColor: AppTheme.white,
-                        textColor: AppTheme.white,
-                        separator: ',',
-                        decoration: InputDecoration(
-                          filled: true,
-                            fillColor: AppTheme.white,
-                            hintText: 'Your vibes coma separated',
-                            hintStyle: TextStyles.semiBoldViolet16,
-                            focusedBorder: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
-                            ),
-                            enabledBorder: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
-                            ),
-                            border: const OutlineInputBorder()
-                        ), //
-                        keyboardType: TextInputType.text,
-                      ),
-                    ],
-                  ),
-                ),
-                bottomNavigationBar: Container(
-                    padding: buttonPadding,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.read<ArtInfoCubit>().save(_hostTags);
-                      },
-                      child: Text("Continue", style: TextStyles.boldWhite16,),)
-                )
-            );
-          }
-        }
-        return Container();
+        return Scaffold(
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              title: Text("About you 2/2", style: TextStyles.boldAccent24,),
+              centerTitle: true,
+            ),
+            body: BlocListener<ArtInfoCubit, ArtInfoState>(
+              listener: (context, state) {
+                if (state is ErrorState) {
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(state.errorMessage, style: TextStyles.semiBoldAccent18),
+                        ),
+                      );
+                }
+              },
+              child: _buildContent(context, state),
+            ),
+            bottomNavigationBar: Container(
+                padding: buttonPadding,
+                child: ElevatedButton(
+                  onPressed: () {
+                    context.read<ArtInfoCubit>().save(_hostTags);
+                  },
+                  child: Text("Continue", style: TextStyles.boldWhite16,),)
+            )
+        );
       },
     );
+  }
+
+  Widget _buildContent(BuildContext context, ArtInfoState state){
+    User? user = state.props[0] as User;
+    // if (state is LoadedState) {
+    //   user = state.user;
+
+      if(user.userInfo!.userType == UserType.artist) {
+        return  Padding(
+            padding: horizontalPadding24,
+            child: Column(
+              children: [
+                verticalMargin48,
+                ChipTags(
+                  list: _hostTags,
+                  chipColor: AppTheme.secondaryColourRed,
+                  iconColor: Colors.white,
+                  textColor: Colors.white,
+                  separator: ',',
+                  decoration: InputDecoration(
+                      filled: true,
+                      fillColor: AppTheme.white,
+                      hintText: 'Your vibes coma separated',
+                      hintStyle: TextStyles.semiBoldViolet16,
+                      focusedBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
+                      ),
+                      enabledBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
+                      ),
+                      border: const OutlineInputBorder()
+                  ), //
+                  keyboardType: TextInputType.text,
+                ),
+              ],
+            ),
+        );
+      }
+
+      if(user.userInfo!.userType == UserType.gallery) {
+        return Padding(
+            padding: horizontalPadding24,
+            child: Column(
+              children: [
+                verticalMargin48,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Center(child: Text('Capacity of your venue ', style:TextStyles.semiBoldViolet21,),),
+                    const Icon(FontAwesomeIcons.users, color: AppTheme.primaryColourViolet),
+                  ],
+                ),
+                _CapacityTextField((nameValue) => context.read<ArtInfoCubit>().chooseCapacity(nameValue),),
+                verticalMargin48,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(child: Text('Available Spaces (1sq meter each) ', style:TextStyles.semiBoldViolet21,)),
+                    const Icon(FontAwesomeIcons.rulerCombined, color: AppTheme.primaryColourViolet),
+                  ],
+                ),
+                _SpacesTextField((nameValue) => context.read<ArtInfoCubit>().chooseSpaces(nameValue),),
+                verticalMargin48,
+                ChipTags(
+                  list: _hostTags,
+                  chipColor: AppTheme.secondaryColourRed,
+                  iconColor: AppTheme.white,
+                  textColor: AppTheme.white,
+                  separator: ',',
+                  decoration: InputDecoration(
+                      filled: true,
+                      fillColor: AppTheme.white,
+                      hintText: 'Your vibes coma separated',
+                      hintStyle: TextStyles.semiBoldViolet16,
+                      focusedBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
+                      ),
+                      enabledBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
+                      ),
+                      border: const OutlineInputBorder()
+                  ), //
+                  keyboardType: TextInputType.text,
+                ),
+              ],
+            ),
+        );
+      }
+    // }
+    return Container();
   }
 }
 

@@ -24,7 +24,7 @@ class LoginCubit extends Cubit<LoginState> {
       _notificationService.sendTokenToServer(userEntity.id);
       if (artb2bUserEntity == null) {
         await _databaseService.addUser(
-            userEntity: User.fromJson(userEntity.toJson()));
+            userEntity: User.fromJson(userEntity.toJson()).copyWith(bookingSettings: BookingSettings(active: true)));
       }
 
       else {

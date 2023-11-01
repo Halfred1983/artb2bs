@@ -52,8 +52,9 @@ class DataSaved extends ArtInfoState {
 
 class ErrorState extends ArtInfoState {
   final String errorMessage;
+  final User user;
 
-  ErrorState(this.errorMessage);
+  ErrorState(this.user, this.errorMessage);
   @override
-  List<Object> get props => [errorMessage];
+  List<Object> get props => [user, errorMessage];
 }

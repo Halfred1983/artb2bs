@@ -17,7 +17,6 @@ import '../../widgets/loading_screen.dart';
 
 class PersonalInfoView extends StatelessWidget {
   PersonalInfoView({Key? key}) : super(key: key);
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 
   String background = "";

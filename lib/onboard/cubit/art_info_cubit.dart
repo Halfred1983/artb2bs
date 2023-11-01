@@ -1,3 +1,4 @@
+import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,7 +19,7 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
       final user = await databaseService.getUser(userId: userId);
       emit(LoadedState(user!));
     } catch (e) {
-      emit(ErrorState("Something went wrong in loading the user details"));
+      emit(ErrorState(User.empty(), "Something went wrong in loading the user details"));
     }
   }
 
@@ -26,7 +27,7 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
     User user = this.state.props[0] as User;
 
     try {
-      // emit(LoadingState());
+      emit(LoadingState());
       if(capacity.isNotEmpty && int.parse(capacity) > 0) {
         if (user.userArtInfo != null) {
           user = user.copyWith(
@@ -35,18 +36,19 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
         else {
           user = user.copyWith(userArtInfo: UserArtInfo(capacity: capacity));
         }
+        emit(LoadedState(user));
       }
       else {
-        emit(ErrorState("Capacity value not valid"));
+        emit(ErrorState(user ,"Capacity value not valid"));
       }
-      // emit(CapacityChosen(user));
     } catch (e) {
-      emit(ErrorState("Capacity value not valid"));
+      emit(ErrorState(user, "Capacity value not valid"));
     }
   }
 
   void chooseSpaces(String spaces) {
     User user = this.state.props[0] as User;
+    emit(LoadingState());
 
     try {
       if(spaces.isNotEmpty && int.parse(spaces) > 0) {
@@ -57,22 +59,42 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
         else {
           user = user.copyWith(userArtInfo: UserArtInfo(spaces: spaces));
         }
+        emit(LoadedState(user));
       }
       else {
-        emit(ErrorState("Spaces value not valid"));
+        emit(ErrorState(user ,"Spaces value not valid"));
       }
 
     } catch (e) {
-      emit(ErrorState("Spaces value not valid"));
+      emit(ErrorState(user ,"Spaces value not valid"));
     }
   }
 
 
   void save(List<String> tags) async {
     User user = this.state.props[0] as User;
+    emit(LoadingState());
 
     try {
-      emit(LoadingState());
+      if(user.userArtInfo == null || user.userArtInfo!.spaces == null ||
+          user.userArtInfo!.spaces!.isEmpty || int.parse(user.userArtInfo!.spaces!) < 1) {
+        emit(ErrorState(user ,"Spaces value not valid"));
+        return;
+
+      }
+      else  if(user.userArtInfo == null || user.userArtInfo!.capacity == null ||
+          user.userArtInfo!.capacity!.isEmpty || int.parse(user.userArtInfo!.capacity!) < 1) {
+        emit(ErrorState(user ,"Capacity value not valid"));
+        return;
+
+      }
+    }
+    catch(e) {
+      emit(ErrorState(user ,"Capacity or Spaces value not valid"));
+      return;
+    }
+
+    try {
 
       if(user.userArtInfo != null) {
         user = user.copyWith(
@@ -89,7 +111,7 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
       await databaseService.updateUser(user: user);
       emit(DataSaved(user));
     } catch (e) {
-      emit(ErrorState("Error saving the art details"));
+      emit(ErrorState(user, "Error saving the art details"));
     }
   }
 }

@@ -50,6 +50,14 @@ class User {
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
+  factory User.empty() => User(
+    id: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    imageUrl: '',
+    userStatus: UserStatus.initialised,
+  );
 }
 
 

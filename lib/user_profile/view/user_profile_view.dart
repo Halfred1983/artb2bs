@@ -29,69 +29,89 @@ class UserProfileView extends StatelessWidget {
           }
           if (state is LoadedState) {
             user = state.user;
-          }
-          return Scaffold(
-              appBar: AppBar(
-                title: Text("Your Profile", style: TextStyles.boldAccent24,),
-                centerTitle: true,
-              ),
-              body: Column(
-                children: [
-                  Padding(
-                    padding: horizontalPadding24,
-                    child: CommonCard(
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              ClipRRect(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  child: CachedNetworkImage(
-                                      fit: BoxFit.cover,
-                                      width: 60,
-                                      height: 60,
-                                      placeholder: (context, url) => Image.asset(user!.userInfo!.userType! == UserType.gallery ?
-                                      'assets/images/gallery.png': 'assets/images/artist.png'),
-                                      imageUrl: user!.imageUrl
-                                  )
-                              ),
-                              horizontalMargin24,
-                              Text('Hello, ', style: TextStyles.semiBoldAccent18,),
-                              Text(user!.firstName, style: TextStyles.boldAccent16,),
-                            ],
-                          ),
-                        ],
+
+            return Scaffold(
+                appBar: AppBar(
+                  title: Text("Your Profile", style: TextStyles.boldAccent24,),
+                  centerTitle: true,
+                ),
+                body: Column(
+                  children: [
+                    Padding(
+                      padding: horizontalPadding24,
+                      child: CommonCard(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                ClipRRect(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    child: CachedNetworkImage(
+                                        fit: BoxFit.cover,
+                                        width: 60,
+                                        height: 60,
+                                        placeholder: (context, url) =>
+                                            Image.asset(
+                                                user!.userInfo!.userType! ==
+                                                    UserType.gallery
+                                                    ?
+                                                'assets/images/gallery.png'
+                                                    : 'assets/images/artist.png'),
+                                        imageUrl: user!.imageUrl
+                                    )
+                                ),
+                                horizontalMargin24,
+                                Text('Hello, ',
+                                  style: TextStyles.semiBoldAccent18,),
+                                Text(user!.firstName,
+                                  style: TextStyles.boldAccent16,),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  verticalMargin24,
-                  if(user!.userInfo!.userType == UserType.gallery) ...[
-                    Container(
-                      width: double.infinity,
-                      height: 70,
-                      color: Colors.white,
-                      padding: horizontalPadding12,
-                      child: SwitchListTile(
-                        subtitle: Text('When Active artists can book you', style: TextStyles.regularAccent14,),
-                        activeColor: AppTheme.primaryColourViolet,
-                        inactiveTrackColor: AppTheme.accentColourOrangeOpacity,
-                        onChanged: (value) =>  context.read<HostCubit>().setActive(value),
-                        value: user!.bookingSettings!.active ?? true,
-                        title: Text('Active', style: TextStyles.semiBoldAccent18,),
+                    verticalMargin24,
+                    if(user!.userInfo!.userType == UserType.gallery) ...[
+
+                      Container(
+                        width: double.infinity,
+                        height: 70,
+                        color: Colors.white,
+                        padding: horizontalPadding12,
+                        child: SwitchListTile(
+                          subtitle: Text('When Active artists can book you',
+                            style: TextStyles.regularAccent14,),
+                          activeColor: AppTheme.primaryColourViolet,
+                          inactiveTrackColor: AppTheme
+                              .accentColourOrangeOpacity,
+                          onChanged: (value) =>
+                              context.read<HostCubit>().setActive(value),
+                          value: user!.bookingSettings!.active!,
+                          title: Text(
+                            'Active', style: TextStyles.semiBoldAccent18,),
+                        ),
                       ),
-                    ),
+                    ],
+                    Expanded(child: Container()),
+                    SettingItem(text: 'Help', onPressed: () => logout(context)),
+                    SettingItem(
+                        text: 'About Artb2b', onPressed: () => logout(context)),
+                    SettingItem(text: 'Terms and conditions',
+                        onPressed: () => logout(context)),
+                    SettingItem(text: 'On the socials',
+                      onPressed: () => logout(context),
+                      lowerBorder: false,),
+                    verticalMargin12,
+                    SettingItem(text: 'Logout',
+                      onPressed: () => logout(context),
+                      lowerBorder: false,),
+                    verticalMargin12,
                   ],
-                  Expanded(child: Container()),
-                  SettingItem(text: 'Help', onPressed: () => logout(context)),
-                  SettingItem(text: 'About Artb2b', onPressed: () => logout(context)),
-                  SettingItem(text: 'Terms and conditions', onPressed: () => logout(context)),
-                  SettingItem(text: 'On the socials', onPressed: () => logout(context), lowerBorder: false,),
-                  verticalMargin12,
-                  SettingItem(text: 'Logout', onPressed: () => logout(context), lowerBorder: false,),
-                  verticalMargin12,
-                ],
-              )
-          );
+                )
+            );
+          }
+          return Container();
         }
     );
   }
