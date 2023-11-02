@@ -3,6 +3,7 @@ import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/home/bloc/user_cubit.dart';
 import 'package:artb2b/host/cubit/host_cubit.dart';
 import 'package:artb2b/host/cubit/host_state.dart';
+import 'package:artb2b/user_profile/view/booking_history.dart';
 import 'package:artb2b/widgets/common_card_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:database_service/database.dart';
@@ -93,6 +94,10 @@ class UserProfileView extends StatelessWidget {
                         ),
                       ),
                     ],
+                    SettingItem(text: 'Booking history', onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => BookingHistory(user: user!)),
+                    ),lowerBorder: false),
                     Expanded(child: Container()),
                     SettingItem(text: 'Help', onPressed: () => logout(context)),
                     SettingItem(
