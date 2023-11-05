@@ -166,6 +166,20 @@ class BookingSummaryCard extends StatelessWidget {
                           .semiBoldViolet14,),
                   ],
                 ),
+                verticalMargin12,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment
+                      .start,
+                  children: [
+                    Text('Status: ',
+                      style: TextStyles
+                          .semiBoldAccent16,),
+                    Text(
+                      booking.bookingStatus!.name,
+                      style: TextStyles
+                          .semiBoldViolet14,),
+                  ],
+                ),
               ],
             )
           ]

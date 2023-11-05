@@ -72,13 +72,14 @@ class BookingRequestView extends StatelessWidget {
                             if (snapshot.hasData && snapshot.data != null) {
 
                               User user = User.fromJson(snapshot.data?.data() as Map<String, dynamic>);
+                              var pendingBookings = user.bookings != null ? user.bookings!
+                                  .where((element) => element.bookingStatus == BookingStatus.pending)
+                                  .toList() : [];
 
-                              if(user.bookings != null && user.bookings!.isNotEmpty) {
+                              if(pendingBookings.isNotEmpty) {
                                 return ListView.builder(
                                     itemCount: user.bookings!.length,
                                     itemBuilder: (context, index) {
-
-                                      if(user.bookings![index].bookingStatus! == BookingStatus.pending) {
                                         return FutureBuilder<User?>(
                                             future: firestoreDatabaseService.getUser(
                                                 userId: user.bookings![index].artistId!),
@@ -272,7 +273,7 @@ class BookingRequestView extends StatelessWidget {
                                               }
                                             }
                                         );
-                                      }
+
                                     });
                               } else {
                                 return Center(

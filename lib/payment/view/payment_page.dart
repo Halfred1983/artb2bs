@@ -6,7 +6,6 @@ import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../app/resources/styles.dart';
@@ -14,8 +13,6 @@ import '../../app/resources/theme.dart';
 import '../../booking/cubit/booking_cubit.dart';
 import '../../booking/service/booking_service.dart';
 import '../../injection.dart';
-import '../../widgets/common_card_widget.dart';
-import '../../widgets/loading_screen.dart';
 import '../../widgets/summary_card.dart';
 
 class PaymentPage extends StatelessWidget {
@@ -144,15 +141,15 @@ class PaymentPage extends StatelessWidget {
                   padding: horizontalPadding24,
                   child: Column(
                     children: [
-                      const Text('Payment failed'),
+                      Text('Sorry, the payment failed!', style:TextStyles.semiBoldViolet21 ,),
                       verticalMargin24,
-                      CardFormField(controller: CardFormEditController(),),
+                      verticalMargin24,
                       ElevatedButton(
                         onPressed:
                             () {
                           context.read<PaymentBloc>().add(PaymentStart());
                         },
-                        child: Text("Book", style: TextStyles.boldWhite16,),)
+                        child: Text("Try again", style: TextStyles.boldWhite16,),)
                     ],
                   ),
                 );

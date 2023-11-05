@@ -73,7 +73,7 @@ class FirestoreDatabaseService implements DatabaseService {
     var collectionReference = _firestore.collection('users');
 
     return collectionReference
-        .where('userId', isEqualTo: userId)
+        .where('id', isEqualTo: userId)
         .snapshots().map((querySnapshot) {
       return querySnapshot.docs.toList().first;
     });
@@ -208,12 +208,34 @@ class FirestoreDatabaseService implements DatabaseService {
   @override
   Future<void> updateBooking({required Booking booking}) async {
     try  {
-      await _firestore.collection('bookings')
-          .doc(booking.bookingId).update(booking.toJson());
+      Future.wait([
+        _firestore.collection('bookings')
+            .doc(booking.bookingId).update(booking.toJson()),
+        updateBookingInUser(booking.hostId!, booking),
+        updateBookingInUser(booking.artistId!, booking),
+      ]);
+
     } on Exception {
       rethrow;
     }
   }
+
+  Future<void> updateBookingInUser(String userId, Booking booking) async {
+    try{
+      DocumentSnapshot host = await _firestore.collection('users')
+          .doc(userId).get();
+      User user = User.fromJson(host.data()! as Map<String, dynamic>);
+
+      user.bookings!.removeWhere((element) => element.bookingId == booking.bookingId);
+      user.bookings!.add(booking);
+
+      _firestore.collection('users')
+          .doc(userId).update(user.toJson());
+    } on Exception {
+      rethrow;
+    }
+  }
+
 
   @override
   Future<void> createRefundRequest(Refund refundRequest) async {
