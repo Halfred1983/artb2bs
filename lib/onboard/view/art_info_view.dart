@@ -1,3 +1,4 @@
+import 'package:artb2b/host/view/host_dashboard_edit_page.dart';
 import 'package:artb2b/onboard/cubit/art_info_cubit.dart';
 import 'package:artb2b/widgets/app_text_field.dart';
 import 'package:database_service/database.dart';
@@ -33,7 +34,12 @@ class ArtInfoView extends StatelessWidget {
           return const LoadingScreen();
         }
         if(state is DataSaved) {
-          return HomePage();
+          if(state.user.userInfo!.userType == UserType.artist){
+            return HomePage();
+          }
+          else {
+            return HostDashboardEditPage();
+          }
         }
 
         return Scaffold(
@@ -74,90 +80,94 @@ class ArtInfoView extends StatelessWidget {
     //   user = state.user;
 
       if(user.userInfo!.userType == UserType.artist) {
-        return  Padding(
-            padding: horizontalPadding24,
-            child: Column(
-              children: [
-                verticalMargin48,
-                ChipTags(
-                  list: _hostTags,
-                  chipColor: AppTheme.secondaryColourRed,
-                  iconColor: Colors.white,
-                  textColor: Colors.white,
-                  separator: ',',
-                  decoration: InputDecoration(
-                      filled: true,
-                      fillColor: AppTheme.white,
-                      hintText: 'Your vibes coma separated',
-                      hintStyle: TextStyles.semiBoldViolet16,
-                      focusedBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
-                      ),
-                      border: const OutlineInputBorder()
-                  ), //
-                  keyboardType: TextInputType.text,
-                ),
-              ],
-            ),
+        return  SingleChildScrollView(
+          child: Padding(
+              padding: horizontalPadding24,
+              child: Column(
+                children: [
+                  verticalMargin48,
+                  ChipTags(
+                    list: _hostTags,
+                    chipColor: AppTheme.secondaryColourRed,
+                    iconColor: Colors.white,
+                    textColor: Colors.white,
+                    separator: ',',
+                    decoration: InputDecoration(
+                        filled: true,
+                        fillColor: AppTheme.white,
+                        hintText: 'Your vibes coma separated',
+                        hintStyle: TextStyles.semiBoldViolet16,
+                        focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
+                        ),
+                        border: const OutlineInputBorder()
+                    ), //
+                    keyboardType: TextInputType.text,
+                  ),
+                ],
+              ),
+          ),
         );
       }
 
       if(user.userInfo!.userType == UserType.gallery) {
-        return Padding(
-            padding: horizontalPadding24,
-            child: Column(
-              children: [
-                verticalMargin48,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Center(child: Text('Capacity of your venue ', style:TextStyles.semiBoldViolet21,),),
-                    const Icon(FontAwesomeIcons.users, color: AppTheme.primaryColourViolet),
-                  ],
-                ),
-                _CapacityTextField((nameValue) => context.read<ArtInfoCubit>().chooseCapacity(nameValue),),
-                verticalMargin48,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(child: Text('Available Spaces (1sq meter each) ', style:TextStyles.semiBoldViolet21,)),
-                    const Icon(FontAwesomeIcons.rulerCombined, color: AppTheme.primaryColourViolet),
-                  ],
-                ),
-                _SpacesTextField((nameValue) => context.read<ArtInfoCubit>().chooseSpaces(nameValue),),
-                verticalMargin48,
-                ChipTags(
-                  list: _hostTags,
-                  chipColor: AppTheme.secondaryColourRed,
-                  iconColor: AppTheme.white,
-                  textColor: AppTheme.white,
-                  separator: ',',
-                  decoration: InputDecoration(
-                      filled: true,
-                      fillColor: AppTheme.white,
-                      hintText: 'Your vibes coma separated',
-                      hintStyle: TextStyles.semiBoldViolet16,
-                      focusedBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
-                      ),
-                      enabledBorder: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
-                      ),
-                      border: const OutlineInputBorder()
-                  ), //
-                  keyboardType: TextInputType.text,
-                ),
-              ],
-            ),
+        return SingleChildScrollView(
+          child: Padding(
+              padding: horizontalPadding24,
+              child: Column(
+                children: [
+                  verticalMargin48,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Center(child: Text('Capacity of your venue ', style:TextStyles.semiBoldViolet21,),),
+                      const Icon(FontAwesomeIcons.users, color: AppTheme.primaryColourViolet),
+                    ],
+                  ),
+                  _CapacityTextField((nameValue) => context.read<ArtInfoCubit>().chooseCapacity(nameValue),),
+                  verticalMargin48,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(child: Text('Available Spaces (1sq meter each) ', style:TextStyles.semiBoldViolet21,)),
+                      const Icon(FontAwesomeIcons.rulerCombined, color: AppTheme.primaryColourViolet),
+                    ],
+                  ),
+                  _SpacesTextField((nameValue) => context.read<ArtInfoCubit>().chooseSpaces(nameValue),),
+                  verticalMargin48,
+                  ChipTags(
+                    list: _hostTags,
+                    chipColor: AppTheme.secondaryColourRed,
+                    iconColor: AppTheme.white,
+                    textColor: AppTheme.white,
+                    separator: ',',
+                    decoration: InputDecoration(
+                        filled: true,
+                        fillColor: AppTheme.white,
+                        hintText: 'Your vibes coma separated',
+                        hintStyle: TextStyles.semiBoldViolet16,
+                        focusedBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
+                        ),
+                        border: const OutlineInputBorder()
+                    ), //
+                    keyboardType: TextInputType.text,
+                  ),
+                ],
+              ),
+          ),
         );
       }
     // }

@@ -39,7 +39,7 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  void logout() async {
+  Future<void> logout() async {
     try {
       await _authService.logOut();
       emit(const LoginState.unauthenticated());

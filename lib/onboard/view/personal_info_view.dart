@@ -64,35 +64,37 @@ class PersonalInfoView extends StatelessWidget {
           title: Text("About you 1/2", style: TextStyles.boldAccent24,),
           centerTitle: true,
         ),
-        body: Padding(
-            padding: horizontalPadding24,
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:  [
-                  SizedBox(height: 100, width: 100,
-                      child: background.toString().length > 2 ? Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage(background)
+        body: SingleChildScrollView(
+          child: Padding(
+              padding: horizontalPadding24,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:  [
+                    SizedBox(height: 100, width: 100,
+                        child: background.toString().length > 2 ? Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(background)
+                            ),
                           ),
-                        ),
-                      ) : Container()
-                  ),
-                  verticalMargin48,
-                  Center(child: Text('Are you an artist or a host', style:TextStyles.semiBoldViolet21,),),
-                  Text('', style: TextStyles.semiBoldViolet14),
-                  verticalMargin8,
-                  const _UserTypeDropdownButton(),
-                  verticalMargin48,
-                  Center(child: Text('Artist or Host name', style:TextStyles.semiBoldViolet21,),),
-                  _UserNameTextField((nameValue) => {
-                    context.read<PersonalInfoCubit>().chooseName(nameValue),
-                  }),
-                  verticalMargin48,
-                  Center(child: Text('Your location', style:TextStyles.semiBoldViolet21,),),
-                  const _LocationTextField(),
-                ]
-            )
+                        ) : Container()
+                    ),
+                    verticalMargin48,
+                    Center(child: Text('Are you an artist or a host', style:TextStyles.semiBoldViolet21,),),
+                    Text('', style: TextStyles.semiBoldViolet14),
+                    verticalMargin8,
+                    const _UserTypeDropdownButton(),
+                    verticalMargin48,
+                    Center(child: Text('Artist or Host name', style:TextStyles.semiBoldViolet21,),),
+                    _UserNameTextField((nameValue) => {
+                      context.read<PersonalInfoCubit>().chooseName(nameValue),
+                    }),
+                    verticalMargin48,
+                    Center(child: Text('Your location', style:TextStyles.semiBoldViolet21,),),
+                    const _LocationTextField(),
+                  ]
+              )
+          ),
         ),
         bottomNavigationBar: Container(
             padding: buttonPadding,

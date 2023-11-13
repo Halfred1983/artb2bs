@@ -75,23 +75,26 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
     User user = this.state.props[0] as User;
     emit(LoadingState());
 
-    try {
-      if(user.userArtInfo == null || user.userArtInfo!.spaces == null ||
-          user.userArtInfo!.spaces!.isEmpty || int.parse(user.userArtInfo!.spaces!) < 1) {
-        emit(ErrorState(user ,"Spaces value not valid"));
-        return;
-
+    if(user.userInfo!.userType! == UserType.gallery) {
+      try {
+        if (user.userArtInfo == null || user.userArtInfo!.spaces == null ||
+            user.userArtInfo!.spaces!.isEmpty ||
+            int.parse(user.userArtInfo!.spaces!) < 1) {
+          emit(ErrorState(user, "Spaces value not valid"));
+          return;
+        }
+        else
+        if (user.userArtInfo == null || user.userArtInfo!.capacity == null ||
+            user.userArtInfo!.capacity!.isEmpty ||
+            int.parse(user.userArtInfo!.capacity!) < 1) {
+          emit(ErrorState(user, "Capacity value not valid"));
+          return;
+        }
       }
-      else  if(user.userArtInfo == null || user.userArtInfo!.capacity == null ||
-          user.userArtInfo!.capacity!.isEmpty || int.parse(user.userArtInfo!.capacity!) < 1) {
-        emit(ErrorState(user ,"Capacity value not valid"));
+      catch (e) {
+        emit(ErrorState(user, "Capacity or Spaces value not valid"));
         return;
-
       }
-    }
-    catch(e) {
-      emit(ErrorState(user ,"Capacity or Spaces value not valid"));
-      return;
     }
 
     try {

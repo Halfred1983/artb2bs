@@ -256,7 +256,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                         if (snapshot.hasData &&
                             snapshot.connectionState ==
                                 ConnectionState.done) {
-                          User user = User.fromJson(snapshot.data! as Map<String, dynamic>);
+                          User user = snapshot.data!;
                           UserType userType = widget.user.userInfo!.userType!;
                           Booking booking = value[index];
                           

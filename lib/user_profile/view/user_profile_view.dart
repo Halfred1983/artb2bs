@@ -94,6 +94,7 @@ class UserProfileView extends StatelessWidget {
                         ),
                       ),
                     ],
+                    verticalMargin24,
                     SettingItem(text: 'Booking history', onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => BookingHistory(user: user!)),
