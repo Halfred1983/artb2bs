@@ -116,7 +116,11 @@ class ProfilePage extends StatelessWidget {
                                 const Divider(thickness: 0.6, color: Colors.black38,),
                                 verticalMargin12,
                                 //ARTIST
-                                isArtist ? SingleChildScrollView(
+                                isArtist ?
+
+                                snapshot.data!.artworks != null
+                                    && snapshot.data!.artworks!.isNotEmpty ?
+                                SingleChildScrollView(
                                   physics: const ScrollPhysics(),
                                   child: MasonryGridView.count(
                                     physics: const BouncingScrollPhysics(),
@@ -127,7 +131,6 @@ class ProfilePage extends StatelessWidget {
                                     crossAxisSpacing: 6,
                                     crossAxisCount: 2,
                                     itemBuilder: (context, index) {
-
                                       return InkWell(
                                         onTap: () => Navigator.push(
                                           context,
@@ -164,8 +167,8 @@ class ProfilePage extends StatelessWidget {
 
                                     },
                                   ),
-                                )
-                                    :
+                                ) :   SizedBox(height: 90, child: Center(child: Text("Artist has no photos yet",  style: TextStyles.semiBoldViolet16)))
+                                :
                                 snapshot.data!.photos != null
                                     && snapshot.data!.photos!.isNotEmpty ?
                                 SingleChildScrollView(
@@ -233,10 +236,9 @@ class ProfilePage extends StatelessWidget {
                           context,
                           MaterialPageRoute(builder: (context) => BookingPage(host: snapshot.data!,)),
                         );
-                        // context.read<BookingCubit>().save();
                       },
                       child: Text("Book", style: TextStyles.boldWhite16,),),
-                  ) : Container(),
+                  ) : null,
               );
             }
             else {
