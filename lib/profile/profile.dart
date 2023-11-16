@@ -1,6 +1,7 @@
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/artwork/view/artwork_details.dart';
+import 'package:artb2b/booking/view/booking_page.dart';
 import 'package:artb2b/host/view/photo_details.dart';
 import 'package:artb2b/injection.dart';
 import 'package:artb2b/utils/common.dart';
@@ -216,17 +217,35 @@ class ProfilePage extends StatelessWidget {
                                     },
                                   ),
                                 ) :
-                                SizedBox(height: 90, child: Center(child: Text("Host has no photos yet",  style: TextStyles.semiBoldViolet16)))
-
+                                SizedBox(height: 90, child: Center(child: Text("Host has no photos yet",  style: TextStyles.semiBoldViolet16))),
+                                // Flexible(child: Container()),
                               ]
                           )
                       )
-                  )
+                  ),
+                  bottomNavigationBar: !isArtist ?
+                  Container(
+                    padding: buttonPadding,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed:() {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => BookingPage(host: snapshot.data!,)),
+                        );
+                        // context.read<BookingCubit>().save();
+                      },
+                      child: Text("Book", style: TextStyles.boldWhite16,),),
+                  ) : Container(),
               );
             }
-            else return Container();
+            else {
+              return Container();
+            }
           }
-          else return Container();
+          else {
+            return Container();
+          }
         }
     );
   }
