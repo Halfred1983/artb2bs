@@ -23,26 +23,26 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
     }
   }
 
-  void chooseCapacity(String capacity) {
+  void choseAboutYou(String aboutYou) {
     User user = this.state.props[0] as User;
 
     try {
       emit(LoadingState());
-      if(capacity.isNotEmpty && int.parse(capacity) > 0) {
+      if(aboutYou.isNotEmpty) {
         if (user.userArtInfo != null) {
           user = user.copyWith(
-              userArtInfo: user.userArtInfo!.copyWith(capacity: capacity));
+              userArtInfo: user.userArtInfo!.copyWith(aboutYou: aboutYou));
         }
         else {
-          user = user.copyWith(userArtInfo: UserArtInfo(capacity: capacity));
+          user = user.copyWith(userArtInfo: UserArtInfo(aboutYou: aboutYou));
         }
         emit(LoadedState(user));
       }
       else {
-        emit(ErrorState(user ,"Capacity value not valid"));
+        emit(ErrorState(user ,"Tell us something about you"));
       }
     } catch (e) {
-      emit(ErrorState(user, "Capacity value not valid"));
+      emit(ErrorState(user, "Tell us something about you"));
     }
   }
 
@@ -83,21 +83,20 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
           emit(ErrorState(user, "Spaces value not valid"));
           return;
         }
-        else
-        if (user.userArtInfo == null || user.userArtInfo!.capacity == null ||
-            user.userArtInfo!.capacity!.isEmpty ||
-            int.parse(user.userArtInfo!.capacity!) < 1) {
-          emit(ErrorState(user, "Capacity value not valid"));
-          return;
-        }
       }
       catch (e) {
-        emit(ErrorState(user, "Capacity or Spaces value not valid"));
+        emit(ErrorState(user, "About you or Spaces value not valid"));
         return;
       }
     }
 
     try {
+
+      if (user.userArtInfo == null || user.userArtInfo!.aboutYou == null ||
+          user.userArtInfo!.aboutYou!.isEmpty) {
+        emit(ErrorState(user, "Tell us something about you"));
+        return;
+      }
 
       if(user.userArtInfo != null) {
         user = user.copyWith(
@@ -110,7 +109,6 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
             userStatus: UserStatus.artInfo,
             userArtInfo: UserArtInfo(vibes: tags));
       }
-
       await databaseService.updateUser(user: user);
       emit(DataSaved(user));
     } catch (e) {

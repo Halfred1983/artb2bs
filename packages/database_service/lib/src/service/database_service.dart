@@ -43,10 +43,10 @@ abstract class DatabaseService {
 
   Future<void> saveDisabledDates(String id, List<Unavailable> unavailableList);
 
-  Stream<List<DocumentSnapshot>> getHostsStream();
+  Stream<List<User>> getHostsStream();
 
-  List<DocumentSnapshot> filterUsersByRadiusAndPriceAndDays(User user,
-  List<DocumentSnapshot> users,
+  List<User> filterUsersByRadiusAndPriceAndDays(User user,
+  List<User> users,
       double radius,
   String priceInput,
       String daysInput,

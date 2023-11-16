@@ -5,8 +5,11 @@ import 'package:artb2b/booking_requests/view/booking_request_page.dart';
 import 'package:artb2b/exhibition/view/exhibition_page.dart';
 import 'package:artb2b/home/bloc/user_cubit.dart';
 import 'package:artb2b/home/bloc/user_state.dart';
+import 'package:artb2b/injection.dart';
 import 'package:artb2b/notification/bloc/notification_bloc.dart';
 import 'package:artb2b/onboard/view/personal_info_page.dart';
+import 'package:artb2b/utils/common.dart';
+import 'package:artb2b/widgets/common_card_widget.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:artb2b/widgets/map_view.dart';
 import 'package:database_service/database.dart';
@@ -84,7 +87,7 @@ class _HomeViewState extends State<HomeView> {
                   return ArtInfoPage();
                 }
 
-                widget =  MapView(user: user!);
+                widget =  HomeList();
 
                 if(user!.userInfo!.userType == UserType.artist) {
                   _widgetOptions = <Widget>[
@@ -164,3 +167,118 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 }
+
+class HomeList extends StatelessWidget {
+  HomeList({super.key});
+
+  final FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
+
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: firestoreDatabaseService.getHostsStream(),
+        builder: (context, snapshot){
+          if (snapshot.hasError) {
+            return const Text('Something went wrong');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Text("Loading");
+          }
+
+          if(snapshot.hasData) {
+            return Scaffold(
+              resizeToAvoidBottomInset: false,
+              appBar: AppBar(
+                title: Text("Hosts", style: TextStyles.boldAccent24,),
+                centerTitle: true,
+              ),
+              body: ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  var user = snapshot.data![index];
+                  // Build your list item using the user data
+                  return InkWell(
+                        onTap: () => context.pushNamed(
+                          'profile',
+                          pathParameters: {'userId': user.id},
+                        ),
+                    child: Padding(
+                      padding: horizontalPadding24 + verticalPadding12,
+                      child: CommonCard(
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Text("More Details", style: TextStyles.boldAccent24, textAlign: TextAlign.left,),
+                              // verticalMargin24,
+                              Row(
+                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                // mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Image.asset('assets/images/gallery.png', width: 40,),
+                                  horizontalMargin12,
+                                  Text(user.userInfo!.name!, style: TextStyles.boldViolet16,),
+                                  Expanded(child: Container()),
+                                  Image.asset('assets/images/marker.png', width: 20,),
+                                  horizontalMargin12,
+                                  Text(user.userInfo!.address!.city,
+                                    softWrap: true, style: TextStyles.semiBoldViolet14,),
+                                ],
+                              ),
+                              verticalMargin12,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Text("Spaces: ", style: TextStyles.boldViolet14,),
+                                  Text(user.userArtInfo!.spaces!, style: TextStyles.semiBoldViolet14,),
+                                ],
+                              ),
+                              verticalMargin12,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Flexible(flex: 1, child: Text("Vibes: ", softWrap: true, style: TextStyles.boldViolet14,)),
+                                ],
+                              ),
+                              Text(user.userArtInfo!.vibes!.join(", "), softWrap: true, style: TextStyles.semiBoldViolet14,),
+
+                              verticalMargin12,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Text("Price per space per day: ", style: TextStyles.boldViolet14,),
+                                  Expanded(child: Container()),
+                                  Text(user.bookingSettings!.basePrice!+' £', style: TextStyles.boldViolet21,),
+                                ],
+                              ),
+                              verticalMargin12,
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Text("Min. spaces: ", style: TextStyles.boldViolet14,),
+                                    Text(user.bookingSettings!.minSpaces!, style: TextStyles.semiBoldViolet14,),
+                                    Expanded(child: Container()),
+                                    Text("Min. days: ", style: TextStyles.boldViolet14,),
+                                    Text(user.bookingSettings!.minLength!, style: TextStyles.semiBoldViolet14,),
+                                  ]
+                              ),
+                            ]
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            );
+          }
+          return Container();
+        });
+
+  }
+}
+

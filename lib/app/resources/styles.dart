@@ -36,6 +36,7 @@ class TextStyles {
   static final boldAccent21 = _baseBold[TextSize.size21].withColor(AppTheme.accentColor);
   static final boldAccent24 = _baseBold[TextSize.size24].withColor(AppTheme.accentColor);
   static final boldViolet24 = _baseBold[TextSize.size24].withColor(AppTheme.primaryColourViolet);
+  static final boldViolet21 = _baseBold[TextSize.size21].withColor(AppTheme.primaryColourViolet);
   static final boldDarkGrey21 = _baseBold[TextSize.size21].withColor(AppTheme.black);
   static final boldDarkGrey16 = _baseBold[TextSize.size16].withColor(AppTheme.black);
 

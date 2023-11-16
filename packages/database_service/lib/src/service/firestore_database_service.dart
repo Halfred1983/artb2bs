@@ -58,12 +58,15 @@ class FirestoreDatabaseService implements DatabaseService {
   }
 
   @override
-  Stream<List<DocumentSnapshot>> getHostsStream()  {
+  Stream<List<User>> getHostsStream()  {
 
     var collectionReference = _firestore.collection('users');
 
     return collectionReference.snapshots().map((querySnapshot) {
-      return querySnapshot.docs.toList();
+      return querySnapshot.docs.map((e) =>  User.fromJson(e.data()))
+          .where((user) {
+        return user.userInfo?.userType == UserType.gallery;
+      }).toList();
     });
   }
 
@@ -101,9 +104,9 @@ class FirestoreDatabaseService implements DatabaseService {
   // }
 
   @override
-  List<DocumentSnapshot> filterUsersByRadiusAndPriceAndDays(
+  List<User> filterUsersByRadiusAndPriceAndDays(
       User user,
-      List<DocumentSnapshot> users,
+      List<User> users,
       double radius,
       String priceInput,
       String daysInput,
@@ -116,11 +119,7 @@ class FirestoreDatabaseService implements DatabaseService {
       longitude: user.userInfo!.address!.location!.longitude,
     );
 
-    return users.where((element) {
-      var user = User.fromJson(element.data() as Map<String, dynamic>);
-      if (user.userInfo!.userType != UserType.gallery) {
-        return false; // Skip non-artist users
-      }
+    return users.where((user) {
 
       if (user.bookingSettings != null &&
           user.bookingSettings!.active != null &&

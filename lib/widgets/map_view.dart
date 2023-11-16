@@ -34,8 +34,8 @@ class _MapViewState extends State<MapView> {
   late BitmapDescriptor markerArtistIcon;
   late BitmapDescriptor markerGalleryIcon;
 
-  late Stream<List<DocumentSnapshot>> usersStream;
-  late Stream<List<DocumentSnapshot>> updatedStream;
+  late Stream<List<User>> usersStream;
+  late Stream<List<User>> updatedStream;
 
   final radiusInputSubject = BehaviorSubject<double>.seeded(10.0);
   final priceInputSubject = BehaviorSubject<String>.seeded('');
@@ -183,25 +183,25 @@ class _MapViewState extends State<MapView> {
             controller.setMapStyle(_mapStyle));
 
         //start listening after map is created
-        updatedStream .listen((List<DocumentSnapshot> documentList) {
+        updatedStream .listen((List<User> documentList) {
           _updateMarkers(documentList);
         });
       });
     }
   }
 
-  Stream<List<DocumentSnapshot>> combineBehaviorSubjects(
+  Stream<List<User>> combineBehaviorSubjects(
       BehaviorSubject<double> radiusStream,
       BehaviorSubject<String> priceInputStream,
       BehaviorSubject<String> daysInputStream,
-      Stream<List<DocumentSnapshot>> usersStream, // The original stream of users
+      Stream<List<User>> usersStream, // The original stream of users
       ) {
     return Rx.combineLatest4(
       radiusStream.stream,
       priceInputStream.stream,
       daysInputStream.stream,
       usersStream,
-          (double radius, String priceInput, String daysInput, List<DocumentSnapshot> users) {
+          (double radius, String priceInput, String daysInput, List<User> users) {
         // Combine the results from the streams and filter as needed
         return firebaseDatabaseService.filterUsersByRadiusAndPriceAndDays(widget.user, users, radius, priceInput, daysInput);
       },
@@ -297,7 +297,7 @@ class _MapViewState extends State<MapView> {
                                 Text(user.userArtInfo!.spaces!, style: TextStyles.semiBoldViolet14,),
                                 Expanded(child: Container()),
                                 Text("Capacity: ", style: TextStyles.boldViolet14,),
-                                Text(user.userArtInfo!.capacity!, style: TextStyles.semiBoldViolet14,),
+                                Text(user.userArtInfo!.aboutYou!, style: TextStyles.semiBoldViolet14,),
                               ],
                             ),
                             verticalMargin12,
@@ -353,7 +353,7 @@ class _MapViewState extends State<MapView> {
                                     User user = User.fromJson(snapshot.data!.data() as Map<String, dynamic>);
 
                                     return user.photos != null && user.photos!.isNotEmpty ?
-                                    Container(
+                                    SizedBox(
                                       width: double.infinity,
                                       height: 100,
                                       child: ListView.builder(
@@ -401,9 +401,9 @@ class _MapViewState extends State<MapView> {
 
                                         },
                                       ),
-                                    ) : SizedBox(height: 90, child: Center(child: Text("Gallery has no photos",  style: TextStyles.semiBoldViolet16)));
+                                    ) : SizedBox(height: 90, child: Center(child: Text("Host has no photos yet",  style: TextStyles.semiBoldViolet16)));
                                   }
-                                  return SizedBox(height: 90, child: Center(child: Text("Gallery has no photos" , style: TextStyles.semiBoldViolet16,)));
+                                  return SizedBox(height: 90, child: Center(child: Text("Host has no photos yet" , style: TextStyles.semiBoldViolet16,)));
                                 }),
 
                             verticalMargin32,
@@ -433,9 +433,8 @@ class _MapViewState extends State<MapView> {
     }
   }
 
-  void _updateMarkers(List<DocumentSnapshot> documentList) {
-    documentList.forEach((DocumentSnapshot document) {
-      User user = User.fromJson(document.data() as Map<String, dynamic>);
+  void _updateMarkers(List<User> documentList) {
+    documentList.forEach((User user) {
       if(user.userInfo!.userType == UserType.gallery) {
         _addMarker(user);
       }

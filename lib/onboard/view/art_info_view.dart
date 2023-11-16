@@ -85,7 +85,11 @@ class ArtInfoView extends StatelessWidget {
               padding: horizontalPadding24,
               child: Column(
                 children: [
-                  verticalMargin48,
+                  verticalMargin24,
+                  Text('About you ', style:TextStyles.semiBoldViolet18,),
+                  Text('Tell us in a few words what makes your space unique. ', style:TextStyles.semiBoldViolet14,),
+                  _AboutYouTextField((nameValue) => context.read<ArtInfoCubit>().choseAboutYou(nameValue),),
+                  verticalMargin24,
                   ChipTags(
                     list: _hostTags,
                     chipColor: AppTheme.secondaryColourRed,
@@ -121,27 +125,19 @@ class ArtInfoView extends StatelessWidget {
               padding: horizontalPadding24,
               child: Column(
                 children: [
-                  verticalMargin48,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
+                  verticalMargin24,
+                  Text('About you ', style:TextStyles.semiBoldViolet18,),
+                  Text('Tell us what makes your space unique. ', style:TextStyles.semiBoldViolet14,),
+                  _AboutYouTextField((nameValue) => context.read<ArtInfoCubit>().choseAboutYou(nameValue),),
+                  verticalMargin24,
+                  Column(
                     children: [
-                      Center(child: Text('Capacity of your venue ', style:TextStyles.semiBoldViolet21,),),
-                      const Icon(FontAwesomeIcons.users, color: AppTheme.primaryColourViolet),
-                    ],
-                  ),
-                  _CapacityTextField((nameValue) => context.read<ArtInfoCubit>().chooseCapacity(nameValue),),
-                  verticalMargin48,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Flexible(child: Text('Available Spaces (1sq meter each) ', style:TextStyles.semiBoldViolet21,)),
-                      const Icon(FontAwesomeIcons.rulerCombined, color: AppTheme.primaryColourViolet),
+                      Text('Available Spaces ', style:TextStyles.semiBoldViolet18,),
+                      Text('Every space is counted as 1 meter per 1 meter.', style:TextStyles.semiBoldViolet14,),
                     ],
                   ),
                   _SpacesTextField((nameValue) => context.read<ArtInfoCubit>().chooseSpaces(nameValue),),
-                  verticalMargin48,
+                  verticalMargin24,
                   ChipTags(
                     list: _hostTags,
                     chipColor: AppTheme.secondaryColourRed,
@@ -221,21 +217,21 @@ class _SpacesTextFieldState extends State<_SpacesTextField> {
 }
 
 
-class _CapacityTextField extends StatefulWidget {
-  const _CapacityTextField(this.capacityChanged);
+class _AboutYouTextField extends StatefulWidget {
+  const _AboutYouTextField(this.capacityChanged);
   final ValueChanged<String> capacityChanged;
 
 
   @override
-  State<_CapacityTextField> createState() => _CapacityTextFieldState(capacityChanged);
+  State<_AboutYouTextField> createState() => _AboutYouTextFieldState(capacityChanged);
 }
 
-class _CapacityTextFieldState extends State<_CapacityTextField> {
+class _AboutYouTextFieldState extends State<_AboutYouTextField> {
 
   late final TextEditingController _capacityController;
   final ValueChanged<String> _capacityChanged;
 
-  _CapacityTextFieldState(this._capacityChanged);
+  _AboutYouTextFieldState(this._capacityChanged);
 
   @override
   void initState() {
@@ -253,13 +249,15 @@ class _CapacityTextFieldState extends State<_CapacityTextField> {
   Widget build(BuildContext context) {
     return  AppTextField(
       key: const Key('Spaces'),
+      maxLines: 8,
+      maxLength: 200,
       controller: _capacityController,
       labelText: '',
       validator: AppInputValidators.required(
           'Spaces required'),
       textInputAction: TextInputAction.next,
-      keyboardType: TextInputType.number,
-      textCapitalization: TextCapitalization.words,
+      keyboardType: TextInputType.text,
+      textCapitalization: TextCapitalization.none,
       autoCorrect: false,
       onChanged: _capacityChanged,
     );

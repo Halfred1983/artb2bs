@@ -8,12 +8,12 @@ part 'user_art_info.g.dart';
 @CopyWith()
 class UserArtInfo {
 
-  String? capacity;
+  String? aboutYou;
   String? spaces;
   List<String>? vibes;
 
   UserArtInfo({
-    this.capacity,
+    this.aboutYou,
     this.spaces,
     this.vibes,
   });

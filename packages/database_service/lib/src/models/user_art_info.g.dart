@@ -7,7 +7,7 @@ part of 'user_art_info.dart';
 // **************************************************************************
 
 abstract class _$UserArtInfoCWProxy {
-  UserArtInfo capacity(String? capacity);
+  UserArtInfo aboutYou(String? aboutYou);
 
   UserArtInfo spaces(String? spaces);
 
@@ -20,7 +20,7 @@ abstract class _$UserArtInfoCWProxy {
   /// UserArtInfo(...).copyWith(id: 12, name: "My name")
   /// ````
   UserArtInfo call({
-    String? capacity,
+    String? aboutYou,
     String? spaces,
     List<String>? vibes,
   });
@@ -33,7 +33,7 @@ class _$UserArtInfoCWProxyImpl implements _$UserArtInfoCWProxy {
   final UserArtInfo _value;
 
   @override
-  UserArtInfo capacity(String? capacity) => this(capacity: capacity);
+  UserArtInfo aboutYou(String? aboutYou) => this(aboutYou: aboutYou);
 
   @override
   UserArtInfo spaces(String? spaces) => this(spaces: spaces);
@@ -50,15 +50,15 @@ class _$UserArtInfoCWProxyImpl implements _$UserArtInfoCWProxy {
   /// UserArtInfo(...).copyWith(id: 12, name: "My name")
   /// ````
   UserArtInfo call({
-    Object? capacity = const $CopyWithPlaceholder(),
+    Object? aboutYou = const $CopyWithPlaceholder(),
     Object? spaces = const $CopyWithPlaceholder(),
     Object? vibes = const $CopyWithPlaceholder(),
   }) {
     return UserArtInfo(
-      capacity: capacity == const $CopyWithPlaceholder()
-          ? _value.capacity
+      aboutYou: aboutYou == const $CopyWithPlaceholder()
+          ? _value.aboutYou
           // ignore: cast_nullable_to_non_nullable
-          : capacity as String?,
+          : aboutYou as String?,
       spaces: spaces == const $CopyWithPlaceholder()
           ? _value.spaces
           // ignore: cast_nullable_to_non_nullable
@@ -82,7 +82,7 @@ extension $UserArtInfoCopyWith on UserArtInfo {
 // **************************************************************************
 
 UserArtInfo _$UserArtInfoFromJson(Map<String, dynamic> json) => UserArtInfo(
-      capacity: json['capacity'] as String?,
+      aboutYou: json['aboutYou'] as String?,
       spaces: json['spaces'] as String?,
       vibes:
           (json['vibes'] as List<dynamic>?)?.map((e) => e as String).toList(),
@@ -90,7 +90,7 @@ UserArtInfo _$UserArtInfoFromJson(Map<String, dynamic> json) => UserArtInfo(
 
 Map<String, dynamic> _$UserArtInfoToJson(UserArtInfo instance) =>
     <String, dynamic>{
-      'capacity': instance.capacity,
+      'aboutYou': instance.aboutYou,
       'spaces': instance.spaces,
       'vibes': instance.vibes,
     };

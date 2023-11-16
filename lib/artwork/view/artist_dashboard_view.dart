@@ -49,31 +49,28 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                       padding: horizontalPadding24,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
                               Image.asset("assets/images/artist.png", width: 60,),
                               horizontalMargin16,
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(user!.userInfo!.name!, style: TextStyles.semiBoldViolet16, ),
-                                  verticalMargin12,
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text('Location: ', style: TextStyles.semiBoldAccent16, ),
-                                      Text(user!.userInfo!.address!.city, style: TextStyles.semiBoldViolet16, ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                              Text(user!.userInfo!.name!, style: TextStyles.semiBoldViolet16, ),
+                              Expanded(child: Container()),
+                              Image.asset('assets/images/marker.png', width: 20,),
+                              horizontalMargin12,
+                              Text(user!.userInfo!.address!.city,
+                                softWrap: true, style: TextStyles.semiBoldViolet14,),
                             ],
                           ),
                           const Divider(thickness: 0.6, color: Colors.black38,),
                           verticalMargin12,
+                          Text('About you: ', style: TextStyles.semiBoldAccent16, ),
+                          verticalMargin12,
+                          Text(user!.userArtInfo!.aboutYou!, style: TextStyles.semiBoldViolet16, textAlign: TextAlign.left,),
+                          verticalMargin24,
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text('Profile Views: ', style: TextStyles.semiBoldAccent16, ),
                               FutureBuilder(

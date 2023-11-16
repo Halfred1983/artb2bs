@@ -6,6 +6,7 @@ import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:artb2b/widgets/booking_settings.dart';
 
 import '../../../injection.dart';
 import '../../../utils/common.dart';
@@ -52,6 +53,7 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                   child: Padding(
                     padding: horizontalPadding24,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
@@ -60,29 +62,31 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                             Text(user!.userInfo!.name!, style: TextStyles.semiBoldViolet18, ),
                           ],
                         ),
+                        verticalMargin12,
+                        const Divider(thickness: 0.6, color: Colors.black38,),
+                        verticalMargin12,
+                        Text('About you: ', style: TextStyles.semiBoldAccent16, ),
+                        verticalMargin12,
+                        Text(user!.userArtInfo!.aboutYou!, style: TextStyles.semiBoldViolet16, textAlign: TextAlign.left,),
                         verticalMargin24,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text('Capacity: ', style: TextStyles.semiBoldAccent16, ),
-                            Text(user!.userArtInfo!.capacity!, style: TextStyles.semiBoldViolet16, ),
-                            Text('Spaces: ', style: TextStyles.semiBoldAccent16, ),
-                            Text(user!.userArtInfo!.spaces!, style: TextStyles.semiBoldViolet16, ),
-                          ],
-                        ),
+                        Text('Spaces: ', style: TextStyles.semiBoldAccent16, ),
+                        verticalMargin12,
+                        Text(user!.userArtInfo!.spaces!, style: TextStyles.semiBoldViolet16, ),
                         verticalMargin24,
                         Text('Your booking settings', style: TextStyles.semiBoldAccent18, ),
                         const Divider(thickness: 0.6, color: Colors.black38,),
+                        verticalMargin12,
+                        BookingSettingsWidget(user: user),
                         verticalMargin24,
-                        _BookingSettings(user: user),
-                        verticalMargin24,
-                        TextButton(onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => HostDashboardEditPage()),
-                        ),
-                          child: Text('Add/change your booking settings' ,style: TextStyles.semiBoldViolet16.copyWith(
-                              decoration: TextDecoration.underline
-                          ),),
+                        Center(
+                          child: TextButton(onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => HostDashboardEditPage()),
+                          ),
+                            child: Text('Add/change your booking settings' ,style: TextStyles.semiBoldViolet16.copyWith(
+                                decoration: TextDecoration.underline
+                            ),),
+                          ),
                         ),
 
                         verticalMargin24,
@@ -177,45 +181,5 @@ class _HostDashboardViewState extends State<HostDashboardView> {
             );
           }
       );
-  }
-}
-
-class _BookingSettings extends StatelessWidget {
-  const _BookingSettings({
-    super.key,
-    required this.user,
-  });
-
-  final User? user;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text('Base price per space: ', style: TextStyles.semiBoldAccent16, ),
-              Text('${user!.bookingSettings!.basePrice ?? 'n/a'} £', style: TextStyles.semiBoldViolet16, ),
-            ]
-        ),
-        verticalMargin12,
-        Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text('Minimum length: ', style: TextStyles.semiBoldAccent16, ),
-              Text('${user!.bookingSettings!.minLength ?? 'n/a'} days', style: TextStyles.semiBoldViolet16, ),
-            ]
-        ),
-        verticalMargin12,
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text('Minimum spaces: ', style: TextStyles.semiBoldAccent16, ),
-            Text(user!.bookingSettings!.minLength ?? 'n/a', style: TextStyles.semiBoldViolet16, ),
-          ],
-        ),
-      ],
-    );
   }
 }
