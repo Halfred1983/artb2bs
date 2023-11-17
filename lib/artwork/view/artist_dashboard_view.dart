@@ -3,12 +3,10 @@ import 'package:artb2b/artwork/cubit/artist_cubit.dart';
 import 'package:artb2b/artwork/cubit/artist_state.dart';
 import 'package:artb2b/widgets/fadingin_picture.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:lottie/lottie.dart';
 
 import '../../app/resources/styles.dart';
 import '../../injection.dart';
