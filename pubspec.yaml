@@ -114,6 +114,7 @@ flutter:
     - assets/googleMapsStyle.json
     - assets/logo.json
     - assets/loading.json
+    - assets/picture_loading.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
