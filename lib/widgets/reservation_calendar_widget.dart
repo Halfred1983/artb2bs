@@ -75,17 +75,14 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
   List<Booking> _getEventsForDay(DateTime day) {
     List<Booking> result = [];
     _bookingDateRange.forEach((bookingId, dateRange) {
-      if(_isDateTimeWithinRange(day, dateRange)) {
+      if(day.isDateTimeWithinRange(dateRange)) {
         result.add(_bookings.where((booking) => booking.bookingId! == bookingId).first);
       }
     });
     return result;
   }
 
-  bool _isDateTimeWithinRange(DateTime dateTime, DateTimeRange dateRange) {
-    return (dateRange.start.isBefore(dateTime) && dateRange.end.isAfter(dateTime)) ||
-        dateRange.start.isSameDay(dateTime) || dateRange.end.isSameDay(dateTime);
-  }
+
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
@@ -117,7 +114,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
     List<DateTime> dateList = [];
 
     // Loop through the dates and add them to the list
-    for (var date = start; date.isBefore(end) || date.isAtSameMomentAs(end);
+    for (var date = start; date.isBeforeWithoutTime(end) || date.isAtSameMomentAs(end);
     date = date.add(Duration(days: 1))) {
       dateList.add(date);
     }

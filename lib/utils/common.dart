@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show kMinInteractiveDimension;
+import 'package:flutter/material.dart' show DateTimeRange, kMinInteractiveDimension;
 
 // Common Widgets
 
@@ -109,5 +109,28 @@ extension DateUtils on DateTime {
     return this.year == date.year &&
         this.month == date.month &&
         this.day == date.day;
+  }
+
+  bool isBeforeWithoutTime(DateTime date1) {
+    // Create new DateTime objects with the time set to midnight
+    DateTime midnightDate1 = DateTime(this.year, this.month, this.day);
+    DateTime midnightDate2 = DateTime(date1.year, date1.month, date1.day);
+
+    // Compare the dates without considering the time
+    return midnightDate1.isBefore(midnightDate2);
+  }
+
+  bool isAfterWithoutTime(DateTime date1) {
+    // Create new DateTime objects with the time set to midnight
+    DateTime midnightDate1 = DateTime(this.year, this.month, this.day);
+    DateTime midnightDate2 = DateTime(date1.year, date1.month, date1.day);
+
+    // Compare the dates without considering the time
+    return midnightDate1.isAfter(midnightDate2);
+  }
+
+  bool isDateTimeWithinRange(DateTimeRange dateRange) {
+    return (dateRange.start.isBeforeWithoutTime(this) && dateRange.end.isAfterWithoutTime(this)) ||
+        dateRange.start.isSameDay(this) || dateRange.end.isSameDay(this);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:artb2b/utils/common.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -33,7 +34,7 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
 
         int freeSpaces = int.parse(user.userArtInfo!.spaces!) -  int.parse(booking.spaces!);
         for(var book in user.bookings!) {
-          if(booking.from!.isBefore(book.to!) && booking.to!.isAfter(book.from!)
+          if(booking.from!.isBeforeWithoutTime(book.to!) && booking.to!.isAfterWithoutTime(book.from!)
               && booking.bookingId != book.bookingId &&
               book.bookingStatus == BookingStatus.accepted) {
 

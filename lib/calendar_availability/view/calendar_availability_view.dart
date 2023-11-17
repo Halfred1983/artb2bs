@@ -126,7 +126,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
     List<DateTime> dateList = [];
 
     // Loop through the dates and add them to the list
-    for (var date = start; date.isBefore(end) || date.isAtSameMomentAs(end);
+    for (var date = start; date.isBeforeWithoutTime(end) || date.isAtSameMomentAs(end);
     date = date.add(Duration(days: 1))) {
       dateList.add(date);
     }
@@ -149,7 +149,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
   bool doesDateTimeRangeOverlapWithList(DateTimeRange range,
       List<DateTime> dateTimeList) {
     for (final dateTime in dateTimeList) {
-      if (range.start.isBefore(dateTime) && range.end.isAfter(dateTime)) {
+      if (range.start.isBeforeWithoutTime(dateTime) && range.end.isAfterWithoutTime(dateTime)) {
         // The DateTimeRange overlaps with the DateTime in the list
         return true;
       }

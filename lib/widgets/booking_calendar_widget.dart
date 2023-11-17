@@ -95,7 +95,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     List<DateTime> dateList = [];
 
     // Loop through the dates and add them to the list
-    for (var date = start; date.isBefore(end) || date.isAtSameMomentAs(end); date = date.add(Duration(days: 1))) {
+    for (var date = start; date.isBeforeWithoutTime(end) || date.isAtSameMomentAs(end); date = date.add(Duration(days: 1))) {
       dateList.add(date);
     }
 
@@ -272,16 +272,13 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
   List<Booking> _getEventsForDay(DateTime day) {
     List<Booking> result = [];
     _bookingDateRange.forEach((bookingId, dateRange) {
-      if(_isDateTimeWithinRange(day, dateRange)) {
+      if(day.isDateTimeWithinRange(dateRange)) {
         result.add(_bookings.where((booking) => booking.bookingId! == bookingId).first);
       }
     });
     return result;
   }
-  bool _isDateTimeWithinRange(DateTime dateTime, DateTimeRange dateRange) {
-    return (dateRange.start.isBefore(dateTime) && dateRange.end.isAfter(dateTime)) ||
-        dateRange.start.isSameDay(dateTime) || dateRange.end.isSameDay(dateTime);
-  }
+
 
   int findMinimumValueInDateRange(
       Map<DateTime, int> dataMap, DateTime? startDate, DateTime? endDate) {
@@ -289,7 +286,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
 
     if(startDate != null && endDate != null) {
       dataMap.forEach((dateTime, value) {
-        if (dateTime.isAfter(startDate) && dateTime.isBefore(endDate)) {
+        if (dateTime.isAfterWithoutTime(startDate) && dateTime.isBeforeWithoutTime(endDate)) {
           // Check if the DateTime is within the specified range
           if (minValue == null || value < minValue) {
             minValue = value;

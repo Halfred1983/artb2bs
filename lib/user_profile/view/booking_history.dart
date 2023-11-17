@@ -15,7 +15,7 @@ class BookingHistory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var pastBookings = user.bookings != null ?
-    user.bookings!.where((element) => element.to!.isBefore(DateTime.now())).toList() : [];
+    user.bookings!.where((element) => element.to!.isBeforeWithoutTime(DateTime.now())).toList() : [];
 
     return Scaffold(
         appBar: AppBar(
