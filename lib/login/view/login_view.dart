@@ -29,12 +29,17 @@ class _LoginForm extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(child: Container()),
-            Text(
-                'ArtB2B',
-                style: TextStyles.boldAccent24.copyWith(fontSize: 90)),
-            Lottie.asset(
-              'assets/logo.json',
-              fit: BoxFit.fill,
+            Image.asset(
+              'assets/images/artb2b_logo.png',
+              height: 200,
+              width: 200,
+            ),
+            SizedBox(
+              height: 350,
+              child: Lottie.asset(
+                'assets/logo.json',
+                fit: BoxFit.fill,
+              ),
             ),
             Expanded(child: Container()),
             _GoogleLoginButton(),
