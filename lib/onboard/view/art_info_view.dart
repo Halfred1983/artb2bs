@@ -43,7 +43,7 @@ class ArtInfoView extends StatelessWidget {
         }
 
         return Scaffold(
-            resizeToAvoidBottomInset: false,
+            resizeToAvoidBottomInset: true,
             appBar: AppBar(
               title: Text("About you 2/2", style: TextStyles.boldAccent24,),
               centerTitle: true,
@@ -85,7 +85,6 @@ class ArtInfoView extends StatelessWidget {
               padding: horizontalPadding24,
               child: Column(
                 children: [
-                  verticalMargin24,
                   Text('About you ', style:TextStyles.semiBoldViolet18,),
                   Text('Tell us in a few words what makes your space unique. ', style:TextStyles.semiBoldViolet14,),
                   _AboutYouTextField((nameValue) => context.read<ArtInfoCubit>().choseAboutYou(nameValue),),
@@ -125,7 +124,6 @@ class ArtInfoView extends StatelessWidget {
               padding: horizontalPadding24,
               child: Column(
                 children: [
-                  verticalMargin24,
                   Text('About you ', style:TextStyles.semiBoldViolet18,),
                   Text('Tell us what makes your space unique. ', style:TextStyles.semiBoldViolet14,),
                   _AboutYouTextField((nameValue) => context.read<ArtInfoCubit>().choseAboutYou(nameValue),),
@@ -260,6 +258,17 @@ class _AboutYouTextFieldState extends State<_AboutYouTextField> {
       textCapitalization: TextCapitalization.none,
       autoCorrect: false,
       onChanged: _capacityChanged,
+      decoration:  const InputDecoration(
+        focusedBorder: UnderlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderSide: BorderSide.none
+        ),
+        enabledBorder: UnderlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderSide: BorderSide.none
+        ),
+        // border: const OutlineInputBorder()
+      )
     );
   }
 }

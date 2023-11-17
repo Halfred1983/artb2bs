@@ -185,7 +185,7 @@ class _AppTextFieldState extends FormFieldState<String> {
               borderRadius: BorderRadius.all(Radius.circular(10)),
               borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
             ),
-            border: const OutlineInputBorder()
+                     // border: const OutlineInputBorder()
         )).applyDefaults(theme.inputDecorationTheme);
 
     return Column(

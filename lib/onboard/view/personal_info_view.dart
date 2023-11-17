@@ -59,7 +59,7 @@ class PersonalInfoView extends StatelessWidget {
     }
 
     return Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: Text("About you 1/2", style: TextStyles.boldAccent24,),
           centerTitle: true,
@@ -84,12 +84,12 @@ class PersonalInfoView extends StatelessWidget {
                     Text('', style: TextStyles.semiBoldViolet14),
                     verticalMargin8,
                     const _UserTypeDropdownButton(),
-                    verticalMargin48,
+                    verticalMargin24,
                     Center(child: Text('Artist or Host name', style:TextStyles.semiBoldViolet21,),),
                     _UserNameTextField((nameValue) => {
                       context.read<PersonalInfoCubit>().chooseName(nameValue),
                     }),
-                    verticalMargin48,
+                    verticalMargin24,
                     Center(child: Text('Your location', style:TextStyles.semiBoldViolet21,),),
                     const _LocationTextField(),
                   ]
