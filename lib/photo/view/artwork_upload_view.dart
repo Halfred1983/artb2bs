@@ -312,6 +312,7 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
       source: ImageSource.gallery,
       maxWidth: 1800,
       maxHeight: 1800,
+      imageQuality: 70
     );
     if (pickedFile != null) {
       setState(() {
