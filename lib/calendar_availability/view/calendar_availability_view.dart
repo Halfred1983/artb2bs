@@ -187,6 +187,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                           children: [
                             CommonCard(
                               child: TableCalendar(
+                                availableGestures: AvailableGestures.none,//this single code will solve
                                 availableCalendarFormats: const {
                                   CalendarFormat.month: 'Month'
                                 },

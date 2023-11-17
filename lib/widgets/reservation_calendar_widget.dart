@@ -131,7 +131,8 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
               child: Column(
                   children: [
                     TableCalendar(
-                      calendarBuilders: CalendarBuilders(
+                        availableGestures: AvailableGestures.none,//this single code will solve
+                        calendarBuilders: CalendarBuilders(
                         markerBuilder: (BuildContext context, date, events) {
                           if(widget.user.userInfo!.userType == UserType.artist) {
 

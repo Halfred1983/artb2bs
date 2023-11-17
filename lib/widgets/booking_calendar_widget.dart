@@ -109,6 +109,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
   Widget build(BuildContext context) {
     return CommonCard(
       child: TableCalendar(
+        availableGestures: AvailableGestures.none,//this single code will solve
         availableCalendarFormats: const {CalendarFormat.month: 'Month'},
         startingDayOfWeek: tc.StartingDayOfWeek.monday,
         rangeStartDay: _rangeStart,
