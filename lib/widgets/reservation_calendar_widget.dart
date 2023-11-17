@@ -243,6 +243,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
           valueListenable: _selectedEvents,
           builder: (context, value, _) {
             return ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
                 itemCount: value.length,
                 itemBuilder: (context, index) {

@@ -212,7 +212,8 @@ class HomeList extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               user.photos != null && user.photos!.isNotEmpty ?
-                              SizedBox(width: double.infinity,  height: 300, child: FadingInPicture(url: user.photos![0].url!))
+                              Container(constraints: BoxConstraints(minWidth: double.infinity,  maxHeight: 300),
+                                  child: FadingInPicture(url: user.photos![0].url!))
                               : SizedBox(width: double.infinity, child: FadingInPicture(url: logoUrl)),
                               verticalMargin12,
                               Row(
