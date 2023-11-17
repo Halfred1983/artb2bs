@@ -10,6 +10,7 @@ import 'package:artb2b/notification/bloc/notification_bloc.dart';
 import 'package:artb2b/onboard/view/personal_info_page.dart';
 import 'package:artb2b/utils/common.dart';
 import 'package:artb2b/widgets/common_card_widget.dart';
+import 'package:artb2b/widgets/fadingin_picture.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:artb2b/widgets/map_view.dart';
 import 'package:database_service/database.dart';
@@ -34,7 +35,6 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
 
   var _currentIndex = 0;
-
 
   List<Widget> _widgetOptions = List.empty(growable: true);
 
@@ -172,6 +172,7 @@ class HomeList extends StatelessWidget {
   HomeList({super.key});
 
   final FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
+  String logoUrl = "https://firebasestorage.googleapis.com/v0/b/artb2b-34af2.appspot.com/o/artb2b_logo.png?alt=media&token=5c97f5f1-7c19-49f1-8dfc-df535444d11d";
 
 
   @override
@@ -210,14 +211,12 @@ class HomeList extends StatelessWidget {
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Text("More Details", style: TextStyles.boldAccent24, textAlign: TextAlign.left,),
-                              // verticalMargin24,
+                              user.photos != null && user.photos!.isNotEmpty ?
+                              SizedBox(width: double.infinity,  height: 300, child: FadingInPicture(url: user.photos![0].url!))
+                              : SizedBox(width: double.infinity, child: FadingInPicture(url: logoUrl)),
+                              verticalMargin12,
                               Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                // mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Image.asset('assets/images/gallery.png', width: 40,),
-                                  horizontalMargin12,
                                   Text(user.userInfo!.name!, style: TextStyles.boldViolet16,),
                                   Expanded(child: Container()),
                                   Image.asset('assets/images/marker.png', width: 20,),
