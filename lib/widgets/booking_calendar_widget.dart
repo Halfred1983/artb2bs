@@ -29,6 +29,9 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
   Map<String, DateTimeRange> _bookingDateRange = {};
   List<DateTime> _unavailableDates = [];
 
+  Map<DateTime, String> _unavailableDatesSpaces = {};
+
+
   @override
   void initState() {
     super.initState();
@@ -50,6 +53,15 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
         _unavailableDates = retrieveUnavailableDates(unavailableDates);
       })
     });
+
+    firestoreDatabaseService.getDisabledSpaces(widget.host.id).then((
+        unavailableDates) =>
+    {
+      setState(() {
+        _unavailableDatesSpaces = retrieveUnavailableSpaces(unavailableDates);
+      })
+    });
+
   }
 
 
@@ -90,6 +102,18 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     return unavailableDateList;
   }
 
+  Map<DateTime, String> retrieveUnavailableSpaces(List<UnavailableSpaces> unavailableDates) {
+    Map<DateTime, String> unavailableDateList = {};
+
+
+    unavailableDates.forEach((unavailableSpace) {
+      generateDateList(unavailableSpace.from!,
+          unavailableSpace.to!).forEach((dateTime) { unavailableDateList[dateTime] = unavailableSpace.spaces!; });
+    });
+
+    return unavailableDateList;
+  }
+
 
   List<DateTime> generateDateList(DateTime start, DateTime end) {
     List<DateTime> dateList = [];
@@ -119,18 +143,25 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
           markerBuilder: (BuildContext context, date, events) {
             int freeSpaces = int.parse(widget.host.userArtInfo!.spaces!);
 
-            if (events.isEmpty) {
-              return Container(
-                margin: const EdgeInsets.only(top: 40),
-                padding: const EdgeInsets.all(1),
-                child: Text(freeSpaces.toString(), style: TextStyles
-                    .semiBoldViolet12),
-              );
-            }
+            // if (events.isEmpty) {
+            //   return Container(
+            //     margin: const EdgeInsets.only(top: 40),
+            //     padding: const EdgeInsets.all(1),
+            //     child: Text(freeSpaces.toString(), style: TextStyles
+            //         .semiBoldViolet12),
+            //   );
+            // }
             for(Object? e in events) {
               Booking b = e as Booking;
               freeSpaces = freeSpaces - int.parse(b.spaces!);
             }
+
+            _unavailableDatesSpaces.forEach((day, spaces) {
+              if (isSameDay(day, date)) {
+                freeSpaces = freeSpaces - int.parse(spaces);
+              }
+            });
+
             return Container(
                     margin: const EdgeInsets.only(top: 38),
                     padding: const EdgeInsets.all(1),

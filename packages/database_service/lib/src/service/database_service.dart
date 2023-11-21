@@ -39,18 +39,22 @@ abstract class DatabaseService {
 
   Future<void> setDisabledDates(String userId, Unavailable unavailable);
 
+  Future<void> setDisabledSpaces(String userId, UnavailableSpaces unavailable);
+
   Future<List<Unavailable>> getDisabledDates(String userId);
 
   Future<void> saveDisabledDates(String id, List<Unavailable> unavailableList);
 
+  Future<void> saveDisabledSpaces(String userId, List<UnavailableSpaces> unavailableList);
+
   Stream<List<User>> getHostsStream();
 
   List<User> filterUsersByRadiusAndPriceAndDays(User user,
-  List<User> users,
+      List<User> users,
       double radius,
-  String priceInput,
+      String priceInput,
       String daysInput,
-  );
+      );
 
   Future<User> updateUser({required User user});
 

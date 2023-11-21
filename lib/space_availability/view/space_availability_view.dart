@@ -1,8 +1,9 @@
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/app/resources/theme.dart';
-import 'package:artb2b/calendar_availability/cubit/calendar_availability_cubit.dart';
-import 'package:artb2b/calendar_availability/cubit/calendar_availability_state.dart';
+import 'package:artb2b/space_availability/cubit/space_availability_cubit.dart';
+import 'package:artb2b/space_availability/cubit/space_availability_state.dart';
 import 'package:artb2b/widgets/common_card_widget.dart';
+import 'package:artb2b/widgets/input_text_widget.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
@@ -16,25 +17,25 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../../injection.dart';
 import '../../../utils/common.dart';
 
-class CalendarAvailabilityView extends StatefulWidget {
+class SpaceAvailabilityView extends StatefulWidget {
 
 
-  CalendarAvailabilityView({super.key, required this.user,
+  SpaceAvailabilityView({super.key, required this.user,
     required this.rangeChanged});
 
   final User user;
   final ValueChanged<DateTimeRange> rangeChanged;
 
   @override
-  State<CalendarAvailabilityView> createState() => _CalendarAvailabilityViewState();
+  State<SpaceAvailabilityView> createState() => _SpaceAvailabilityViewState();
 }
 
-class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
+class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
   FirestoreDatabaseService firestoreDatabaseService = locator<
       FirestoreDatabaseService>();
   List<DateTime> _bookedDates = [];
-  List<DateTime> _unavailableDates = [];
-  List<Unavailable> _unavailableList = [];
+  Map<DateTime, String> _unavailableDates = {};
+  List<UnavailableSpaces> _unavailableSpacesList = [];
   late DateTime? _selectedDay = calculateFirstDay();
   late DateTime _focusedDay = calculateFirstDay();
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
@@ -43,8 +44,9 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
   DateTime? _rangeEnd;
 
   String _errorMessage = '';
+  String _unavailableSpaces = '0';
 
-  _CalendarAvailabilityViewState();
+  _SpaceAvailabilityViewState();
 
   @override
   void initState() {
@@ -56,12 +58,12 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
       });
     });
 
-    firestoreDatabaseService.getDisabledDates(widget.user.id).then((
+    firestoreDatabaseService.getDisabledSpaces(widget.user.id).then((
         unavailableDates) =>
     {
       setState(() {
-        _unavailableList = unavailableDates;
-        _unavailableDates = retrieveUnavailableDates(unavailableDates);
+        _unavailableSpacesList = unavailableDates;
+        _unavailableDates = retrieveUnavailableSpaces(unavailableDates);
       })
     });
   }
@@ -110,13 +112,13 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
     return dateSpaces;
   }
 
-  List<DateTime> retrieveUnavailableDates(List<Unavailable> unavailableDates) {
-    List<DateTime> unavailableDateList = [];
+  Map<DateTime, String> retrieveUnavailableSpaces(List<UnavailableSpaces> unavailableDates) {
+    Map<DateTime, String> unavailableDateList = {};
 
 
-    unavailableDates.forEach((unavailable) {
-      unavailableDateList.addAll(generateDateList(unavailable.from!,
-          unavailable.to!));
+    unavailableDates.forEach((unavailableSpace) {
+      generateDateList(unavailableSpace.from!,
+          unavailableSpace.to!).forEach((dateTime) { unavailableDateList[dateTime] = unavailableSpace.spaces!; });
     });
 
     return unavailableDateList;
@@ -129,6 +131,17 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
     for (var date = start; date.isBeforeWithoutTime(end) || date.isAtSameMomentAs(end);
     date = date.add(Duration(days: 1))) {
       dateList.add(date);
+    }
+    return dateList;
+  }
+
+  Map<DateTime, String> generateSpacesList(DateTime start, DateTime end, String spaces) {
+    Map<DateTime, String> dateList = {};
+
+    // Loop through the dates and add them to the list
+    for (var date = start; date.isBeforeWithoutTime(end) || date.isAtSameMomentAs(end);
+    date = date.add(Duration(days: 1))) {
+      dateList[date] = spaces;
     }
     return dateList;
   }
@@ -162,7 +175,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
   Widget build(BuildContext context) {
     User? user;
     return
-      BlocBuilder<CalendarAvailabilityCubit, CalendarAvailabilityState>(
+      BlocBuilder<SpaceAvailabilityCubit, SpaceAvailabilityState>(
           builder: (context, state) {
             if (state is LoadingState) {
               return const LoadingScreen();
@@ -173,7 +186,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
               return Scaffold(
                 appBar: AppBar(
                   title: Text(
-                    "Availability Calendar", style: TextStyles.boldAccent21,),
+                    "Space Availability Calendar", style: TextStyles.boldAccent21,),
                   centerTitle: true,
                   iconTheme: const IconThemeData(
                     color: AppTheme
@@ -202,6 +215,37 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                                     const Duration(days: 1000)),
                                 focusedDay: _focusedDay,
                                 calendarFormat: CalendarFormat.month,
+                                calendarBuilders: CalendarBuilders(
+                                  markerBuilder: (BuildContext context, date, events) {
+                                    int freeSpaces = int.parse(user!.userArtInfo!.spaces!);
+
+                                    // if (events.isEmpty) {
+                                    //   return Container(
+                                    //     margin: const EdgeInsets.only(top: 40),
+                                    //     padding: const EdgeInsets.all(1),
+                                    //     child: Text(freeSpaces.toString(), style: TextStyles
+                                    //         .semiBoldViolet12),
+                                    //   );
+                                    // }
+                                    for(Object? e in events) {
+                                      Booking b = e as Booking;
+                                      freeSpaces = freeSpaces - int.parse(b.spaces!);
+                                    }
+
+                                    _unavailableDates.forEach((day, spaces) {
+                                      if (isSameDay(day, date)) {
+                                        freeSpaces = freeSpaces - int.parse(spaces);
+                                      }
+                                    });
+                                    return Container(
+                                      margin: const EdgeInsets.only(top: 38),
+                                      padding: const EdgeInsets.all(1),
+                                      child: Text(freeSpaces.toString(), style: TextStyles
+                                          .semiBoldViolet12),
+                                    );
+                                  },
+                                ),
+
                                 headerStyle: const HeaderStyle(
                                     leftChevronIcon: Icon(
                                       Icons.chevron_left, color: AppTheme
@@ -248,16 +292,17 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                                   return _isBooked(day);
                                 },
                                 enabledDayPredicate: (day) {
-                                  if (_unavailableDates.isEmpty) return true;
-
-                                  bool isEnabled = true;
-                                  _unavailableDates.forEach((date) {
-                                    if (isSameDay(day, date)) {
-                                      isEnabled = false;
-                                    }
-                                  });
-
-                                  return isEnabled;
+                                  // if (_unavailableDates.isEmpty) return true;
+                                  //
+                                  // bool isEnabled = true;
+                                  // _unavailableDates.forEach((date) {
+                                  //   if (isSameDay(day, date)) {
+                                  //     isEnabled = false;
+                                  //   }
+                                  // });
+                                  //
+                                  // return isEnabled;
+                                  return true;
                                 },
                                 onRangeSelected: (start, end, focusedDay) {
                                   setState(() {
@@ -311,6 +356,10 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                                           .semiBoldViolet14,),
                                   ],
                                 ),
+                                verticalMargin12,
+                                InputTextWidget((spaceValue) => setState(() {
+                                  _unavailableSpaces =spaceValue;
+                                }),'Number of spaces unavailable', TextInputType.number),
                               ],
                             ),
                             ) : Container(),
@@ -329,16 +378,16 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                       onPressed: _errorMessage.length < 2 && _rangeStart != null
                           && _rangeEnd != null ? () {
 
-                        context.read<CalendarAvailabilityCubit>()
+                        context.read<SpaceAvailabilityCubit>()
                             .setDates(user!,
-                            Unavailable(from: _rangeStart, to: _rangeEnd))
+                            UnavailableSpaces(from: _rangeStart, to: _rangeEnd, spaces: _unavailableSpaces))
                             .then((value) =>
                         {
 
                           setState(() {
                             _unavailableDates.addAll(
-                                generateDateList(_rangeStart!, _rangeEnd!));
-                            _unavailableList.add(Unavailable(from: _rangeStart!, to: _rangeEnd!));
+                                generateSpacesList(_rangeStart!, _rangeEnd!, _unavailableSpaces ));
+                            _unavailableSpacesList.add(UnavailableSpaces(from: _rangeStart!, to: _rangeEnd!, spaces:_unavailableSpaces ));
                             _rangeStart = null; // Important to clean those
                             _rangeEnd = null;
                           })
@@ -357,9 +406,10 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
   Widget getExistingUnavailableDateList(User user) {
     return ListView.builder(
       shrinkWrap: true,
-      itemCount: _unavailableList.length,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: _unavailableSpacesList.length,
       itemBuilder: (context, index) {
-        _unavailableList.sort((a, b) => a.from!.compareTo(b.from!));
+        _unavailableSpacesList.sort((a, b) => a.from!.compareTo(b.from!));
         return Padding(
           padding: verticalPadding12,
           child: CommonCard(
@@ -372,7 +422,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                             .boldViolet16,),
                         Text(
                           DateFormat.yMMMEd().format(
-                              _unavailableList[index].from!),
+                              _unavailableSpacesList[index].from!),
                           style: TextStyles
                               .semiBoldViolet14,),
                       ]
@@ -384,7 +434,19 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                         Text('To: ', style: TextStyles
                             .boldViolet16,),
                         Text(DateFormat.yMMMEd().format(
-                            _unavailableList[index].to!),
+                            _unavailableSpacesList[index].to!),
+                          style: TextStyles
+                              .semiBoldViolet14,),
+                      ],
+                    ),
+                    verticalMargin12,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text('Spaces: ', style: TextStyles
+                            .boldViolet16,),
+                        Text(
+                          _unavailableSpacesList[index].spaces!,
                           style: TextStyles
                               .semiBoldViolet14,),
                       ],
@@ -408,15 +470,15 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
   void removeUnavailableDate(User user, int index) {
     setState(() {
 
-      generateDateList(_unavailableList.elementAt(index).from!,
-          _unavailableList.elementAt(index).to!).forEach((element) {
+      generateDateList(_unavailableSpacesList.elementAt(index).from!,
+          _unavailableSpacesList.elementAt(index).to!).forEach((element) {
         _unavailableDates.remove(element);
       });
 
-      _unavailableList.removeAt(index);
+      _unavailableSpacesList.removeAt(index);
 
-      context.read<CalendarAvailabilityCubit>().saveDates(
-          user, _unavailableList);
+      context.read<SpaceAvailabilityCubit>().saveDates(
+          user, _unavailableSpacesList);
     });
   }
 }

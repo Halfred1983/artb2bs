@@ -1,5 +1,6 @@
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/calendar_availability/view/calendar_availability_page.dart';
+import 'package:artb2b/space_availability/view/space_availability_page.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class ExhibitionView extends StatelessWidget {
 
               return Scaffold(
                 appBar: AppBar(
-                  title: Text("Your Bookings", style: TextStyles.boldAccent24,),
+                  title: Text("Your Bookings", style: TextStyles.boldAccent21,),
                   centerTitle: true,
                 ),
                 body: SingleChildScrollView(
@@ -49,7 +50,15 @@ class ExhibitionView extends StatelessWidget {
                                 decoration: TextDecoration.underline
                             ),),
                           ),
-                          verticalMargin12
+                          verticalMargin12,
+                          TextButton(onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SpaceAvailabilityPage(user: user!)),
+                          ),
+                            child: Text('Adjust your space availability' ,style: TextStyles.semiBoldViolet16.copyWith(
+                                decoration: TextDecoration.underline
+                            ),),
+                          ),
                         ],
                         ReservationCalendarWidget(user: user!),
                       ],

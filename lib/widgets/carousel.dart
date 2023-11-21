@@ -22,7 +22,7 @@ class _CarouselState extends State<Carousel> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> imageSliders = widget.imgList
-        .map((item) =>FadingInPicture(url: widget.imgList[0].url!))
+        .map((item) =>FadingInPicture(url: item.url!))
 
         .toList();
     return Column(children: [

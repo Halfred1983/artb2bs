@@ -314,6 +314,33 @@ class FirestoreDatabaseService implements DatabaseService {
   }
 
   @override
+  Future<void> setDisabledSpaces(String userId, UnavailableSpaces unavailableSpaces) async {
+    try {
+      final DocumentReference userDocRef = _firestore.collection('disabledSpaces')
+          .doc(userId);
+
+      // Retrieve the current list of Unavailiable items from Firestore
+      final DocumentSnapshot userDoc = await userDocRef.get();
+      List<UnavailableSpaces>? currentUnavailiableList = [];
+
+      if (userDoc.exists) {
+        final List<dynamic>? unavailableDataList =
+            (userDoc.data() as Map<String, dynamic>)['unavailableSpaces'] ?? [];
+
+        currentUnavailiableList = unavailableDataList!.map((data) => UnavailableSpaces.fromJson(data)).toList();
+      }
+
+      // Add the new Unavailiable item to the list
+      currentUnavailiableList.add(unavailableSpaces);
+
+      // Update the Firestore document with the updated list
+      await userDocRef.set({'unavailableSpaces': currentUnavailiableList.map((e) => e.toJson()).toList()});
+    } on Exception catch (e) {
+      throw e;
+    }
+  }
+
+  @override
   Future<List<Unavailable>> getDisabledDates(String userId) async {
     final cRef = _firestore.collection('disabledDates');
     final DocumentSnapshot snapshot = await cRef
@@ -331,12 +358,41 @@ class FirestoreDatabaseService implements DatabaseService {
   }
 
   @override
+  Future<List<UnavailableSpaces>> getDisabledSpaces(String userId) async {
+    final cRef = _firestore.collection('disabledSpaces');
+    final DocumentSnapshot snapshot = await cRef
+        .doc(userId)
+        .get();
+
+    if(snapshot.exists) {
+      final List<dynamic>? unavailableDataList =
+      (snapshot.data() as Map<String, dynamic>)['unavailableSpaces'];
+
+      return unavailableDataList!.map((data) => UnavailableSpaces.fromJson(data)).toList();
+    } else {
+      return [];
+    }
+  }
+
+  @override
   Future<void> saveDisabledDates(String userId, List<Unavailable> unavailableList) async {
     try {
       final DocumentReference userDocRef = _firestore.collection('disabledDates')
           .doc(userId);
 
       await userDocRef.set({'unavailableDate': unavailableList.map((e) => e.toJson()).toList()});
+    } on Exception catch (e) {
+      throw e;
+    }
+  }
+
+  @override
+  Future<void> saveDisabledSpaces(String userId, List<UnavailableSpaces> unavailableList) async {
+    try {
+      final DocumentReference userDocRef = _firestore.collection('disabledSpaces')
+          .doc(userId);
+
+      await userDocRef.set({'unavailableSpaces': unavailableList.map((e) => e.toJson()).toList()});
     } on Exception catch (e) {
       throw e;
     }

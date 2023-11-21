@@ -32,6 +32,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
   Map<String, DateTimeRange> _bookingDateRange = {};
   List<Booking> _bookings = [];
   List<DateTime> _unavailableDates = [];
+  Map<DateTime, String> _unavailableDatesSpaces = {};
 
   @override
   void initState() {
@@ -47,6 +48,14 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
     {
       setState(() {
         _unavailableDates = retrieveUnavailableDates(unavailableDates);
+      })
+    });
+
+    firestoreDatabaseService.getDisabledSpaces(widget.user.id).then((
+        unavailableDates) =>
+    {
+      setState(() {
+        _unavailableDatesSpaces = retrieveUnavailableSpaces(unavailableDates);
       })
     });
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
@@ -82,7 +91,17 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
     return result;
   }
 
+  Map<DateTime, String> retrieveUnavailableSpaces(List<UnavailableSpaces> unavailableDates) {
+    Map<DateTime, String> unavailableDateList = {};
 
+
+    unavailableDates.forEach((unavailableSpace) {
+      generateDateList(unavailableSpace.from!,
+          unavailableSpace.to!).forEach((dateTime) { unavailableDateList[dateTime] = unavailableSpace.spaces!; });
+    });
+
+    return unavailableDateList;
+  }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
@@ -152,18 +171,25 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                           else {
                             int freeSpaces = int.parse(widget.user.userArtInfo!.spaces!);
 
-                            if (events.isEmpty) {
-                              return Container(
-                                margin: const EdgeInsets.only(top: 40),
-                                padding: const EdgeInsets.all(1),
-                                child: Text(freeSpaces.toString(), style: TextStyles
-                                    .semiBoldViolet12),
-                              );
-                            }
+                            // if (events.isEmpty) {
+                            //   return Container(
+                            //     margin: const EdgeInsets.only(top: 40),
+                            //     padding: const EdgeInsets.all(1),
+                            //     child: Text(freeSpaces.toString(), style: TextStyles
+                            //         .semiBoldViolet12),
+                            //   );
+                            // }
                             for(Object? e in events) {
                               Booking b = e as Booking;
                               freeSpaces = freeSpaces - int.parse(b.spaces!);
                             }
+
+                            _unavailableDatesSpaces.forEach((day, spaces) {
+                              if (isSameDay(day, date)) {
+                                freeSpaces = freeSpaces - int.parse(spaces);
+                              }
+                            });
+
                             return Container(
                               margin: const EdgeInsets.only(top: 40),
                               padding: const EdgeInsets.all(1),
