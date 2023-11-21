@@ -42,6 +42,7 @@ class AppTheme {
       splashColor: accentColor.withOpacity(0.2),
       highlightColor: accentColor.withOpacity(0.2),
       appBarTheme: _appBarTheme,
+      floatingActionButtonTheme: _floatingActionButton,
       elevatedButtonTheme: _elevatedButtonTheme,
       outlinedButtonTheme: _outlineButtonTheme,
       textButtonTheme: _textButtonTheme,
@@ -151,6 +152,13 @@ class AppTheme {
       elevation: 1.0,
       shadowColor: AppTheme.backgroundGrey,
     ),
+  );
+
+  static const _floatingActionButton = FloatingActionButtonThemeData(
+      backgroundColor: AppTheme.white,
+      foregroundColor: AppTheme.primaryColourViolet,
+      elevation: 2.0,
+    // ),
   );
 
   static final _textButtonTheme = TextButtonThemeData(

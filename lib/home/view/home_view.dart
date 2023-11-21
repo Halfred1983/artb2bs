@@ -9,6 +9,7 @@ import 'package:artb2b/injection.dart';
 import 'package:artb2b/notification/bloc/notification_bloc.dart';
 import 'package:artb2b/onboard/view/personal_info_page.dart';
 import 'package:artb2b/utils/common.dart';
+import 'package:artb2b/widgets/carousel.dart';
 import 'package:artb2b/widgets/common_card_widget.dart';
 import 'package:artb2b/widgets/fadingin_picture.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
@@ -87,7 +88,7 @@ class _HomeViewState extends State<HomeView> {
                   return ArtInfoPage();
                 }
 
-                widget =  HomeList();
+                widget =  HomeList(user: user!);
 
                 if(user!.userInfo!.userType == UserType.artist) {
                   _widgetOptions = <Widget>[
@@ -168,16 +169,23 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-class HomeList extends StatelessWidget {
-  HomeList({super.key});
+class HomeList extends StatefulWidget {
+  HomeList({super.key, required this.user});
+  final User user;
 
+  @override
+  State<HomeList> createState() => _HomeListState();
+}
+
+class _HomeListState extends State<HomeList> {
+  bool _listView = true;
   final FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
-  String logoUrl = "https://firebasestorage.googleapis.com/v0/b/artb2b-34af2.appspot.com/o/artb2b_logo.png?alt=media&token=5c97f5f1-7c19-49f1-8dfc-df535444d11d";
 
+  String logoUrl = "https://firebasestorage.googleapis.com/v0/b/artb2b-34af2.appspot.com/o/artb2b_logo.png?alt=media&token=5c97f5f1-7c19-49f1-8dfc-df535444d11d";
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return  StreamBuilder(
         stream: firestoreDatabaseService.getHostsStream(),
         builder: (context, snapshot){
           if (snapshot.hasError) {
@@ -195,7 +203,7 @@ class HomeList extends StatelessWidget {
                 title: Text("Hosts", style: TextStyles.boldAccent24,),
                 centerTitle: true,
               ),
-              body: ListView.builder(
+              body: _listView ? ListView.builder(
                 itemCount: snapshot.data!.length,
                 itemBuilder: (BuildContext context, int index) {
                   var user = snapshot.data![index];
@@ -212,8 +220,10 @@ class HomeList extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               user.photos != null && user.photos!.isNotEmpty ?
-                              Container(constraints: BoxConstraints(minWidth: double.infinity,  maxHeight: 300),
-                                  child: FadingInPicture(url: user.photos![0].url!))
+
+                             Container(constraints: const BoxConstraints(minWidth: double.infinity,  maxHeight: 300),
+                                 child: Carousel(imgList: user.photos!)
+                             )
                               : SizedBox(width: double.infinity, child: FadingInPicture(url: logoUrl)),
                               verticalMargin12,
                               Row(
@@ -273,12 +283,19 @@ class HomeList extends StatelessWidget {
                     ),
                   );
                 },
+              ) : MapView(user: widget.user),
+              floatingActionButton: FloatingActionButton(
+                onPressed: (){
+                  setState(() {
+                    _listView = !_listView;
+                  });
+                },
+                child: Icon(_listView ? Icons.map : Icons.list),
               ),
+              floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
             );
           }
           return Container();
         });
-
   }
 }
-

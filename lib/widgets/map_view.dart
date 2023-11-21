@@ -295,9 +295,6 @@ class _MapViewState extends State<MapView> {
                               children: [
                                 Text("Spaces: ", style: TextStyles.boldViolet14,),
                                 Text(user.userArtInfo!.spaces!, style: TextStyles.semiBoldViolet14,),
-                                Expanded(child: Container()),
-                                Text("Capacity: ", style: TextStyles.boldViolet14,),
-                                Text(user.userArtInfo!.aboutYou!, style: TextStyles.semiBoldViolet14,),
                               ],
                             ),
                             verticalMargin12,

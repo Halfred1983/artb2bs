@@ -25,7 +25,7 @@ class FadingInPicture extends StatelessWidget {
       child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: CachedNetworkImage(
-              fit: BoxFit.contain,
+              fit: BoxFit.cover,
               placeholder: (context, url) =>
                   Lottie.asset(
                     'assets/picture_loading.json',

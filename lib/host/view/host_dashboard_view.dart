@@ -93,7 +93,7 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                         ),
 
                         verticalMargin24,
-                        Text('Your photos', style: TextStyles.semiBoldAccent18, ),
+                        Text('Photos of your space', style: TextStyles.semiBoldAccent18, ),
                         const Divider(thickness: 0.6, color: Colors.black38,),
                         //Photos
                         StreamBuilder(
@@ -128,7 +128,7 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      ArtworkUploadPage()),
+                                                      PhotoUploadPage()),
                                             ));
                                       }
                                       return InkWell(
