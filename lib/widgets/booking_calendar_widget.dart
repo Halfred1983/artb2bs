@@ -266,7 +266,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
 
   void _rangeDateChange() {
     var range = DateTimeRange(start: _rangeStart!, end: _rangeEnd!);
-    int maxSpaces = findMinimumValueInDateRange(_disabledDates, _rangeStart, _rangeEnd);
+    int maxSpaces = findMinimumValueInDateRange(_disabledDates, _unavailableDatesSpaces, _rangeStart, _rangeEnd);
     DateTimeRangeWithInt dateTimeRangeWithInt = DateTimeRangeWithInt(range, maxSpaces);
     _rangeStartChanged(dateTimeRangeWithInt);
   }
@@ -313,11 +313,21 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
 
 
   int findMinimumValueInDateRange(
-      Map<DateTime, int> dataMap, DateTime? startDate, DateTime? endDate) {
+      Map<DateTime, int> datesBookedSpaces,
+      Map<DateTime, String> datesUnavailableSpaces, DateTime? startDate, DateTime? endDate) {
     int minValue = int.parse(widget.host.userArtInfo!.spaces!); // Initialize to null
 
+    int unavailableSpaces = 0;
     if(startDate != null && endDate != null) {
-      dataMap.forEach((dateTime, value) {
+      datesUnavailableSpaces.forEach((dateTime, value) {
+        if (dateTime.isAfterWithoutTime(startDate) && dateTime.isBeforeWithoutTime(endDate)) {
+          // Check if the DateTime is within the specified range
+          unavailableSpaces = unavailableSpaces + int.parse(value);
+        }
+      });
+
+
+      datesBookedSpaces.forEach((dateTime, value) {
         if (dateTime.isAfterWithoutTime(startDate) && dateTime.isBeforeWithoutTime(endDate)) {
           // Check if the DateTime is within the specified range
           if (minValue == null || value < minValue) {
@@ -325,6 +335,8 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
           }
         }
       });
+
+      minValue = minValue - unavailableSpaces;
     }
     return minValue; // Return the minimum value or 0 if no value is found
   }
