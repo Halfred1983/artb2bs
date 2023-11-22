@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'package:confetti/confetti.dart';
 
 import '../../host/view/host_dashboard_page.dart';
 import '../../onboard/view/art_info_page.dart';
@@ -36,6 +37,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
 
   var _currentIndex = 0;
+  late ConfettiController _controllerCenter;
 
   List<Widget> _widgetOptions = List.empty(growable: true);
 
