@@ -139,22 +139,23 @@ class SettingItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(
-          bottom: BorderSide(
-            color: lowerBorder ? AppTheme.accentColourOrange : Colors.white, // Border color
-            width: 1.0,
+    return InkWell(
+      splashColor: AppTheme.accentColor,
+      onTap: () => onPressed(),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.8),
+          border: Border(
+            bottom: BorderSide(
+              color: lowerBorder ? AppTheme.accentColourOrange : Colors.white, // Border color
+              width: 1.0,
+            ),
           ),
         ),
-      ),
-      width: double.infinity,
-      height: 50,
-      child: Center(
-        child: InkWell(
-            child: Text(text, style: TextStyles.semiBoldAccent18,),
-            onTap: () => onPressed()
+        width: double.infinity,
+        height: 50,
+        child: Center(
+          child: Text(text, style: TextStyles.semiBoldAccent18,),
         ),
       ),
     );

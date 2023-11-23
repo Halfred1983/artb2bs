@@ -1,6 +1,7 @@
 
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/booking/service/booking_service.dart';
+import 'package:artb2b/booking/view/booking_page.dart';
 import 'package:artb2b/utils/common.dart';
 import 'package:artb2b/widgets/common_card_widget.dart';
 import 'package:database_service/database.dart';
@@ -8,16 +9,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class BookingSummaryCard extends StatelessWidget {
-  const BookingSummaryCard({
+  BookingSummaryCard({
     super.key,
     required this.userType,
     required this.user,
     required this.booking,
+    this.bookingButton = false
   });
 
   final UserType userType;
   final User user;
   final Booking booking;
+  bool bookingButton;
 
   @override
   Widget build(BuildContext context) {
@@ -181,7 +184,20 @@ class BookingSummaryCard extends StatelessWidget {
                   ],
                 ),
               ],
-            )
+            ),
+            if(user.userInfo!.userType! == UserType.gallery && bookingButton) ...[
+              verticalMargin24,
+              ElevatedButton(
+                onPressed:() {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BookingPage(host: user,)),
+                  );
+                  // context.read<BookingCubit>().save();
+                },
+                child: Text("Book again", style: TextStyles.boldWhite16,),
+              )
+            ] else ...[Container()] ,
           ]
       ),
     );

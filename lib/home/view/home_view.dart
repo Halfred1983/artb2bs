@@ -37,7 +37,6 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
 
   var _currentIndex = 0;
-  late ConfettiController _controllerCenter;
 
   List<Widget> _widgetOptions = List.empty(growable: true);
 
