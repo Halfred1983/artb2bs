@@ -65,7 +65,9 @@ class FirestoreDatabaseService implements DatabaseService {
     return collectionReference.snapshots().map((querySnapshot) {
       return querySnapshot.docs.map((e) =>  User.fromJson(e.data()))
           .where((user) {
-        return user.userInfo?.userType == UserType.gallery;
+        return user.userInfo?.userType == UserType.gallery && user.bookingSettings != null &&
+        user.bookingSettings!.active != null &&
+        user.bookingSettings!.active == true;
       }).toList();
     });
   }

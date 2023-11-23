@@ -432,9 +432,7 @@ class _MapViewState extends State<MapView> {
 
   void _updateMarkers(List<User> documentList) {
     documentList.forEach((User user) {
-      if(user.userInfo!.userType == UserType.gallery) {
         _addMarker(user);
-      }
     });
   }
 }
