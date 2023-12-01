@@ -117,7 +117,7 @@ class PhotoDetails extends StatelessWidget {
                             text: 'Tap OK to delete your artwork:\n\n',
                             style: TextStyles.regularAccent16,
                             children: <TextSpan>[
-                              TextSpan(text: photo.description,
+                              TextSpan(text: photo.description ?? '',
                                 style:TextStyles.boldViolet16,
                               ),
                             ]

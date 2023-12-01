@@ -76,8 +76,24 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
     }
   }
 
+  void cancelBooking(Booking booking, User user) async {
+    try {
+      emit(LoadingState());
+      booking = booking.copyWith(bookingStatus: BookingStatus.cancelled , reviewdTime: DateTime.now());
+      Refund refund = Refund(bookingId: booking.bookingId, paymentIntentId: booking.paymentIntentId,
+          refundStatus: RefundStatus.pending, refundTimestamp: DateTime.now(),
+          artistId: booking.artistId, hostId: booking.hostId);
+      await databaseService.updateBooking(booking: booking);
+      await databaseService.createRefundRequest(refund);
+      emit(LoadedState(user));
+    } catch (e) {
+      emit(ErrorState());
+    }
+  }
+
   void exitAlert(User user) {
     emit(LoadedState(user));
   }
+
 
 }

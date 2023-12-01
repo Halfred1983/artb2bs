@@ -77,12 +77,15 @@ class BookingRequestView extends StatelessWidget {
                                   .toList() : [];
 
                               if(pendingBookings.isNotEmpty) {
+                                bool isArtist = user.userInfo!.userType! == UserType.artist;
+
                                 return ListView.builder(
                                     itemCount: pendingBookings.length,
                                     itemBuilder: (context, index) {
                                         return FutureBuilder<User?>(
                                             future: firestoreDatabaseService.getUser(
-                                                userId: pendingBookings[index].artistId!),
+                                                userId:!isArtist? pendingBookings[index].artistId! :
+                                                pendingBookings[index].hostId!),
                                             builder: (context, snapshot) {
                                               if (snapshot.hasData &&
                                                   snapshot.connectionState ==
@@ -92,14 +95,18 @@ class BookingRequestView extends StatelessWidget {
                                                   child: InkWell(
                                                     onTap: () => context.pushNamed(
                                                       'profile',
-                                                      pathParameters: {'userId': pendingBookings[index].artistId!},
+                                                      pathParameters: {'userId': !isArtist ?
+                                                      pendingBookings[index].artistId! :
+                                                      pendingBookings[index].hostId!},
                                                     ),
                                                     child: CommonCard(
                                                       child: Column(
                                                           children: [
                                                             Row(
                                                               children: [
-                                                                Image.asset('assets/images/artist.png',
+                                                                Image.asset(!isArtist ?
+                                                                'assets/images/artist.png' :
+                                                                'assets/images/gallery.png',
                                                                   width: 40,),
                                                                 horizontalMargin12,
                                                                 Text(snapshot.data!.userInfo!.name!,
@@ -228,6 +235,7 @@ class BookingRequestView extends StatelessWidget {
                                                                   ],
                                                                 ),
                                                                 verticalMargin24,
+                                                                !isArtist ?
                                                                 Row(
                                                                   children: [
                                                                     Expanded(
@@ -254,7 +262,9 @@ class BookingRequestView extends StatelessWidget {
                                                                       ),
                                                                     ),
                                                                   ],
-                                                                )
+                                                                ) :
+                                                                Container()
+
                                                               ],
                                                             )
                                                           ]

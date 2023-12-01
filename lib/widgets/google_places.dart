@@ -115,7 +115,7 @@ class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
                           size: 30, color: AppTheme.black,),
                       ),
                       Flexible(
-                       child: Text(_predictions[index].description!,
+                       child: Text(_predictions[index].description ?? '',
                             style: TextStyles.semiBoldViolet16,),
                       ),
                     ],

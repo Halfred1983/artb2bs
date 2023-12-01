@@ -95,6 +95,7 @@ class _HomeViewState extends State<HomeView> {
                   _widgetOptions = <Widget>[
                     widget,
                     ArtistDashboardPage(),
+                    BookingRequestPage(),
                     ExhibitionPage(),
                     UserProfilePage(),
                   ];
@@ -136,7 +137,7 @@ class _HomeViewState extends State<HomeView> {
                     ),
 
                     /// Requests
-                    if(user!.userInfo!.userType != UserType.artist) ...[
+                    // if(user!.userInfo!.userType != UserType.artist) ...[
                       SalomonBottomBarItem(
                         icon: pendingRequests != null && pendingRequests! > 0 ?
                         Badge(
@@ -146,7 +147,7 @@ class _HomeViewState extends State<HomeView> {
                         title:  Text("Requests", style: TextStyles.semiBoldViolet14,),
                         selectedColor: AppTheme.primaryColourViolet,
                       ),
-                    ],
+                    // ],
 
                     /// Calendar
                     SalomonBottomBarItem(

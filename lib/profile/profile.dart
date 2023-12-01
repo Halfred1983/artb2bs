@@ -181,7 +181,7 @@ class ProfilePage extends StatelessWidget {
                                           Positioned(
                                             bottom: 15,
                                             right: 25,
-                                            child: Text(snapshot.data!.photos![index].description!,
+                                            child: Text(snapshot.data!.photos![index].description ?? '',
                                               style: TextStyles.boldWhite14,),
                                           )
                                         ],

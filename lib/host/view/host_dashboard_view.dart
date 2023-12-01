@@ -142,7 +142,7 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                                             Positioned(
                                               bottom: 15,
                                               right: 25,
-                                              child: Text(user.photos![index - 1].description!,
+                                              child: Text(user.photos![index - 1].description ?? '',
                                                 style: TextStyles.boldWhite14,),
                                             )
                                           ],

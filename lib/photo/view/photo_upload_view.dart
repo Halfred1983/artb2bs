@@ -271,7 +271,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                       text: 'Your photo:\n\n',
                       style: TextStyles.regularAccent16,
                       children: <TextSpan>[
-                        TextSpan(text: name,
+                        TextSpan(text: name ?? '',
                           style: TextStyles.boldViolet16,
                         ),
                         TextSpan(text: '\n\nwas uploaded successfully!',

@@ -388,7 +388,7 @@ class _MapViewState extends State<MapView> {
                                                   Positioned(
                                                     bottom: 15,
                                                     right: 25,
-                                                    child: Text(user.photos![index].description!,
+                                                    child: Text(user.photos![index].description ?? '',
                                                       style: TextStyles.boldWhite14,),
                                                   )
                                                 ],
