@@ -178,9 +178,9 @@ class BookingSummaryCard extends StatelessWidget {
                       style: TextStyles
                           .semiBoldAccent16,),
                     Text(
-                      booking.bookingStatus!.name,
+                      booking.bookingStatus!.name.capitalize(),
                       style: TextStyles
-                          .semiBoldViolet14,),
+                          .semiBoldViolet14.withColor(booking.bookingStatus!.name.getColorForBookingStatus()),),
                   ],
                 ),
               ],

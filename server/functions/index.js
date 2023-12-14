@@ -151,7 +151,7 @@ exports.processRefund = functions.firestore.document('refunds/{refundId}')
 
 
 
-exports.processRefund = functions.firestore.document('accepted/{acceptedId}')
+exports.notifyOnAccept = functions.firestore.document('accepted/{acceptedId}')
   .onCreate(async (snapshot, context) => {
     try {
       console.log('Push notification for accepted started successfully:', snapshot.data());
@@ -257,5 +257,84 @@ exports.sendBookingNotification = functions.firestore
       console.error('Error sending push notification:', error);
     }
   });
+
+exports.markPendingBookingsAsCancelled = functions.pubsub
+    .schedule('35 20 * * *') // Set the schedule to run at 5:30 AM every day
+    .timeZone('Europe/London').onRun(async (context) => {
+  const db = admin.firestore();
+  try {
+    const pendingBookingsSnapshot = await db.collection('bookings').where('bookingStatus', '==', 0).get();
+
+    for (const bookingDoc of pendingBookingsSnapshot.docs) {
+      const bookingData = bookingDoc.data();
+      const bookingTime = bookingData.bookingTime.toDate();
+
+      // Calculate the time difference in hours
+      const timeDifference = (new Date() - bookingTime) / (1000 * 60 * 60);
+
+      if (timeDifference > 24 && !bookingData.cancelled) {
+        // Update the booking status to cancelled
+        await bookingDoc.ref.update({ bookingStatus: 3 });
+
+        console.log(`Booking ${bookingDoc.id} marked as cancelled.`);
+
+
+         // Update the host's bookings array
+          const hostRef = db.collection('users').doc(bookingData.hostId);
+          const hostData = await hostRef.get();
+          const existingBookings = hostData.data().bookings || [];
+
+          const updatedBookings = existingBookings.map(booking => {
+            if (booking.bookingId === bookingDoc.id) {
+             console.log(`Booking ${bookingDoc.id} marked as cancelled. Corresponding host bookings updated.`);
+
+              return { ...booking, bookingStatus: 3 };
+            }
+            return booking;
+          });
+
+          await hostRef.update({ bookings: updatedBookings });
+
+          // Update the artist's bookings array
+          const artistRef = db.collection('users').doc(bookingData.artistId);
+          const artistData = await artistRef.get();
+          const artistExistingBookings = artistData.data().bookings || [];
+
+          const artistUpdatedBookings = artistExistingBookings.map(booking => {
+            if (booking.bookingId === bookingDoc.id) {
+              console.log(`Booking ${bookingDoc.id} marked as cancelled. Corresponding artist bookings updated.`);
+
+              return { ...booking, bookingStatus: 3 };
+            }
+            return booking;
+          });
+
+          await artistRef.update({ bookings: artistUpdatedBookings });
+
+
+        console.log(`Booking ${bookingDoc.id} marked as cancelled. Corresponding host and artist bookings updated.`);
+
+         const refund = {
+                    bookingId: bookingDoc.id,
+                    paymentIntentId: bookingData.paymentIntentId,
+                    refundStatus: 0,
+                    refundTimestamp: admin.firestore.FieldValue.serverTimestamp(),
+                    artistId: bookingData.artistId,
+                    hostId: bookingData.hostId,
+         };
+
+          await db.collection('refunds').doc(bookingDoc.id).set(refund);
+
+          console.log(`Refund added to the "refunds" collection for booking ${bookingDoc.id}.`);
+
+      }
+    }
+
+    console.log('Cancellation check completed.');
+  } catch (error) {
+    console.error('Error marking bookings as cancelled:', error);
+  }
+});
+
 
 /* eslint-disable */

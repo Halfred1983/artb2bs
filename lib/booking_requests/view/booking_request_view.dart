@@ -72,7 +72,7 @@ class BookingRequestView extends StatelessWidget {
                             if (snapshot.hasData && snapshot.data != null) {
 
                               User user = User.fromJson(snapshot.data?.data() as Map<String, dynamic>);
-                              var pendingBookings = user.bookings != null ? user.bookings!
+                              List<Booking> pendingBookings = user.bookings != null ? user.bookings!
                                   .where((element) => element.bookingStatus == BookingStatus.pending)
                                   .toList() : [];
 
@@ -135,6 +135,19 @@ class BookingRequestView extends StatelessWidget {
                                                               thickness: 0.6, color: Colors.black38,),
                                                             Column(
                                                               children: [
+                                                                Row(
+                                                                    mainAxisAlignment: MainAxisAlignment
+                                                                        .start,
+                                                                    children: [
+                                                                      Text('Booking no: ',
+                                                                        style: TextStyles
+                                                                            .semiBoldAccent16,),
+                                                                      Text(pendingBookings[index].bookingId!.extractBookingId(),
+                                                                        style: TextStyles
+                                                                            .semiBoldViolet16,),
+                                                                    ]
+                                                                ),
+                                                                verticalMargin12,
                                                                 Row(
                                                                     mainAxisAlignment: MainAxisAlignment
                                                                         .start,

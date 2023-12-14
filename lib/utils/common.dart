@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show DateTimeRange, kMinInteractiveDimension;
+import 'package:flutter/material.dart' show Colors, DateTimeRange, kMinInteractiveDimension;
+
+import '../app/resources/theme.dart';
 
 // Common Widgets
 
@@ -99,21 +101,40 @@ const buttonPadding = EdgeInsets.only(left: 28, right: 28, bottom: 40, top:20);
 
 extension StringExtension on String {
   String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+    return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
+  }
+
+  String extractBookingId() {
+    int dashIndex = indexOf('-');
+    return dashIndex != -1 ? substring(0, dashIndex).toUpperCase() : this;
   }
 }
 
+extension BookingStatusColorExtension on String {
+  Color getColorForBookingStatus() {
+    switch (toLowerCase()) {
+      case 'accepted':
+        return Colors.green; // Set the color for accepted status
+      case 'pending':
+        return Colors.orange; // Set the color for pending status
+      case 'cancelled':
+        return Colors.red; // Set the color for cancelled status
+      default:
+        return AppTheme.primaryColourViolet; // Default color if status is not recognized
+    }
+  }
+}
 
 extension DateUtils on DateTime {
   bool isSameDay(DateTime date) {
-    return this.year == date.year &&
-        this.month == date.month &&
-        this.day == date.day;
+    return year == date.year &&
+        month == date.month &&
+        day == date.day;
   }
 
   bool isBeforeWithoutTime(DateTime date1) {
     // Create new DateTime objects with the time set to midnight
-    DateTime midnightDate1 = DateTime(this.year, this.month, this.day);
+    DateTime midnightDate1 = DateTime(year, month, day);
     DateTime midnightDate2 = DateTime(date1.year, date1.month, date1.day);
 
     // Compare the dates without considering the time
@@ -122,7 +143,7 @@ extension DateUtils on DateTime {
 
   bool isAfterWithoutTime(DateTime date1) {
     // Create new DateTime objects with the time set to midnight
-    DateTime midnightDate1 = DateTime(this.year, this.month, this.day);
+    DateTime midnightDate1 = DateTime(year, month, day);
     DateTime midnightDate2 = DateTime(date1.year, date1.month, date1.day);
 
     // Compare the dates without considering the time

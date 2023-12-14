@@ -161,7 +161,7 @@ class _PaymentPageState extends State<PaymentPage> {
                               verticalMargin12,
                               Text('Your booking id is:', style: TextStyles.semiBoldAccent16,),
                               verticalMargin12,
-                              SelectableText(booking.bookingId!, style: TextStyles.semiBoldViolet16,),
+                              SelectableText(booking.bookingId!.extractBookingId(), style: TextStyles.semiBoldViolet16,),
                               Expanded(child: Container()),
                               ElevatedButton(
                                 onPressed:
