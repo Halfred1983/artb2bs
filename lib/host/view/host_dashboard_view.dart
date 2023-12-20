@@ -18,6 +18,7 @@ import '../../app/resources/styles.dart';
 import '../../photo/view/artwork_upload_page.dart';
 import '../../photo/view/photo_upload_page.dart';
 import 'host_dashboard_edit_page.dart';
+import 'host_paypal_edit_page.dart';
 
 class HostDashboardView extends StatefulWidget {
   const HostDashboardView({super.key});
@@ -72,21 +73,50 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                         verticalMargin12,
                         Text(user!.userArtInfo!.aboutYou!, style: TextStyles.semiBoldViolet16, textAlign: TextAlign.left,),
                         verticalMargin24,
-                        Text('Spaces: ', style: TextStyles.semiBoldAccent16, ),
-                        verticalMargin12,
-                        Text(user!.userArtInfo!.spaces!, style: TextStyles.semiBoldViolet16, ),
+                        Row(
+                          children: [
+                            Text('Spaces: ', style: TextStyles.semiBoldAccent16, ),
+                            Text(user!.userArtInfo!.spaces!, style: TextStyles.semiBoldViolet16, ),
+                            Expanded(child: Container()),
+                            Text('Audience: ', style: TextStyles.semiBoldAccent16, ),
+                            Text(user!.userArtInfo!.audience ?? 'n/a', style: TextStyles.semiBoldViolet16, ),
+                          ],
+                        ),
                         verticalMargin24,
                         Text('Your booking settings', style: TextStyles.semiBoldAccent18, ),
                         const Divider(thickness: 0.6, color: Colors.black38,),
                         verticalMargin12,
                         BookingSettingsWidget(user: user),
-                        verticalMargin24,
+                        verticalMargin12,
                         Center(
                           child: TextButton(onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => HostDashboardEditPage()),
                           ),
                             child: Text('Add/change your booking settings' ,style: TextStyles.semiBoldViolet16.copyWith(
+                                decoration: TextDecoration.underline
+                            ),),
+                          ),
+                        ),
+                        verticalMargin24,
+                        Text('Your payout settings', style: TextStyles.semiBoldAccent18, ),
+                        const Divider(thickness: 0.6, color: Colors.black38,),
+                        Text('Your paypal account where to receive your payouts. ', style: TextStyles.regularAccent14, ),
+                        verticalMargin24,
+                        Row(
+                          children: [
+                            Text('Account: ${user!.bookingSettings!.paypalAccount ?? 'n/a'}', style: TextStyles.semiBoldViolet16, ),
+                            Expanded(child: Container()),
+                            Image.asset("assets/images/paypal_logo.png", width: 60,),
+                          ],
+                        ),
+                        verticalMargin12,
+                        Center(
+                          child: TextButton(onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => HostPaypalEditPage()),
+                          ),
+                            child: Text('Add/change your payout account' ,style: TextStyles.semiBoldViolet16.copyWith(
                                 decoration: TextDecoration.underline
                             ),),
                           ),

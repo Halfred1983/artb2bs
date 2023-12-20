@@ -11,12 +11,14 @@ class BookingSettings {
   String? basePrice;
   String? minLength;
   String? minSpaces;
+  String? paypalAccount;
   bool? active = true;
 
   BookingSettings({
     this.basePrice,
     this.minLength,
     this.minSpaces,
+    this.paypalAccount,
     this.active
   });
 

@@ -125,6 +125,18 @@ extension BookingStatusColorExtension on String {
   }
 }
 
+extension EmailValidator on String {
+  bool isValidEmail() {
+    // Simple email validation using a regular expression
+    // This is a basic example and may not cover all edge cases
+    RegExp emailRegExp = RegExp(
+      r'^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$',
+    );
+    return emailRegExp.hasMatch(this);
+  }
+}
+
+
 extension DateUtils on DateTime {
   bool isSameDay(DateTime date) {
     return year == date.year &&

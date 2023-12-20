@@ -1,3 +1,4 @@
+import 'package:artb2b/utils/common.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,7 +20,6 @@ class HostCubit extends Cubit<HostState> {
       final user = await databaseService.getUser(userId: userId);
       emit(LoadedState(user!));
     } catch (e) {
-      emit(ErrorState());
     }
   }
 
@@ -40,7 +40,7 @@ class HostCubit extends Cubit<HostState> {
 
       emit(BookingSettingsDetail(user));
     } catch (e) {
-      emit(ErrorState());
+      emit(ErrorState(user, e.toString()));
     }
   }
 
@@ -59,7 +59,7 @@ class HostCubit extends Cubit<HostState> {
 
       emit(BookingSettingsDetail(user));
     } catch (e) {
-      emit(ErrorState());
+      emit(ErrorState(user, e.toString()));
     }
   }
 
@@ -78,7 +78,31 @@ class HostCubit extends Cubit<HostState> {
 
       emit(BookingSettingsDetail(user));
     } catch (e) {
-      emit(ErrorState());
+      emit(ErrorState(user, e.toString()));
+    }
+  }
+
+  void choosePaypalAccount(String paypalAccount) {
+    User user = this.state.props[0] as User;
+
+    try {
+      if(!paypalAccount.isValidEmail()) {
+        emit(ErrorState(user, 'Paypal account must be an email.'));
+      }
+      else{
+        if (user.bookingSettings != null) {
+          user = user.copyWith(bookingSettings: user.bookingSettings!.copyWith(
+              paypalAccount: paypalAccount));
+        }
+        else {
+          user = user.copyWith(
+              bookingSettings: BookingSettings(paypalAccount: paypalAccount));
+        }
+
+        emit(BookingSettingsDetail(user));
+      }
+    } catch (e) {
+      emit(ErrorState(user, e.toString()));
     }
   }
 
@@ -98,7 +122,7 @@ class HostCubit extends Cubit<HostState> {
       emit(LoadedState(user));
 
     } catch (e) {
-      emit(ErrorState());
+      emit(ErrorState(user, e.toString()));
     }
   }
 
@@ -111,7 +135,7 @@ class HostCubit extends Cubit<HostState> {
       await databaseService.updateUser(user: user);
       emit(DataSaved(user));
     } catch (e) {
-      emit(ErrorState());
+      emit(ErrorState(user, e.toString()));
     }
   }
 }

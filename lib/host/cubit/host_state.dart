@@ -51,8 +51,13 @@ class DataSaved extends HostState {
 }
 
 class ErrorState extends HostState {
+  ErrorState(this.user, this.message);
+
+  final User user;
+  final String message;
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [user, message];
 }
 
 class BookingSettingsDetail extends HostState {

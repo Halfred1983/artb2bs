@@ -113,6 +113,7 @@ flutter:
     - assets/images/artist.png
     - assets/images/gallery.png
     - assets/images/artb2b_logo.png
+    - assets/images/paypal_logo.png
     - assets/googleMapsStyle.json
     - assets/logo.json
     - assets/loading.json
