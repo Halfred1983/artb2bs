@@ -136,6 +136,14 @@ class ArtInfoView extends StatelessWidget {
                   ),
                   _SpacesTextField((nameValue) => context.read<ArtInfoCubit>().chooseSpaces(nameValue),),
                   verticalMargin24,
+                  Column(
+                    children: [
+                      Text('Audience ', style:TextStyles.semiBoldViolet18,),
+                      Text('How many people do you think would visit your space per day?', style:TextStyles.semiBoldViolet14,),
+                    ],
+                  ),
+                  _AudienceTextField((nameValue) => context.read<ArtInfoCubit>().chooseAudience(nameValue),),
+                  verticalMargin24,
                   ChipTags(
                     list: _hostTags,
                     chipColor: AppTheme.secondaryColourRed,
@@ -214,32 +222,77 @@ class _SpacesTextFieldState extends State<_SpacesTextField> {
   }
 }
 
-
-class _AboutYouTextField extends StatefulWidget {
-  const _AboutYouTextField(this.capacityChanged);
-  final ValueChanged<String> capacityChanged;
+class _AudienceTextField extends StatefulWidget {
+  const _AudienceTextField(this.audienceChanged);
+  final ValueChanged<String> audienceChanged;
 
 
   @override
-  State<_AboutYouTextField> createState() => _AboutYouTextFieldState(capacityChanged);
+  State<_AudienceTextField> createState() => _AudienceTextFieldState(audienceChanged);
 }
 
-class _AboutYouTextFieldState extends State<_AboutYouTextField> {
+class _AudienceTextFieldState extends State<_AudienceTextField> {
 
-  late final TextEditingController _capacityController;
-  final ValueChanged<String> _capacityChanged;
+  late final TextEditingController _audienceController;
+  final ValueChanged<String> _audienceChanged;
 
-  _AboutYouTextFieldState(this._capacityChanged);
+  _AudienceTextFieldState(this._audienceChanged);
 
   @override
   void initState() {
     super.initState();
-    _capacityController = TextEditingController(text: '');
+    _audienceController = TextEditingController(text: '');
   }
 
   @override
   void dispose() {
-    _capacityController.dispose();
+    _audienceController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return  AppTextField(
+      key: const Key('Spaces'),
+      controller: _audienceController,
+      labelText: '',
+      validator: AppInputValidators.required(
+          'Spaces required'),
+      textInputAction: TextInputAction.next,
+      keyboardType: TextInputType.number,
+      textCapitalization: TextCapitalization.words,
+      autoCorrect: false,
+      onChanged: _audienceChanged,
+    );
+  }
+}
+
+
+class _AboutYouTextField extends StatefulWidget {
+  const _AboutYouTextField(this.aboutChanged);
+  final ValueChanged<String> aboutChanged;
+
+
+  @override
+  State<_AboutYouTextField> createState() => _AboutYouTextFieldState(aboutChanged);
+}
+
+class _AboutYouTextFieldState extends State<_AboutYouTextField> {
+
+  late final TextEditingController _aboutController;
+  final ValueChanged<String> _aboutChanged;
+
+  _AboutYouTextFieldState(this._aboutChanged);
+
+  @override
+  void initState() {
+    super.initState();
+    _aboutController = TextEditingController(text: '');
+  }
+
+  @override
+  void dispose() {
+    _aboutController.dispose();
     super.dispose();
   }
 
@@ -249,7 +302,7 @@ class _AboutYouTextFieldState extends State<_AboutYouTextField> {
       key: const Key('Spaces'),
       maxLines: 8,
       maxLength: 200,
-      controller: _capacityController,
+      controller: _aboutController,
       labelText: '',
       validator: AppInputValidators.required(
           'Spaces required'),
@@ -257,7 +310,7 @@ class _AboutYouTextFieldState extends State<_AboutYouTextField> {
       keyboardType: TextInputType.text,
       textCapitalization: TextCapitalization.none,
       autoCorrect: false,
-      onChanged: _capacityChanged,
+      onChanged: _aboutChanged,
       decoration:  const InputDecoration(
         focusedBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10)),

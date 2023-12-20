@@ -71,6 +71,31 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
   }
 
 
+  void chooseAudience(String audience) {
+    User user = this.state.props[0] as User;
+    emit(LoadingState());
+
+    try {
+      if(audience.isNotEmpty && int.parse(audience) > 0) {
+        if (user.userArtInfo != null) {
+          user = user.copyWith(
+              userArtInfo: user.userArtInfo!.copyWith(audience: audience));
+        }
+        else {
+          user = user.copyWith(userArtInfo: UserArtInfo(audience: audience));
+        }
+        emit(LoadedState(user));
+      }
+      else {
+        emit(ErrorState(user ,"Audience value not valid"));
+      }
+
+    } catch (e) {
+      emit(ErrorState(user ,"Audience value not valid"));
+    }
+  }
+
+
   void save(List<String> tags) async {
     User user = this.state.props[0] as User;
     emit(LoadingState());

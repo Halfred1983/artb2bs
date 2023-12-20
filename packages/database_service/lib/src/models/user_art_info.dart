@@ -10,11 +10,13 @@ class UserArtInfo {
 
   String? aboutYou;
   String? spaces;
+  String? audience;
   List<String>? vibes;
 
   UserArtInfo({
     this.aboutYou,
     this.spaces,
+    this.audience,
     this.vibes,
   });
 

@@ -22,7 +22,7 @@ class BookingHistory extends StatelessWidget {
     user.bookings!.where((element) => element.to!.isBeforeWithoutTime(DateTime.now())).toList() : [];
 
     pastBookings.sort((a, b) => b.to!.compareTo(a.to!));
-    
+
     return Scaffold(
         appBar: AppBar(
           title: Text("Booking History", style: TextStyles.boldAccent24,),

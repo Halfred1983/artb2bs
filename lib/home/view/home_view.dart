@@ -245,9 +245,14 @@ class _HomeListState extends State<HomeList> {
                                 children: [
                                   Text("Spaces: ", style: TextStyles.boldViolet14,),
                                   Text(user.userArtInfo!.spaces!, style: TextStyles.semiBoldViolet14,),
+                                  Expanded(child: Container()),
+                                  Text("Audience: ", style: TextStyles.boldViolet14,),
+                                  Text(user.userArtInfo!.audience ?? 'n/a', style: TextStyles.semiBoldViolet14,),
+                                  Expanded(child: Container()),
+                                  Text("Audience: ", style: TextStyles.boldViolet14,),
+                                  Text(user.userArtInfo!.audience ?? 'n/a', style: TextStyles.semiBoldViolet14,),
                                 ],
                               ),
-                              verticalMargin12,
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
