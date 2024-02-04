@@ -212,8 +212,8 @@ class FirestoreDatabaseService implements DatabaseService {
       Future.wait([
         _firestore.collection('bookings')
             .doc(booking.bookingId).update(booking.toJson()),
-        updateBookingInUser(booking.hostId!, booking),
-        updateBookingInUser(booking.artistId!, booking),
+        updateBookingInUser(booking.hostId!, booking, true),
+        updateBookingInUser(booking.artistId!, booking, false),
       ]);
 
     } on Exception {
@@ -221,7 +221,7 @@ class FirestoreDatabaseService implements DatabaseService {
     }
   }
 
-  Future<void> updateBookingInUser(String userId, Booking booking) async {
+  Future<void> updateBookingInUser(String userId, Booking booking, bool updateBalance) async {
     try{
       DocumentSnapshot host = await _firestore.collection('users')
           .doc(userId).get();
@@ -229,6 +229,7 @@ class FirestoreDatabaseService implements DatabaseService {
 
       user.bookings!.removeWhere((element) => element.bookingId == booking.bookingId);
       user.bookings!.add(booking);
+      if(updateBalance) user.balance = (double.parse(user.balance ?? '0') + double.parse(booking.price!)).toString();
 
       _firestore.collection('users')
           .doc(userId).update(user.toJson());

@@ -3,6 +3,8 @@ const functions = require("firebase-functions");
 const stripe = require("stripe")(functions.config().stripe.testkey);
 const admin = require('firebase-admin');
 const moment = require('moment');
+const axios = require('axios');
+
 admin.initializeApp();
 
 const generatedResponse = function(intent) {
@@ -335,6 +337,130 @@ exports.markPendingBookingsAsCancelled = functions.pubsub
     console.error('Error marking bookings as cancelled:', error);
   }
 });
+
+
+exports.scheduledPaypalPayout = functions.pubsub
+  .schedule('36 16 * * *') // Set the schedule to run at 5:30 AM every day
+  .timeZone('Europe/London') // Set your timezone
+  .onRun(async (context) => {
+    try {
+      const usersSnapshot = await admin.firestore().collection('users').get();
+
+      const promises = [];
+
+      usersSnapshot.forEach((userDoc) => {
+        const user = userDoc.data();
+        const userId = userDoc.id;
+
+        // Check if user has a PayPal account
+        if (user.bookingSettings && user.bookingSettings.paypalAccount) {
+          const amount = parseFloat(user.balance || '0'); // You might need to adjust this based on your user data structure
+
+            console.log('send '+amount+' to '+user.bookingSettings.paypalAccount);
+
+          promises.push(sendPaypalPayout(userId, user.bookingSettings.paypalAccount, amount));
+        }
+      });
+
+      // Wait for all promises to resolve
+      await Promise.all(promises);
+
+      console.log('Scheduled PayPal Payouts completed.');
+      return null;
+    } catch (error) {
+      console.error('Scheduled PayPal Payouts Error:', error);
+      return null;
+    }
+  });
+
+async function sendPaypalPayout(userId, receiverEmail, amount) {
+  try {
+    // Fetch PayPal auth token
+    const paypalAuthToken = await getPaypalAuthToken();
+
+    // Make a request to the PayPal Payouts API
+    const response = await axios.post(
+      'https://api-m.sandbox.paypal.com/v1/payments/payouts',
+      {
+        sender_batch_header: {
+                  sender_batch_id: `batch_${userId}_${Date.now()}`,
+                  email_subject: 'You have a new payout from ArtB2B!',
+                  email_message: 'You received a new payout. Thanks for using our service! ArtB2B'
+        },
+        items: [
+          {
+            recipient_type: 'EMAIL',
+            amount: {
+              value: amount.toFixed(2),
+              currency: 'GBP',
+            },
+            receiver: receiverEmail,
+            note: 'Payment from ArtB2B',
+            sender_item_id: `item_${userId}_1`,
+          },
+        ],
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${paypalAuthToken}`,
+        },
+      }
+    );
+
+    // Log the PayPal Payout response
+    console.log('PayPal Payout Response:', response.data);
+
+    // Check if the PayPal payout was successful (HTTP status code 2xx)
+    if (response.status >= 200 && response.status < 300) {
+      // Insert entry in payouts collection
+      await admin.firestore().collection('payouts').add({
+        userId: userId,
+        amount: amount,
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      // Update user's balance to 0
+      await admin.firestore().collection('users').doc(userId).update({
+        balance: '0',
+      });
+
+      console.log(`Payout for user ${userId} completed. Balance updated to 0.`);
+    } else {
+      console.error(`PayPal Payout for user ${userId} failed. Status Code: ${response.status}`);
+    }
+  } catch (error) {
+    console.error(`PayPal Payout for user ${userId} Error:`, error.response ? error.response.data : error.message);
+  }
+}
+
+async function getPaypalAuthToken() {
+    const clientId = 'Ad4ikZGk8HA0wYDuRGD4XfmjEfXW2trGLo7ZiFzYYt7YhwRQjpoMu8QsoJ0EM7oLYEcjsp7Tgo8vCTR-';
+    const clientSecret = 'EGx7cWt3CJkgM5Lv06mzej5Dg43BwHSCTxLnurH_VU1FhgKJ8oCFKVV_PKmlg2SNdc_jrF4iHi-MG1co';
+
+    // Encode credentials using Buffer
+    const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+
+
+  try {
+    const response = await axios.post(
+      'https://api-m.sandbox.paypal.com/v1/oauth2/token',
+      'grant_type=client_credentials',
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Basic ${credentials}`,
+        },
+      }
+    );
+
+    return response.data.access_token;
+  } catch (error) {
+    console.error('PayPal Auth Token Error:', error.response ? error.response.data : error.message);
+    throw error;
+  }
+}
+
 
 
 /* eslint-disable */

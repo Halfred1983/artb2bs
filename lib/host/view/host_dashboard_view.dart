@@ -82,7 +82,7 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                             Text(user!.userArtInfo!.audience ?? 'n/a', style: TextStyles.semiBoldViolet16, ),
                           ],
                         ),
-                        verticalMargin24,
+                        verticalMargin32,
                         Text('Your booking settings', style: TextStyles.semiBoldAccent18, ),
                         const Divider(thickness: 0.6, color: Colors.black38,),
                         verticalMargin12,
@@ -98,14 +98,18 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                             ),),
                           ),
                         ),
-                        verticalMargin24,
+                        verticalMargin32,
                         Text('Your payout settings', style: TextStyles.semiBoldAccent18, ),
                         const Divider(thickness: 0.6, color: Colors.black38,),
                         Text('Your paypal account where to receive your payouts. ', style: TextStyles.regularAccent14, ),
                         verticalMargin24,
                         Row(
                           children: [
-                            Text('Account: ${user!.bookingSettings!.paypalAccount ?? 'n/a'}', style: TextStyles.semiBoldViolet16, ),
+                            user!.bookingSettings!.paypalAccount != null ?
+                            Text('Account: ${user!.bookingSettings!.paypalAccount}',
+                              style: TextStyles.semiBoldViolet16) :
+                            Text('‼️ Paypal account missing ‼️',
+                              style: TextStyles.boldRed16) ,
                             Expanded(child: Container()),
                             Image.asset("assets/images/paypal_logo.png", width: 60,),
                           ],

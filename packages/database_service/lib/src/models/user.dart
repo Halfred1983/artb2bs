@@ -25,6 +25,7 @@ class User {
   List<Photo>? photos;
   BookingSettings? bookingSettings;
   List<Booking>? bookings;
+  String? balance;
 
   User({
     required this.id,
@@ -42,7 +43,8 @@ class User {
     this.artworks,
     this.photos,
     this.bookingSettings,
-    this.bookings
+    this.bookings,
+    this.balance
   });
 
   factory User.fromJson(Map<String, dynamic?> json)
