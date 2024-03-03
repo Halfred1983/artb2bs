@@ -62,7 +62,7 @@ class BookingRequestView extends StatelessWidget {
                   body: Padding(
                     padding: horizontalPadding24,
                     child: StreamBuilder(
-                        stream: firestoreDatabaseService.getUserStream(user!.id),
+                        stream: firestoreDatabaseService.findBookingsByUserStream(user!),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
                             return const LoadingScreen();
@@ -71,13 +71,12 @@ class BookingRequestView extends StatelessWidget {
 
                             if (snapshot.hasData && snapshot.data != null) {
 
-                              User user = User.fromJson(snapshot.data?.data() as Map<String, dynamic>);
-                              List<Booking> pendingBookings = user.bookings != null ? user.bookings!
+                              List<Booking> pendingBookings = snapshot.data!
                                   .where((element) => element.bookingStatus == BookingStatus.pending)
-                                  .toList() : [];
+                                  .toList();
 
                               if(pendingBookings.isNotEmpty) {
-                                bool isArtist = user.userInfo!.userType! == UserType.artist;
+                                bool isArtist = user!.userInfo!.userType! == UserType.artist;
 
                                 return ListView.builder(
                                     itemCount: pendingBookings.length,

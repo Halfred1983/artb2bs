@@ -1,6 +1,7 @@
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/login/cubit/login_cubit.dart';
 import 'package:artb2b/utils/common.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -43,6 +44,8 @@ class _LoginForm extends StatelessWidget {
             ),
             Expanded(child: Container()),
             _GoogleLoginButton(),
+            verticalMargin12,
+            RegistrationScreen(),
             verticalMargin48
           ],
         ),
@@ -95,3 +98,50 @@ class _GoogleLoginButtonState extends State<_GoogleLoginButton> {
     );
   }
 }
+
+class RegistrationScreen extends StatefulWidget {
+  @override
+  _RegistrationScreenState createState() => _RegistrationScreenState();
+}
+
+class _RegistrationScreenState extends State<RegistrationScreen> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _register() async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+          email: _usernameController.text.trim(),
+          password: _passwordController.text.trim());
+
+      print('User registered: ${userCredential.user?.uid}');
+    } catch (e) {
+      print('Registration failed: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextField(
+          controller: _usernameController,
+          decoration: InputDecoration(labelText: 'Username'),
+        ),
+        TextField(
+          controller: _passwordController,
+          decoration: InputDecoration(labelText: 'Password'),
+          obscureText: true,
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: _register,
+          child: Text('Register'),
+        ),
+      ],
+    );
+  }
+}
+

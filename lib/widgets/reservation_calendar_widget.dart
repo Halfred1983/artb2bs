@@ -1,7 +1,6 @@
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:table_calendar/table_calendar.dart' as tc
@@ -9,7 +8,6 @@ import 'package:table_calendar/table_calendar.dart' as tc
 
 import '../app/resources/styles.dart';
 import '../app/resources/theme.dart';
-import '../booking/service/booking_service.dart';
 import '../injection.dart';
 import '../utils/common.dart';
 import 'booking_summary_card.dart';
@@ -28,7 +26,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
   final now = DateTime.now();
 
   FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
-  late final ValueNotifier<List<Booking>> _selectedEvents;
+  ValueNotifier<List<Booking>> _selectedEvents = ValueNotifier([]);
   Map<String, DateTimeRange> _bookingDateRange = {};
   List<Booking> _bookings = [];
   List<DateTime> _unavailableDates = [];
@@ -38,27 +36,43 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
   void initState() {
     super.initState();
     initializeDateFormatting();
-    generateDateTimeRage().then((dates) {
-      setState(() {
-        _bookingDateRange = dates;
+
+    firestoreDatabaseService.findBookingsByUser(widget.user).then((bookings) {
+      _bookings = bookings;
+      Future.wait([
+        generateDateTimeRage(),
+        firestoreDatabaseService.getDisabledDates(widget.user.id),
+        firestoreDatabaseService.getDisabledSpaces(widget.user.id),
+      ]).then((List<dynamic> results) {
+        // setState(() {
+        _bookingDateRange = results[0];
+        _unavailableDates = retrieveUnavailableDates(results[1]);
+        _unavailableDatesSpaces = retrieveUnavailableSpaces(results[2]);
+        _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+        // });
+      }).catchError((error) {
+        print('Error fetching data: $error');
       });
     });
-    firestoreDatabaseService.getDisabledDates(widget.user.id).then((
-        unavailableDates) =>
-    {
-      setState(() {
-        _unavailableDates = retrieveUnavailableDates(unavailableDates);
-      })
-    });
 
-    firestoreDatabaseService.getDisabledSpaces(widget.user.id).then((
-        unavailableDates) =>
-    {
-      setState(() {
-        _unavailableDatesSpaces = retrieveUnavailableSpaces(unavailableDates);
-      })
-    });
-    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+    // Future.wait([
+    //   firestoreDatabaseService.findBookingsByUser(widget.user),
+    //   generateDateTimeRage(),
+    //   firestoreDatabaseService.getDisabledDates(widget.user.id),
+    //   firestoreDatabaseService.getDisabledSpaces(widget.user.id),
+    // ]).then((List<dynamic> results) {
+    //   // setState(() {
+    //   _bookings = results[0];
+    //   _bookingDateRange = results[1];
+    //   _unavailableDates = retrieveUnavailableDates(results[2]);
+    //   _unavailableDatesSpaces = retrieveUnavailableSpaces(results[3]);
+    //   _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+    //   // });
+    // }).then((value) => {
+    //   setState(() {})
+    // }).catchError((error) {
+    //   print('Error fetching data: $error');
+    // });
   }
 
   @override
@@ -68,11 +82,10 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
   }
 
   Future<Map<String, DateTimeRange>> generateDateTimeRage() async {
-    _bookings = widget.user.bookings ?? [];
-    _bookings = _bookings.where((element) => element.bookingStatus == BookingStatus.accepted).toList();
+    List<Booking> acceptedBooking = _bookings.where((element) => element.bookingStatus == BookingStatus.accepted).toList();
 
     Map<String, DateTimeRange> bookingDateRange = {};
-    for (var booking in _bookings) {
+    for (var booking in acceptedBooking) {
       bookingDateRange[booking.bookingId!] =
           DateTimeRange(start: booking.from!, end: booking.to!);
     }
@@ -152,101 +165,101 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                     TableCalendar(
                         availableGestures: AvailableGestures.none,//this single code will solve
                         calendarBuilders: CalendarBuilders(
-                        markerBuilder: (BuildContext context, date, events) {
-                          if(widget.user.userInfo!.userType == UserType.artist) {
+                          markerBuilder: (BuildContext context, date, events) {
+                            if(widget.user.userInfo!.userType == UserType.artist) {
 
-                            if (events.isEmpty) return const SizedBox();
-                            int bookedSpaces = 0;
-                            for(Object? e in events) {
-                              Booking b = e as Booking;
-                              bookedSpaces = bookedSpaces + int.parse(b.spaces!);
-                            }
-                            return Container(
-                              margin: const EdgeInsets.only(top: 40),
-                              padding: const EdgeInsets.all(1),
-                              child: Text(bookedSpaces.toString(), style: TextStyles
-                                  .semiBoldViolet12),
-                            );
-                          }
-                          else {
-                            int freeSpaces = int.parse(widget.user.userArtInfo!.spaces!);
-
-                            // if (events.isEmpty) {
-                            //   return Container(
-                            //     margin: const EdgeInsets.only(top: 40),
-                            //     padding: const EdgeInsets.all(1),
-                            //     child: Text(freeSpaces.toString(), style: TextStyles
-                            //         .semiBoldViolet12),
-                            //   );
-                            // }
-                            for(Object? e in events) {
-                              Booking b = e as Booking;
-                              freeSpaces = freeSpaces - int.parse(b.spaces!);
-                            }
-
-                            _unavailableDatesSpaces.forEach((day, spaces) {
-                              if (isSameDay(day, date)) {
-                                freeSpaces = freeSpaces - int.parse(spaces);
+                              if (events.isEmpty) return const SizedBox();
+                              int bookedSpaces = 0;
+                              for(Object? e in events) {
+                                Booking b = e as Booking;
+                                bookedSpaces = bookedSpaces + int.parse(b.spaces!);
                               }
-                            });
+                              return Container(
+                                margin: const EdgeInsets.only(top: 40),
+                                padding: const EdgeInsets.all(1),
+                                child: Text(bookedSpaces.toString(), style: TextStyles
+                                    .semiBoldViolet12),
+                              );
+                            }
+                            else {
+                              int freeSpaces = int.parse(widget.user.userArtInfo!.spaces!);
 
-                            return Container(
-                              margin: const EdgeInsets.only(top: 40),
-                              padding: const EdgeInsets.all(1),
-                              child: Text(freeSpaces.toString(), style: TextStyles
-                                  .semiBoldViolet12),
-                            );
-                          }
+                              // if (events.isEmpty) {
+                              //   return Container(
+                              //     margin: const EdgeInsets.only(top: 40),
+                              //     padding: const EdgeInsets.all(1),
+                              //     child: Text(freeSpaces.toString(), style: TextStyles
+                              //         .semiBoldViolet12),
+                              //   );
+                              // }
+                              for(Object? e in events) {
+                                Booking b = e as Booking;
+                                freeSpaces = freeSpaces - int.parse(b.spaces!);
+                              }
+
+                              _unavailableDatesSpaces.forEach((day, spaces) {
+                                if (isSameDay(day, date)) {
+                                  freeSpaces = freeSpaces - int.parse(spaces);
+                                }
+                              });
+
+                              return Container(
+                                margin: const EdgeInsets.only(top: 40),
+                                padding: const EdgeInsets.all(1),
+                                child: Text(freeSpaces.toString(), style: TextStyles
+                                    .semiBoldViolet12),
+                              );
+                            }
+                          },
+                        ),
+                        availableCalendarFormats: const {CalendarFormat.month: 'Month'},
+                        startingDayOfWeek: tc.StartingDayOfWeek.monday,
+                        rangeStartDay: _rangeStart,
+                        rangeEndDay: _rangeEnd,
+                        rangeSelectionMode: _rangeSelectionMode,
+                        onDaySelected: _onDaySelected,
+                        eventLoader: (day) {
+                          return _getEventsForDay(day);
                         },
-                      ),
-                      availableCalendarFormats: const {CalendarFormat.month: 'Month'},
-                      startingDayOfWeek: tc.StartingDayOfWeek.monday,
-                      rangeStartDay: _rangeStart,
-                      rangeEndDay: _rangeEnd,
-                      rangeSelectionMode: _rangeSelectionMode,
-                      onDaySelected: _onDaySelected,
-                      eventLoader: (day) {
-                        return _getEventsForDay(day);
-                      },
 
-                      locale: 'en_GB',
-                      firstDay: calculateFirstDay(),
-                      lastDay: DateTime.now().add(const Duration(days: 1000)),
-                      focusedDay: _focusedDay,
-                      calendarFormat: CalendarFormat.month,
-                      headerStyle: const HeaderStyle(
-                          leftChevronIcon: Icon(Icons.chevron_left, color: AppTheme.primaryColourViolet,),
-                          rightChevronIcon: Icon(Icons.chevron_right, color: AppTheme.primaryColourViolet,),
-                          titleTextStyle: TextStyle(fontSize: 17.0, color: AppTheme.primaryColourViolet),
-                          titleCentered: true
-                      ),
-                      calendarStyle: const CalendarStyle(
-                        rangeHighlightColor: AppTheme.accentColourOrangeOpacity,
-                        isTodayHighlighted: true,
-                        selectedDecoration:  BoxDecoration(
-                          color: AppTheme.primaryCalendarViolet,
-                          shape: BoxShape.circle,
+                        locale: 'en_GB',
+                        firstDay: calculateFirstDay(),
+                        lastDay: DateTime.now().add(const Duration(days: 1000)),
+                        focusedDay: _focusedDay,
+                        calendarFormat: CalendarFormat.month,
+                        headerStyle: const HeaderStyle(
+                            leftChevronIcon: Icon(Icons.chevron_left, color: AppTheme.primaryColourViolet,),
+                            rightChevronIcon: Icon(Icons.chevron_right, color: AppTheme.primaryColourViolet,),
+                            titleTextStyle: TextStyle(fontSize: 17.0, color: AppTheme.primaryColourViolet),
+                            titleCentered: true
                         ),
-                        todayDecoration: BoxDecoration(
-                          color: AppTheme.accentColourOrangeOpacity,
-                          shape: BoxShape.circle,
+                        calendarStyle: const CalendarStyle(
+                          rangeHighlightColor: AppTheme.accentColourOrangeOpacity,
+                          isTodayHighlighted: true,
+                          selectedDecoration:  BoxDecoration(
+                            color: AppTheme.primaryCalendarViolet,
+                            shape: BoxShape.circle,
+                          ),
+                          todayDecoration: BoxDecoration(
+                            color: AppTheme.accentColourOrangeOpacity,
+                            shape: BoxShape.circle,
+                          ),
+                          rangeStartDecoration: BoxDecoration(
+                            color: AppTheme.primaryColourVioletOpacity,
+                            shape: BoxShape.circle,
+                          ),
+                          rangeEndDecoration: BoxDecoration(
+                            color: AppTheme.primaryColourVioletOpacity,
+                            shape: BoxShape.circle,
+                          ),
+                          disabledTextStyle: TextStyle(color: Color(0xFFBFBFBF), decoration: TextDecoration.lineThrough),
                         ),
-                        rangeStartDecoration: BoxDecoration(
-                          color: AppTheme.primaryColourVioletOpacity,
-                          shape: BoxShape.circle,
-                        ),
-                        rangeEndDecoration: BoxDecoration(
-                          color: AppTheme.primaryColourVioletOpacity,
-                          shape: BoxShape.circle,
-                        ),
-                        disabledTextStyle: TextStyle(color: Color(0xFFBFBFBF), decoration: TextDecoration.lineThrough),
-                      ),
-                      selectedDayPredicate: (day) {
-                        return isSameDay(_selectedDay, day);
-                      },
-                      onPageChanged: (focusedDay) {
-                        _focusedDay = focusedDay;
-                      },
+                        selectedDayPredicate: (day) {
+                          return isSameDay(_selectedDay, day);
+                        },
+                        onPageChanged: (focusedDay) {
+                          _focusedDay = focusedDay;
+                        },
                         enabledDayPredicate: (day) {
                           if (_unavailableDates.isEmpty) return true;
 
@@ -266,41 +279,41 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
 
           verticalMargin12,
           ValueListenableBuilder<List<Booking>>(
-          valueListenable: _selectedEvents,
-          builder: (context, value, _) {
-            return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-                itemCount: value.length,
-                itemBuilder: (context, index) {
-                  return FutureBuilder<User?>(
-                      future: widget.user.userInfo!.userType == UserType.gallery ?
-                      firestoreDatabaseService.getUser(userId: value[index].artistId!) :
-                      firestoreDatabaseService.getUser(userId: value[index].hostId!),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData &&
-                            snapshot.connectionState ==
-                                ConnectionState.done) {
-                          User user = snapshot.data!;
-                          UserType userType = widget.user.userInfo!.userType!;
-                          Booking booking = value[index];
-                          
-                          return Padding(
-                            padding: verticalPadding12,
-                            child: BookingSummaryCard(userType: userType, user: user, booking: booking),
-                          );
+            valueListenable: _selectedEvents,
+            builder: (context, value, _) {
+              return ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: value.length,
+                  itemBuilder: (context, index) {
+                    return FutureBuilder<User?>(
+                        future: widget.user.userInfo!.userType == UserType.gallery ?
+                        firestoreDatabaseService.getUser(userId: value[index].artistId!) :
+                        firestoreDatabaseService.getUser(userId: value[index].hostId!),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData &&
+                              snapshot.connectionState ==
+                                  ConnectionState.done) {
+                            User user = snapshot.data!;
+                            UserType userType = widget.user.userInfo!.userType!;
+                            Booking booking = value[index];
+
+                            return Padding(
+                              padding: verticalPadding12,
+                              child: BookingSummaryCard(userType: userType, user: user, booking: booking),
+                            );
+                          }
+                          else {
+                            return Center(
+                                child: Lottie.asset(
+                                  'assets/loading.json',
+                                  fit: BoxFit.fill,
+                                ));
+                          }
                         }
-                        else {
-                          return Center(
-                              child: Lottie.asset(
-                                'assets/loading.json',
-                                fit: BoxFit.fill,
-                              ));
-                        }
-                      }
-                  );
-                });
-          },
+                    );
+                  });
+            },
           ),
         ],
       ),

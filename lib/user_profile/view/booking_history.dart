@@ -2,7 +2,6 @@ import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/injection.dart';
 import 'package:artb2b/utils/common.dart';
 import 'package:artb2b/widgets/booking_summary_card.dart';
-import 'package:artb2b/widgets/summary_card.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -18,54 +17,113 @@ class BookingHistory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Booking> pastBookings = user.bookings != null ?
-    user.bookings!.where((element) => element.to!.isBeforeWithoutTime(DateTime.now())).toList() : [];
-
-    pastBookings.sort((a, b) => b.to!.compareTo(a.to!));
-
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Booking History", style: TextStyles.boldAccent24,),
-          centerTitle: true,
-          iconTheme: const IconThemeData(
-            color: AppTheme.primaryColourViolet, //change your color here
-          ),
-        ),
-        body: Padding(
-            padding: horizontalPadding24,
-            child: pastBookings.isNotEmpty ?
-            ListView.builder(
-              itemCount: pastBookings.length,
-              itemBuilder: (BuildContext context, int index) {
-                bool isArtist = user.userInfo!.userType! == UserType.artist;
-                return FutureBuilder<User?>(
-                    future:databaseService.getUser(userId: isArtist ? pastBookings[index].hostId! :
-                    pastBookings[index].artistId!),
+    return FutureBuilder<List<Booking>>(
+      future: databaseService.findBookingsByUser(user).then((bookings) =>
+      bookings.where((element) => element.to!.isBeforeWithoutTime(DateTime.now())).toList()
+        ..sort((a, b) => b.to!.compareTo(a.to!))),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                "Booking History",
+                style: TextStyles.boldAccent24,
+              ),
+              centerTitle: true,
+              iconTheme: const IconThemeData(
+                color: AppTheme.primaryColourViolet,
+              ),
+            ),
+            body: Center(
+              child: Center(
+                child: Lottie.asset(
+                  'assets/loading.json',
+                  fit: BoxFit.fill,
+                ),
+              )
+            ),
+          );
+        } else if (snapshot.hasError) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                "Booking History",
+                style: TextStyles.boldAccent24,
+              ),
+              centerTitle: true,
+              iconTheme: const IconThemeData(
+                color: AppTheme.primaryColourViolet,
+              ),
+            ),
+            body: Center(
+              child: Text("Error: ${snapshot.error}"),
+            ),
+          );
+        } else {
+          List<Booking> pastBookings = snapshot.data ?? [];
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                "Booking History",
+                style: TextStyles.boldAccent24,
+              ),
+              centerTitle: true,
+              iconTheme: const IconThemeData(
+                color: AppTheme.primaryColourViolet,
+              ),
+            ),
+            body: Padding(
+              padding: horizontalPadding24,
+              child: pastBookings.isNotEmpty
+                  ? ListView.builder(
+                itemCount: pastBookings.length,
+                itemBuilder: (BuildContext context, int index) {
+                  bool isArtist =
+                      user.userInfo!.userType! == UserType.artist;
+                  return FutureBuilder<User?>(
+                    future: databaseService.getUser(
+                      userId: isArtist
+                          ? pastBookings[index].hostId!
+                          : pastBookings[index].artistId!,
+                    ),
                     builder: (context, snapshot) {
-                      if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+                      if (snapshot.hasData &&
+                          snapshot.connectionState ==
+                              ConnectionState.done) {
                         return Padding(
                           padding: verticalPadding12,
                           child: BookingSummaryCard(
                             userType: user.userInfo!.userType!,
-                            user:snapshot.data!,
+                            user: snapshot.data!,
                             booking: pastBookings[index],
-                            bookingButton: true,),
+                            bookingButton: true,
+                          ),
                         );
-                      }
-                      else {
+                      } else {
                         return Center(
-                            child: Lottie.asset(
-                              'assets/loading.json',
-                              fit: BoxFit.fill,
-                            )
+                          child: Lottie.asset(
+                            'assets/loading.json',
+                            fit: BoxFit.fill,
+                          ),
                         );
                       }
-                    }
-                );
-              },
-            ): Center(child: Text("No past booking." , style: TextStyles.semiBoldViolet16,)))
+                    },
+                  );
+                },
+              )
+                  : Center(
+                child: Text(
+                  "No past booking.",
+                  style: TextStyles.semiBoldViolet16,
+                ),
+              ),
+            ),
+          );
+        }
+      },
     );
   }
+
 
 /*
   return FutureBuilder<User?>(

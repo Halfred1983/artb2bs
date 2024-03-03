@@ -82,33 +82,28 @@ class BookingCubit extends Cubit<BookingState> {
             paymentIntentId: paymentIntentId, bookingTime: DateTime.now());
         String bookingId = await databaseService.addBooking(booking: booking);
 
-        booking.bookingId = bookingId;
-
-        if(user.bookings != null && user.bookings!.isNotEmpty) {
-          user.bookings!.insert(0, booking);
-        }
-        else {
-          user.bookings = List.of([booking], growable: true);
-        }
-        databaseService.updateUser(user: user);
-
-        if(host.bookings != null && host.bookings!.isNotEmpty) {
-          host.bookings!.insert(0, booking);
-        }
-        else {
-          host.bookings = List.of([booking], growable: true);
-        }
-        databaseService.updateUser(user: host);
+        // booking.bookingId = bookingId;
+        //
+        // if(user.bookings != null && user.bookings!.isNotEmpty) {
+        //   user.bookings!.insert(0, booking);
+        // }
+        // else {
+        //   user.bookings = List.of([booking], growable: true);
+        // }
+        // databaseService.updateUser(user: user);
+        //
+        // if(host.bookings != null && host.bookings!.isNotEmpty) {
+        //   host.bookings!.insert(0, booking);
+        // }
+        // else {
+        //   host.bookings = List.of([booking], growable: true);
+        // }
+        // databaseService.updateUser(user: host);
 
 
         emit(PaymentLoadedState(user, booking));
       } catch (e) {
         emit(ErrorState());
       }
-
   }
-
-
-
-
 }

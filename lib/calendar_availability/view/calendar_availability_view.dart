@@ -42,6 +42,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
 
+  List<Booking> _bookings = [];
   String _errorMessage = '';
 
   _CalendarAvailabilityViewState();
@@ -50,19 +51,21 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
   void initState() {
     super.initState();
     initializeDateFormatting();
-    retrieveBookedDates().then((dates) {
-      setState(() {
-        _bookedDates = dates;
-      });
-    });
 
-    firestoreDatabaseService.getDisabledDates(widget.user.id).then((
-        unavailableDates) =>
-    {
-      setState(() {
-        _unavailableList = unavailableDates;
-        _unavailableDates = retrieveUnavailableDates(unavailableDates);
-      })
+    firestoreDatabaseService.findBookingsByUser(widget.user).then((bookings) {
+      _bookings = bookings;
+      Future.wait([
+        retrieveBookedDates(),
+        firestoreDatabaseService.getDisabledDates(widget.user.id),
+      ]).then((List<dynamic> results) {
+        setState(() {
+          _bookedDates = results[0];
+          _unavailableList = results[1];
+          _unavailableDates = retrieveUnavailableDates(results[1]);
+        });
+      }).catchError((error) {
+        print('Error fetching data: $error');
+      });
     });
   }
 
@@ -99,11 +102,9 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
   }
 
   Future<List<DateTime>> retrieveBookedDates() async {
-    List<Booking> bookings = widget.user.bookings ?? [];
-
     List<DateTime> dateSpaces = [];
 
-    for (var booking in bookings) {
+    for (var booking in _bookings) {
       dateSpaces.addAll(generateDateList(booking.from!, booking.to!));
     }
 

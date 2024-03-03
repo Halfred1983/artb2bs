@@ -24,7 +24,7 @@ class User {
   List<Artwork>? artworks;
   List<Photo>? photos;
   BookingSettings? bookingSettings;
-  List<Booking>? bookings;
+  // List<Booking>? bookings;
   String? balance;
 
   User({
@@ -43,7 +43,7 @@ class User {
     this.artworks,
     this.photos,
     this.bookingSettings,
-    this.bookings,
+    // this.bookings,
     this.balance
   });
 

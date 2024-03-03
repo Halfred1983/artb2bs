@@ -31,6 +31,10 @@ abstract class DatabaseService {
 
   Future<void> createRefundRequest(Refund refundRequest);
 
+  Future<List<Booking>> findBookingsByUser(User user);
+
+  Stream<List<Booking>> findBookingsByUserStream(User user);
+
   Future<void> createAccepted(Accepted accepted);
 
   Future<void> updateViewCounter(String userId);

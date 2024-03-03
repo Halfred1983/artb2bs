@@ -30,10 +30,10 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
       try {
         emit(LoadingState());
 
-        // var bookings = await databaseService.retrieveBookingList(user: user);
+        var bookings = await databaseService.findBookingsByUser(user);
 
         int freeSpaces = int.parse(user.userArtInfo!.spaces!) -  int.parse(booking.spaces!);
-        for(var book in user.bookings!) {
+        for(var book in bookings) {
           if(booking.from!.isBeforeWithoutTime(book.to!) && booking.to!.isAfterWithoutTime(book.from!)
               && booking.bookingId != book.bookingId &&
               book.bookingStatus == BookingStatus.accepted) {

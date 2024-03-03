@@ -28,7 +28,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
   FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
   Map<String, DateTimeRange> _bookingDateRange = {};
   List<DateTime> _unavailableDates = [];
-
+  List<Booking> _bookings = [];
   Map<DateTime, String> _unavailableDatesSpaces = {};
 
 
@@ -36,39 +36,32 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
   void initState() {
     super.initState();
     initializeDateFormatting();
-    generateDisabledDates().then((dates) {
-      setState(() {
-        _disabledDates = dates;
+
+    firestoreDatabaseService.findBookingsByUser(widget.host).then((bookings) {
+      _bookings = bookings;
+      Future.wait([
+        generateDisabledDates(),
+        generateDateTimeRage(),
+        firestoreDatabaseService.getDisabledDates(widget.host.id),
+        firestoreDatabaseService.getDisabledSpaces(widget.host.id),
+      ]).then((List<dynamic> results) {
+        setState(() {
+          _disabledDates = results[0];
+          _bookingDateRange = results[1];
+          _unavailableDates = retrieveUnavailableDates(results[2]);
+          _unavailableDatesSpaces = retrieveUnavailableSpaces(results[3]);
+        });
+      }).catchError((error) {
+        print('Error fetching data at initialization: $error');
       });
     });
-    generateDateTimeRage().then((dates) {
-      setState(() {
-        _bookingDateRange = dates;
-      });
-    });
-    firestoreDatabaseService.getDisabledDates(widget.host.id).then((
-        unavailableDates) =>
-    {
-      setState(() {
-        _unavailableDates = retrieveUnavailableDates(unavailableDates);
-      })
-    });
-
-    firestoreDatabaseService.getDisabledSpaces(widget.host.id).then((
-        unavailableDates) =>
-    {
-      setState(() {
-        _unavailableDatesSpaces = retrieveUnavailableSpaces(unavailableDates);
-      })
-    });
-
   }
 
 
   List<DateTimeRange> converted = [];
 
   Future<Map<DateTime, int>> generateDisabledDates() async {
-    List<Booking> bookings = widget.host.bookings ?? [];
+    List<Booking> bookings = await firestoreDatabaseService.findBookingsByUser(widget.host);
 
     Map<DateTime, int> dateSpaces = {};
     int availableSpaces = int.parse(widget.host.userArtInfo!.spaces!);
@@ -163,11 +156,11 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
             });
 
             return Container(
-                    margin: const EdgeInsets.only(top: 38),
-                    padding: const EdgeInsets.all(1),
-                    child: Text(freeSpaces.toString(), style: TextStyles
-                        .semiBoldViolet12),
-                  );
+              margin: const EdgeInsets.only(top: 38),
+              padding: const EdgeInsets.all(1),
+              child: Text(freeSpaces.toString(), style: TextStyles
+                  .semiBoldViolet12),
+            );
           },
         ),
 
@@ -285,15 +278,12 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     return DateTime.now();
   }
 
-  List<Booking> _bookings = [];
-
   Future<Map<String, DateTimeRange>> generateDateTimeRage() async {
-    _bookings = widget.host.bookings ?? [];
-    _bookings = _bookings.where((element) => element.bookingStatus ==
+    List<Booking> acceptedBooking = _bookings.where((element) => element.bookingStatus ==
         BookingStatus.accepted).toList();
 
     Map<String, DateTimeRange> bookingDateRange = {};
-    for (var booking in _bookings) {
+    for (var booking in acceptedBooking) {
       bookingDateRange[booking.bookingId!] =
           DateTimeRange(start: booking.from!, end: booking.to!);
     }

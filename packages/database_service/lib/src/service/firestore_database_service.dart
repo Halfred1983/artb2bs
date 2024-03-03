@@ -2,11 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:database_service/src/models/models.dart';
 import 'package:database_service/src/service/database_service.dart';
-import 'package:flutter/material.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:uuid/uuid.dart';
-
-import '../models/refund.dart';
 
 
 class FirestoreDatabaseService implements DatabaseService {
@@ -212,8 +209,8 @@ class FirestoreDatabaseService implements DatabaseService {
       Future.wait([
         _firestore.collection('bookings')
             .doc(booking.bookingId).update(booking.toJson()),
-        updateBookingInUser(booking.hostId!, booking, true),
-        updateBookingInUser(booking.artistId!, booking, false),
+        // updateBookingInUser(booking.hostId!, booking, true),
+        // updateBookingInUser(booking.artistId!, booking, false),
       ]);
 
     } on Exception {
@@ -221,22 +218,22 @@ class FirestoreDatabaseService implements DatabaseService {
     }
   }
 
-  Future<void> updateBookingInUser(String userId, Booking booking, bool updateBalance) async {
-    try{
-      DocumentSnapshot host = await _firestore.collection('users')
-          .doc(userId).get();
-      User user = User.fromJson(host.data()! as Map<String, dynamic>);
-
-      user.bookings!.removeWhere((element) => element.bookingId == booking.bookingId);
-      user.bookings!.add(booking);
-      if(updateBalance) user.balance = (double.parse(user.balance ?? '0') + double.parse(booking.price!)).toString();
-
-      _firestore.collection('users')
-          .doc(userId).update(user.toJson());
-    } on Exception {
-      rethrow;
-    }
-  }
+  // Future<void> updateBookingInUser(String userId, Booking booking, bool updateBalance) async {
+  //   try{
+  //     DocumentSnapshot host = await _firestore.collection('users')
+  //         .doc(userId).get();
+  //     User user = User.fromJson(host.data()! as Map<String, dynamic>);
+  //
+  //     user.bookings!.removeWhere((element) => element.bookingId == booking.bookingId);
+  //     user.bookings!.add(booking);
+  //     if(updateBalance) user.balance = (double.parse(user.balance ?? '0') + double.parse(booking.price!)).toString();
+  //
+  //     _firestore.collection('users')
+  //         .doc(userId).update(user.toJson());
+  //   } on Exception {
+  //     rethrow;
+  //   }
+  // }
 
 
   @override
@@ -398,6 +395,48 @@ class FirestoreDatabaseService implements DatabaseService {
       await userDocRef.set({'unavailableSpaces': unavailableList.map((e) => e.toJson()).toList()});
     } on Exception catch (e) {
       throw e;
+    }
+  }
+
+  @override
+  Future<List<Booking>> findBookingsByUser(User user) async {
+    List<Booking> bookings = [];
+    var userId = user.userInfo!.userType == UserType.gallery ? 'hostId' : 'artistId';
+
+    try {
+      final QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firestore
+          .collection('bookings')
+          .where(userId, isEqualTo: user.id)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        bookings = querySnapshot.docs.map((document) {
+          return Booking.fromJson(document.data());
+        }).toList();
+      }
+    } catch (e) {
+      print('Error fetching bookings: $e');
+    }
+
+    return bookings;
+  }
+
+  @override
+  Stream<List<Booking>> findBookingsByUserStream(User user) {
+    var userId = user.userInfo!.userType == UserType.gallery ? 'hostId' : 'artistId';
+
+    try {
+      return _firestore
+          .collection('bookings')
+          .where(userId, isEqualTo: user.id)
+          .snapshots()
+          .map((querySnapshot) => querySnapshot.docs.map((document) {
+        return Booking.fromJson(document.data());
+      }).toList());
+    } catch (e) {
+      print('Error fetching bookings: $e');
+      // Return an empty stream in case of error
+      return Stream.value([]);
     }
   }
 }
