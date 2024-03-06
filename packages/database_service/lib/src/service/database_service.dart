@@ -33,6 +33,8 @@ abstract class DatabaseService {
 
   Future<List<Booking>> findBookingsByUser(User user);
 
+  Future<List<Payout>> findPayoutsByUser(User user);
+
   Stream<List<Booking>> findBookingsByUserStream(User user);
 
   Future<void> createAccepted(Accepted accepted);

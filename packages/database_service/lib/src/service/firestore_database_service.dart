@@ -422,6 +422,28 @@ class FirestoreDatabaseService implements DatabaseService {
   }
 
   @override
+  Future<List<Payout>> findPayoutsByUser(User user) async {
+    List<Payout> payouts = [];
+
+    try {
+      final QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firestore
+          .collection('payouts')
+          .where('userId', isEqualTo: user.id)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        payouts = querySnapshot.docs.map((document) {
+          return Payout.fromJson(document.data());
+        }).toList();
+      }
+    } catch (e) {
+      print('Error fetching bookings: $e');
+    }
+
+    return payouts;
+  }
+
+  @override
   Stream<List<Booking>> findBookingsByUserStream(User user) {
     var userId = user.userInfo!.userType == UserType.gallery ? 'hostId' : 'artistId';
 

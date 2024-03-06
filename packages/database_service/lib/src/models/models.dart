@@ -6,6 +6,7 @@ export 'artwork.dart';
 export 'photo.dart';
 export 'booking_settings.dart';
 export 'booking.dart';
+export 'payout.dart';
 export 'refund.dart';
 export 'accepted.dart';
 export 'unavailable.dart';

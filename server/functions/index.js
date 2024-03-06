@@ -282,39 +282,39 @@ exports.markPendingBookingsAsCancelled = functions.pubsub
 
 
          // Update the host's bookings array
-          const hostRef = db.collection('users').doc(bookingData.hostId);
-          const hostData = await hostRef.get();
-          const existingBookings = hostData.data().bookings || [];
+//          const hostRef = db.collection('users').doc(bookingData.hostId);
+//          const hostData = await hostRef.get();
+//          const existingBookings = hostData.data().bookings || [];
+//
+//          const updatedBookings = existingBookings.map(booking => {
+//            if (booking.bookingId === bookingDoc.id) {
+//             console.log(`Booking ${bookingDoc.id} marked as cancelled. Corresponding host bookings updated.`);
+//
+//              return { ...booking, bookingStatus: 3 };
+//            }
+//            return booking;
+//          });
+//
+//          await hostRef.update({ bookings: updatedBookings });
+//
+//          // Update the artist's bookings array
+//          const artistRef = db.collection('users').doc(bookingData.artistId);
+//          const artistData = await artistRef.get();
+//          const artistExistingBookings = artistData.data().bookings || [];
+//
+//          const artistUpdatedBookings = artistExistingBookings.map(booking => {
+//            if (booking.bookingId === bookingDoc.id) {
+//              console.log(`Booking ${bookingDoc.id} marked as cancelled. Corresponding artist bookings updated.`);
+//
+//              return { ...booking, bookingStatus: 3 };
+//            }
+//            return booking;
+//          });
+//
+//          await artistRef.update({ bookings: artistUpdatedBookings });
 
-          const updatedBookings = existingBookings.map(booking => {
-            if (booking.bookingId === bookingDoc.id) {
-             console.log(`Booking ${bookingDoc.id} marked as cancelled. Corresponding host bookings updated.`);
 
-              return { ...booking, bookingStatus: 3 };
-            }
-            return booking;
-          });
-
-          await hostRef.update({ bookings: updatedBookings });
-
-          // Update the artist's bookings array
-          const artistRef = db.collection('users').doc(bookingData.artistId);
-          const artistData = await artistRef.get();
-          const artistExistingBookings = artistData.data().bookings || [];
-
-          const artistUpdatedBookings = artistExistingBookings.map(booking => {
-            if (booking.bookingId === bookingDoc.id) {
-              console.log(`Booking ${bookingDoc.id} marked as cancelled. Corresponding artist bookings updated.`);
-
-              return { ...booking, bookingStatus: 3 };
-            }
-            return booking;
-          });
-
-          await artistRef.update({ bookings: artistUpdatedBookings });
-
-
-        console.log(`Booking ${bookingDoc.id} marked as cancelled. Corresponding host and artist bookings updated.`);
+        console.log(`Booking ${bookingDoc.id} marked as cancelled.`);
 
          const refund = {
                     bookingId: bookingDoc.id,
@@ -411,6 +411,9 @@ async function sendPaypalPayout(userId, receiverEmail, amount) {
     // Log the PayPal Payout response
     console.log('PayPal Payout Response:', response.data);
 
+    // Initialize the status
+    let status = 'initialized';
+
     // Check if the PayPal payout was successful (HTTP status code 2xx)
     if (response.status >= 200 && response.status < 300) {
       // Insert entry in payouts collection
@@ -418,6 +421,7 @@ async function sendPaypalPayout(userId, receiverEmail, amount) {
         userId: userId,
         amount: amount,
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        status: '0',
       });
 
       // Update user's balance to 0
@@ -427,9 +431,21 @@ async function sendPaypalPayout(userId, receiverEmail, amount) {
 
       console.log(`Payout for user ${userId} completed. Balance updated to 0.`);
     } else {
+    await admin.firestore().collection('payouts').add({
+            userId: userId,
+            amount: amount,
+            timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            status: '1',
+          });
       console.error(`PayPal Payout for user ${userId} failed. Status Code: ${response.status}`);
     }
   } catch (error) {
+  await admin.firestore().collection('payouts').add({
+          userId: userId,
+          amount: amount,
+          timestamp: admin.firestore.FieldValue.serverTimestamp(),
+          status: '1',
+        });
     console.error(`PayPal Payout for user ${userId} Error:`, error.response ? error.response.data : error.message);
   }
 }

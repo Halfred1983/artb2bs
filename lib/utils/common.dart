@@ -125,6 +125,22 @@ extension BookingStatusColorExtension on String {
   }
 }
 
+extension PayoutStatusColorExtension on String {
+  Color getColorForPayoutStatus() {
+    switch (toLowerCase()) {
+      case 'success':
+        return Colors.green; // Set the color for accepted status
+      case 'unknown':
+        return Colors.orange; // Set the color for pending status
+      case 'failed':
+        return Colors.red; // Set the color for cancelled status
+      default:
+        return AppTheme.primaryColourViolet; // Default color if status is not recognized
+    }
+  }
+}
+
+
 extension EmailValidator on String {
   bool isValidEmail() {
     // Simple email validation using a regular expression
