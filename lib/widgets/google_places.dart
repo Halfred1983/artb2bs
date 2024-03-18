@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:google_place/google_place.dart';
 
+import '../utils/currency/currency_helper.dart';
 import 'app_text_field.dart';
 
 
@@ -152,6 +153,8 @@ class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
   String _city = '';
   String _zip = '';
   String _number = '';
+  String _country = 'GB';
+  String _locale = 'en_GB';
 
   Future<UserAddress?> getDetails(String placeId) async {
     var result = await _googlePlace?.details.get(placeId);
@@ -179,6 +182,10 @@ class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
         if (element.types!.contains('postal_code')) {
           _zip = element.longName!;
         }
+        if (element.types!.contains('country')) {
+          _country = element.shortName!;
+          _locale = 'en_$_country';
+        }
       });
       String? formattedAddress = result.result?.formattedAddress;
 
@@ -192,7 +199,9 @@ class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
 
       return UserAddress(address: _address, place: _place,
           province: _province, city: _city ,
-          number: _number, zipcode:_zip, location: location, formattedAddress: formattedAddress ?? "");
+          number: _number, zipcode:_zip, country: _country,
+          locale: _locale, currencyCode: CurrencyHelper.currency(_country).currencyName!,
+          location: location, formattedAddress: formattedAddress ?? "");
     }
   }
 }

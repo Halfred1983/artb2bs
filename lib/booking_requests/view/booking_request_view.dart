@@ -213,7 +213,7 @@ class BookingRequestView extends StatelessWidget {
                                                                         .semiBoldAccent16,),
                                                                     // Text('${booking!.spaces!} spaces X ${daysBetween(booking!.from!, booking!.to!)} days X ${int.parse(user!.bookingSettings!.basePrice!).toDouble()} GBP',
                                                                     //   style: TextStyles.semiBoldViolet16, ),
-                                                                    Text('${pendingBookings[index].price!} GBP',
+                                                                    Text('${pendingBookings[index].price!} ${pendingBookings[index].currencyCode!}',
                                                                       style: TextStyles
                                                                           .semiBoldViolet16,),
                                                                   ],
@@ -227,7 +227,7 @@ class BookingRequestView extends StatelessWidget {
                                                                       style: TextStyles
                                                                           .semiBoldAccent16,),
                                                                     Text(
-                                                                      '${pendingBookings[index].commission!} GBP',
+                                                                      '${pendingBookings[index].commission!} ${pendingBookings[index].currencyCode!}',
                                                                       style: TextStyles
                                                                           .semiBoldViolet16,),
                                                                   ],
@@ -241,7 +241,7 @@ class BookingRequestView extends StatelessWidget {
                                                                       style: TextStyles
                                                                           .semiBoldAccent16,),
                                                                     Text(
-                                                                      '${pendingBookings[index].totalPrice!} GBP',
+                                                                      '${pendingBookings[index].totalPrice!} ${pendingBookings[index].currencyCode!}',
                                                                       style: TextStyles
                                                                           .semiBoldViolet16,),
                                                                   ],

@@ -14,6 +14,7 @@ import 'package:path/path.dart' as path;
 import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
 import '../../utils/common.dart';
+import '../../utils/currency/currency_helper.dart';
 import '../../widgets/app_input_validators.dart';
 import '../../widgets/app_text_field.dart';
 import '../../widgets/input_text_widget.dart';
@@ -183,7 +184,7 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                       verticalMargin24,
 
                       InputTextWidget((nameValue) => context.read<PhotoCubit>().choosePrice(nameValue),
-                          'Price', TextInputType.number),
+                          'Price ${CurrencyHelper.currency(user!.userInfo!.address!.country).currencySymbol}', TextInputType.number),
                       //Size
                       verticalMargin24,
 

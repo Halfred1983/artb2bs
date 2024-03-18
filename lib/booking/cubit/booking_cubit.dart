@@ -3,6 +3,7 @@ import 'package:database_service/database.dart';
 import 'package:flutter/src/material/date.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../utils/currency/currency_helper.dart';
 import 'booking_state.dart';
 
 class BookingCubit extends Cubit<BookingState> {
@@ -69,6 +70,7 @@ class BookingCubit extends Cubit<BookingState> {
         commission: commission,
         hostId: host.id,
         artistId: user.id,
+    currencyCode: CurrencyHelper.currency(user.userInfo!.address!.country).currencyName,
     totalPrice: totalPrice);
 
     return booking;

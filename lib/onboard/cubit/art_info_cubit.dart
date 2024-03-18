@@ -95,8 +95,46 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
     }
   }
 
+  void hostVenue(List<String> typeVenue) {
+    User user = this.state.props[0] as User;
+    emit(LoadingState());
 
-  void save(List<String> tags) async {
+    try {
+        if (user.userArtInfo != null) {
+          user = user.copyWith(
+              userArtInfo: user.userArtInfo!.copyWith(typeOfVenue: typeVenue));
+        }
+        else {
+          user = user.copyWith(userArtInfo: UserArtInfo(typeOfVenue: typeVenue));
+        }
+        emit(LoadedState(user));
+
+    } catch (e) {
+      emit(ErrorState(user ,"Audience value not valid"));
+    }
+  }
+
+
+  void artistTags(List<String> artistTags) {
+    User user = this.state.props[0] as User;
+    emit(LoadingState());
+
+    try {
+      if (user.userArtInfo != null) {
+        user = user.copyWith(
+            userArtInfo: user.userArtInfo!.copyWith(vibes: artistTags));
+      }
+      else {
+        user = user.copyWith(userArtInfo: UserArtInfo(vibes: artistTags));
+      }
+      emit(LoadedState(user));
+
+    } catch (e) {
+      emit(ErrorState(user ,"Audience value not valid"));
+    }
+  }
+
+  void save() async {
     User user = this.state.props[0] as User;
     emit(LoadingState());
 
@@ -104,7 +142,10 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
       try {
         if (user.userArtInfo == null || user.userArtInfo!.spaces == null ||
             user.userArtInfo!.spaces!.isEmpty ||
-            int.parse(user.userArtInfo!.spaces!) < 1) {
+            int.parse(user.userArtInfo!.spaces!) < 1 ||
+            user.userArtInfo!.audience!.isEmpty ||
+            user.userArtInfo!.typeOfVenue!.isEmpty
+        ) {
           emit(ErrorState(user, "Spaces value not valid"));
           return;
         }
@@ -126,18 +167,18 @@ class ArtInfoCubit extends Cubit<ArtInfoState> {
       if(user.userArtInfo != null) {
         user = user.copyWith(
             userStatus: UserStatus.artInfo,
-            userArtInfo: user.userArtInfo!.copyWith(vibes: tags)
         );
       }
-      else {
-        user = user.copyWith(
-            userStatus: UserStatus.artInfo,
-            userArtInfo: UserArtInfo(vibes: tags));
-      }
+      // else {
+      //   user = user.copyWith(
+      //       userStatus: UserStatus.artInfo);
+      // }
+
       await databaseService.updateUser(user: user);
       emit(DataSaved(user));
     } catch (e) {
       emit(ErrorState(user, "Error saving the art details"));
     }
   }
+
 }

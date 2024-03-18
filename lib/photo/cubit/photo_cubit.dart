@@ -6,6 +6,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:storage_service/storage.dart';
 
+import '../../utils/currency/currency_helper.dart';
+
 
 class PhotoCubit extends Cubit<PhotoState> {
   PhotoCubit({required this.databaseService, required this.storageService,
@@ -103,7 +105,7 @@ class PhotoCubit extends Cubit<PhotoState> {
   void saveArtwork(List<String> photoTags, String downloadUrl, User user) {
     Artwork artwork = this.state.props[1] as Artwork;
 
-    artwork = artwork.copyWith(url: downloadUrl, tags: photoTags);
+    artwork = artwork.copyWith(url: downloadUrl, tags: photoTags, currencyCode: CurrencyHelper.currency(user!.userInfo!.address!.country).currencySymbol);
     if(user.artworks != null && user.artworks!.isNotEmpty) {
       user.artworks!.add(artwork);
     }

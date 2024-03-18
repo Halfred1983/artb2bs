@@ -25,6 +25,8 @@ abstract class _$BookingCWProxy {
 
   Booking totalPrice(String? totalPrice);
 
+  Booking currencyCode(String? currencyCode);
+
   Booking bookingId(String? bookingId);
 
   Booking paymentIntentId(String? paymentIntentId);
@@ -49,6 +51,7 @@ abstract class _$BookingCWProxy {
     String? price,
     String? commission,
     String? totalPrice,
+    String? currencyCode,
     String? bookingId,
     String? paymentIntentId,
     DateTime? bookingTime,
@@ -91,6 +94,10 @@ class _$BookingCWProxyImpl implements _$BookingCWProxy {
   Booking totalPrice(String? totalPrice) => this(totalPrice: totalPrice);
 
   @override
+  Booking currencyCode(String? currencyCode) =>
+      this(currencyCode: currencyCode);
+
+  @override
   Booking bookingId(String? bookingId) => this(bookingId: bookingId);
 
   @override
@@ -121,6 +128,7 @@ class _$BookingCWProxyImpl implements _$BookingCWProxy {
     Object? price = const $CopyWithPlaceholder(),
     Object? commission = const $CopyWithPlaceholder(),
     Object? totalPrice = const $CopyWithPlaceholder(),
+    Object? currencyCode = const $CopyWithPlaceholder(),
     Object? bookingId = const $CopyWithPlaceholder(),
     Object? paymentIntentId = const $CopyWithPlaceholder(),
     Object? bookingTime = const $CopyWithPlaceholder(),
@@ -163,6 +171,10 @@ class _$BookingCWProxyImpl implements _$BookingCWProxy {
           ? _value.totalPrice
           // ignore: cast_nullable_to_non_nullable
           : totalPrice as String?,
+      currencyCode: currencyCode == const $CopyWithPlaceholder()
+          ? _value.currencyCode
+          // ignore: cast_nullable_to_non_nullable
+          : currencyCode as String?,
       bookingId: bookingId == const $CopyWithPlaceholder()
           ? _value.bookingId
           // ignore: cast_nullable_to_non_nullable
@@ -208,6 +220,7 @@ Booking _$BookingFromJson(Map<String, dynamic> json) => Booking(
       price: json['price'] as String?,
       commission: json['commission'] as String?,
       totalPrice: json['totalPrice'] as String?,
+      currencyCode: json['currencyCode'] as String?,
       bookingId: json['bookingId'] as String?,
       paymentIntentId: json['paymentIntentId'] as String?,
       bookingTime: _$JsonConverterFromJson<Timestamp, DateTime>(
@@ -228,6 +241,7 @@ Map<String, dynamic> _$BookingToJson(Booking instance) => <String, dynamic>{
       'price': instance.price,
       'commission': instance.commission,
       'totalPrice': instance.totalPrice,
+      'currencyCode': instance.currencyCode,
       'bookingId': instance.bookingId,
       'paymentIntentId': instance.paymentIntentId,
       'bookingTime': _$JsonConverterToJson<Timestamp, DateTime>(

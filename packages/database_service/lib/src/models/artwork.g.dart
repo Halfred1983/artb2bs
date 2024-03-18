@@ -17,6 +17,8 @@ abstract class _$ArtworkCWProxy {
 
   Artwork price(String? price);
 
+  Artwork currencyCode(String? currencyCode);
+
   Artwork height(String? height);
 
   Artwork width(String? width);
@@ -35,6 +37,7 @@ abstract class _$ArtworkCWProxy {
     String? name,
     String? year,
     String? price,
+    String? currencyCode,
     String? height,
     String? width,
     String? technique,
@@ -63,6 +66,10 @@ class _$ArtworkCWProxyImpl implements _$ArtworkCWProxy {
   Artwork price(String? price) => this(price: price);
 
   @override
+  Artwork currencyCode(String? currencyCode) =>
+      this(currencyCode: currencyCode);
+
+  @override
   Artwork height(String? height) => this(height: height);
 
   @override
@@ -85,6 +92,7 @@ class _$ArtworkCWProxyImpl implements _$ArtworkCWProxy {
     Object? name = const $CopyWithPlaceholder(),
     Object? year = const $CopyWithPlaceholder(),
     Object? price = const $CopyWithPlaceholder(),
+    Object? currencyCode = const $CopyWithPlaceholder(),
     Object? height = const $CopyWithPlaceholder(),
     Object? width = const $CopyWithPlaceholder(),
     Object? technique = const $CopyWithPlaceholder(),
@@ -110,6 +118,10 @@ class _$ArtworkCWProxyImpl implements _$ArtworkCWProxy {
           ? _value.price
           // ignore: cast_nullable_to_non_nullable
           : price as String?,
+      currencyCode: currencyCode == const $CopyWithPlaceholder()
+          ? _value.currencyCode
+          // ignore: cast_nullable_to_non_nullable
+          : currencyCode as String?,
       height: height == const $CopyWithPlaceholder()
           ? _value.height
           // ignore: cast_nullable_to_non_nullable
@@ -142,6 +154,7 @@ Artwork _$ArtworkFromJson(Map<String, dynamic> json) => Artwork(
       name: json['name'] as String?,
       year: json['year'] as String?,
       price: json['price'] as String?,
+      currencyCode: json['currencyCode'] as String?,
       height: json['height'] as String?,
       width: json['width'] as String?,
       technique: json['technique'] as String?,
@@ -153,6 +166,7 @@ Map<String, dynamic> _$ArtworkToJson(Artwork instance) => <String, dynamic>{
       'name': instance.name,
       'year': instance.year,
       'price': instance.price,
+      'currencyCode': instance.currencyCode,
       'height': instance.height,
       'width': instance.width,
       'technique': instance.technique,

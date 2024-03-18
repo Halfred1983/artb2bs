@@ -98,7 +98,7 @@ class ArtworkDetails extends StatelessWidget {
                             verticalMargin24,
                             Text('Price:', style: TextStyles.semiBoldAccent16,),
                             verticalMargin8,
-                            Text(artwork.price != null ? '${artwork.price} GBP' : 'n/a', style: TextStyles.boldViolet16,),
+                            Text(artwork.price != null ? '${artwork.price} ${artwork.currencyCode}' : 'n/a', style: TextStyles.boldViolet16,),
                             Divider(thickness: 0.5, color: AppTheme.black.withOpacity(0.4),),
                             verticalMargin24,
                             Text('Size:', style: TextStyles.semiBoldAccent16,),

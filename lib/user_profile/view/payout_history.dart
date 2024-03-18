@@ -92,7 +92,7 @@ class PayoutHistory extends StatelessWidget {
                                   Text('Amount: ',
                                     style: TextStyles
                                         .semiBoldAccent16,),
-                                  Text('${payouts[index].amount!} GBP',
+                                  Text('${payouts[index].amount!} ${payouts[index].currencyCode!}',
                                     style: TextStyles
                                         .semiBoldViolet14,),
                                 ]

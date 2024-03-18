@@ -20,12 +20,12 @@ class Payout {
   DateTime? timestamp;
   String? userId;
   int? amount;
-  String? currency; //to be added when locale
+  String? currencyCode; //to be added when locale
   String? paypalAccount;
 
 
   Payout(this.payoutStatus, this.timestamp, this.userId, this.amount,
-      this.currency, this.paypalAccount);
+      this.currencyCode, this.paypalAccount);
 
   factory Payout.fromJson(Map<String, dynamic> json)
   => _$PayoutFromJson(json);

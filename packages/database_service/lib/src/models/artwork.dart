@@ -22,6 +22,7 @@ class Artwork {
   String? name;
   String? year;
   String? price;
+  String? currencyCode;
   String? height;
   String? width;
   String? technique;
@@ -32,6 +33,7 @@ class Artwork {
     this.name,
     this.year,
     this.price,
+    this.currencyCode,
     this.height,
     this.width,
     this.technique,

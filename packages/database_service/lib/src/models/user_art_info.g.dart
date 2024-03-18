@@ -15,6 +15,10 @@ abstract class _$UserArtInfoCWProxy {
 
   UserArtInfo vibes(List<String>? vibes);
 
+  UserArtInfo openingTimes(List<BusinessDay>? openingTimes);
+
+  UserArtInfo typeOfVenue(List<String>? typeOfVenue);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `UserArtInfo(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -26,6 +30,8 @@ abstract class _$UserArtInfoCWProxy {
     String? spaces,
     String? audience,
     List<String>? vibes,
+    List<BusinessDay>? openingTimes,
+    List<String>? typeOfVenue,
   });
 }
 
@@ -48,6 +54,14 @@ class _$UserArtInfoCWProxyImpl implements _$UserArtInfoCWProxy {
   UserArtInfo vibes(List<String>? vibes) => this(vibes: vibes);
 
   @override
+  UserArtInfo openingTimes(List<BusinessDay>? openingTimes) =>
+      this(openingTimes: openingTimes);
+
+  @override
+  UserArtInfo typeOfVenue(List<String>? typeOfVenue) =>
+      this(typeOfVenue: typeOfVenue);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `UserArtInfo(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -60,6 +74,8 @@ class _$UserArtInfoCWProxyImpl implements _$UserArtInfoCWProxy {
     Object? spaces = const $CopyWithPlaceholder(),
     Object? audience = const $CopyWithPlaceholder(),
     Object? vibes = const $CopyWithPlaceholder(),
+    Object? openingTimes = const $CopyWithPlaceholder(),
+    Object? typeOfVenue = const $CopyWithPlaceholder(),
   }) {
     return UserArtInfo(
       aboutYou: aboutYou == const $CopyWithPlaceholder()
@@ -78,6 +94,14 @@ class _$UserArtInfoCWProxyImpl implements _$UserArtInfoCWProxy {
           ? _value.vibes
           // ignore: cast_nullable_to_non_nullable
           : vibes as List<String>?,
+      openingTimes: openingTimes == const $CopyWithPlaceholder()
+          ? _value.openingTimes
+          // ignore: cast_nullable_to_non_nullable
+          : openingTimes as List<BusinessDay>?,
+      typeOfVenue: typeOfVenue == const $CopyWithPlaceholder()
+          ? _value.typeOfVenue
+          // ignore: cast_nullable_to_non_nullable
+          : typeOfVenue as List<String>?,
     );
   }
 }
@@ -98,6 +122,12 @@ UserArtInfo _$UserArtInfoFromJson(Map<String, dynamic> json) => UserArtInfo(
       audience: json['audience'] as String?,
       vibes:
           (json['vibes'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      openingTimes: (json['openingTimes'] as List<dynamic>?)
+          ?.map((e) => BusinessDay.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      typeOfVenue: (json['typeOfVenue'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$UserArtInfoToJson(UserArtInfo instance) =>
@@ -106,4 +136,6 @@ Map<String, dynamic> _$UserArtInfoToJson(UserArtInfo instance) =>
       'spaces': instance.spaces,
       'audience': instance.audience,
       'vibes': instance.vibes,
+      'openingTimes': instance.openingTimes?.map((e) => e.toJson()).toList(),
+      'typeOfVenue': instance.typeOfVenue,
     };

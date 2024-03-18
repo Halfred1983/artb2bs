@@ -1,11 +1,11 @@
 import 'package:artb2b/host/view/host_dashboard_edit_page.dart';
 import 'package:artb2b/onboard/cubit/art_info_cubit.dart';
 import 'package:artb2b/widgets/app_text_field.dart';
+import 'package:artb2b/widgets/tags.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chip_tags/flutter_chip_tags.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
@@ -20,8 +20,8 @@ class ArtInfoView extends StatelessWidget {
 
 
   String background = "";
-  final List<String> _hostTags = ['Arty', 'Commercial', 'Live music', 'Coffee shop'];
-  final List<String> _artistTags = ['Arty', 'Commercial', 'Indie', 'Abstract'];
+  final List<String> _hostTags = [];
+  final List<String> _artistTags = [];
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +65,7 @@ class ArtInfoView extends StatelessWidget {
                 padding: buttonPadding,
                 child: ElevatedButton(
                   onPressed: () {
-                    context.read<ArtInfoCubit>().save(_hostTags);
+                    context.read<ArtInfoCubit>().save();
                   },
                   child: Text("Continue", style: TextStyles.boldWhite16,),)
             )
@@ -89,29 +89,39 @@ class ArtInfoView extends StatelessWidget {
                   Text('Tell us in a few words what makes your space unique. ', style:TextStyles.semiBoldViolet14,),
                   _AboutYouTextField((nameValue) => context.read<ArtInfoCubit>().choseAboutYou(nameValue),),
                   verticalMargin24,
-                  ChipTags(
-                    list: _hostTags,
-                    chipColor: AppTheme.secondaryColourRed,
-                    iconColor: Colors.white,
-                    textColor: Colors.white,
-                    separator: ',',
-                    decoration: InputDecoration(
-                        filled: true,
-                        fillColor: AppTheme.white,
-                        hintText: 'Your vibes coma separated',
-                        hintStyle: TextStyles.semiBoldViolet16,
-                        focusedBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
-                        ),
-                        border: const OutlineInputBorder()
-                    ), //
-                    keyboardType: TextInputType.text,
+                  Text('Your Vibes', style:TextStyles.semiBoldViolet18,),
+                  Text('Select the tags that represent you the most ', style:TextStyles.semiBoldViolet14,),
+                  Tags(const [
+                    'Arty', 'Commercial', 'Indie', 'Abstract'
+                  ],
+                    _artistTags,
+                        (artistTags) {
+                      context.read<ArtInfoCubit>().artistTags(artistTags); // Update selected values in the parent widget's state
+                    },
                   ),
+                  // ChipTags(
+                  //   list: _hostTags,
+                  //   chipColor: AppTheme.secondaryColourRed,
+                  //   iconColor: Colors.white,
+                  //   textColor: Colors.white,
+                  //   separator: ',',
+                  //   decoration: InputDecoration(
+                  //       filled: true,
+                  //       fillColor: AppTheme.white,
+                  //       hintText: 'Your vibes coma separated',
+                  //       hintStyle: TextStyles.semiBoldViolet16,
+                  //       focusedBorder: const OutlineInputBorder(
+                  //         borderRadius: BorderRadius.all(Radius.circular(10)),
+                  //         borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
+                  //       ),
+                  //       enabledBorder: const OutlineInputBorder(
+                  //         borderRadius: BorderRadius.all(Radius.circular(10)),
+                  //         borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
+                  //       ),
+                  //       border: const OutlineInputBorder()
+                  //   ), //
+                  //   keyboardType: TextInputType.text,
+                  // ),
                 ],
               ),
           ),
@@ -144,28 +154,21 @@ class ArtInfoView extends StatelessWidget {
                   ),
                   _AudienceTextField((nameValue) => context.read<ArtInfoCubit>().chooseAudience(nameValue),),
                   verticalMargin24,
-                  ChipTags(
-                    list: _hostTags,
-                    chipColor: AppTheme.secondaryColourRed,
-                    iconColor: AppTheme.white,
-                    textColor: AppTheme.white,
-                    separator: ',',
-                    decoration: InputDecoration(
-                        filled: true,
-                        fillColor: AppTheme.white,
-                        hintText: 'Your vibes coma separated',
-                        hintStyle: TextStyles.semiBoldViolet16,
-                        focusedBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
-                        ),
-                        border: const OutlineInputBorder()
-                    ), //
-                    keyboardType: TextInputType.text,
+                  Text('Your Space ', style:TextStyles.semiBoldViolet18,),
+                  Text('What type of space is ', style:TextStyles.semiBoldViolet14,),
+                  Tags(const [
+                    'Coffee',
+                    'Library',
+                    'Hotel',
+                    'Bar',
+                    'Restaurant',
+                    'Gallery',
+                  ],
+                    user.userArtInfo != null && user.userArtInfo!.typeOfVenue != null ?
+                    user.userArtInfo!.typeOfVenue! : _hostTags,
+                    (typeVenue) {
+                      context.read<ArtInfoCubit>().hostVenue(typeVenue); // Update selected values in the parent widget's state
+                    },
                   ),
                 ],
               ),

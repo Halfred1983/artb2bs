@@ -24,6 +24,7 @@ class Booking {
   String? price;
   String? commission;
   String? totalPrice;
+  String? currencyCode;
   String? bookingId;
   String? paymentIntentId;
   @TimestampConverter()
@@ -41,6 +42,7 @@ class Booking {
     this.price,
     this.commission,
     this.totalPrice,
+    this.currencyCode,
     this.bookingId,
     this.paymentIntentId,
     this.bookingTime,

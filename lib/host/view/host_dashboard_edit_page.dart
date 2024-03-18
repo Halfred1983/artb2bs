@@ -1,6 +1,7 @@
 import 'package:artb2b/home/view/home_page.dart';
 import 'package:artb2b/host/cubit/host_cubit.dart';
 import 'package:artb2b/host/view/host_dashboard_page.dart';
+import 'package:artb2b/utils/currency/currency_helper.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,7 @@ class HostDashboardEditPage extends StatelessWidget {
 
               if (state is LoadedState) {
                 user = state.user;
+                Locale locale = Locale('en', user!.userInfo!.address!.country);
               }
 
               return Scaffold(
@@ -67,7 +69,9 @@ class HostDashboardEditPage extends StatelessWidget {
 
                           InputTextWidget((nameValue) => context.read<HostCubit>().chooseBasePrice(nameValue),
                               user!.bookingSettings != null && user!.bookingSettings!.basePrice != null ?
-                              '${user!.bookingSettings!.basePrice!} £ per day' : 'Base price per day (in GBP)'),
+                              '${user!.bookingSettings!.basePrice!} '
+                                  '${CurrencyHelper.currency(user!.userInfo!.address!.country).currencySymbol} per day' :
+                              'Base price per day ${CurrencyHelper.currency(user!.userInfo!.address!.country).currencyName}'),
                           // verticalMargin48,
                           //Year
                           verticalMargin48,

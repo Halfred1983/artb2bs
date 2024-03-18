@@ -1,6 +1,7 @@
 import 'package:artb2b/booking/cubit/booking_state.dart';
 import 'package:artb2b/payment/bloc/payment_bloc.dart';
 import 'package:artb2b/utils/common.dart';
+import 'package:artb2b/utils/currency/currency_helper.dart';
 import 'package:auth_service/auth.dart';
 import 'package:confetti/confetti.dart';
 import 'package:database_service/database.dart';
@@ -74,7 +75,7 @@ class _PaymentPageState extends State<PaymentPage> {
                   padding: horizontalPadding24,
                   child: Column(
                     children: [
-                      Text('Total (GBP): ${widget.booking.totalPrice!}', style: TextStyles.boldAccent16,),
+                      Text('Total ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}: ${widget.booking.totalPrice!}', style: TextStyles.boldAccent16,),
                       verticalMargin24,
                       CardFormField(
                         controller: controller,
@@ -85,7 +86,7 @@ class _PaymentPageState extends State<PaymentPage> {
                             textErrorColor: AppTheme.accentColourOrange,
                             fontSize: 16
                         ),
-                        countryCode: 'en_GB',
+                        countryCode: 'en_${widget.host.userInfo!.address!.country}',
 
                       ),
                       Expanded(child: Container()),
@@ -102,6 +103,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                   email: widget.user.email,
                                 ),
                                 grandTotal: BookingService().toStripeInt(widget.booking.totalPrice!).toString(),
+                                currency: CurrencyHelper.currency(widget.host.userInfo!.address!.country)
                               ),
                             ) :
                             ScaffoldMessenger.of(context).showSnackBar(

@@ -24,6 +24,7 @@ import 'package:confetti/confetti.dart';
 import '../../host/view/host_dashboard_page.dart';
 import '../../onboard/view/art_info_page.dart';
 import '../../user_profile/view/user_profile_page.dart';
+import '../../utils/currency/currency_helper.dart';
 
 class HomeView extends StatefulWidget {
   HomeView({super.key, this.index});
@@ -257,10 +258,11 @@ class _HomeListState extends State<HomeList> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Flexible(flex: 1, child: Text("Vibes: ", softWrap: true, style: TextStyles.boldViolet14,)),
+                                  Flexible(flex: 1, child: Text("Type: ", softWrap: true, style: TextStyles.boldViolet14,)),
                                 ],
                               ),
-                              Text(user.userArtInfo!.vibes!.join(", "), softWrap: true, style: TextStyles.semiBoldViolet14,),
+                              Text(user.userArtInfo!.typeOfVenue != null ?
+                              user.userArtInfo!.typeOfVenue!.join(", ") : 'n/a', softWrap: true, style: TextStyles.semiBoldViolet14,),
 
                               verticalMargin12,
                               Row(
@@ -269,7 +271,8 @@ class _HomeListState extends State<HomeList> {
                                 children: [
                                   Text("Price per space per day: ", style: TextStyles.boldViolet14,),
                                   Expanded(child: Container()),
-                                  Text(user.bookingSettings!.basePrice!+' £', style: TextStyles.boldViolet21,),
+                                  Text(' ${user.bookingSettings!.basePrice!} '
+                                      '${CurrencyHelper.currency(user.userInfo!.address!.country).currencySymbol}', style: TextStyles.boldViolet21,),
                                 ],
                               ),
                               verticalMargin12,

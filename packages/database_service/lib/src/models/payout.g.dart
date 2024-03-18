@@ -15,7 +15,7 @@ abstract class _$PayoutCWProxy {
 
   Payout amount(int? amount);
 
-  Payout currency(String? currency);
+  Payout currencyCode(String? currencyCode);
 
   Payout paypalAccount(String? paypalAccount);
 
@@ -30,7 +30,7 @@ abstract class _$PayoutCWProxy {
     DateTime? timestamp,
     String? userId,
     int? amount,
-    String? currency,
+    String? currencyCode,
     String? paypalAccount,
   });
 }
@@ -55,7 +55,7 @@ class _$PayoutCWProxyImpl implements _$PayoutCWProxy {
   Payout amount(int? amount) => this(amount: amount);
 
   @override
-  Payout currency(String? currency) => this(currency: currency);
+  Payout currencyCode(String? currencyCode) => this(currencyCode: currencyCode);
 
   @override
   Payout paypalAccount(String? paypalAccount) =>
@@ -74,7 +74,7 @@ class _$PayoutCWProxyImpl implements _$PayoutCWProxy {
     Object? timestamp = const $CopyWithPlaceholder(),
     Object? userId = const $CopyWithPlaceholder(),
     Object? amount = const $CopyWithPlaceholder(),
-    Object? currency = const $CopyWithPlaceholder(),
+    Object? currencyCode = const $CopyWithPlaceholder(),
     Object? paypalAccount = const $CopyWithPlaceholder(),
   }) {
     return Payout(
@@ -94,10 +94,10 @@ class _$PayoutCWProxyImpl implements _$PayoutCWProxy {
           ? _value.amount
           // ignore: cast_nullable_to_non_nullable
           : amount as int?,
-      currency == const $CopyWithPlaceholder()
-          ? _value.currency
+      currencyCode == const $CopyWithPlaceholder()
+          ? _value.currencyCode
           // ignore: cast_nullable_to_non_nullable
-          : currency as String?,
+          : currencyCode as String?,
       paypalAccount == const $CopyWithPlaceholder()
           ? _value.paypalAccount
           // ignore: cast_nullable_to_non_nullable
@@ -124,7 +124,7 @@ Payout _$PayoutFromJson(Map<String, dynamic> json) => Payout(
           json['timestamp'], const TimestampConverter().fromJson),
       json['userId'] as String?,
       json['amount'] as int?,
-      json['currency'] as String?,
+      json['currencyCode'] as String?,
       json['paypalAccount'] as String?,
     );
 
@@ -134,7 +134,7 @@ Map<String, dynamic> _$PayoutToJson(Payout instance) => <String, dynamic>{
           instance.timestamp, const TimestampConverter().toJson),
       'userId': instance.userId,
       'amount': instance.amount,
-      'currency': instance.currency,
+      'currencyCode': instance.currencyCode,
       'paypalAccount': instance.paypalAccount,
     };
 

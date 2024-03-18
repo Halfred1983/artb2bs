@@ -13,6 +13,7 @@ import '../../injection.dart';
 import '../../photo/view/artwork_upload_page.dart';
 import '../../utils/common.dart';
 import '../../widgets/add_photo_button.dart';
+import '../../widgets/tags.dart';
 import 'artwork_details.dart';
 
 class ArtistDashboardView extends StatefulWidget {
@@ -163,7 +164,7 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                       ));
                                 }
                                 return Container();
-                              })
+                              }),
                         ],
                       ),
                     ),

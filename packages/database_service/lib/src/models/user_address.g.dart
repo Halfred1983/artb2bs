@@ -17,6 +17,12 @@ abstract class _$UserAddressCWProxy {
 
   UserAddress zipcode(String zipcode);
 
+  UserAddress country(String country);
+
+  UserAddress locale(String locale);
+
+  UserAddress currencyCode(String currencyCode);
+
   UserAddress number(String number);
 
   UserAddress formattedAddress(String formattedAddress);
@@ -35,6 +41,9 @@ abstract class _$UserAddressCWProxy {
     String? province,
     String? city,
     String? zipcode,
+    String? country,
+    String? locale,
+    String? currencyCode,
     String? number,
     String? formattedAddress,
     GeoFirePoint? location,
@@ -63,6 +72,16 @@ class _$UserAddressCWProxyImpl implements _$UserAddressCWProxy {
   UserAddress zipcode(String zipcode) => this(zipcode: zipcode);
 
   @override
+  UserAddress country(String country) => this(country: country);
+
+  @override
+  UserAddress locale(String locale) => this(locale: locale);
+
+  @override
+  UserAddress currencyCode(String currencyCode) =>
+      this(currencyCode: currencyCode);
+
+  @override
   UserAddress number(String number) => this(number: number);
 
   @override
@@ -86,6 +105,9 @@ class _$UserAddressCWProxyImpl implements _$UserAddressCWProxy {
     Object? province = const $CopyWithPlaceholder(),
     Object? city = const $CopyWithPlaceholder(),
     Object? zipcode = const $CopyWithPlaceholder(),
+    Object? country = const $CopyWithPlaceholder(),
+    Object? locale = const $CopyWithPlaceholder(),
+    Object? currencyCode = const $CopyWithPlaceholder(),
     Object? number = const $CopyWithPlaceholder(),
     Object? formattedAddress = const $CopyWithPlaceholder(),
     Object? location = const $CopyWithPlaceholder(),
@@ -111,6 +133,19 @@ class _$UserAddressCWProxyImpl implements _$UserAddressCWProxy {
           ? _value.zipcode
           // ignore: cast_nullable_to_non_nullable
           : zipcode as String,
+      country: country == const $CopyWithPlaceholder() || country == null
+          ? _value.country
+          // ignore: cast_nullable_to_non_nullable
+          : country as String,
+      locale: locale == const $CopyWithPlaceholder() || locale == null
+          ? _value.locale
+          // ignore: cast_nullable_to_non_nullable
+          : locale as String,
+      currencyCode:
+          currencyCode == const $CopyWithPlaceholder() || currencyCode == null
+              ? _value.currencyCode
+              // ignore: cast_nullable_to_non_nullable
+              : currencyCode as String,
       number: number == const $CopyWithPlaceholder() || number == null
           ? _value.number
           // ignore: cast_nullable_to_non_nullable
@@ -144,6 +179,9 @@ UserAddress _$UserAddressFromJson(Map<String, dynamic> json) => UserAddress(
       province: json['province'] as String,
       city: json['city'] as String,
       zipcode: json['zipcode'] as String,
+      country: json['country'] as String,
+      locale: json['locale'] as String,
+      currencyCode: json['currencyCode'] as String,
       number: json['number'] as String,
       formattedAddress: json['formattedAddress'] as String,
       location: UserAddress._fromJson(json['location'] as Map<String, dynamic>),
@@ -156,6 +194,9 @@ Map<String, dynamic> _$UserAddressToJson(UserAddress instance) =>
       'province': instance.province,
       'city': instance.city,
       'zipcode': instance.zipcode,
+      'country': instance.country,
+      'locale': instance.locale,
+      'currencyCode': instance.currencyCode,
       'number': instance.number,
       'formattedAddress': instance.formattedAddress,
       'location': UserAddress._toJson(instance.location),

@@ -16,6 +16,7 @@ import '../app/resources/theme.dart';
 import '../booking/view/booking_page.dart';
 import '../host/view/photo_details.dart';
 import '../injection.dart';
+import '../utils/currency/currency_helper.dart';
 
 class MapView extends StatefulWidget {
   const MapView({super.key, required this.user});
@@ -319,7 +320,7 @@ class _MapViewState extends State<MapView> {
                               children: [
                                 Text("Price per space per day: ", style: TextStyles.boldViolet14,),
                                 Expanded(child: Container()),
-                                Text(user.bookingSettings!.basePrice!+' £', style: TextStyles.boldViolet24,),
+                                Text('${user.bookingSettings!.basePrice!} ${CurrencyHelper.currency(user.userInfo!.address!.country).currencySymbol}', style: TextStyles.boldViolet24,),
                               ],
                             ),
                             verticalMargin12,

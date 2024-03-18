@@ -11,8 +11,9 @@ class PaymentStart extends PaymentEvent {}
 class PaymentCreateIntent extends PaymentEvent {
   final BillingDetails billingDetails;
   final String grandTotal;
+  final NumberFormat currency;
 
-  const PaymentCreateIntent({required this.billingDetails, required this.grandTotal});
+  const PaymentCreateIntent({required this.billingDetails, required this.grandTotal, required this.currency});
 
   @override
   List<Object> get props => [billingDetails, grandTotal];

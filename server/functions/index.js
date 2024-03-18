@@ -223,6 +223,7 @@ exports.sendBookingNotification = functions.firestore
       const artistName = artistDoc.data().userInfo.name;
 
       const totalPrice = bookingData.totalPrice;
+      const currencyCode = bookingData.currencyCode;
 
       // Format the Date to "DD-MM-YYYY" format
       const from = moment(bookingData.from.toDate()).format('DD-MM-YYYY');
@@ -236,13 +237,13 @@ exports.sendBookingNotification = functions.firestore
       const payload = {
         notification: {
           title: 'New Booking Request',
-          body: `Congratulations ! ${artistName} has sent you a booking request from ${from} to ${to} for ${totalPrice} £. `,
+          body: `Congratulations ! ${artistName} has sent you a booking request from ${from} to ${to} for ${totalPrice} ${currencyCode}. `,
           content_available : 'true',
           priority : 'high',
         },
         data: {
               title: 'New Booking Request',
-              body: `Congratulations ! ${artistName} has sent you a booking request from ${from} to ${to} for ${totalPrice} £. `,
+              body: `Congratulations ! ${artistName} has sent you a booking request from ${from} to ${to} for ${totalPrice} ${currencyCode}. `,
               click_action: 'FLUTTER_NOTIFICATION_CLICK',
               screen: "bookingRequests",//or secondScreen or thirdScreen
             },
@@ -351,14 +352,15 @@ exports.scheduledPaypalPayout = functions.pubsub
       usersSnapshot.forEach((userDoc) => {
         const user = userDoc.data();
         const userId = userDoc.id;
+        const currencyCode = user.userInfo.address.currencyCode;
 
         // Check if user has a PayPal account
         if (user.bookingSettings && user.bookingSettings.paypalAccount) {
           const amount = parseFloat(user.balance || '0'); // You might need to adjust this based on your user data structure
 
-            console.log('send '+amount+' to '+user.bookingSettings.paypalAccount);
+            console.log('send '+amount+' '+currencyCode+' to '+user.bookingSettings.paypalAccount);
 
-          promises.push(sendPaypalPayout(userId, user.bookingSettings.paypalAccount, amount));
+          promises.push(sendPaypalPayout(userId, user.bookingSettings.paypalAccount, amount, currencyCode ));
         }
       });
 
@@ -373,7 +375,7 @@ exports.scheduledPaypalPayout = functions.pubsub
     }
   });
 
-async function sendPaypalPayout(userId, receiverEmail, amount) {
+async function sendPaypalPayout(userId, receiverEmail, amount, currencyCode) {
   try {
     // Fetch PayPal auth token
     const paypalAuthToken = await getPaypalAuthToken();
@@ -392,7 +394,7 @@ async function sendPaypalPayout(userId, receiverEmail, amount) {
             recipient_type: 'EMAIL',
             amount: {
               value: amount.toFixed(2),
-              currency: 'GBP',
+              currency: currencyCode,
             },
             receiver: receiverEmail,
             note: 'Payment from ArtB2B',
@@ -420,6 +422,7 @@ async function sendPaypalPayout(userId, receiverEmail, amount) {
       await admin.firestore().collection('payouts').add({
         userId: userId,
         amount: amount,
+        currencyCode: currencyCode,
         timestamp: admin.firestore.FieldValue.serverTimestamp(),
         status: '0',
       });
@@ -434,6 +437,7 @@ async function sendPaypalPayout(userId, receiverEmail, amount) {
     await admin.firestore().collection('payouts').add({
             userId: userId,
             amount: amount,
+            currencyCode: currencyCode,
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
             status: '1',
           });
@@ -443,6 +447,7 @@ async function sendPaypalPayout(userId, receiverEmail, amount) {
   await admin.firestore().collection('payouts').add({
           userId: userId,
           amount: amount,
+          currencyCode: currencyCode,
           timestamp: admin.firestore.FieldValue.serverTimestamp(),
           status: '1',
         });

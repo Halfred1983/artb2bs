@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:http/http.dart' as http;
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:intl/intl.dart';
 
 part 'payment_event.dart';
 part 'payment_state.dart';
@@ -36,7 +37,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     final paymentIntentResult = await _callPayEndpointMethodId(
         useStripeSdk: true,
         paymentMethodId: paymentMethod.id,
-        currency: 'gbp',
+        currency: event.currency.currencyName!,
         grandTotal: event.grandTotal
     );
 

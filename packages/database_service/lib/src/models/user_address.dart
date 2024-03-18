@@ -14,6 +14,9 @@ class UserAddress {
   final String province;
   final String city;
   final String zipcode;
+  final String country;
+  final String locale;
+  final String currencyCode;
   final String number;
   final String formattedAddress;
   @JsonKey(
@@ -27,6 +30,9 @@ class UserAddress {
     required this.province,
     required this.city,
     required this.zipcode,
+    required this.country,
+    required this.locale,
+    required this.currencyCode,
     required this.number,
     required this.formattedAddress,
     this.location
