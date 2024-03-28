@@ -60,7 +60,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
               title: Text("Add a photo", style: TextStyles.boldAccent24,),
               centerTitle: true,
               iconTheme: const IconThemeData(
-                color: AppTheme.primaryColourViolet, //change your color here
+                color: AppTheme.primaryColor, //change your color here
               ),
             ),
             body: SingleChildScrollView(
@@ -75,7 +75,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                           _getFromGallery();
                         },
                         child: DottedBorder(
-                            color: AppTheme.primaryColourViolet,
+                            color: AppTheme.primaryColor,
                             strokeWidth: 4,
                             borderType: BorderType.RRect,
                             radius: const Radius.circular(10),
@@ -89,10 +89,10 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text('Choose from gallery',
-                                    style: TextStyles.semiBoldViolet16,),
+                                    style: TextStyles.semiBoldAccent14,),
                                   horizontalMargin16,
                                   const Icon(FontAwesomeIcons.image,
-                                      color: AppTheme.primaryColourViolet),
+                                      color: AppTheme.primaryColor),
                                 ],
                               ),
 
@@ -126,7 +126,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                                 });
                               },
                               icon: const Icon(FontAwesomeIcons.xmark,
-                                  color: AppTheme.primaryColourViolet),
+                                  color: AppTheme.primaryColor),
                             ),
                           ),
                         ),
@@ -150,7 +150,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                                   Radius.circular(10)),
                               child: LinearProgressIndicator(
                                 backgroundColor: AppTheme.accentColor,
-                                color: AppTheme.primaryColourViolet,
+                                color: AppTheme.primaryColor,
                                 minHeight: 50,
                                 value: _progress,
                               ),
@@ -160,7 +160,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                                 alignment: Alignment.centerRight,
                                 child: Center(
                                   child: Text('$_progress%',
-                                    style: TextStyles.boldWhite16,),
+                                    style: TextStyles.semiBoldAccent14,),
                                 ),
                               ),
                             ),
@@ -215,7 +215,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                       }
                     });
                   },
-                  child: Text("Upload", style: TextStyles.boldWhite16,),)
+                  child: Text("Upload", style: TextStyles.semiBoldAccent14,),)
             )
         );
       },
@@ -269,13 +269,13 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                   textAlign: TextAlign.center,
                   text: TextSpan(
                       text: 'Your photo:\n\n',
-                      style: TextStyles.regularAccent16,
+                      style: TextStyles.semiBoldAccent14,
                       children: <TextSpan>[
                         TextSpan(text: name ?? '',
-                          style: TextStyles.boldViolet16,
+                          style: TextStyles.semiBoldAccent14,
                         ),
                         TextSpan(text: '\n\nwas uploaded successfully!',
-                          style: TextStyles.regularAccent16,
+                          style: TextStyles.semiBoldAccent14,
                         )
                       ]
                   ),
@@ -286,7 +286,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
           actionsAlignment: MainAxisAlignment.center,
           actions: <Widget>[
             TextButton(
-              child: Text('OK', style: TextStyles.semiBoldViolet21.copyWith(
+              child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
                   decoration: TextDecoration.underline
               ),),
               onPressed: () {

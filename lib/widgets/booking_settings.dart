@@ -21,25 +21,25 @@ class BookingSettingsWidget extends StatelessWidget {
         Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text('Base price per space: ', style: TextStyles.semiBoldAccent16, ),
+              Text('Base price per space: ', style: TextStyles.semiBoldAccent14, ),
               Text('${user!.bookingSettings!.basePrice ?? 'n/a'} '
-                  '${CurrencyHelper.currency(user!.userInfo!.address!.country).currencySymbol}', style: TextStyles.semiBoldViolet16, ),
+                  '${CurrencyHelper.currency(user!.userInfo!.address!.country).currencySymbol}', style: TextStyles.semiBoldAccent14, ),
             ]
         ),
         verticalMargin12,
         Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text('Minimum length: ', style: TextStyles.semiBoldAccent16, ),
-              Text('${user!.bookingSettings!.minLength ?? 'n/a'} days', style: TextStyles.semiBoldViolet16, ),
+              Text('Minimum length: ', style: TextStyles.semiBoldAccent14, ),
+              Text('${user!.bookingSettings!.minLength ?? 'n/a'} days', style: TextStyles.semiBoldAccent14, ),
             ]
         ),
         verticalMargin12,
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text('Minimum spaces: ', style: TextStyles.semiBoldAccent16, ),
-            Text(user!.bookingSettings!.minLength ?? 'n/a', style: TextStyles.semiBoldViolet16, ),
+            Text('Minimum spaces: ', style: TextStyles.semiBoldAccent14, ),
+            Text(user!.bookingSettings!.minLength ?? 'n/a', style: TextStyles.semiBoldAccent14, ),
           ],
         ),
       ],

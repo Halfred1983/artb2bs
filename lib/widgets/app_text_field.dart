@@ -176,14 +176,14 @@ class _AppTextFieldState extends FormFieldState<String> {
     final effectiveDecoration = (widget.decoration ??
         InputDecoration(
             hintText: widget.hintText?? '',
-            hintStyle: TextStyles.semiBoldViolet16,
+            hintStyle: TextStyles.semiBoldAccent14,
             focusedBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
+              borderRadius: BorderRadius.all(Radius.circular(50)),
               borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
             ),
             enabledBorder: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
+              borderRadius: BorderRadius.all(Radius.circular(50)),
+              borderSide: BorderSide(color: AppTheme.primaryColor, width: 1.0),
             ),
                      // border: const OutlineInputBorder()
         )).applyDefaults(theme.inputDecorationTheme);
@@ -193,7 +193,7 @@ class _AppTextFieldState extends FormFieldState<String> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (widget.labelText != null) ...[
-          Text(widget.labelText!, style: TextStyles.semiBoldViolet14),
+          Text(widget.labelText!, style: TextStyles.semiBoldAccent14),
           verticalMargin8,
         ],
         AnimatedBuilder(
@@ -288,7 +288,7 @@ class _AppTextFieldState extends FormFieldState<String> {
                         return Icon(
                           _obscuring ? Icons.visibility_off : Icons.visibility,
                           color: _effectiveFocusNode.hasFocus //
-                              ? AppTheme.accentColourOrange
+                              ? AppTheme.accentColor
                               : AppTheme.backgroundGrey,
                         );
                       },

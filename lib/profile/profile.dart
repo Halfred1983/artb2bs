@@ -39,7 +39,7 @@ class ProfilePage extends StatelessWidget {
                   title: Text(isArtist ? "Artist Profile" : "Host Profile", style: TextStyles.boldAccent24,),
                   centerTitle: true,
                   iconTheme: const IconThemeData(
-                    color: AppTheme.primaryColourViolet, //change your color here
+                    color: AppTheme.primaryColor, //change your color here
                   ),
                 ),
                 body: SingleChildScrollView(
@@ -54,36 +54,36 @@ class ProfilePage extends StatelessWidget {
                                 children: [
                                   Image.asset(isArtist ? "assets/images/artist.png" :  "assets/images/gallery.png", width: 60,),
                                   horizontalMargin16,
-                                  Text(snapshot.data!.userInfo!.name!, style: TextStyles.semiBoldViolet16, ),
+                                  Text(snapshot.data!.userInfo!.name!, style: TextStyles.semiBoldAccent14, ),
                                   Expanded(child: Container()),
                                   Image.asset('assets/images/marker.png', width: 20,),
                                   horizontalMargin12,
                                   Text(snapshot.data!.userInfo!.address!.city,
-                                    softWrap: true, style: TextStyles.semiBoldViolet14,),
+                                    softWrap: true, style: TextStyles.semiBoldAccent14,),
                                 ],
                               ),
                               const Divider(thickness: 0.6, color: Colors.black38,),
                               verticalMargin12,
-                              Text('About the host: ', style: TextStyles.semiBoldAccent16, ),
+                              Text('About the host: ', style: TextStyles.semiBoldAccent14, ),
                               verticalMargin12,
-                              Text(snapshot.data!.userArtInfo!.aboutYou!, style: TextStyles.semiBoldViolet16, textAlign: TextAlign.left,),
+                              Text(snapshot.data!.userArtInfo!.aboutYou!, style: TextStyles.semiBoldAccent14, textAlign: TextAlign.left,),
 
                               Row(
                                 children: [
-                                  // Text('Profile Views: ', style: TextStyles.semiBoldAccent16, ),
+                                  // Text('Profile Views: ', style: TextStyles.semiBoldAccent14, ),
                                   FutureBuilder(
                                       future: databaseService.updateViewCounter(userId),
                                       builder: (context, snapshot) {
                                         if (snapshot.connectionState == ConnectionState.waiting) {
-                                          return Container(); CircularProgressIndicator(color: AppTheme.primaryColourViolet,);
+                                          return Container(); CircularProgressIndicator(color: AppTheme.primaryColor,);
                                         } else if (snapshot.connectionState == ConnectionState.active
                                             || snapshot.connectionState == ConnectionState.done) {
                                           if (snapshot.hasData && snapshot.data != null) {
-                                            return Container(); Text(snapshot.data.toString(), style: TextStyles.semiBoldViolet16, );
+                                            return Container(); Text(snapshot.data.toString(), style: TextStyles.semiBoldAccent14, );
                                           }
-                                          return Text('n/a', style: TextStyles.semiBoldViolet16, );
+                                          return Text('n/a', style: TextStyles.semiBoldAccent14, );
                                         }
-                                        return Text('n/a', style: TextStyles.semiBoldViolet16, );
+                                        return Text('n/a', style: TextStyles.semiBoldAccent14, );
                                       }
                                   ),
                                   Expanded(child: Container()),
@@ -98,9 +98,9 @@ class ProfilePage extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
-                                    Text("Address: ", style: TextStyles.semiBoldAccent16, ),
+                                    Text("Address: ", style: TextStyles.semiBoldAccent14, ),
                                     Flexible(child: Text(snapshot.data!.userInfo!.address!.formattedAddress,
-                                      softWrap: true, style: TextStyles.semiBoldViolet16, )),
+                                      softWrap: true, style: TextStyles.semiBoldAccent14, )),
                                   ],
                                 ),
                               ] else ...[ Container() ],
@@ -109,13 +109,13 @@ class ProfilePage extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Flexible(flex: 1, child: Text("Vibes: ", softWrap: true, style: TextStyles.semiBoldAccent16,)),
+                                  Flexible(flex: 1, child: Text("Vibes: ", softWrap: true, style: TextStyles.semiBoldAccent14,)),
                                 ],
                               ),
-                              Text(snapshot.data!.userArtInfo!.vibes!.join(", "), softWrap: true, style: TextStyles.semiBoldViolet16,),
+                              Text(snapshot.data!.userArtInfo!.vibes!.join(", "), softWrap: true, style: TextStyles.semiBoldAccent14,),
                               verticalMargin32,
 
-                              Text(isArtist ? 'Artworks' : 'Photos', style: TextStyles.semiBoldAccent16, ),
+                              Text(isArtist ? 'Artworks' : 'Photos', style: TextStyles.semiBoldAccent14, ),
                               const Divider(thickness: 0.6, color: Colors.black38,),
                               verticalMargin12,
                               //ARTIST
@@ -146,7 +146,7 @@ class ProfilePage extends StatelessWidget {
                                             bottom: 15,
                                             right: 25,
                                             child: Text(snapshot.data!.artworks![index].name!,
-                                              style: TextStyles.boldWhite14,),
+                                              style: TextStyles.semiBoldAccent14,),
                                           )
                                         ],
                                       ),
@@ -154,7 +154,7 @@ class ProfilePage extends StatelessWidget {
 
                                   },
                                 ),
-                              ) :   SizedBox(height: 90, child: Center(child: Text("Artist has no photos yet",  style: TextStyles.semiBoldViolet16)))
+                              ) :   SizedBox(height: 90, child: Center(child: Text("Artist has no photos yet",  style: TextStyles.semiBoldAccent14)))
                                   :
                               snapshot.data!.photos != null
                                   && snapshot.data!.photos!.isNotEmpty ?
@@ -182,7 +182,7 @@ class ProfilePage extends StatelessWidget {
                                             bottom: 15,
                                             right: 25,
                                             child: Text(snapshot.data!.photos![index].description ?? '',
-                                              style: TextStyles.boldWhite14,),
+                                              style: TextStyles.semiBoldAccent14,),
                                           )
                                         ],
                                       ),
@@ -191,7 +191,7 @@ class ProfilePage extends StatelessWidget {
                                   },
                                 ),
                               ) :
-                              SizedBox(height: 90, child: Center(child: Text("Host has no photos yet",  style: TextStyles.semiBoldViolet16))),
+                              SizedBox(height: 90, child: Center(child: Text("Host has no photos yet",  style: TextStyles.semiBoldAccent14))),
                               // Flexible(child: Container()),
                             ]
                         )
@@ -208,7 +208,7 @@ class ProfilePage extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => BookingPage(host: snapshot.data!,)),
                       );
                     },
-                    child: Text("Book", style: TextStyles.boldWhite16,),),
+                    child: Text("Book", style: TextStyles.semiBoldAccent14,),),
                 ) : null,
               );
             }

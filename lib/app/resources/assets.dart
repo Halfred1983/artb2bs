@@ -1,7 +1,13 @@
-class ImageAssets {
-  const ImageAssets._();
+class Assets {
+  const Assets._();
 
   // General
+  static const logoUrl = "https://firebasestorage.googleapis.com/v0/b/artb2b-34af2.appspot.com/o/artb2b_logo.png?alt=media&token=5c97f5f1-7c19-49f1-8dfc-df535444d11d";
+  static const logo = 'assets/images/art2b2_logo.png';
+
+
+
+
   static const generalIconBack = 'assets/general/icon_back.svg';
   static const generalIconCloseLarge = 'assets/general/icon_close_large.svg';
   static const generalIconCloseSmall = 'assets/general/icon_close_small.svg';

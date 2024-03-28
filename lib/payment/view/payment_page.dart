@@ -75,15 +75,15 @@ class _PaymentPageState extends State<PaymentPage> {
                   padding: horizontalPadding24,
                   child: Column(
                     children: [
-                      Text('Total ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}: ${widget.booking.totalPrice!}', style: TextStyles.boldAccent16,),
+                      Text('Total ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}: ${widget.booking.totalPrice!}', style: TextStyles.semiBoldAccent14,),
                       verticalMargin24,
                       CardFormField(
                         controller: controller,
                         style: CardFormStyle(
-                            borderColor: AppTheme.primaryColourViolet,
-                            cursorColor: AppTheme.accentColourOrange,
-                            textColor: AppTheme.primaryColourViolet,
-                            textErrorColor: AppTheme.accentColourOrange,
+                            borderColor: AppTheme.primaryColor,
+                            cursorColor: AppTheme.accentColor,
+                            textColor: AppTheme.primaryColor,
+                            textErrorColor: AppTheme.accentColor,
                             fontSize: 16
                         ),
                         countryCode: 'en_${widget.host.userInfo!.address!.country}',
@@ -107,12 +107,12 @@ class _PaymentPageState extends State<PaymentPage> {
                               ),
                             ) :
                             ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Please fill the info', style: TextStyles.semiBoldWhite16,),
+                                SnackBar(content: Text('Please fill the info', style: TextStyles.semiBoldAccent14,),
                                   backgroundColor: AppTheme.accentColor,)
                             );
                             // context.read<BookingCubit>().save();
                           },
-                          child: Text("Pay", style: TextStyles.boldWhite16,),),
+                          child: Text("Pay", style: TextStyles.semiBoldAccent14,),),
                       ),
                       verticalMargin32
                     ],
@@ -155,15 +155,15 @@ class _PaymentPageState extends State<PaymentPage> {
                                   // createParticlePath: drawStar, // define a custom shape/path.
                                 ),
                               ),
-                              Text('Thank you, ${user.firstName}!', style: TextStyles.semiBoldViolet21,),
+                              Text('Thank you, ${user.firstName}!', style: TextStyles.semiBoldAccent14,),
                               verticalMargin24,
-                              Text('Your booking is complete!', style: TextStyles.semiBoldViolet21,),
+                              Text('Your booking is complete!', style: TextStyles.semiBoldAccent14,),
                               verticalMargin32,
                               SummaryCard(booking: booking, host: widget.host),
                               verticalMargin12,
-                              Text('Your booking id is:', style: TextStyles.semiBoldAccent16,),
+                              Text('Your booking id is:', style: TextStyles.semiBoldAccent14,),
                               verticalMargin12,
-                              SelectableText(booking.bookingId!.extractBookingId(), style: TextStyles.semiBoldViolet16,),
+                              SelectableText(booking.bookingId!.extractBookingId(), style: TextStyles.semiBoldAccent14,),
                               Expanded(child: Container()),
                               ElevatedButton(
                                 onPressed:
@@ -171,7 +171,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                       _controllerCenter.stop();
                                   Navigator.of(context)..pop()..pop();
                                 },
-                                child: Text("OK", style: TextStyles.boldWhite16,),)
+                                child: Text("OK", style: TextStyles.semiBoldAccent14,),)
 
                             ],
                           ),
@@ -185,7 +185,7 @@ class _PaymentPageState extends State<PaymentPage> {
                   padding: horizontalPadding24,
                   child: Column(
                     children: [
-                      Text('Sorry, the payment failed!', style:TextStyles.semiBoldViolet21 ,),
+                      Text('Sorry, the payment failed!', style:TextStyles.semiBoldAccent14 ,),
                       verticalMargin24,
                       verticalMargin24,
                       ElevatedButton(
@@ -193,7 +193,7 @@ class _PaymentPageState extends State<PaymentPage> {
                             () {
                           context.read<PaymentBloc>().add(PaymentStart());
                         },
-                        child: Text("Try again", style: TextStyles.boldWhite16,),)
+                        child: Text("Try again", style: TextStyles.semiBoldAccent14,),)
                     ],
                   ),
                 );
@@ -206,10 +206,10 @@ class _PaymentPageState extends State<PaymentPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text("We are processing your payment!",
-                          style: TextStyles.semiBoldAccent16,),
+                          style: TextStyles.semiBoldAccent14,),
                         verticalMargin12,
                         Text("Please don't close the page!",
-                          style: TextStyles.semiBoldAccent16,),
+                          style: TextStyles.semiBoldAccent14,),
                         verticalMargin32,
                         Lottie.asset(
                           'assets/loading.json',

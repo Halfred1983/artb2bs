@@ -57,37 +57,37 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                             children: [
                               Image.asset("assets/images/artist.png", width: 60,),
                               horizontalMargin16,
-                              Text(user!.userInfo!.name!, style: TextStyles.semiBoldViolet16, ),
+                              Text(user!.userInfo!.name!, style: TextStyles.semiBoldPrimary14, ),
                               Expanded(child: Container()),
                               Image.asset('assets/images/marker.png', width: 20,),
                               horizontalMargin12,
                               Text(user!.userInfo!.address!.city,
-                                softWrap: true, style: TextStyles.semiBoldViolet14,),
+                                softWrap: true, style: TextStyles.semiBoldPrimary14,),
                             ],
                           ),
                           const Divider(thickness: 0.6, color: Colors.black38,),
                           verticalMargin12,
-                          Text('About you: ', style: TextStyles.semiBoldAccent16, ),
+                          Text('About you: ', style: TextStyles.semiBoldPrimary14, ),
                           verticalMargin12,
-                          Text(user!.userArtInfo!.aboutYou!, style: TextStyles.semiBoldViolet16, textAlign: TextAlign.left,),
+                          Text(user!.userArtInfo!.aboutYou!, style: TextStyles.semiBoldPrimary14, textAlign: TextAlign.left,),
                           verticalMargin24,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Text('Profile Views: ', style: TextStyles.semiBoldAccent16, ),
+                              Text('Profile Views: ', style: TextStyles.semiBoldPrimary14, ),
                               FutureBuilder(
                                   future: firestoreDatabaseService.getViewCounter(user!.id),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState == ConnectionState.waiting) {
-                                      return const CircularProgressIndicator(color: AppTheme.primaryColourViolet,);
+                                      return const CircularProgressIndicator(color: AppTheme.primaryColor,);
                                     } else if (snapshot.connectionState == ConnectionState.active
                                         || snapshot.connectionState == ConnectionState.done) {
                                       if (snapshot.hasData && snapshot.data != null) {
-                                        return Text(snapshot.data.toString(), style: TextStyles.semiBoldViolet16, );
+                                        return Text(snapshot.data.toString(), style: TextStyles.semiBoldPrimary14, );
                                       }
-                                      return Text('n/a', style: TextStyles.semiBoldViolet16, );
+                                      return Text('n/a', style: TextStyles.semiBoldPrimary14, );
                                     }
-                                    return Text('n/a', style: TextStyles.semiBoldViolet16, );
+                                    return Text('n/a', style: TextStyles.semiBoldPrimary14, );
                                   }
                               ),
                               // Expanded(child: Container()),
@@ -97,7 +97,7 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                             ],
                           ),
                           verticalMargin32,
-                          Text('Your artworks: ', style: TextStyles.semiBoldAccent16, ),
+                          Text('Your artworks: ', style: TextStyles.semiBoldPrimary14, ),
                           const Divider(thickness: 0.6, color: Colors.black38,),
                           //ARTIST
                           StreamBuilder(
@@ -147,7 +147,7 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                                 bottom: 15,
                                                 right: 25,
                                                 child: Text(user.artworks![index - 1].name!,
-                                                  style: TextStyles.boldWhite14,),
+                                                  style: TextStyles.semiBoldPrimary14,),
                                               )
                                             ],
                                           ),

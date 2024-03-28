@@ -184,11 +184,11 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
               return Scaffold(
                 appBar: AppBar(
                   title: Text(
-                    "Space Availability Calendar", style: TextStyles.boldAccent21,),
+                    "Space Availability Calendar", style: TextStyles.semiBoldAccent14,),
                   centerTitle: true,
                   iconTheme: const IconThemeData(
                     color: AppTheme
-                        .primaryColourViolet, //change your color here
+                        .primaryColor, //change your color here
                   ),
                 ),
                 body: SingleChildScrollView(
@@ -222,7 +222,7 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                                     //     margin: const EdgeInsets.only(top: 40),
                                     //     padding: const EdgeInsets.all(1),
                                     //     child: Text(freeSpaces.toString(), style: TextStyles
-                                    //         .semiBoldViolet12),
+                                    //         .semiBoldAccent14),
                                     //   );
                                     // }
                                     for(Object? e in events) {
@@ -239,7 +239,7 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                                       margin: const EdgeInsets.only(top: 38),
                                       padding: const EdgeInsets.all(1),
                                       child: Text(freeSpaces.toString(), style: TextStyles
-                                          .semiBoldViolet12),
+                                          .semiBoldAccent14),
                                     );
                                   },
                                 ),
@@ -247,13 +247,13 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                                 headerStyle: const HeaderStyle(
                                     leftChevronIcon: Icon(
                                       Icons.chevron_left, color: AppTheme
-                                        .primaryColourViolet,),
+                                        .primaryColor,),
                                     rightChevronIcon: Icon(
                                       Icons.chevron_right, color: AppTheme
-                                        .primaryColourViolet,),
+                                        .primaryColor,),
                                     titleTextStyle: TextStyle(
                                         fontSize: 17.0, color: AppTheme
-                                        .primaryColourViolet),
+                                        .primaryColor),
                                     titleCentered: true
                                 ),
                                 calendarStyle: const CalendarStyle(
@@ -320,7 +320,7 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                             verticalMargin16,
                             _errorMessage.length > 1 ? Text(
                               _errorMessage, textAlign: TextAlign.center,
-                              style: TextStyles.boldAccent16,) : Container(),
+                              style: TextStyles.semiBoldAccent14,) : Container(),
                             verticalMargin16,
                             _errorMessage.length < 1 && _rangeStart != null &&
                                 _rangeEnd != null ?
@@ -328,18 +328,18 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                             Column(
                               children: [
                                 Text("Add Unavailable Dates",
-                                  style: TextStyles.semiBoldAccent16,),
+                                  style: TextStyles.semiBoldAccent14,),
                                 verticalMargin16,
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text('From: ', style: TextStyles
-                                          .boldViolet16,),
+                                          .semiBoldAccent14,),
                                       Text(
                                         DateFormat.yMMMEd().format(
                                             _rangeStart!),
                                         style: TextStyles
-                                            .semiBoldViolet14,),
+                                            .semiBoldAccent14,),
                                     ]
                                 ),
                                 verticalMargin12,
@@ -347,11 +347,11 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text('To: ', style: TextStyles
-                                        .boldViolet16,),
+                                        .semiBoldAccent14,),
                                     Text(DateFormat.yMMMEd().format(
                                         _rangeEnd!),
                                       style: TextStyles
-                                          .semiBoldViolet14,),
+                                          .semiBoldAccent14,),
                                   ],
                                 ),
                                 verticalMargin12,
@@ -363,7 +363,7 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                             ) : Container(),
                             verticalMargin24,
                             Text("Existing Unavailable Dates",
-                              style: TextStyles.semiBoldAccent16,),
+                              style: TextStyles.semiBoldAccent14,),
                             verticalMargin12,
                             getExistingUnavailableDateList(user!)
                           ]
@@ -391,7 +391,7 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                           })
                         });
                       } : null,
-                      child: Text("Save", style: TextStyles.boldWhite16,),)
+                      child: Text("Save", style: TextStyles.semiBoldAccent14,),)
                 ),
               );
             }
@@ -417,12 +417,12 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text('From: ', style: TextStyles
-                            .boldViolet16,),
+                            .semiBoldAccent14,),
                         Text(
                           DateFormat.yMMMEd().format(
                               _unavailableSpacesList[index].from!),
                           style: TextStyles
-                              .semiBoldViolet14,),
+                              .semiBoldAccent14,),
                       ]
                   ),
                     verticalMargin12,
@@ -430,11 +430,11 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text('To: ', style: TextStyles
-                            .boldViolet16,),
+                            .semiBoldAccent14,),
                         Text(DateFormat.yMMMEd().format(
                             _unavailableSpacesList[index].to!),
                           style: TextStyles
-                              .semiBoldViolet14,),
+                              .semiBoldAccent14,),
                       ],
                     ),
                     verticalMargin12,
@@ -442,11 +442,11 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text('Spaces: ', style: TextStyles
-                            .boldViolet16,),
+                            .semiBoldAccent14,),
                         Text(
                           _unavailableSpacesList[index].spaces!,
                           style: TextStyles
-                              .semiBoldViolet14,),
+                              .semiBoldAccent14,),
                       ],
                     )
                   ]

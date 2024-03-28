@@ -62,7 +62,7 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
               title: Text("Add your artwork", style: TextStyles.boldAccent24,),
               centerTitle: true,
               iconTheme: const IconThemeData(
-                color: AppTheme.primaryColourViolet, //change your color here
+                color: AppTheme.primaryColor, //change your color here
               ),
             ),
             body: SingleChildScrollView(
@@ -77,7 +77,7 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                           _getFromGallery();
                         },
                         child: DottedBorder(
-                            color: AppTheme.primaryColourViolet,
+                            color: AppTheme.primaryColor,
                             strokeWidth: 4,
                             borderType: BorderType.RRect,
                             radius: const Radius.circular(10),
@@ -90,9 +90,9 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text('Choose from gallery', style: TextStyles.semiBoldViolet16,),
+                                  Text('Choose from gallery', style: TextStyles.semiBoldAccent14,),
                                   horizontalMargin16,
-                                  const Icon(FontAwesomeIcons.image, color: AppTheme.primaryColourViolet),
+                                  const Icon(FontAwesomeIcons.image, color: AppTheme.primaryColor),
                                 ],
                               ),
 
@@ -125,7 +125,7 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                                 });
                               },
                               icon: const Icon(FontAwesomeIcons.xmark,
-                                  color: AppTheme.primaryColourViolet),
+                                  color: AppTheme.primaryColor),
                             ),
                           ),
                         ),
@@ -148,19 +148,19 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                           minCharsForSuggestions: 1,
                           textFieldConfiguration: TextFieldConfiguration(
                               controller: _typeAheadController,
-                              style: TextStyles.boldViolet16,
+                              style: TextStyles.semiBoldAccent14,
                               decoration: InputDecoration(
                                   hintText: 'Technique',
                                   filled: true,
                                   fillColor: AppTheme.white,
-                                  hintStyle: TextStyles.semiBoldViolet16,
+                                  hintStyle: TextStyles.semiBoldAccent14,
                                   focusedBorder: const OutlineInputBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
                                     borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
                                   ),
                                   enabledBorder: const OutlineInputBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
+                                    borderSide: BorderSide(color: AppTheme.primaryColor, width: 1.0),
                                   ),
                                   border: const OutlineInputBorder()
                               )
@@ -172,7 +172,7 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                             return Container(
                                 padding: const EdgeInsets.all(10),
                                 color: AppTheme.white,
-                                child: Text(suggestion, style: TextStyles.semiBoldViolet16)
+                                child: Text(suggestion, style: TextStyles.semiBoldAccent14)
                             );
                           },
                           onSuggestionSelected: (technique) {
@@ -192,14 +192,14 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(FontAwesomeIcons.rulerVertical, color: AppTheme.primaryColourViolet),
+                          const Icon(FontAwesomeIcons.rulerVertical, color: AppTheme.primaryColor),
                           Expanded(
                             flex: 1,
                             child: InputTextWidget((nameValue) => context.read<PhotoCubit>().chooseHeight(nameValue),
                                 'Height (cm)', TextInputType.number),
                           ),
                           horizontalMargin24,
-                          const Icon(FontAwesomeIcons.rulerHorizontal, color: AppTheme.primaryColourViolet),
+                          const Icon(FontAwesomeIcons.rulerHorizontal, color: AppTheme.primaryColor),
                           horizontalMargin12,
                           Expanded(
                             flex: 1,
@@ -219,14 +219,14 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                             filled: true,
                             fillColor: AppTheme.white,
                             hintText: 'Vibes (coma separated)',
-                            hintStyle: TextStyles.semiBoldViolet16,
+                            hintStyle: TextStyles.semiBoldAccent14,
                             focusedBorder: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(Radius.circular(10)),
                               borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
                             ),
                             enabledBorder: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(Radius.circular(10)),
-                              borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
+                              borderSide: BorderSide(color: AppTheme.primaryColor, width: 1.0),
                             ),
                             border: const OutlineInputBorder()
                         ), //
@@ -240,7 +240,7 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                               borderRadius: const BorderRadius.all(Radius.circular(10)),
                               child: LinearProgressIndicator(
                                 backgroundColor: AppTheme.accentColor,
-                                color: AppTheme.primaryColourViolet,
+                                color: AppTheme.primaryColor,
                                 minHeight: 50,
                                 value: _progress,
                               ),
@@ -249,7 +249,7 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                               child: Align(
                                 alignment: Alignment.centerRight,
                                 child: Center(
-                                  child: Text('$_progress%', style: TextStyles.boldWhite16,),
+                                  child: Text('$_progress%', style: TextStyles.semiBoldAccent14,),
                                 ),
                               ),
                             ),
@@ -299,7 +299,7 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                       }
                     });
                   },
-                  child: Text("Upload", style: TextStyles.boldWhite16,),)
+                  child: Text("Upload", style: TextStyles.semiBoldAccent14,),)
             )
         );
       },
@@ -354,13 +354,13 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                   textAlign: TextAlign.center,
                   text: TextSpan(
                       text: 'Your artwork:\n\n',
-                      style: TextStyles.regularAccent16,
+                      style: TextStyles.semiBoldAccent14,
                       children: <TextSpan>[
                         TextSpan(text: name,
-                          style:TextStyles.boldViolet16,
+                          style:TextStyles.semiBoldAccent14,
                         ),
                         TextSpan(text: '\n\nwas uploaded successfully!',
-                          style:TextStyles.regularAccent16,
+                          style:TextStyles.semiBoldAccent14,
                         )
                       ]
                   ),
@@ -371,7 +371,7 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
           actionsAlignment: MainAxisAlignment.center,
           actions: <Widget>[
             TextButton(
-              child: Text('OK', style: TextStyles.semiBoldViolet21.copyWith(
+              child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
                   decoration: TextDecoration.underline
               ),),
               onPressed: () {

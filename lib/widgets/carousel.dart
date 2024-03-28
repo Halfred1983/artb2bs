@@ -22,18 +22,25 @@ class _CarouselState extends State<Carousel> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> imageSliders = widget.imgList
-        .map((item) =>FadingInPicture(url: item.url!))
+        .map((item) => FadeInImage(
+      placeholder: AssetImage(item.url!),
+      image: NetworkImage(item.url!),
+      fit: BoxFit.fitWidth,
+    ))
 
         .toList();
     return Column(children: [
       Expanded(
-        child: CarouselSlider(
+        child:
+    // Container(color: Colors.red)
+        CarouselSlider(
           items: imageSliders,
           carouselController: _controller,
           options: CarouselOptions(
+            height: 250,
               viewportFraction: 1,
               enlargeCenterPage: true,
-              aspectRatio: 1.0,
+              enlargeStrategy: CenterPageEnlargeStrategy.scale,
               onPageChanged: (index, reason) {
                 setState(() {
                   _current = index;
@@ -50,12 +57,12 @@ class _CarouselState extends State<Carousel> {
               width: 10.0,
               height: 10.0,
               margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: (Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black)
-                      .withOpacity(_current == entry.key ? 0.9 : 0.4)),
+              // decoration: BoxDecoration(
+              //     shape: BoxShape.circle,
+              //     color: (Theme.of(context).brightness == Brightness.dark
+              //         ? Colors.white
+              //         : Colors.black)
+              //         .withOpacity(_current == entry.key ? 0.9 : 0.4)),
             ),
           );
         }).toList(),

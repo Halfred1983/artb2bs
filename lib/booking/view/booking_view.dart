@@ -59,7 +59,7 @@ class BookingView extends StatelessWidget {
                     title: Text("Booking Page", style: TextStyles.boldAccent24,),
                     centerTitle: true,
                     iconTheme: const IconThemeData(
-                      color: AppTheme.primaryColourViolet, //change your color here
+                      color: AppTheme.primaryColor, //change your color here
                     ),
                   ),
                   body: SingleChildScrollView(
@@ -75,7 +75,7 @@ class BookingView extends StatelessWidget {
                                   children: [
                                     Image.asset('assets/images/gallery.png', width: 40,),
                                     horizontalMargin12,
-                                    Text(host.userInfo!.name!, style: TextStyles.boldViolet16,),
+                                    Text(host.userInfo!.name!, style: TextStyles.semiBoldAccent14,),
                                   ],
                                 ),
                                 verticalMargin12,
@@ -85,9 +85,9 @@ class BookingView extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text("Address: ", style: TextStyles.boldViolet14,),
+                                    Text("Address: ", style: TextStyles.semiBoldAccent14,),
                                     Flexible(child: Text(host.userInfo!.address!.formattedAddress, softWrap: true,
-                                      style: TextStyles.semiBoldViolet14,)),
+                                      style: TextStyles.semiBoldAccent14,)),
 
                                   ],
                                 ),
@@ -96,24 +96,24 @@ class BookingView extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.max,
                                     children: [
-                                      Text("Spaces: ", style: TextStyles.boldViolet14,),
-                                      Text(host.userArtInfo!.spaces!, style: TextStyles.semiBoldViolet14,),
+                                      Text("Spaces: ", style: TextStyles.semiBoldAccent14,),
+                                      Text(host.userArtInfo!.spaces!, style: TextStyles.semiBoldAccent14,),
                                       Expanded(child: Container()),
-                                      Text("Audience: ", style: TextStyles.boldViolet14,),
-                                      Text(host.userArtInfo!.audience ?? 'n/a', style: TextStyles.semiBoldViolet14,),
+                                      Text("Audience: ", style: TextStyles.semiBoldAccent14,),
+                                      Text(host.userArtInfo!.audience ?? 'n/a', style: TextStyles.semiBoldAccent14,),
                                       Expanded(child: Container()),
-                                      Text("Min. spaces: ", style: TextStyles.boldViolet14,),
-                                      Text(host.bookingSettings!.minSpaces!, style: TextStyles.semiBoldViolet14,),
+                                      Text("Min. spaces: ", style: TextStyles.semiBoldAccent14,),
+                                      Text(host.bookingSettings!.minSpaces!, style: TextStyles.semiBoldAccent14,),
                                       Expanded(child: Container()),
-                                      Text("Min. days: ", style: TextStyles.boldViolet14,),
-                                      Text(host.bookingSettings!.minLength!, style: TextStyles.semiBoldViolet14,),
+                                      Text("Min. days: ", style: TextStyles.semiBoldAccent14,),
+                                      Text(host.bookingSettings!.minLength!, style: TextStyles.semiBoldAccent14,),
                                     ]
                                 ),
                               ],
                             ),
                           ),
                           verticalMargin12,
-                          dataRangeError.length>1 ? Text(dataRangeError, style: TextStyles.boldAccent16,) : Container(),
+                          dataRangeError.length>1 ? Text(dataRangeError, style: TextStyles.semiBoldAccent14,) : Container(),
                           verticalMargin12,
                           BookingCalendarWidget((dateRangeChoosen) =>
                               context.read<BookingCubit>().chooseRange(dateRangeChoosen, host), host: host,
@@ -122,7 +122,7 @@ class BookingView extends StatelessWidget {
 
                           InputTextWidget((spaceValue) => context.read<BookingCubit>().chooseSpaces(spaceValue, host, maxSpacesAvailable),
                               'Number of spaces', TextInputType.number),
-                          spaceError.length>1 ? Text(spaceError, style: TextStyles.boldAccent16,) : Container(),
+                          spaceError.length>1 ? Text(spaceError, style: TextStyles.semiBoldAccent14,) : Container(),
                           //Price
                           verticalMargin24,
                           booking!.from != null &&
@@ -160,7 +160,7 @@ class BookingView extends StatelessWidget {
                           );
 
                         } : null,
-                        child: Text("Book", style: TextStyles.boldWhite16,),)
+                        child: Text("Book", style: TextStyles.semiBoldAccent14,),)
                   )
               );
 

@@ -63,27 +63,27 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                           children: [
                             Image.asset("assets/images/gallery.png", width: 60,),
                             horizontalMargin16,
-                            Text(user!.userInfo!.name!, style: TextStyles.semiBoldViolet18, ),
+                            Text(user!.userInfo!.name!, style: TextStyles.semiBoldAccent14, ),
                           ],
                         ),
                         verticalMargin12,
                         const Divider(thickness: 0.6, color: Colors.black38,),
                         verticalMargin12,
-                        Text('About you: ', style: TextStyles.semiBoldAccent16, ),
+                        Text('About you: ', style: TextStyles.semiBoldAccent14, ),
                         verticalMargin12,
-                        Text(user!.userArtInfo!.aboutYou!, style: TextStyles.semiBoldViolet16, textAlign: TextAlign.left,),
+                        Text(user!.userArtInfo!.aboutYou!, style: TextStyles.semiBoldAccent14, textAlign: TextAlign.left,),
                         verticalMargin24,
                         Row(
                           children: [
-                            Text('Spaces: ', style: TextStyles.semiBoldAccent16, ),
-                            Text(user!.userArtInfo!.spaces!, style: TextStyles.semiBoldViolet16, ),
+                            Text('Spaces: ', style: TextStyles.semiBoldAccent14, ),
+                            Text(user!.userArtInfo!.spaces!, style: TextStyles.semiBoldAccent14, ),
                             Expanded(child: Container()),
-                            Text('Audience: ', style: TextStyles.semiBoldAccent16, ),
-                            Text(user!.userArtInfo!.audience ?? 'n/a', style: TextStyles.semiBoldViolet16, ),
+                            Text('Audience: ', style: TextStyles.semiBoldAccent14, ),
+                            Text(user!.userArtInfo!.audience ?? 'n/a', style: TextStyles.semiBoldAccent14, ),
                           ],
                         ),
                         verticalMargin32,
-                        Text('Your booking settings', style: TextStyles.semiBoldAccent18, ),
+                        Text('Your booking settings', style: TextStyles.semiBoldAccent14, ),
                         const Divider(thickness: 0.6, color: Colors.black38,),
                         verticalMargin12,
                         BookingSettingsWidget(user: user),
@@ -93,13 +93,13 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                             context,
                             MaterialPageRoute(builder: (context) => HostDashboardEditPage()),
                           ),
-                            child: Text('Add/change your booking settings' ,style: TextStyles.semiBoldViolet16.copyWith(
+                            child: Text('Add/change your booking settings' ,style: TextStyles.semiBoldAccent14.copyWith(
                                 decoration: TextDecoration.underline
                             ),),
                           ),
                         ),
                         verticalMargin32,
-                        Text('Your payout settings', style: TextStyles.semiBoldAccent18, ),
+                        Text('Your payout settings', style: TextStyles.semiBoldAccent14, ),
                         const Divider(thickness: 0.6, color: Colors.black38,),
                         Text('Your paypal account where to receive your payouts. ', style: TextStyles.regularAccent14, ),
                         verticalMargin24,
@@ -107,9 +107,9 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                           children: [
                             user!.bookingSettings!.paypalAccount != null ?
                             Text('Account: ${user!.bookingSettings!.paypalAccount}',
-                              style: TextStyles.semiBoldViolet16) :
+                              style: TextStyles.semiBoldAccent14) :
                             Text('‼️ Paypal account missing ‼️',
-                              style: TextStyles.boldRed16) ,
+                              style: TextStyles.semiBoldAccent14) ,
                             Expanded(child: Container()),
                             Image.asset("assets/images/paypal_logo.png", width: 60,),
                           ],
@@ -120,14 +120,14 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                             context,
                             MaterialPageRoute(builder: (context) => HostPaypalEditPage()),
                           ),
-                            child: Text('Add/change your payout account' ,style: TextStyles.semiBoldViolet16.copyWith(
+                            child: Text('Add/change your payout account' ,style: TextStyles.semiBoldAccent14.copyWith(
                                 decoration: TextDecoration.underline
                             ),),
                           ),
                         ),
 
                         verticalMargin24,
-                        Text('Photos of your space', style: TextStyles.semiBoldAccent18, ),
+                        Text('Photos of your space', style: TextStyles.semiBoldAccent14, ),
                         const Divider(thickness: 0.6, color: Colors.black38,),
                         //Photos
                         StreamBuilder(
@@ -177,7 +177,7 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                                               bottom: 15,
                                               right: 25,
                                               child: Text(user.photos![index - 1].description ?? '',
-                                                style: TextStyles.boldWhite14,),
+                                                style: TextStyles.semiBoldAccent14,),
                                             )
                                           ],
                                         ),

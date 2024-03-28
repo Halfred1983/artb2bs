@@ -54,7 +54,7 @@ class HostDashboardEditPage extends StatelessWidget {
                   title: Text("Your booking settings", style: TextStyles.boldAccent24,),
                   centerTitle: true,
                   iconTheme: const IconThemeData(
-                    color: AppTheme.primaryColourViolet, //change your color here
+                    color: AppTheme.primaryColor, //change your color here
                   ),
                 ),
                 body: SingleChildScrollView(
@@ -101,7 +101,7 @@ class HostDashboardEditPage extends StatelessWidget {
                       onPressed: () async {
                         await context.read<HostCubit>().saveBookingSettings();
                       },
-                      child: Text("Continue", style: TextStyles.boldWhite16,),)
+                      child: Text("Continue", style: TextStyles.semiBoldPrimary14,),)
                 )
               );
             }

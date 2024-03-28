@@ -54,7 +54,7 @@ class ArtInfoView extends StatelessWidget {
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(state.errorMessage, style: TextStyles.semiBoldAccent18),
+                          content: Text(state.errorMessage, style: TextStyles.semiBoldAccent14),
                         ),
                       );
                 }
@@ -67,7 +67,7 @@ class ArtInfoView extends StatelessWidget {
                   onPressed: () {
                     context.read<ArtInfoCubit>().save();
                   },
-                  child: Text("Continue", style: TextStyles.boldWhite16,),)
+                  child: Text("Continue", style: TextStyles.semiBoldAccent14,),)
             )
         );
       },
@@ -85,12 +85,12 @@ class ArtInfoView extends StatelessWidget {
               padding: horizontalPadding24,
               child: Column(
                 children: [
-                  Text('About you ', style:TextStyles.semiBoldViolet18,),
-                  Text('Tell us in a few words what makes your space unique. ', style:TextStyles.semiBoldViolet14,),
+                  Text('About you ', style:TextStyles.semiBoldAccent14,),
+                  Text('Tell us in a few words what makes your space unique. ', style:TextStyles.semiBoldAccent14,),
                   _AboutYouTextField((nameValue) => context.read<ArtInfoCubit>().choseAboutYou(nameValue),),
                   verticalMargin24,
-                  Text('Your Vibes', style:TextStyles.semiBoldViolet18,),
-                  Text('Select the tags that represent you the most ', style:TextStyles.semiBoldViolet14,),
+                  Text('Your Vibes', style:TextStyles.semiBoldAccent14,),
+                  Text('Select the tags that represent you the most ', style:TextStyles.semiBoldAccent14,),
                   Tags(const [
                     'Arty', 'Commercial', 'Indie', 'Abstract'
                   ],
@@ -109,7 +109,7 @@ class ArtInfoView extends StatelessWidget {
                   //       filled: true,
                   //       fillColor: AppTheme.white,
                   //       hintText: 'Your vibes coma separated',
-                  //       hintStyle: TextStyles.semiBoldViolet16,
+                  //       hintStyle: TextStyles.semiBoldAccent14,
                   //       focusedBorder: const OutlineInputBorder(
                   //         borderRadius: BorderRadius.all(Radius.circular(10)),
                   //         borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
@@ -134,28 +134,28 @@ class ArtInfoView extends StatelessWidget {
               padding: horizontalPadding24,
               child: Column(
                 children: [
-                  Text('About you ', style:TextStyles.semiBoldViolet18,),
-                  Text('Tell us what makes your space unique. ', style:TextStyles.semiBoldViolet14,),
+                  Text('About you ', style:TextStyles.semiBoldAccent14,),
+                  Text('Tell us what makes your space unique. ', style:TextStyles.semiBoldAccent14,),
                   _AboutYouTextField((nameValue) => context.read<ArtInfoCubit>().choseAboutYou(nameValue),),
                   verticalMargin24,
                   Column(
                     children: [
-                      Text('Available Spaces ', style:TextStyles.semiBoldViolet18,),
-                      Text('Every space is counted as 1 meter per 1 meter.', style:TextStyles.semiBoldViolet14,),
+                      Text('Available Spaces ', style:TextStyles.semiBoldAccent14,),
+                      Text('Every space is counted as 1 meter per 1 meter.', style:TextStyles.semiBoldAccent14,),
                     ],
                   ),
                   _SpacesTextField((nameValue) => context.read<ArtInfoCubit>().chooseSpaces(nameValue),),
                   verticalMargin24,
                   Column(
                     children: [
-                      Text('Audience ', style:TextStyles.semiBoldViolet18,),
-                      Text('How many people do you think would visit your space per day?', style:TextStyles.semiBoldViolet14,),
+                      Text('Audience ', style:TextStyles.semiBoldAccent14,),
+                      Text('How many people do you think would visit your space per day?', style:TextStyles.semiBoldAccent14,),
                     ],
                   ),
                   _AudienceTextField((nameValue) => context.read<ArtInfoCubit>().chooseAudience(nameValue),),
                   verticalMargin24,
-                  Text('Your Space ', style:TextStyles.semiBoldViolet18,),
-                  Text('What type of space is ', style:TextStyles.semiBoldViolet14,),
+                  Text('Your Space ', style:TextStyles.semiBoldAccent14,),
+                  Text('What type of space is ', style:TextStyles.semiBoldAccent14,),
                   Tags(const [
                     'Coffee',
                     'Library',

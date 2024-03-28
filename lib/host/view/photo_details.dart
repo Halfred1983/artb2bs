@@ -51,7 +51,7 @@ class PhotoDetails extends StatelessWidget {
                     title: Text("Photo details", style: TextStyles.boldAccent24,),
                     centerTitle: true,
                     iconTheme: const IconThemeData(
-                      color: AppTheme.primaryColourViolet, //change your color here
+                      color: AppTheme.primaryColor, //change your color here
                     ),
                     actions: isOwner ? [
                       PopupMenuButton<int>(
@@ -81,9 +81,9 @@ class PhotoDetails extends StatelessWidget {
                               ),
                             ),
                             verticalMargin24,
-                            Text('Description:', style: TextStyles.semiBoldAccent16,),
+                            Text('Description:', style: TextStyles.semiBoldAccent14,),
                             verticalMargin8,
-                            Text(photo.description ?? 'n/a', style: TextStyles.boldViolet16,),
+                            Text(photo.description ?? 'n/a', style: TextStyles.semiBoldAccent14,),
                             Divider(thickness: 0.5, color: AppTheme.black.withOpacity(0.4),),
                           ],
                         ),
@@ -115,10 +115,10 @@ class PhotoDetails extends StatelessWidget {
                         textAlign: TextAlign.center,
                         text: TextSpan(
                             text: 'Tap OK to delete your artwork:\n\n',
-                            style: TextStyles.regularAccent16,
+                            style: TextStyles.semiBoldAccent14,
                             children: <TextSpan>[
                               TextSpan(text: photo.description ?? '',
-                                style:TextStyles.boldViolet16,
+                                style:TextStyles.semiBoldAccent14,
                               ),
                             ]
                         ),
@@ -129,7 +129,7 @@ class PhotoDetails extends StatelessWidget {
                 actionsAlignment: MainAxisAlignment.center,
                 actions: <Widget>[
                   TextButton(
-                    child: Text('OK', style: TextStyles.semiBoldViolet21.copyWith(
+                    child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
                         decoration: TextDecoration.underline
                     ),),
                     onPressed: () {
@@ -138,7 +138,7 @@ class PhotoDetails extends StatelessWidget {
                     },
                   ),
                   TextButton(
-                    child: Text('Cancel', style: TextStyles.semiBoldViolet21.copyWith(
+                    child: Text('Cancel', style: TextStyles.semiBoldAccent14.copyWith(
                         decoration: TextDecoration.underline
                     ),),
                     onPressed: () {

@@ -33,7 +33,7 @@ class ExhibitionView extends StatelessWidget {
 
               return Scaffold(
                 appBar: AppBar(
-                  title: Text("Your Bookings", style: TextStyles.boldAccent21,),
+                  title: Text("Your Bookings", style: TextStyles.semiBoldAccent14,),
                   centerTitle: true,
                 ),
                 body: SingleChildScrollView(
@@ -46,7 +46,7 @@ class ExhibitionView extends StatelessWidget {
                             context,
                             MaterialPageRoute(builder: (context) => CalendarAvailabilityPage(user: user!)),
                           ),
-                            child: Text('Adjust your calendar availability' ,style: TextStyles.semiBoldViolet16.copyWith(
+                            child: Text('Adjust your calendar availability' ,style: TextStyles.semiBoldAccent14.copyWith(
                                 decoration: TextDecoration.underline
                             ),),
                           ),
@@ -55,7 +55,7 @@ class ExhibitionView extends StatelessWidget {
                             context,
                             MaterialPageRoute(builder: (context) => SpaceAvailabilityPage(user: user!)),
                           ),
-                            child: Text('Adjust your space availability' ,style: TextStyles.semiBoldViolet16.copyWith(
+                            child: Text('Adjust your space availability' ,style: TextStyles.semiBoldAccent14.copyWith(
                                 decoration: TextDecoration.underline
                             ),),
                           ),

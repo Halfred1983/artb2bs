@@ -34,7 +34,7 @@ class BookingSummaryCard extends StatelessWidget {
                   width: 40,),
                 horizontalMargin12,
                 Text(user.userInfo!.name!,
-                  style: TextStyles.boldViolet16,),
+                  style: TextStyles.semiBoldAccent14,),
               ],
             ),
             // verticalMargin12,
@@ -47,20 +47,20 @@ class BookingSummaryCard extends StatelessWidget {
               children: [
                 if(user.userInfo!.userType! == UserType.artist) ...[
                   Text("City: ",
-                    style: TextStyles.boldViolet14,),
+                    style: TextStyles.semiBoldAccent14,),
                   Flexible(child: Text(user
                       .userInfo!.address!
                       .city,
                     softWrap: true, style: TextStyles
-                        .semiBoldViolet14,))
+                        .semiBoldAccent14,))
                 ] else ...[
                   Text("Address: ",
-                    style: TextStyles.boldViolet14,),
+                    style: TextStyles.semiBoldAccent14,),
                   Flexible(child: Text(user
                       .userInfo!.address!
                       .formattedAddress,
                     softWrap: true, style: TextStyles
-                        .semiBoldViolet14,)),
+                        .semiBoldAccent14,)),
                 ]
 
               ],
@@ -76,10 +76,10 @@ class BookingSummaryCard extends StatelessWidget {
                     children: [
                       Text('Spaces: ',
                         style: TextStyles
-                            .semiBoldAccent16,),
+                            .semiBoldAccent14,),
                       Text(booking.spaces!,
                         style: TextStyles
-                            .semiBoldViolet14,),
+                            .semiBoldAccent14,),
                     ]
                 ),
                 verticalMargin12,
@@ -88,7 +88,7 @@ class BookingSummaryCard extends StatelessWidget {
                         .start,
                     children: [
                       Text('Days: ', style: TextStyles
-                          .semiBoldAccent16,),
+                          .semiBoldAccent14,),
                       Text(
                         BookingService()
                             .daysBetween(
@@ -96,7 +96,7 @@ class BookingSummaryCard extends StatelessWidget {
                             booking.to!)
                             .toString(),
                         style: TextStyles
-                            .semiBoldViolet14,),
+                            .semiBoldAccent14,),
                     ]
                 ),
 
@@ -106,12 +106,12 @@ class BookingSummaryCard extends StatelessWidget {
                         .start,
                     children: [
                       Text('From: ', style: TextStyles
-                          .semiBoldAccent16,),
+                          .semiBoldAccent14,),
                       Text(
                         DateFormat.yMMMEd().format(
                             booking.from!),
                         style: TextStyles
-                            .semiBoldViolet14,),
+                            .semiBoldAccent14,),
                     ]
                 ),
                 verticalMargin12,
@@ -120,11 +120,11 @@ class BookingSummaryCard extends StatelessWidget {
                       .start,
                   children: [
                     Text('To: ', style: TextStyles
-                        .semiBoldAccent16,),
+                        .semiBoldAccent14,),
                     Text(DateFormat.yMMMEd().format(
                         booking.to!),
                       style: TextStyles
-                          .semiBoldViolet14,),
+                          .semiBoldAccent14,),
                   ],
                 ),
                 verticalMargin12,
@@ -133,12 +133,12 @@ class BookingSummaryCard extends StatelessWidget {
                       .start,
                   children: [
                     Text('Price: ', style: TextStyles
-                        .semiBoldAccent16,),
+                        .semiBoldAccent14,),
                     // Text('${booking!.spaces!} spaces X ${daysBetween(booking!.from!, booking!.to!)} days X ${int.parse(user!.bookingSettings!.basePrice!).toDouble()} GBP',
-                    //   style: TextStyles.semiBoldViolet16, ),
+                    //   style: TextStyles.semiBoldAccent14, ),
                     Text('${booking.price!} GBP',
                       style: TextStyles
-                          .semiBoldViolet14,),
+                          .semiBoldAccent14,),
                   ],
                 ),
                 verticalMargin12,
@@ -148,11 +148,11 @@ class BookingSummaryCard extends StatelessWidget {
                   children: [
                     Text('Commission (15%): ',
                       style: TextStyles
-                          .semiBoldAccent16,),
+                          .semiBoldAccent14,),
                     Text(
                       '${booking.commission!} GBP',
                       style: TextStyles
-                          .semiBoldViolet14,),
+                          .semiBoldAccent14,),
                   ],
                 ),
                 verticalMargin12,
@@ -162,11 +162,11 @@ class BookingSummaryCard extends StatelessWidget {
                   children: [
                     Text('Total price: ',
                       style: TextStyles
-                          .semiBoldAccent16,),
+                          .semiBoldAccent14,),
                     Text(
                       '${booking.totalPrice!} GBP',
                       style: TextStyles
-                          .semiBoldViolet14,),
+                          .semiBoldAccent14,),
                   ],
                 ),
                 verticalMargin12,
@@ -176,11 +176,11 @@ class BookingSummaryCard extends StatelessWidget {
                   children: [
                     Text('Status: ',
                       style: TextStyles
-                          .semiBoldAccent16,),
+                          .semiBoldAccent14,),
                     Text(
                       booking.bookingStatus!.name.capitalize(),
                       style: TextStyles
-                          .semiBoldViolet14.withColor(booking.bookingStatus!.name.getColorForBookingStatus()),),
+                          .semiBoldAccent14.withColor(booking.bookingStatus!.name.getColorForBookingStatus()),),
                   ],
                 ),
               ],
@@ -195,7 +195,7 @@ class BookingSummaryCard extends StatelessWidget {
                   );
                   // context.read<BookingCubit>().save();
                 },
-                child: Text("Book again", style: TextStyles.boldWhite16,),
+                child: Text("Book again", style: TextStyles.semiBoldAccent14,),
               )
             ] else ...[Container()] ,
           ]

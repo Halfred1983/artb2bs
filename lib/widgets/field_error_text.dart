@@ -49,7 +49,7 @@ class FieldErrorText extends StatelessWidget {
             verticalMargin4,
             Text(
               errorText!,
-              style: TextStyles.semiBoldViolet14,
+              style: TextStyles.semiBoldAccent14,
             ),
           ],
         )

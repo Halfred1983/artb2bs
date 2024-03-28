@@ -41,7 +41,7 @@ class PersonalInfoView extends StatelessWidget {
             if (state is ErrorState) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.errorMessage, style: TextStyles.semiBoldAccent18),
+                  content: Text(state.errorMessage, style: TextStyles.semiBoldAccent14),
                 ),
               );
             }
@@ -80,17 +80,17 @@ class PersonalInfoView extends StatelessWidget {
                         ) : Container()
                     ),
                     verticalMargin48,
-                    Center(child: Text('Are you an artist or a host', style:TextStyles.semiBoldViolet21,),),
-                    Text('', style: TextStyles.semiBoldViolet14),
+                    Center(child: Text('Are you an artist or a host', style:TextStyles.semiBoldAccent14,),),
+                    Text('', style: TextStyles.semiBoldAccent14),
                     verticalMargin8,
                     const _UserTypeDropdownButton(),
                     verticalMargin24,
-                    Center(child: Text('Artist or Host name', style:TextStyles.semiBoldViolet21,),),
+                    Center(child: Text('Artist or Host name', style:TextStyles.semiBoldAccent14,),),
                     _UserNameTextField((nameValue) => {
                       context.read<PersonalInfoCubit>().chooseName(nameValue),
                     }),
                     verticalMargin24,
-                    Center(child: Text('Your location', style:TextStyles.semiBoldViolet21,),),
+                    Center(child: Text('Your location', style:TextStyles.semiBoldAccent14,),),
                     const _LocationTextField(),
                   ]
               )
@@ -102,7 +102,7 @@ class PersonalInfoView extends StatelessWidget {
               onPressed: () {
                 context.read<PersonalInfoCubit>().save();
               },
-              child: Text("Continue", style: TextStyles.boldWhite16,),)
+              child: Text("Continue", style: TextStyles.semiBoldAccent14,),)
         )
     );
   }
@@ -129,7 +129,7 @@ class _UserTypeDropdownButton extends StatelessWidget {
               key: const Key('newCarForm_brand_dropdownButton'),
               items: userTypes.isNotEmpty
                   ? userTypes.map((type) {
-                return DropdownMenuItem(value: type, child: Text(type.name.capitalize(), style: TextStyles.regularAccent16,));
+                return DropdownMenuItem(value: type, child: Text(type.name.capitalize(), style: TextStyles.semiBoldAccent14,));
               }).toList()
                   : const [],
               value:start ,

@@ -159,7 +159,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
               margin: const EdgeInsets.only(top: 38),
               padding: const EdgeInsets.all(1),
               child: Text(freeSpaces.toString(), style: TextStyles
-                  .semiBoldViolet12),
+                  .semiBoldAccent14),
             );
           },
         ),
@@ -195,9 +195,9 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
         focusedDay: _focusedDay,
         calendarFormat: CalendarFormat.month,
         headerStyle: const HeaderStyle(
-            leftChevronIcon: Icon(Icons.chevron_left, color: AppTheme.primaryColourViolet,),
-            rightChevronIcon: Icon(Icons.chevron_right, color: AppTheme.primaryColourViolet,),
-            titleTextStyle: TextStyle(fontSize: 17.0, color: AppTheme.primaryColourViolet),
+            leftChevronIcon: Icon(Icons.chevron_left, color: AppTheme.primaryColor,),
+            rightChevronIcon: Icon(Icons.chevron_right, color: AppTheme.primaryColor,),
+            titleTextStyle: TextStyle(fontSize: 17.0, color: AppTheme.primaryColor),
             titleCentered: true
         ),
         calendarStyle: const CalendarStyle(

@@ -33,7 +33,7 @@ class PayoutHistory extends StatelessWidget {
               ),
               centerTitle: true,
               iconTheme: const IconThemeData(
-                color: AppTheme.primaryColourViolet,
+                color: AppTheme.primaryColor,
               ),
             ),
             body: Center(
@@ -54,7 +54,7 @@ class PayoutHistory extends StatelessWidget {
               ),
               centerTitle: true,
               iconTheme: const IconThemeData(
-                color: AppTheme.primaryColourViolet,
+                color: AppTheme.primaryColor,
               ),
             ),
             body: Center(
@@ -71,7 +71,7 @@ class PayoutHistory extends StatelessWidget {
               ),
               centerTitle: true,
               iconTheme: const IconThemeData(
-                color: AppTheme.primaryColourViolet,
+                color: AppTheme.primaryColor,
               ),
             ),
             body: Padding(
@@ -91,10 +91,10 @@ class PayoutHistory extends StatelessWidget {
                                 children: [
                                   Text('Amount: ',
                                     style: TextStyles
-                                        .semiBoldAccent16,),
+                                        .semiBoldAccent14,),
                                   Text('${payouts[index].amount!} ${payouts[index].currencyCode!}',
                                     style: TextStyles
-                                        .semiBoldViolet14,),
+                                        .semiBoldAccent14,),
                                 ]
                             ),
                             verticalMargin12,
@@ -104,10 +104,10 @@ class PayoutHistory extends StatelessWidget {
                                 children: [
                                   Text('Date: ',
                                     style: TextStyles
-                                        .semiBoldAccent16,),
+                                        .semiBoldAccent14,),
                                   Text(DateFormat.yMMMEd().format(payouts[index].timestamp!),
                                     style: TextStyles
-                                        .semiBoldViolet14,),
+                                        .semiBoldAccent14,),
                                 ]
                             ),
                             verticalMargin12,
@@ -117,13 +117,13 @@ class PayoutHistory extends StatelessWidget {
                                 children: [
                                   Text('Paypal Account: ',
                                     style: TextStyles
-                                        .semiBoldAccent16,),
+                                        .semiBoldAccent14,),
                                   Expanded(
                                     child: Text(payouts[index].paypalAccount!,
                                       overflow: TextOverflow.clip, // Overflow handling strategy
                                       maxLines: 2, // Maximum number of lines before text is truncated
                                       style: TextStyles
-                                          .semiBoldViolet14,
+                                          .semiBoldAccent14,
                                     softWrap: true,),
                                   ),
                                 ]
@@ -135,11 +135,11 @@ class PayoutHistory extends StatelessWidget {
                                 children: [
                                   Text('Status: ',
                                     style: TextStyles
-                                        .semiBoldAccent16,),
+                                        .semiBoldAccent14,),
                                   Text(
                                     payouts[index].payoutStatus!.name.capitalize(),
                                     style: TextStyles
-                                        .semiBoldViolet14.withColor(payouts[index].payoutStatus!.name.getColorForPayoutStatus()),),
+                                        .semiBoldAccent14.withColor(payouts[index].payoutStatus!.name.getColorForPayoutStatus()),),
                                 ]
                             ),
                           ],
@@ -151,7 +151,7 @@ class PayoutHistory extends StatelessWidget {
                   : Center(
                 child: Text(
                   "No past payouts.",
-                  style: TextStyles.semiBoldViolet16,
+                  style: TextStyles.semiBoldAccent14,
                 ),
               ),
             ),
@@ -203,7 +203,7 @@ class PayoutHistory extends StatelessWidget {
                                                                     .userInfo!.address!
                                                                     .city,
                                                                   softWrap: true, style: TextStyles
-                                                                      .semiBoldViolet16,)),
+                                                                      .semiBoldAccent14,)),
                                                               ],
                                                             ),
                                                             verticalMargin12,
@@ -217,10 +217,10 @@ class PayoutHistory extends StatelessWidget {
                                                                     children: [
                                                                       Text('Spaces: ',
                                                                         style: TextStyles
-                                                                            .semiBoldAccent16,),
+                                                                            .semiBoldAccent14,),
                                                                       Text(pendingBookings[index].spaces!,
                                                                         style: TextStyles
-                                                                            .semiBoldViolet16,),
+                                                                            .semiBoldAccent14,),
                                                                     ]
                                                                 ),
                                                                 verticalMargin12,
@@ -229,7 +229,7 @@ class PayoutHistory extends StatelessWidget {
                                                                         .start,
                                                                     children: [
                                                                       Text('Days: ', style: TextStyles
-                                                                          .semiBoldAccent16,),
+                                                                          .semiBoldAccent14,),
                                                                       Text(
                                                                         BookingService()
                                                                             .daysBetween(
@@ -237,7 +237,7 @@ class PayoutHistory extends StatelessWidget {
                                                                             pendingBookings[index].to!)
                                                                             .toString(),
                                                                         style: TextStyles
-                                                                            .semiBoldViolet16,),
+                                                                            .semiBoldAccent14,),
                                                                     ]
                                                                 ),
 
@@ -247,12 +247,12 @@ class PayoutHistory extends StatelessWidget {
                                                                         .start,
                                                                     children: [
                                                                       Text('From: ', style: TextStyles
-                                                                          .semiBoldAccent16,),
+                                                                          .semiBoldAccent14,),
                                                                       Text(
                                                                         DateFormat.yMMMEd().format(
                                                                             pendingBookings[index].from!),
                                                                         style: TextStyles
-                                                                            .semiBoldViolet16,),
+                                                                            .semiBoldAccent14,),
                                                                     ]
                                                                 ),
                                                                 verticalMargin12,
@@ -261,11 +261,11 @@ class PayoutHistory extends StatelessWidget {
                                                                       .start,
                                                                   children: [
                                                                     Text('To: ', style: TextStyles
-                                                                        .semiBoldAccent16,),
+                                                                        .semiBoldAccent14,),
                                                                     Text(DateFormat.yMMMEd().format(
                                                                         pendingBookings[index].to!),
                                                                       style: TextStyles
-                                                                          .semiBoldViolet16,),
+                                                                          .semiBoldAccent14,),
                                                                   ],
                                                                 ),
                                                                 verticalMargin12,
@@ -274,12 +274,12 @@ class PayoutHistory extends StatelessWidget {
                                                                       .start,
                                                                   children: [
                                                                     Text('Price: ', style: TextStyles
-                                                                        .semiBoldAccent16,),
+                                                                        .semiBoldAccent14,),
                                                                     // Text('${booking!.spaces!} spaces X ${daysBetween(booking!.from!, booking!.to!)} days X ${int.parse(user!.bookingSettings!.basePrice!).toDouble()} GBP',
-                                                                    //   style: TextStyles.semiBoldViolet16, ),
+                                                                    //   style: TextStyles.semiBoldAccent14, ),
                                                                     Text('${pendingBookings[index].price!} GBP',
                                                                       style: TextStyles
-                                                                          .semiBoldViolet16,),
+                                                                          .semiBoldAccent14,),
                                                                   ],
                                                                 ),
                                                                 verticalMargin12,
@@ -289,11 +289,11 @@ class PayoutHistory extends StatelessWidget {
                                                                   children: [
                                                                     Text('Commission (15%): ',
                                                                       style: TextStyles
-                                                                          .semiBoldAccent16,),
+                                                                          .semiBoldAccent14,),
                                                                     Text(
                                                                       '${pendingBookings[index].commission!} GBP',
                                                                       style: TextStyles
-                                                                          .semiBoldViolet16,),
+                                                                          .semiBoldAccent14,),
                                                                   ],
                                                                 ),
                                                                 verticalMargin12,
@@ -303,11 +303,11 @@ class PayoutHistory extends StatelessWidget {
                                                                   children: [
                                                                     Text('Total price: ',
                                                                       style: TextStyles
-                                                                          .semiBoldAccent16,),
+                                                                          .semiBoldAccent14,),
                                                                     Text(
                                                                       '${pendingBookings[index].totalPrice!} GBP',
                                                                       style: TextStyles
-                                                                          .semiBoldViolet16,),
+                                                                          .semiBoldAccent14,),
                                                                   ],
                                                                 ),
                                                                 verticalMargin24,
@@ -319,7 +319,7 @@ class PayoutHistory extends StatelessWidget {
                                                                         height: 40,
                                                                         child: OutlinedButton(
                                                                           onPressed: () => context.read<BookingRequestCubit>().rejectBooking(pendingBookings[index], user!),
-                                                                          child: Text('Reject' ,style: TextStyles.semiBoldAccent16.copyWith(
+                                                                          child: Text('Reject' ,style: TextStyles.semiBoldAccent14.copyWith(
                                                                               decoration: TextDecoration.underline
                                                                           ),),
                                                                         ),

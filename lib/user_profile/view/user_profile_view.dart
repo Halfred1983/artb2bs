@@ -36,6 +36,9 @@ class UserProfileView extends StatelessWidget {
                 appBar: AppBar(
                   title: Text("Your Profile", style: TextStyles.boldAccent24,),
                   centerTitle: true,
+                  iconTheme: const IconThemeData(
+                    color: AppTheme.primaryColor, //change your color here
+                  ),
                 ),
                 body: Column(
                   children: [
@@ -64,9 +67,9 @@ class UserProfileView extends StatelessWidget {
                                 ),
                                 horizontalMargin24,
                                 Text('Hello, ',
-                                  style: TextStyles.semiBoldAccent18,),
+                                  style: TextStyles.semiBoldAccent14,),
                                 Text(user!.firstName,
-                                  style: TextStyles.boldAccent16,),
+                                  style: TextStyles.semiBoldAccent14,),
                               ],
                             ),
                           ],
@@ -84,14 +87,14 @@ class UserProfileView extends StatelessWidget {
                         child: SwitchListTile(
                           subtitle: Text('When Active artists can book you',
                             style: TextStyles.regularAccent14,),
-                          activeColor: AppTheme.primaryColourViolet,
+                          activeColor: AppTheme.primaryColor,
                           inactiveTrackColor: AppTheme
                               .accentColourOrangeOpacity,
                           onChanged: (value) =>
                               context.read<HostCubit>().setActive(value),
                           value: user!.bookingSettings!.active!,
                           title: Text(
-                            'Active', style: TextStyles.semiBoldAccent18,),
+                            'Active', style: TextStyles.semiBoldAccent14,),
                         ),
                       ),
                       verticalMargin24,
@@ -153,7 +156,7 @@ class SettingItem extends StatelessWidget {
           color: Colors.white.withOpacity(0.8),
           border: Border(
             bottom: BorderSide(
-              color: lowerBorder ? AppTheme.accentColourOrange : Colors.white, // Border color
+              color: lowerBorder ? AppTheme.accentColor : Colors.white, // Border color
               width: 1.0,
             ),
           ),
@@ -161,7 +164,7 @@ class SettingItem extends StatelessWidget {
         width: double.infinity,
         height: 50,
         child: Center(
-          child: Text(text, style: TextStyles.semiBoldAccent18,),
+          child: Text(text, style: TextStyles.semiBoldAccent14,),
         ),
       ),
     );

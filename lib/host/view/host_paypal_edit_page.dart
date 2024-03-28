@@ -61,7 +61,7 @@ class HostPaypalEditPage extends StatelessWidget {
                   title: Text("Your Paypal settings", style: TextStyles.boldAccent24,),
                   centerTitle: true,
                   iconTheme: const IconThemeData(
-                    color: AppTheme.primaryColourViolet, //change your color here
+                    color: AppTheme.primaryColor, //change your color here
                   ),
                 ),
                 body: SingleChildScrollView(
@@ -73,7 +73,7 @@ class HostPaypalEditPage extends StatelessWidget {
                         children: [
 
                           verticalMargin24,
-                          Text('Your paypal account where to receive your payouts. ', style: TextStyles.semiBoldAccent16, ),
+                          Text('Your paypal account where to receive your payouts. ', style: TextStyles.semiBoldAccent14, ),
 
                           verticalMargin24,
 
@@ -82,7 +82,7 @@ class HostPaypalEditPage extends StatelessWidget {
                               '${user!.bookingSettings!.paypalAccount}' : 'Add your Paypal Account', TextInputType.emailAddress),
                           verticalMargin12,
                           errorMessage != null ?
-                          Text( errorMessage!, style: TextStyles.semiBoldAccent16, ) : Container()
+                          Text( errorMessage!, style: TextStyles.semiBoldAccent14, ) : Container()
                         ],
                       ),
                     ),
@@ -94,7 +94,7 @@ class HostPaypalEditPage extends StatelessWidget {
                       onPressed: () async {
                         await context.read<HostCubit>().saveBookingSettings();
                       },
-                      child: Text("Continue", style: TextStyles.boldWhite16,),)
+                      child: Text("Continue", style: TextStyles.semiBoldAccent14,),)
                 )
               );
             }

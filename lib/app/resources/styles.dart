@@ -1,45 +1,92 @@
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TextStyles {
   const TextStyles._();
 
+
   // Regular
-  static final regularGreen21 = _baseRegular[TextSize.size21].withColor(AppTheme.primaryColourViolet);
-  static final regularWhite16 = _baseRegular[TextSize.size16].withColor(AppTheme.white);
-  static final regularAccent24 = _baseRegular[TextSize.size24].withColor(AppTheme.accentColor);
-  static final regularAccent16 = _baseRegular[TextSize.size16].withColor(AppTheme.accentColor);
-  static final regularDarkGrey16 = _baseRegular[TextSize.size16].withColor(AppTheme.black);
-  static final regularGrey24 = _baseRegular[TextSize.size24].withColor(AppTheme.backgroundGrey);
+  static final regularPrimary10 = _baseRegular[TextSize.size10].withColor(AppTheme.primaryColor);
+  static final regularPrimary12 = _baseRegular[TextSize.size12].withColor(AppTheme.primaryColor);
+  static final regularPrimary14 = _baseRegular[TextSize.size14].withColor(AppTheme.primaryColor);
+  static final regularPrimary17 = _baseRegular[TextSize.size17].withColor(AppTheme.primaryColor);
+  static final regularPrimary20 = _baseRegular[TextSize.size20].withColor(AppTheme.primaryColor);
+  static final regularPrimary24 = _baseRegular[TextSize.size24].withColor(AppTheme.primaryColor);
+  static final regularPrimary29 = _baseRegular[TextSize.size29].withColor(AppTheme.primaryColor);
+
+  static final regularAccent10 = _baseRegular[TextSize.size10].withColor(AppTheme.accentColor);
+  static final regularAccent12 = _baseRegular[TextSize.size12].withColor(AppTheme.accentColor);
   static final regularAccent14 = _baseRegular[TextSize.size14].withColor(AppTheme.accentColor);
+  static final regularAccent17 = _baseRegular[TextSize.size17].withColor(AppTheme.accentColor);
+  static final regularAccent20 = _baseRegular[TextSize.size20].withColor(AppTheme.accentColor);
+  static final regularAccent24 = _baseRegular[TextSize.size24].withColor(AppTheme.accentColor);
+  static final regularAccent29 = _baseRegular[TextSize.size29].withColor(AppTheme.accentColor);
+
+  static final regularN90010 = _baseRegular[TextSize.size10].withColor(AppTheme.n900);
+  static final regularN90012 = _baseRegular[TextSize.size12].withColor(AppTheme.n900);
+  static final regularN90014 = _baseRegular[TextSize.size14].withColor(AppTheme.n900);
+  static final regularN90017 = _baseRegular[TextSize.size17].withColor(AppTheme.n900);
+  static final regularN90020 = _baseRegular[TextSize.size20].withColor(AppTheme.n900);
+  static final regularN90024 = _baseRegular[TextSize.size24].withColor(AppTheme.n900);
+  static final regularN90029 = _baseRegular[TextSize.size29].withColor(AppTheme.n900);
+
+
 
   // Semi-bold
-  static final semiBoldViolet14 = _baseSemiBold[TextSize.size14].withColor(AppTheme.primaryColourViolet);
-  static final semiBoldViolet12 = _baseSemiBold[TextSize.size12].withColor(AppTheme.primaryColourViolet);
-  static final semiBoldWhite16 = _baseSemiBold[TextSize.size16].withColor(AppTheme.white);
-  static final semiBoldViolet18 = _baseSemiBold[TextSize.size18].withColor(AppTheme.primaryColourViolet);
-  // static final semiBoldLightGrey16 = _baseSemiBold[TextSize.size16].withColor(AppTheme.fideuramGreenArtist001);
-  static final semiBoldViolet16 = _baseSemiBold[TextSize.size16].withColor(AppTheme.primaryColourViolet);
-  static final semiBolDarkGrey21 = _baseSemiBold[TextSize.size21].withColor(AppTheme.black);
-  static final semiBolAccent14 = _baseSemiBold[TextSize.size14].withColor(AppTheme.accentColor);
-  static final semiBoldAccent16 = _baseSemiBold[TextSize.size16].withColor(AppTheme.accentColor);
-  static final semiBoldAccent18 = _baseSemiBold[TextSize.size18].withColor(AppTheme.accentColor);
-  static final semiBoldViolet21 = _baseSemiBold[TextSize.size21].withColor(AppTheme.primaryColourViolet);
+  static final semiBoldPrimary10 = _baseSemiBold[TextSize.size10].withColor(AppTheme.primaryColor);
+  static final semiBoldPrimary12 = _baseSemiBold[TextSize.size12].withColor(AppTheme.primaryColor);
+  static final semiBoldPrimary14 = _baseSemiBold[TextSize.size14].withColor(AppTheme.primaryColor);
+  static final semiBoldPrimary17 = _baseSemiBold[TextSize.size17].withColor(AppTheme.primaryColor);
+  static final semiBoldPrimary20 = _baseSemiBold[TextSize.size20].withColor(AppTheme.primaryColor);
+  static final semiBoldPrimary24 = _baseSemiBold[TextSize.size24].withColor(AppTheme.primaryColor);
+  static final semiBoldPrimary29 = _baseSemiBold[TextSize.size29].withColor(AppTheme.primaryColor);
+
+  static final semiBoldAccent10 = _baseSemiBold[TextSize.size10].withColor(AppTheme.accentColor);
+  static final semiBoldAccent12 = _baseSemiBold[TextSize.size12].withColor(AppTheme.accentColor);
+  static final semiBoldAccent14 = _baseSemiBold[TextSize.size14].withColor(AppTheme.accentColor);
+  static final semiBoldAccent17 = _baseSemiBold[TextSize.size17].withColor(AppTheme.accentColor);
+  static final semiBoldAccent20 = _baseSemiBold[TextSize.size20].withColor(AppTheme.accentColor);
+  static final semiBoldAccent24 = _baseSemiBold[TextSize.size24].withColor(AppTheme.accentColor);
+  static final semiBoldAccent29 = _baseSemiBold[TextSize.size29].withColor(AppTheme.accentColor);
+
+  static final semiBoldN90010 = _baseSemiBold[TextSize.size10].withColor(AppTheme.n900);
+  static final semiBoldP40010 = _baseSemiBold[TextSize.size10].withColor(AppTheme.p400);
+  static final semiBoldN90012 = _baseSemiBold[TextSize.size12].withColor(AppTheme.n900);
+  static final semiBoldS40012 = _baseSemiBold[TextSize.size12].withColor(AppTheme.s400);
+  static final semiBoldP40012 = _baseSemiBold[TextSize.size12].withColor(AppTheme.p400);
+  static final semiBoldN90014 = _baseSemiBold[TextSize.size14].withColor(AppTheme.n900);
+  static final semiBoldN90017 = _baseSemiBold[TextSize.size17].withColor(AppTheme.n900);
+  static final semiBoldN90020 = _baseSemiBold[TextSize.size20].withColor(AppTheme.n900);
+  static final semiBoldN90024 = _baseSemiBold[TextSize.size24].withColor(AppTheme.n900);
+  static final semiBoldN90029 = _baseSemiBold[TextSize.size29].withColor(AppTheme.n900);
+
 
   // Bold
-  static final boldGreen21 = _baseBold[TextSize.size21].withColor(AppTheme.primaryColourViolet);
-  static final boldViolet16 = _baseBold[TextSize.size16].withColor(AppTheme.primaryColourViolet);
-  static final boldViolet14 = _baseBold[TextSize.size14].withColor(AppTheme.primaryColourViolet);
-  static final boldAccent16 = _baseBold[TextSize.size16].withColor(AppTheme.accentColor);
-  static final boldRed16 = _baseBold[TextSize.size16].withColor(Colors.red);
-  static final boldWhite14 = _baseBold[TextSize.size14].withColor(AppTheme.white);
-  static final boldWhite16 = _baseBold[TextSize.size16].withColor(AppTheme.white);
-  static final boldAccent21 = _baseBold[TextSize.size21].withColor(AppTheme.accentColor);
+  static final boldPrimary10 =_baseBold[TextSize.size10].withColor(AppTheme.primaryColor);
+  static final boldPrimary12 =_baseBold[TextSize.size12].withColor(AppTheme.primaryColor);
+  static final boldPrimary14 =_baseBold[TextSize.size14].withColor(AppTheme.primaryColor);
+  static final boldPrimary17 =_baseBold[TextSize.size17].withColor(AppTheme.primaryColor);
+  static final boldPrimary20 =_baseBold[TextSize.size20].withColor(AppTheme.primaryColor);
+  static final boldPrimary24 =_baseBold[TextSize.size24].withColor(AppTheme.primaryColor);
+  static final boldPrimary29 =_baseBold[TextSize.size29].withColor(AppTheme.primaryColor);
+
+  static final boldAccent10 = _baseBold[TextSize.size10].withColor(AppTheme.accentColor);
+  static final boldAccent12 = _baseBold[TextSize.size12].withColor(AppTheme.accentColor);
+  static final boldAccent14 = _baseBold[TextSize.size14].withColor(AppTheme.accentColor);
+  static final boldAccent17 = _baseBold[TextSize.size17].withColor(AppTheme.accentColor);
+  static final boldAccent20 = _baseBold[TextSize.size20].withColor(AppTheme.accentColor);
   static final boldAccent24 = _baseBold[TextSize.size24].withColor(AppTheme.accentColor);
-  static final boldViolet24 = _baseBold[TextSize.size24].withColor(AppTheme.primaryColourViolet);
-  static final boldViolet21 = _baseBold[TextSize.size21].withColor(AppTheme.primaryColourViolet);
-  static final boldDarkGrey21 = _baseBold[TextSize.size21].withColor(AppTheme.black);
-  static final boldDarkGrey16 = _baseBold[TextSize.size16].withColor(AppTheme.black);
+  static final boldAccent29 = _baseBold[TextSize.size29].withColor(AppTheme.accentColor);
+
+  static final boldN90010 = _baseBold[TextSize.size10].withColor(AppTheme.n900);
+  static final boldN90012 = _baseBold[TextSize.size12].withColor(AppTheme.n900);
+  static final boldN90014 = _baseBold[TextSize.size14].withColor(AppTheme.n900);
+  static final boldN90017 = _baseBold[TextSize.size17].withColor(AppTheme.n900);
+  static final boldN90020 = _baseBold[TextSize.size20].withColor(AppTheme.n900);
+  static final boldN90024 = _baseBold[TextSize.size24].withColor(AppTheme.n900);
+  static final boldN90029 = _baseBold[TextSize.size29].withColor(AppTheme.n900);
+  static final boldS40029 = _baseBold[TextSize.size29].withColor(AppTheme.s400);
 
   // Bold Underlined
 
@@ -53,41 +100,33 @@ class TextStyles {
   // --------------------------------------------------------------------------
 
   static final _baseRegular = <TextSize, TextStyle>{
-    TextSize.size0: createBaseTextStyle(TextWeight.regular, TextSize.size0),
-    TextSize.size1: createBaseTextStyle(TextWeight.regular, TextSize.size1),
-    TextSize.size2: createBaseTextStyle(TextWeight.regular, TextSize.size2),
-    TextSize.size16: createBaseTextStyle(TextWeight.regular, TextSize.size16),
-    TextSize.size21: createBaseTextStyle(TextWeight.regular, TextSize.size21),
-    TextSize.size6: createBaseTextStyle(TextWeight.regular, TextSize.size6),
-    TextSize.size24: createBaseTextStyle(TextWeight.regular, TextSize.size24),
-    TextSize.size8: createBaseTextStyle(TextWeight.regular, TextSize.size8),
+    TextSize.size10: createBaseTextStyle(TextWeight.regular, TextSize.size10),
+    TextSize.size12: createBaseTextStyle(TextWeight.regular, TextSize.size12),
     TextSize.size14: createBaseTextStyle(TextWeight.regular, TextSize.size14),
+    TextSize.size17: createBaseTextStyle(TextWeight.regular, TextSize.size17),
+    TextSize.size20: createBaseTextStyle(TextWeight.regular, TextSize.size20),
+    TextSize.size24: createBaseTextStyle(TextWeight.regular, TextSize.size24),
+    TextSize.size29: createBaseTextStyle(TextWeight.regular, TextSize.size29),
   };
 
   static final _baseSemiBold = <TextSize, TextStyle>{
-    TextSize.size0: createBaseTextStyle(TextWeight.semiBold, TextSize.size0),
-    TextSize.size1: createBaseTextStyle(TextWeight.semiBold, TextSize.size1),
-    TextSize.size2: createBaseTextStyle(TextWeight.semiBold, TextSize.size2),
-    TextSize.size16: createBaseTextStyle(TextWeight.semiBold, TextSize.size16),
-    TextSize.size18: createBaseTextStyle(TextWeight.semiBold, TextSize.size18),
-    TextSize.size14: createBaseTextStyle(TextWeight.semiBold, TextSize.size14),
-    TextSize.size21: createBaseTextStyle(TextWeight.semiBold, TextSize.size21),
-    TextSize.size6: createBaseTextStyle(TextWeight.semiBold, TextSize.size6),
-    TextSize.size24: createBaseTextStyle(TextWeight.semiBold, TextSize.size24),
+    TextSize.size10: createBaseTextStyle(TextWeight.semiBold, TextSize.size10),
     TextSize.size12: createBaseTextStyle(TextWeight.semiBold, TextSize.size12),
-    TextSize.size8: createBaseTextStyle(TextWeight.semiBold, TextSize.size8),
+    TextSize.size14: createBaseTextStyle(TextWeight.semiBold, TextSize.size14),
+    TextSize.size17: createBaseTextStyle(TextWeight.semiBold, TextSize.size17),
+    TextSize.size20: createBaseTextStyle(TextWeight.semiBold, TextSize.size20),
+    TextSize.size24: createBaseTextStyle(TextWeight.semiBold, TextSize.size24),
+    TextSize.size29: createBaseTextStyle(TextWeight.semiBold, TextSize.size29),
   };
 
   static final _baseBold = <TextSize, TextStyle>{
-    TextSize.size0: createBaseTextStyle(TextWeight.bold, TextSize.size0),
-    TextSize.size1: createBaseTextStyle(TextWeight.bold, TextSize.size1),
-    TextSize.size2: createBaseTextStyle(TextWeight.bold, TextSize.size2),
-    TextSize.size16: createBaseTextStyle(TextWeight.bold, TextSize.size16),
-    TextSize.size21: createBaseTextStyle(TextWeight.bold, TextSize.size21),
-    TextSize.size6: createBaseTextStyle(TextWeight.bold, TextSize.size6),
-    TextSize.size24: createBaseTextStyle(TextWeight.bold, TextSize.size24),
+    TextSize.size10: createBaseTextStyle(TextWeight.bold, TextSize.size10),
+    TextSize.size12: createBaseTextStyle(TextWeight.bold, TextSize.size12),
     TextSize.size14: createBaseTextStyle(TextWeight.bold, TextSize.size14),
-    TextSize.size8: createBaseTextStyle(TextWeight.bold, TextSize.size8),
+    TextSize.size17: createBaseTextStyle(TextWeight.bold, TextSize.size17),
+    TextSize.size20: createBaseTextStyle(TextWeight.bold, TextSize.size20),
+    TextSize.size24: createBaseTextStyle(TextWeight.bold, TextSize.size24),
+    TextSize.size29: createBaseTextStyle(TextWeight.bold, TextSize.size29),
   };
 
   // static final _baseBoldUnder = <TextSize, TextStyle>{
@@ -106,8 +145,9 @@ class TextStyles {
       {Color? color, double? lineHeight, bool underline = false}) {
     final fontSize = _fontSizes[size]!;
     return TextStyle(
-      fontFamily: 'Avenir',
+      fontFamily: GoogleFonts.openSans().fontFamily,
       fontWeight: _fontWeights[weight]!,
+      fontStyle: FontStyle.normal,
       fontSize: fontSize,
       decoration: underline ? TextDecoration.underline : null,
       height: (lineHeight ?? _lineHeights[size]!) / fontSize,
@@ -118,39 +158,31 @@ class TextStyles {
     TextWeight.light: FontWeight.w300,
     TextWeight.regular: FontWeight.w400,
     TextWeight.semiBold: FontWeight.w600,
-    TextWeight.bold: FontWeight.w700,
+    TextWeight.bold: FontWeight.w800,
   };
 
   static const _fontSizes = <TextSize, double>{
-    TextSize.size0: 13.0,
-    TextSize.size14: 14.0,
+    TextSize.size10: 11.0,
     TextSize.size12: 12.0,
-    TextSize.size1: 12.0,
-    TextSize.size2: 16.0,
-    TextSize.size16: 16.0,
-    TextSize.size18: 18.0,
-    TextSize.size21: 21.0,
-    TextSize.size6: 21.0,
+    TextSize.size14: 14.0,
+    TextSize.size17: 17.0,
+    TextSize.size20: 20.0,
     TextSize.size24: 24.0,
-    TextSize.size8: 27.0,
+    TextSize.size29: 29.0,
   };
 
   static const _lineHeights = <TextSize, double>{
-    TextSize.size0: 19.0,
+    TextSize.size10: 12.0,
+    TextSize.size12: 16.0,
     TextSize.size14: 19.0,
-    TextSize.size12: 12.0,
-    TextSize.size1: 19.0,
-    TextSize.size2: 19.0,
-    TextSize.size16: 19.0,
-    TextSize.size18: 20.0,
-    TextSize.size21: 25.0,
-    TextSize.size6: 19.0,
+    TextSize.size17: 19.0,
+    TextSize.size20: 19.0,
     TextSize.size24: 19.0,
-    TextSize.size8: 19.0,
+    TextSize.size29: 35.0,
   };
 }
 
-enum TextSize { size0, size1, size2, size16, size18, size21, size6, size24, size8, size14, size12 }
+enum TextSize { size10, size12, size14, size17, size20, size24, size29 }
 
 enum TextWeight { light, regular, semiBold, bold }
 

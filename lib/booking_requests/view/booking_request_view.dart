@@ -38,14 +38,14 @@ class BookingRequestView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30),
                 ),
 
-                title: Center(child:Text('Error', style: TextStyles.boldAccent16,)),
-                content: Text(_errorMessage,textAlign: TextAlign.center, style: TextStyles.semiBoldViolet16,),
+                title: Center(child:Text('Error', style: TextStyles.semiBoldAccent14,)),
+                content: Text(_errorMessage,textAlign: TextAlign.center, style: TextStyles.semiBoldAccent14,),
                 actions: [
                   Center(child: TextButton(
                     onPressed: () {
                       context.read<BookingRequestCubit>().exitAlert(state.user); // Close the dialog
                     },
-                    child: Text('OK', style: TextStyles.boldAccent16,),
+                    child: Text('OK', style: TextStyles.semiBoldAccent14,),
                   )),
                 ],
               );
@@ -109,7 +109,7 @@ class BookingRequestView extends StatelessWidget {
                                                                   width: 40,),
                                                                 horizontalMargin12,
                                                                 Text(snapshot.data!.userInfo!.name!,
-                                                                  style: TextStyles.boldViolet16,),
+                                                                  style: TextStyles.semiBoldAccent14,),
                                                               ],
                                                             ),
                                                             // verticalMargin12,
@@ -121,12 +121,12 @@ class BookingRequestView extends StatelessWidget {
                                                               mainAxisSize: MainAxisSize.min,
                                                               children: [
                                                                 Text("City: ",
-                                                                  style: TextStyles.boldViolet16,),
+                                                                  style: TextStyles.semiBoldAccent14,),
                                                                 Flexible(child: Text(snapshot.data!
                                                                     .userInfo!.address!
                                                                     .city,
                                                                   softWrap: true, style: TextStyles
-                                                                      .semiBoldViolet16,)),
+                                                                      .semiBoldAccent14,)),
                                                               ],
                                                             ),
                                                             verticalMargin12,
@@ -140,10 +140,10 @@ class BookingRequestView extends StatelessWidget {
                                                                     children: [
                                                                       Text('Booking no: ',
                                                                         style: TextStyles
-                                                                            .semiBoldAccent16,),
+                                                                            .semiBoldAccent14,),
                                                                       Text(pendingBookings[index].bookingId!.extractBookingId(),
                                                                         style: TextStyles
-                                                                            .semiBoldViolet16,),
+                                                                            .semiBoldAccent14,),
                                                                     ]
                                                                 ),
                                                                 verticalMargin12,
@@ -153,10 +153,10 @@ class BookingRequestView extends StatelessWidget {
                                                                     children: [
                                                                       Text('Spaces: ',
                                                                         style: TextStyles
-                                                                            .semiBoldAccent16,),
+                                                                            .semiBoldAccent14,),
                                                                       Text(pendingBookings[index].spaces!,
                                                                         style: TextStyles
-                                                                            .semiBoldViolet16,),
+                                                                            .semiBoldAccent14,),
                                                                     ]
                                                                 ),
                                                                 verticalMargin12,
@@ -165,7 +165,7 @@ class BookingRequestView extends StatelessWidget {
                                                                         .start,
                                                                     children: [
                                                                       Text('Days: ', style: TextStyles
-                                                                          .semiBoldAccent16,),
+                                                                          .semiBoldAccent14,),
                                                                       Text(
                                                                         BookingService()
                                                                             .daysBetween(
@@ -173,7 +173,7 @@ class BookingRequestView extends StatelessWidget {
                                                                             pendingBookings[index].to!)
                                                                             .toString(),
                                                                         style: TextStyles
-                                                                            .semiBoldViolet16,),
+                                                                            .semiBoldAccent14,),
                                                                     ]
                                                                 ),
 
@@ -183,12 +183,12 @@ class BookingRequestView extends StatelessWidget {
                                                                         .start,
                                                                     children: [
                                                                       Text('From: ', style: TextStyles
-                                                                          .semiBoldAccent16,),
+                                                                          .semiBoldAccent14,),
                                                                       Text(
                                                                         DateFormat.yMMMEd().format(
                                                                             pendingBookings[index].from!),
                                                                         style: TextStyles
-                                                                            .semiBoldViolet16,),
+                                                                            .semiBoldAccent14,),
                                                                     ]
                                                                 ),
                                                                 verticalMargin12,
@@ -197,11 +197,11 @@ class BookingRequestView extends StatelessWidget {
                                                                       .start,
                                                                   children: [
                                                                     Text('To: ', style: TextStyles
-                                                                        .semiBoldAccent16,),
+                                                                        .semiBoldAccent14,),
                                                                     Text(DateFormat.yMMMEd().format(
                                                                         pendingBookings[index].to!),
                                                                       style: TextStyles
-                                                                          .semiBoldViolet16,),
+                                                                          .semiBoldAccent14,),
                                                                   ],
                                                                 ),
                                                                 verticalMargin12,
@@ -210,12 +210,12 @@ class BookingRequestView extends StatelessWidget {
                                                                       .start,
                                                                   children: [
                                                                     Text('Price: ', style: TextStyles
-                                                                        .semiBoldAccent16,),
+                                                                        .semiBoldAccent14,),
                                                                     // Text('${booking!.spaces!} spaces X ${daysBetween(booking!.from!, booking!.to!)} days X ${int.parse(user!.bookingSettings!.basePrice!).toDouble()} GBP',
-                                                                    //   style: TextStyles.semiBoldViolet16, ),
+                                                                    //   style: TextStyles.semiBoldAccent14, ),
                                                                     Text('${pendingBookings[index].price!} ${pendingBookings[index].currencyCode!}',
                                                                       style: TextStyles
-                                                                          .semiBoldViolet16,),
+                                                                          .semiBoldAccent14,),
                                                                   ],
                                                                 ),
                                                                 verticalMargin12,
@@ -225,11 +225,11 @@ class BookingRequestView extends StatelessWidget {
                                                                   children: [
                                                                     Text('Commission (15%): ',
                                                                       style: TextStyles
-                                                                          .semiBoldAccent16,),
+                                                                          .semiBoldAccent14,),
                                                                     Text(
                                                                       '${pendingBookings[index].commission!} ${pendingBookings[index].currencyCode!}',
                                                                       style: TextStyles
-                                                                          .semiBoldViolet16,),
+                                                                          .semiBoldAccent14,),
                                                                   ],
                                                                 ),
                                                                 verticalMargin12,
@@ -239,11 +239,11 @@ class BookingRequestView extends StatelessWidget {
                                                                   children: [
                                                                     Text('Total price: ',
                                                                       style: TextStyles
-                                                                          .semiBoldAccent16,),
+                                                                          .semiBoldAccent14,),
                                                                     Text(
                                                                       '${pendingBookings[index].totalPrice!} ${pendingBookings[index].currencyCode!}',
                                                                       style: TextStyles
-                                                                          .semiBoldViolet16,),
+                                                                          .semiBoldAccent14,),
                                                                   ],
                                                                 ),
                                                                 verticalMargin24,
@@ -256,7 +256,7 @@ class BookingRequestView extends StatelessWidget {
                                                                         height: 40,
                                                                         child: OutlinedButton(
                                                                           onPressed: () => context.read<BookingRequestCubit>().rejectBooking(pendingBookings[index], user!),
-                                                                          child: Text('Reject' ,style: TextStyles.semiBoldAccent16.copyWith(
+                                                                          child: Text('Reject' ,style: TextStyles.semiBoldAccent14.copyWith(
                                                                               decoration: TextDecoration.underline
                                                                           ),),
                                                                         ),
@@ -269,7 +269,7 @@ class BookingRequestView extends StatelessWidget {
                                                                         height: 40,
                                                                         child: ElevatedButton(
                                                                           onPressed: () => context.read<BookingRequestCubit>().acceptBooking(pendingBookings[index], user!),
-                                                                          child: Text("Accept", style: TextStyles.boldWhite16,),
+                                                                          child: Text("Accept", style: TextStyles.semiBoldAccent14,),
                                                                         ),
                                                                       ),
                                                                     ),
@@ -300,14 +300,14 @@ class BookingRequestView extends StatelessWidget {
                               } else {
                                 return Center(
                                   child: Text('You have no booking requests',
-                                    style: TextStyles.boldViolet16,),
+                                    style: TextStyles.semiBoldAccent14,),
                                 );
                               }
                             }
                             else {
                               return Center(
                                 child: Text('You have no booking requests',
-                                  style: TextStyles.boldViolet16,),
+                                  style: TextStyles.semiBoldAccent14,),
                               );
                             }
                           }

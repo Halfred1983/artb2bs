@@ -174,11 +174,11 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
               return Scaffold(
                 appBar: AppBar(
                   title: Text(
-                    "Availability Calendar", style: TextStyles.boldAccent21,),
+                    "Availability Calendar", style: TextStyles.semiBoldAccent14,),
                   centerTitle: true,
                   iconTheme: const IconThemeData(
                     color: AppTheme
-                        .primaryColourViolet, //change your color here
+                        .primaryColor, //change your color here
                   ),
                 ),
                 body: SingleChildScrollView(
@@ -206,13 +206,13 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                                 headerStyle: const HeaderStyle(
                                     leftChevronIcon: Icon(
                                       Icons.chevron_left, color: AppTheme
-                                        .primaryColourViolet,),
+                                        .primaryColor,),
                                     rightChevronIcon: Icon(
                                       Icons.chevron_right, color: AppTheme
-                                        .primaryColourViolet,),
+                                        .primaryColor,),
                                     titleTextStyle: TextStyle(
                                         fontSize: 17.0, color: AppTheme
-                                        .primaryColourViolet),
+                                        .primaryColor),
                                     titleCentered: true
                                 ),
                                 calendarStyle: const CalendarStyle(
@@ -278,7 +278,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                             verticalMargin16,
                             _errorMessage.length > 1 ? Text(
                               _errorMessage, textAlign: TextAlign.center,
-                              style: TextStyles.boldAccent16,) : Container(),
+                              style: TextStyles.semiBoldAccent14,) : Container(),
                             verticalMargin16,
                             _errorMessage.length < 1 && _rangeStart != null &&
                                 _rangeEnd != null ?
@@ -286,18 +286,18 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                             Column(
                               children: [
                                 Text("Add Unavailable Dates",
-                                  style: TextStyles.semiBoldAccent16,),
+                                  style: TextStyles.semiBoldAccent14,),
                                 verticalMargin16,
                                 Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text('From: ', style: TextStyles
-                                          .boldViolet16,),
+                                          .semiBoldAccent14,),
                                       Text(
                                         DateFormat.yMMMEd().format(
                                             _rangeStart!),
                                         style: TextStyles
-                                            .semiBoldViolet14,),
+                                            .semiBoldAccent14,),
                                     ]
                                 ),
                                 verticalMargin12,
@@ -305,11 +305,11 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text('To: ', style: TextStyles
-                                        .boldViolet16,),
+                                        .semiBoldAccent14,),
                                     Text(DateFormat.yMMMEd().format(
                                         _rangeEnd!),
                                       style: TextStyles
-                                          .semiBoldViolet14,),
+                                          .semiBoldAccent14,),
                                   ],
                                 ),
                               ],
@@ -317,7 +317,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                             ) : Container(),
                             verticalMargin24,
                             Text("Existing Unavailable Dates",
-                              style: TextStyles.semiBoldAccent16,),
+                              style: TextStyles.semiBoldAccent14,),
                             verticalMargin12,
                             getExistingUnavailableDateList(user!)
                           ]
@@ -345,7 +345,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                           })
                         });
                       } : null,
-                      child: Text("Save", style: TextStyles.boldWhite16,),)
+                      child: Text("Save", style: TextStyles.semiBoldAccent14,),)
                 ),
               );
             }
@@ -370,12 +370,12 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text('From: ', style: TextStyles
-                            .boldViolet16,),
+                            .semiBoldAccent14,),
                         Text(
                           DateFormat.yMMMEd().format(
                               _unavailableList[index].from!),
                           style: TextStyles
-                              .semiBoldViolet14,),
+                              .semiBoldAccent14,),
                       ]
                   ),
                     verticalMargin12,
@@ -383,11 +383,11 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text('To: ', style: TextStyles
-                            .boldViolet16,),
+                            .semiBoldAccent14,),
                         Text(DateFormat.yMMMEd().format(
                             _unavailableList[index].to!),
                           style: TextStyles
-                              .semiBoldViolet14,),
+                              .semiBoldAccent14,),
                       ],
                     )
                   ]

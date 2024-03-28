@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 class FadingInPicture extends StatelessWidget {
-  const FadingInPicture({
+  FadingInPicture({
     super.key,
+    this.radius,
     required this.url,
   });
 
   final String url;
+  double? radius;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,7 @@ class FadingInPicture extends StatelessWidget {
       },
       blendMode: BlendMode.darken,
       child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radius ?? 10),
           child: CachedNetworkImage(
               fit: BoxFit.cover,
               placeholder: (context, url) =>

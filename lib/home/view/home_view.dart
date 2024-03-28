@@ -5,26 +5,19 @@ import 'package:artb2b/booking_requests/view/booking_request_page.dart';
 import 'package:artb2b/exhibition/view/exhibition_page.dart';
 import 'package:artb2b/home/bloc/user_cubit.dart';
 import 'package:artb2b/home/bloc/user_state.dart';
-import 'package:artb2b/injection.dart';
+import 'package:artb2b/home/view/home_list_view.dart';
 import 'package:artb2b/notification/bloc/notification_bloc.dart';
 import 'package:artb2b/onboard/view/personal_info_page.dart';
-import 'package:artb2b/utils/common.dart';
-import 'package:artb2b/widgets/carousel.dart';
-import 'package:artb2b/widgets/common_card_widget.dart';
-import 'package:artb2b/widgets/fadingin_picture.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
-import 'package:artb2b/widgets/map_view.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'package:confetti/confetti.dart';
 
+import '../../explore/view/explore_page.dart';
 import '../../host/view/host_dashboard_page.dart';
 import '../../onboard/view/art_info_page.dart';
-import '../../user_profile/view/user_profile_page.dart';
-import '../../utils/currency/currency_helper.dart';
 
 class HomeView extends StatefulWidget {
   HomeView({super.key, this.index});
@@ -95,19 +88,21 @@ class _HomeViewState extends State<HomeView> {
                 if(user!.userInfo!.userType == UserType.artist) {
                   _widgetOptions = <Widget>[
                     widget,
+                    ExplorePage(),
                     ArtistDashboardPage(),
                     BookingRequestPage(),
                     ExhibitionPage(),
-                    UserProfilePage(),
+                    // UserProfilePage(),
                   ];
                 }
                 else {
                   _widgetOptions = <Widget>[
                     widget,
+                    ExplorePage(),
                     HostDashboardPage(),
                     BookingRequestPage(),
                     ExhibitionPage(),
-                    UserProfilePage(),
+                    // UserProfilePage(),
                   ];
                 }
               }
@@ -119,51 +114,88 @@ class _HomeViewState extends State<HomeView> {
                     ]
                 ),
                 bottomNavigationBar:
-                SalomonBottomBar(
-                  currentIndex: _currentIndex,
-                  onTap: (i) => setState(() => _currentIndex = i),
-                  items: [
-                    /// Home
-                    SalomonBottomBarItem(
-                      icon: const Icon(Icons.home, size: 20,),
-                      title: Text("Home", style: TextStyles.semiBoldViolet14,),
-                      selectedColor: AppTheme.primaryColourViolet,
-                    ),
-
-                    /// Likes
-                    SalomonBottomBarItem(
-                      icon: const Icon(Icons.dashboard, size: 20,),
-                      title: Text("Dashboard", style: TextStyles.semiBoldViolet14,),
-                      selectedColor: AppTheme.primaryColourViolet,
-                    ),
-
-                    /// Requests
-                    // if(user!.userInfo!.userType != UserType.artist) ...[
-                      SalomonBottomBarItem(
-                        icon: pendingRequests != null && pendingRequests! > 0 ?
-                        Badge(
-                            label: Text(pendingRequests!.toString()),
-                            child: const Icon(Icons.add_alert_sharp, size: 22)
-                        ) : const Icon(Icons.add_alert_sharp, size: 22,),
-                        title:  Text("Requests", style: TextStyles.semiBoldViolet14,),
-                        selectedColor: AppTheme.primaryColourViolet,
+                Container(
+                  width: double.infinity,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3), // changes position of shadow
                       ),
-                    // ],
+                    ],
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15), // Adjust the radius value as needed
+                  ),
+                  child: SalomonBottomBar(
+                    // backgroundColor: Colors.white,
 
-                    /// Calendar
-                    SalomonBottomBarItem(
-                      icon: const Icon(Icons.calendar_month, size: 20),
-                      title: Text("Calendar", style: TextStyles.semiBoldViolet14,),
-                      selectedColor: AppTheme.primaryColourViolet,
-                    ),
+                    currentIndex: _currentIndex,
+                    onTap: (i) => setState(() => _currentIndex = i),
+                    items: [
+                      /// Home
+                      SalomonBottomBarItem(
+                          icon: const Icon(Icons.home, size: 20, color: AppTheme.n900,),
+                          title: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0), // Adjust the border radius as needed
+                            child: Container(
+                              width: 50,
+                              height: 200,
+                              color: AppTheme.primaryColor,
+                              // padding: EdgeInsets.all(20.0),
+                              child: Center(child: Text("Home", style: TextStyles.semiBoldN90012,))
+                            ),
+                          ),
+                          selectedColor: AppTheme.primaryColor,
+                          unselectedColor: AppTheme.n200
+                      ),
 
-                    /// Profile
-                    SalomonBottomBarItem(
-                      icon: const Icon(Icons.person, size: 20),
-                      title: Text("Profile", style: TextStyles.semiBoldViolet14,),
-                      selectedColor: AppTheme.primaryColourViolet,
-                    ),
-                  ],
+                      // Explore
+                      SalomonBottomBarItem(
+                        icon: const Icon(Icons.search, size: 20),
+                        title: Text("Explore", style: TextStyles.boldN90012,),
+                        selectedColor: AppTheme.primaryColor,
+                          unselectedColor: AppTheme.n200
+                      ),
+
+                      /// Likes
+                      SalomonBottomBarItem(
+                          icon: const Icon(Icons.dashboard, size: 20,),
+                          title: Text("Dashboard", style: TextStyles.semiBoldAccent14,),
+                          selectedColor: AppTheme.primaryColor,
+                          unselectedColor: AppTheme.n200
+
+                      ),
+
+                      /// Requests
+                      // if(user!.userInfo!.userType != UserType.artist) ...[
+                      SalomonBottomBarItem(
+                          icon: pendingRequests != null && pendingRequests! > 0 ?
+                          Badge(
+                              label: Text(pendingRequests!.toString()),
+                              child: const Icon(Icons.add_alert_sharp, size: 22)
+                          ) : const Icon(Icons.add_alert_sharp, size: 22,),
+                          title:  Text("Requests", style: TextStyles.semiBoldAccent14,),
+                          selectedColor: AppTheme.primaryColor,
+                          unselectedColor: AppTheme.n200
+
+                      ),
+                      // ],
+
+                      /// Calendar
+                      SalomonBottomBarItem(
+                          icon: const Icon(Icons.calendar_month, size: 20),
+                          title: Text("Calendar", style: TextStyles.semiBoldAccent14,),
+                          selectedColor: AppTheme.primaryColor,
+                          unselectedColor: AppTheme.n200
+
+                      ),
+
+
+                    ],
+                  ),
                 ),
               );
             }
@@ -172,140 +204,3 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-class HomeList extends StatefulWidget {
-  HomeList({super.key, required this.user});
-  final User user;
-
-  @override
-  State<HomeList> createState() => _HomeListState();
-}
-
-class _HomeListState extends State<HomeList> {
-  bool _listView = true;
-  final FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
-
-  String logoUrl = "https://firebasestorage.googleapis.com/v0/b/artb2b-34af2.appspot.com/o/artb2b_logo.png?alt=media&token=5c97f5f1-7c19-49f1-8dfc-df535444d11d";
-
-  @override
-  Widget build(BuildContext context) {
-    return  StreamBuilder(
-        stream: firestoreDatabaseService.getHostsStream(),
-        builder: (context, snapshot){
-          if (snapshot.hasError) {
-            return const Text('Something went wrong');
-          }
-
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text("Loading");
-          }
-
-          if(snapshot.hasData) {
-            return Scaffold(
-              resizeToAvoidBottomInset: false,
-              appBar: AppBar(
-                title: Text("Hosts", style: TextStyles.boldAccent24,),
-                centerTitle: true,
-              ),
-              body: _listView ? ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (BuildContext context, int index) {
-                  var user = snapshot.data![index];
-                  // Build your list item using the user data
-                  return InkWell(
-                        onTap: () => context.pushNamed(
-                          'profile',
-                          pathParameters: {'userId': user.id},
-                        ),
-                    child: Padding(
-                      padding: horizontalPadding24 + verticalPadding12,
-                      child: CommonCard(
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              user.photos != null && user.photos!.isNotEmpty ?
-
-                             Container(constraints: const BoxConstraints(minWidth: double.infinity,  maxHeight: 300),
-                                 child: Carousel(imgList: user.photos!)
-                             )
-                              : SizedBox(width: double.infinity, child: FadingInPicture(url: logoUrl)),
-                              verticalMargin12,
-                              Row(
-                                children: [
-                                  Text(user.userInfo!.name!, style: TextStyles.boldViolet16,),
-                                  Expanded(child: Container()),
-                                  Image.asset('assets/images/marker.png', width: 20,),
-                                  horizontalMargin12,
-                                  Text(user.userInfo!.address!.city,
-                                    softWrap: true, style: TextStyles.semiBoldViolet14,),
-                                ],
-                              ),
-                              verticalMargin12,
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Text("Spaces: ", style: TextStyles.boldViolet14,),
-                                  Text(user.userArtInfo!.spaces!, style: TextStyles.semiBoldViolet14,),
-                                  Expanded(child: Container()),
-                                  Text("Audience: ", style: TextStyles.boldViolet14,),
-                                  Text(user.userArtInfo!.audience ?? 'n/a', style: TextStyles.semiBoldViolet14,),
-                                  Expanded(child: Container()),
-                                  Text("Audience: ", style: TextStyles.boldViolet14,),
-                                  Text(user.userArtInfo!.audience ?? 'n/a', style: TextStyles.semiBoldViolet14,),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Flexible(flex: 1, child: Text("Type: ", softWrap: true, style: TextStyles.boldViolet14,)),
-                                ],
-                              ),
-                              Text(user.userArtInfo!.typeOfVenue != null ?
-                              user.userArtInfo!.typeOfVenue!.join(", ") : 'n/a', softWrap: true, style: TextStyles.semiBoldViolet14,),
-
-                              verticalMargin12,
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Text("Price per space per day: ", style: TextStyles.boldViolet14,),
-                                  Expanded(child: Container()),
-                                  Text(' ${user.bookingSettings!.basePrice!} '
-                                      '${CurrencyHelper.currency(user.userInfo!.address!.country).currencySymbol}', style: TextStyles.boldViolet21,),
-                                ],
-                              ),
-                              verticalMargin12,
-                              Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Text("Min. spaces: ", style: TextStyles.boldViolet14,),
-                                    Text(user.bookingSettings!.minSpaces!, style: TextStyles.semiBoldViolet14,),
-                                    Expanded(child: Container()),
-                                    Text("Min. days: ", style: TextStyles.boldViolet14,),
-                                    Text(user.bookingSettings!.minLength!, style: TextStyles.semiBoldViolet14,),
-                                  ]
-                              ),
-                            ]
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ) : MapView(user: widget.user),
-              floatingActionButton: FloatingActionButton(
-                onPressed: (){
-                  setState(() {
-                    _listView = !_listView;
-                  });
-                },
-                child: Icon(_listView ? Icons.map : Icons.list),
-              ),
-              floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-            );
-          }
-          return Container();
-        });
-  }
-}

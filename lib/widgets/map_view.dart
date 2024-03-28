@@ -272,7 +272,7 @@ class _MapViewState extends State<MapView> {
                                 Image.asset('assets/images/artist.png', width: 40,) :
                                 Image.asset('assets/images/gallery.png', width: 40,),
                                 horizontalMargin12,
-                                Text(user.userInfo!.name!, style: TextStyles.boldViolet16,),
+                                Text(user.userInfo!.name!, style: TextStyles.semiBoldAccent14,),
                               ],
                             ),
                             verticalMargin12,
@@ -282,9 +282,9 @@ class _MapViewState extends State<MapView> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Text("Address: ", style: TextStyles.boldViolet14,),
+                                Text("Address: ", style: TextStyles.semiBoldAccent14,),
                                 Flexible(child: Text(user.userInfo!.address!.formattedAddress,
-                                  softWrap: true, style: TextStyles.semiBoldViolet14,)),
+                                  softWrap: true, style: TextStyles.semiBoldAccent14,)),
                               ],
                             ),
                             verticalMargin12,
@@ -294,11 +294,11 @@ class _MapViewState extends State<MapView> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Text("Spaces: ", style: TextStyles.boldViolet14,),
-                                Text(user.userArtInfo!.spaces!, style: TextStyles.semiBoldViolet14,),
+                                Text("Spaces: ", style: TextStyles.semiBoldAccent14,),
+                                Text(user.userArtInfo!.spaces!, style: TextStyles.semiBoldAccent14,),
                                 Expanded(child: Container()),
-                                Text("Audience: ", style: TextStyles.boldViolet14,),
-                                Text(user.userArtInfo!.audience?? 'n\a', style: TextStyles.semiBoldViolet14,),
+                                Text("Audience: ", style: TextStyles.semiBoldAccent14,),
+                                Text(user.userArtInfo!.audience?? 'n\a', style: TextStyles.semiBoldAccent14,),
                               ],
                             ),
                             verticalMargin12,
@@ -306,10 +306,10 @@ class _MapViewState extends State<MapView> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Flexible(flex: 1, child: Text("Vibes: ", softWrap: true, style: TextStyles.boldViolet14,)),
+                                Flexible(flex: 1, child: Text("Vibes: ", softWrap: true, style: TextStyles.semiBoldAccent14,)),
                               ],
                             ),
-                            Text(user.userArtInfo!.vibes!.join(", "), softWrap: true, style: TextStyles.semiBoldViolet14,),
+                            Text(user.userArtInfo!.vibes!.join(", "), softWrap: true, style: TextStyles.semiBoldAccent14,),
 
                             verticalMargin12,
                             const Divider(thickness: 0.5, color: AppTheme.primaryColor,),
@@ -318,9 +318,9 @@ class _MapViewState extends State<MapView> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               mainAxisSize: MainAxisSize.max,
                               children: [
-                                Text("Price per space per day: ", style: TextStyles.boldViolet14,),
+                                Text("Price per space per day: ", style: TextStyles.semiBoldAccent14,),
                                 Expanded(child: Container()),
-                                Text('${user.bookingSettings!.basePrice!} ${CurrencyHelper.currency(user.userInfo!.address!.country).currencySymbol}', style: TextStyles.boldViolet24,),
+                                Text('${user.bookingSettings!.basePrice!} ${CurrencyHelper.currency(user.userInfo!.address!.country).currencySymbol}', style: TextStyles.semiBoldAccent14,),
                               ],
                             ),
                             verticalMargin12,
@@ -328,11 +328,11 @@ class _MapViewState extends State<MapView> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Text("Min. spaces: ", style: TextStyles.boldViolet14,),
-                                  Text(user.bookingSettings!.minSpaces!, style: TextStyles.semiBoldViolet14,),
+                                  Text("Min. spaces: ", style: TextStyles.semiBoldAccent14,),
+                                  Text(user.bookingSettings!.minSpaces!, style: TextStyles.semiBoldAccent14,),
                                   Expanded(child: Container()),
-                                  Text("Min. days: ", style: TextStyles.boldViolet14,),
-                                  Text(user.bookingSettings!.minLength!, style: TextStyles.semiBoldViolet14,),
+                                  Text("Min. days: ", style: TextStyles.semiBoldAccent14,),
+                                  Text(user.bookingSettings!.minLength!, style: TextStyles.semiBoldAccent14,),
                                 ]
                             ),
 
@@ -393,7 +393,7 @@ class _MapViewState extends State<MapView> {
                                                     bottom: 15,
                                                     right: 25,
                                                     child: Text(user.photos![index].description ?? '',
-                                                      style: TextStyles.boldWhite14,),
+                                                      style: TextStyles.semiBoldAccent14,),
                                                   )
                                                 ],
                                               ),
@@ -402,9 +402,9 @@ class _MapViewState extends State<MapView> {
 
                                         },
                                       ),
-                                    ) : SizedBox(height: 90, child: Center(child: Text("Host has no photos yet",  style: TextStyles.semiBoldViolet16)));
+                                    ) : SizedBox(height: 90, child: Center(child: Text("Host has no photos yet",  style: TextStyles.semiBoldAccent14)));
                                   }
-                                  return SizedBox(height: 90, child: Center(child: Text("Host has no photos yet" , style: TextStyles.semiBoldViolet16,)));
+                                  return SizedBox(height: 90, child: Center(child: Text("Host has no photos yet" , style: TextStyles.semiBoldAccent14,)));
                                 }),
 
                             verticalMargin32,
@@ -418,7 +418,7 @@ class _MapViewState extends State<MapView> {
                                   );
                                   // context.read<BookingCubit>().save();
                                 },
-                                child: Text("Book", style: TextStyles.boldWhite16,),),
+                                child: Text("Book", style: TextStyles.semiBoldAccent14,),),
                             )
                           ],
                         )

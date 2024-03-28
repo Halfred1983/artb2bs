@@ -51,6 +51,7 @@ const verticalPadding8 = EdgeInsets.symmetric(vertical: 8.0);
 const verticalPadding12 = EdgeInsets.symmetric(vertical: 12.0);
 const verticalPadding16 = EdgeInsets.symmetric(vertical: 16.0);
 const verticalPadding24 = EdgeInsets.symmetric(vertical: 24.0);
+const verticalPadding20 = EdgeInsets.symmetric(vertical: 20.0);
 const verticalPadding32 = EdgeInsets.symmetric(vertical: 32.0);
 const verticalPadding48 = EdgeInsets.symmetric(vertical: 48.0);
 
@@ -120,7 +121,7 @@ extension BookingStatusColorExtension on String {
       case 'cancelled':
         return Colors.red; // Set the color for cancelled status
       default:
-        return AppTheme.primaryColourViolet; // Default color if status is not recognized
+        return AppTheme.primaryColor; // Default color if status is not recognized
     }
   }
 }
@@ -135,7 +136,7 @@ extension PayoutStatusColorExtension on String {
       case 'failed':
         return Colors.red; // Set the color for cancelled status
       default:
-        return AppTheme.primaryColourViolet; // Default color if status is not recognized
+        return AppTheme.primaryColor; // Default color if status is not recognized
     }
   }
 }

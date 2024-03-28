@@ -55,7 +55,7 @@ class _AppDropdownFieldState<T> extends State<AppDropdownField<T>> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (widget.labelText != null) ...[
-            Text(widget.labelText!, style: TextStyles.semiBoldViolet21),
+            Text(widget.labelText!, style: TextStyles.semiBoldAccent14),
             verticalMargin8,
           ],
           DropdownButtonFormField<T>(
@@ -77,7 +77,7 @@ class _AppDropdownFieldState<T> extends State<AppDropdownField<T>> {
               ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
-                  borderSide: BorderSide(color: AppTheme.primaryColourViolet, width: 1.0),
+                  borderSide: BorderSide(color: AppTheme.primaryColor, width: 1.0),
                 ),
                 border: OutlineInputBorder()
             ).applyDefaults(theme.inputDecorationTheme),
