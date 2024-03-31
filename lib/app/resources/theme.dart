@@ -49,7 +49,7 @@ class AppTheme {
     return ThemeData(
       primaryColor: primaryColor,
       canvasColor: Colors.white,
-      fontFamily: GoogleFonts.openSans().fontFamily,
+      fontFamily: 'OpenSans',
       visualDensity: VisualDensity.adaptivePlatformDensity,
       scaffoldBackgroundColor: backgroundColor,
       splashColor: accentColor.withOpacity(0.2),
@@ -65,12 +65,12 @@ class AppTheme {
           valueIndicatorTextStyle:  TextStyles.boldAccent17,
           valueIndicatorColor: accentColourOrangeOpacity
       ),
-      textTheme:  const TextTheme(
-          titleMedium: TextStyle(color: accentColor)
-      ),
-      textSelectionTheme: const TextSelectionThemeData(
-          cursorColor: accentColor
-      ),
+      // textTheme:  const TextTheme(
+      //     titleMedium: TextStyle(color: accentColor)
+      // ),
+      // textSelectionTheme: const TextSelectionThemeData(
+      //     cursorColor: accentColor
+      // ),
     );
   }
 

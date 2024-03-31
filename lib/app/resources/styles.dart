@@ -145,7 +145,7 @@ class TextStyles {
       {Color? color, double? lineHeight, bool underline = false}) {
     final fontSize = _fontSizes[size]!;
     return TextStyle(
-      fontFamily: GoogleFonts.openSans().fontFamily,
+      fontFamily: 'OpenSans',
       fontWeight: _fontWeights[weight]!,
       fontStyle: FontStyle.normal,
       fontSize: fontSize,
@@ -158,7 +158,7 @@ class TextStyles {
     TextWeight.light: FontWeight.w300,
     TextWeight.regular: FontWeight.w400,
     TextWeight.semiBold: FontWeight.w600,
-    TextWeight.bold: FontWeight.w800,
+    TextWeight.bold: FontWeight.w700,
   };
 
   static const _fontSizes = <TextSize, double>{

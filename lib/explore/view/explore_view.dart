@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:database_service/database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -29,6 +31,7 @@ class _ExploreViewState extends State<ExploreView> {
   FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
   bool _listView = true;
   final controller = PageController(viewportFraction: 1, keepPage: true);
+  List<int> currentIndices = [];
 
   final TextEditingController _searchController = TextEditingController();
   final StreamController<List<User>> _filteredStreamController = StreamController<List<User>>();
@@ -37,7 +40,10 @@ class _ExploreViewState extends State<ExploreView> {
   @override
   void initState() {
     super.initState();
-    firestoreDatabaseService.getHostsStream().listen((event) {_filteredStreamController.add(event); });
+    firestoreDatabaseService.getHostsStream().listen((event) {
+      _filteredStreamController.add(event);
+      currentIndices = List<int>.generate(event.length, (index) => 0);
+    });
     _searchController.addListener(_filterUsers);
   }
 
@@ -64,6 +70,7 @@ class _ExploreViewState extends State<ExploreView> {
 
       // Add the filtered list to the StreamController
       _filteredStreamController.add(filteredUsers);
+      currentIndices = List.filled(filteredUsers.length, 0);
     });
   }
 
@@ -102,8 +109,6 @@ class _ExploreViewState extends State<ExploreView> {
                               return const Text("Loading");
                             }
                             if(snapshot.hasData) {
-
-
 
                               return  Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,28 +191,47 @@ class _ExploreViewState extends State<ExploreView> {
                                                   children: [
 
                                                     if(photos.isNotEmpty) ...[
-                                                      SizedBox(
-                                                        height: 200,
-                                                        width: double.infinity,
-                                                        child: PageView.builder(
-                                                          padEnds: false,
-                                                          controller: controller,
-                                                          itemCount: photos.length,
-                                                          itemBuilder: (_, index) {
-                                                            return photos[index % photos.length];
-                                                          },
-                                                        ), // Select photo dynamically using index
+                                                      Stack(
+                                                        children: [
+                                                          SizedBox(
+                                                            height: 200,
+                                                            width: double.infinity,
+                                                            child: PageView.builder(
+                                                              onPageChanged: (pageId,) {
+                                                                setState(() {
+                                                                  currentIndices[
+                                                                  index] = pageId;
+                                                                });
+                                                              },
+                                                              padEnds: false,
+                                                              controller: controller,
+                                                              itemCount: photos.length,
+                                                              itemBuilder: (_, index) {
+                                                                return photos[index % photos.length];
+                                                              },
+                                                            ), // Select photo dynamically using index
+                                                          ),
+                                                          Positioned.fill(
+                                                            bottom: 12,
+                                                            child: Align(
+                                                              alignment: Alignment.bottomCenter,
+                                                              child: AnimatedSmoothIndicator(
+                                                                activeIndex: currentIndices.isNotEmpty ? currentIndices[
+                                                                index] : 0,
+                                                                count: photos.length,
+                                                                effect: const ExpandingDotsEffect(
+                                                                  spacing: 5,
+                                                                  dotHeight: 10,
+                                                                  dotWidth: 10,
+                                                                  dotColor: Colors.white,
+                                                                  activeDotColor: Colors.white,
+                                                                  // type: WormType.thin,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          )
+                                                        ],
                                                       ),
-
-                                                      SmoothPageIndicator(
-                                                        controller: controller,
-                                                        count: photos.length,
-                                                        effect: const WormEffect(
-                                                          dotHeight: 12,
-                                                          dotWidth: 12,
-                                                          type: WormType.thin,
-                                                        ),
-                                                      )
                                                     ]
                                                     else ... [
                                                       const SizedBox(
@@ -220,28 +244,32 @@ class _ExploreViewState extends State<ExploreView> {
                                                         ),
                                                       ),
                                                     ],
-                                                    Padding(
-                                                      padding: horizontalPadding16 + verticalPadding8,
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text(user.userInfo!.name!, style: TextStyles.boldN90017,),
-                                                          Row(
-                                                            children: [
-                                                              const Icon(Icons.location_pin, size: 10,),
-                                                              Text(user.userInfo!.address!.city,
-                                                                softWrap: true, style: TextStyles.regularN90010,),
-                                                            ],
-                                                          ),
-                                                          verticalMargin8,
-                                                          Text(user.userArtInfo!.typeOfVenue != null ?
-                                                          user.userArtInfo!.typeOfVenue!.join(", ") :
-                                                          '', softWrap: true, style: TextStyles.semiBoldP40010,),
+                                                    SizedBox(
+                                                      height: 100,
+                                                      child: Padding(
+                                                        padding: horizontalPadding24 + verticalPadding12,
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(user.userInfo!.name!, style: TextStyles.boldN90017,),
+                                                            Row(
+                                                              children: [
+                                                                const Icon(Icons.location_pin, size: 10,),
+                                                                Text(user.userInfo!.address!.city,
+                                                                  softWrap: true, style: TextStyles.regularN90010,),
+                                                              ],
+                                                            ),
+                                                            Expanded(child: Container(),),
+                                                            Text(user.userArtInfo!.typeOfVenue != null ?
+                                                            user.userArtInfo!.typeOfVenue!.join(", ") :
+                                                            '', softWrap: true, style: TextStyles.semiBoldP40010,),
+                                                            verticalMargin24
 
-                                                        ],
+                                                          ],
+                                                        ),
+
                                                       ),
-
                                                     )
 
 
