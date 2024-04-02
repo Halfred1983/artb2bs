@@ -86,81 +86,31 @@ class _MapViewState extends State<MapView> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-
-        GoogleMap(
-          gestureRecognizers: Set()
-            ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer()))
-            ..add(Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()))
-            ..add(Factory<TapGestureRecognizer>(() => TapGestureRecognizer()))
-            ..add(Factory<VerticalDragGestureRecognizer>(
-                    () => VerticalDragGestureRecognizer())),
-          zoomControlsEnabled: false,
-          zoomGesturesEnabled: true,
-          scrollGesturesEnabled: true,
-          mapToolbarEnabled: false,
-          rotateGesturesEnabled: false,
-          tiltGesturesEnabled: false,
-          myLocationEnabled: true,
-          mapType: MapType.normal,
-          compassEnabled: false,
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: LatLng(
-              widget.user.userInfo!.address!.location!.latitude!,
-              widget.user.userInfo!.address!.location!.longitude!,
-            ),
-            zoom: 12.0,
-          ),
-          markers: Set<Marker>.of(markers.values),
+    return GoogleMap(
+      gestureRecognizers: Set()
+        ..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer()))
+        ..add(Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()))
+        ..add(Factory<TapGestureRecognizer>(() => TapGestureRecognizer()))
+        ..add(Factory<VerticalDragGestureRecognizer>(
+                () => VerticalDragGestureRecognizer())),
+      zoomControlsEnabled: false,
+      zoomGesturesEnabled: true,
+      scrollGesturesEnabled: true,
+      mapToolbarEnabled: false,
+      rotateGesturesEnabled: false,
+      tiltGesturesEnabled: false,
+      myLocationEnabled: true,
+      mapType: MapType.normal,
+      compassEnabled: false,
+      onMapCreated: _onMapCreated,
+      initialCameraPosition: CameraPosition(
+        target: LatLng(
+          widget.user.userInfo!.address!.location!.latitude!,
+          widget.user.userInfo!.address!.location!.longitude!,
         ),
-        Padding(
-          padding: horizontalPadding24,
-          child: SafeArea(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Expanded(
-                      child: InputTextWidget((priceValue) {
-                        setState(() {
-                          markers.clear();
-                        });
-                        priceInputSubject.add(priceValue);
-
-                      },
-                          'Max Price', TextInputType.number),
-                    ),
-                    horizontalMargin12,
-                    Expanded(
-                      child: InputTextWidget((daysValue) {
-                        setState(() {
-                          markers.clear();
-                        });
-                        daysInputSubject.add(daysValue);
-                      } ,
-                          'Days', TextInputType.number),
-                    ),
-                  ],
-                ),
-                verticalMargin12,
-                Slider(
-                  min: 1,
-                  max: 200,
-                  divisions: 4,
-                  value: _value,
-                  label: 'Radius: $_label',
-                  activeColor: AppTheme.primaryColourVioletOpacity,
-                  inactiveColor: AppTheme.accentColourOrangeOpacity,
-                  onChanged: (double value) => changed(value) ,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
+        zoom: 12.0,
+      ),
+      markers: Set<Marker>.of(markers.values),
     );
   }
   String _mapStyle = '';

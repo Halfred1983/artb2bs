@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../home/view/home_page.dart';
 import '../../login/cubit/login_cubit.dart';
+import '../../profile/host_profile.dart';
 
 // This example shows how to use redirect to handle a sign-in flow.
 // The GoRouter.redirect method is called before the app is navigate to a
@@ -51,7 +52,7 @@ class AppRouter {
       GoRoute(
         path: "/profile/:userId",
         name: "profile",
-        builder: (context, state) => ProfilePage(
+        builder: (context, state) => HostProfilePage(
           userId: state.pathParameters["userId"].toString(),
         ),
       ),

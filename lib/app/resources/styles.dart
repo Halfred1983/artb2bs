@@ -18,7 +18,9 @@ class TextStyles {
   static final regularAccent10 = _baseRegular[TextSize.size10].withColor(AppTheme.accentColor);
   static final regularAccent12 = _baseRegular[TextSize.size12].withColor(AppTheme.accentColor);
   static final regularAccent14 = _baseRegular[TextSize.size14].withColor(AppTheme.accentColor);
+  static final regularN200 = _baseRegular[TextSize.size14].withColor(AppTheme.n200);
   static final regularAccent17 = _baseRegular[TextSize.size17].withColor(AppTheme.accentColor);
+  static final regularWhite17 = _baseRegular[TextSize.size17].withColor(AppTheme.white);
   static final regularAccent20 = _baseRegular[TextSize.size20].withColor(AppTheme.accentColor);
   static final regularAccent24 = _baseRegular[TextSize.size24].withColor(AppTheme.accentColor);
   static final regularAccent29 = _baseRegular[TextSize.size29].withColor(AppTheme.accentColor);
@@ -56,6 +58,7 @@ class TextStyles {
   static final semiBoldS40012 = _baseSemiBold[TextSize.size12].withColor(AppTheme.s400);
   static final semiBoldP40012 = _baseSemiBold[TextSize.size12].withColor(AppTheme.p400);
   static final semiBoldN90014 = _baseSemiBold[TextSize.size14].withColor(AppTheme.n900);
+  static final semiBoldN20014 = _baseSemiBold[TextSize.size14].withColor(AppTheme.n200);
   static final semiBoldN90017 = _baseSemiBold[TextSize.size17].withColor(AppTheme.n900);
   static final semiBoldN90020 = _baseSemiBold[TextSize.size20].withColor(AppTheme.n900);
   static final semiBoldN90024 = _baseSemiBold[TextSize.size24].withColor(AppTheme.n900);
@@ -86,6 +89,7 @@ class TextStyles {
   static final boldN90020 = _baseBold[TextSize.size20].withColor(AppTheme.n900);
   static final boldN90024 = _baseBold[TextSize.size24].withColor(AppTheme.n900);
   static final boldN90029 = _baseBold[TextSize.size29].withColor(AppTheme.n900);
+  static final boldWhite29 = _baseBold[TextSize.size29].withColor(AppTheme.white);
   static final boldS40029 = _baseBold[TextSize.size29].withColor(AppTheme.s400);
 
   // Bold Underlined

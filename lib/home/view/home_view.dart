@@ -1,5 +1,8 @@
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/app/resources/theme.dart';
+
+import 'package:stylish_bottom_bar/model/bar_items.dart';
+import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 import 'package:artb2b/artwork/view/artist_dashboard_page.dart';
 import 'package:artb2b/booking_requests/view/booking_request_page.dart';
 import 'package:artb2b/exhibition/view/exhibition_page.dart';
@@ -13,7 +16,6 @@ import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 import '../../explore/view/explore_page.dart';
 import '../../host/view/host_dashboard_page.dart';
@@ -114,88 +116,58 @@ class _HomeViewState extends State<HomeView> {
                     ]
                 ),
                 bottomNavigationBar:
-                Container(
-                  width: double.infinity,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3), // changes position of shadow
-                      ),
-                    ],
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15), // Adjust the radius value as needed
+                StylishBottomBar(
+                  option: BubbleBarOptions(
+                    unselectedIconColor: AppTheme.n200,
+                    barStyle: BubbleBarStyle.vertical,
+                    bubbleFillStyle: BubbleFillStyle.fill,
+                    opacity: 0.8,
+                    inkEffect: false
                   ),
-                  child: SalomonBottomBar(
-                    // backgroundColor: Colors.white,
-
-                    currentIndex: _currentIndex,
-                    onTap: (i) => setState(() => _currentIndex = i),
-                    items: [
-                      /// Home
-                      SalomonBottomBarItem(
-                          icon: const Icon(Icons.home, size: 20, color: AppTheme.n900,),
-                          title: ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0), // Adjust the border radius as needed
-                            child: Container(
-                              width: 50,
-                              height: 200,
-                              color: AppTheme.primaryColor,
-                              // padding: EdgeInsets.all(20.0),
-                              child: Center(child: Text("Home", style: TextStyles.semiBoldN90012,))
-                            ),
-                          ),
-                          selectedColor: AppTheme.primaryColor,
-                          unselectedColor: AppTheme.n200
-                      ),
-
-                      // Explore
-                      SalomonBottomBarItem(
-                        icon: const Icon(Icons.search, size: 20),
-                        title: Text("Explore", style: TextStyles.boldN90012,),
-                        selectedColor: AppTheme.primaryColor,
-                          unselectedColor: AppTheme.n200
-                      ),
-
-                      /// Likes
-                      SalomonBottomBarItem(
-                          icon: const Icon(Icons.dashboard, size: 20,),
-                          title: Text("Dashboard", style: TextStyles.semiBoldAccent14,),
-                          selectedColor: AppTheme.primaryColor,
-                          unselectedColor: AppTheme.n200
-
-                      ),
-
-                      /// Requests
-                      // if(user!.userInfo!.userType != UserType.artist) ...[
-                      SalomonBottomBarItem(
-                          icon: pendingRequests != null && pendingRequests! > 0 ?
-                          Badge(
-                              label: Text(pendingRequests!.toString()),
-                              child: const Icon(Icons.add_alert_sharp, size: 22)
-                          ) : const Icon(Icons.add_alert_sharp, size: 22,),
-                          title:  Text("Requests", style: TextStyles.semiBoldAccent14,),
-                          selectedColor: AppTheme.primaryColor,
-                          unselectedColor: AppTheme.n200
-
-                      ),
-                      // ],
-
-                      /// Calendar
-                      SalomonBottomBarItem(
-                          icon: const Icon(Icons.calendar_month, size: 20),
-                          title: Text("Calendar", style: TextStyles.semiBoldAccent14,),
-                          selectedColor: AppTheme.primaryColor,
-                          unselectedColor: AppTheme.n200
-
-                      ),
-
-
-                    ],
-                  ),
+                  items: [
+                    BottomBarItem(
+                      icon: const Icon(Icons.home, size: 20, color: AppTheme.n200,),
+                      title: Text("Home", style: TextStyles.semiBoldN90012),
+                      backgroundColor: AppTheme.primaryColor,
+                      selectedIcon: const Icon(Icons.home, size: 20, color: AppTheme.n900,),
+                    ),
+                    BottomBarItem(
+                      icon: const Icon(Icons.search, size: 20, color: AppTheme.n200,),
+                      title: Text("Explore", style: TextStyles.semiBoldN90012),
+                      backgroundColor: AppTheme.primaryColor,
+                      selectedIcon: const Icon(Icons.search, size: 20, color: AppTheme.n900,),
+                    ),
+                    BottomBarItem(
+                      icon: const Icon(Icons.dashboard, size: 20, color: AppTheme.n200,),
+                      title: Text("Dashboard", style: TextStyles.semiBoldN90012),
+                      backgroundColor: AppTheme.primaryColor,
+                      selectedIcon: const Icon(Icons.dashboard, size: 20, color: AppTheme.n900,),
+                    ),
+                    BottomBarItem(
+                      icon: pendingRequests != null && pendingRequests! > 0 ?
+                      Badge(
+                          label: Text(pendingRequests!.toString()),
+                          child: const Icon(Icons.add_alert_sharp, size: 22)
+                      ) : const Icon(Icons.add_alert_sharp, size: 22,),
+                      title: Text("Requests", style: TextStyles.semiBoldN90012),
+                      backgroundColor: AppTheme.primaryColor,
+                      selectedIcon: const Icon(Icons.add_alert_sharp, size: 20, color: AppTheme.n900,),
+                    ),
+                    BottomBarItem(
+                      icon: const Icon(Icons.calendar_month, size: 20, color: AppTheme.n200,),
+                      title: Text("Calendar", style: TextStyles.semiBoldN90012),
+                      backgroundColor: AppTheme.primaryColor,
+                      selectedIcon: const Icon(Icons.calendar_month, size: 20, color: AppTheme.n900,),
+                    ),
+                  ],
+                  hasNotch: false,
+                  borderRadius: BorderRadius.circular(15),
+                  currentIndex: _currentIndex,
+                  onTap: (index) {
+                    setState(() {
+                      _currentIndex = index;
+                    });
+                  },
                 ),
               );
             }

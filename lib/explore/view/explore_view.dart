@@ -87,7 +87,7 @@ class _ExploreViewState extends State<ExploreView> {
               user = state.user;
 
               return Padding(
-                padding: horizontalPadding32,
+                padding: _listView ? horizontalPadding32 : EdgeInsets.zero,
                 child: Scaffold(
                   resizeToAvoidBottomInset: false,
                   appBar: AppBar(
@@ -95,8 +95,7 @@ class _ExploreViewState extends State<ExploreView> {
                     centerTitle: false,
                     titleSpacing: 0,
                   ),
-                  body:
-                  _listView ? SingleChildScrollView(
+                  body: SingleChildScrollView(
                     // physics: const ClampingScrollPhysics(),
                       child: StreamBuilder<List<User>>(
                           stream: _filteredStreamController.stream,
@@ -110,179 +109,25 @@ class _ExploreViewState extends State<ExploreView> {
                             }
                             if(snapshot.hasData) {
 
-                              return  Column(
+                              return  _listView ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     verticalMargin24,
-                                    Container(
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(50),
-                                        boxShadow: [
-                                          AppTheme.boxShadow
-                                        ],
-                                      ),
-                                      child: TextField(
-                                        controller: _searchController,
-                                        autofocus: false,
-                                        style: TextStyles.semiBoldAccent14,
-                                        decoration: InputDecoration(
-                                          suffixIcon: IconButton(
-                                            icon: const Icon(Icons.filter_list, color: AppTheme.primaryColor,),
-                                            onPressed: () {
-                                              // Add your filter action here
-                                            },
-                                          ),
-                                          hintText: 'Search',
-                                          hintStyle: TextStyles.regularN90014,
-                                          prefixIcon: const Icon(Icons.search, color: AppTheme.n900),
-                                          contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(50),
-                                            borderSide: BorderSide.none,
-                                          ),
-                                          filled: true,
-                                          fillColor: Colors.white,
-                                        ),
-                                        keyboardType: TextInputType.text,
-                                      ),
-                                    ),
+                                    buildSearch(),
                                     verticalMargin32,
-                                    ListView.builder(
-                                      physics: const ScrollPhysics(),
-                                      shrinkWrap: true,
-                                      scrollDirection: Axis.vertical,
-                                      itemCount: snapshot.data!.length,
-                                      itemBuilder: (BuildContext context, int index) {
-                                        var user = snapshot.data![index];
+                                    buildListView(snapshot)
 
-                                        List<Widget> photos = [];
-
-                                        if (user.photos != null && user.photos!.isNotEmpty) {
-                                          photos = List.generate(
-                                            user.photos!.length,
-                                                (index) => ClipRRect(
-                                                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                                                  child: FadeInImage(
-                                                    width: double.infinity,
-                                                    placeholder: const AssetImage(Assets.logo),
-                                                    image: NetworkImage(user.photos![index].url!),
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                          );
-                                        }
-
-                                        // Build your list item using the user data
-                                        return Container(
-                                          width: double.infinity,
-                                          padding: verticalPadding8,
-                                          child: InkWell(
-                                            onTap: () => context.pushNamed(
-                                              'profile',
-                                              pathParameters: {'userId': user.id},
-                                            ),
-                                            child: CommonCard(
-                                              padding: EdgeInsets.zero,
-                                              borderRadius: BorderRadius.circular(24),
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.max,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-
-                                                    if(photos.isNotEmpty) ...[
-                                                      Stack(
-                                                        children: [
-                                                          SizedBox(
-                                                            height: 200,
-                                                            width: double.infinity,
-                                                            child: PageView.builder(
-                                                              onPageChanged: (pageId,) {
-                                                                setState(() {
-                                                                  currentIndices[
-                                                                  index] = pageId;
-                                                                });
-                                                              },
-                                                              padEnds: false,
-                                                              controller: controller,
-                                                              itemCount: photos.length,
-                                                              itemBuilder: (_, index) {
-                                                                return photos[index % photos.length];
-                                                              },
-                                                            ), // Select photo dynamically using index
-                                                          ),
-                                                          Positioned.fill(
-                                                            bottom: 12,
-                                                            child: Align(
-                                                              alignment: Alignment.bottomCenter,
-                                                              child: AnimatedSmoothIndicator(
-                                                                activeIndex: currentIndices.isNotEmpty ? currentIndices[
-                                                                index] : 0,
-                                                                count: photos.length,
-                                                                effect: const ExpandingDotsEffect(
-                                                                  spacing: 5,
-                                                                  dotHeight: 10,
-                                                                  dotWidth: 10,
-                                                                  dotColor: Colors.white,
-                                                                  activeDotColor: Colors.white,
-                                                                  // type: WormType.thin,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ]
-                                                    else ... [
-                                                      const SizedBox(
-                                                        width: double.infinity,
-                                                        height: 200,
-                                                        child:FadeInImage(
-                                                          placeholder: AssetImage(Assets.logoUrl),
-                                                          image: NetworkImage(Assets.logoUrl),
-                                                          fit: BoxFit.fitWidth,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                    SizedBox(
-                                                      height: 100,
-                                                      child: Padding(
-                                                        padding: horizontalPadding24 + verticalPadding12,
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.start,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            Text(user.userInfo!.name!, style: TextStyles.boldN90017,),
-                                                            Row(
-                                                              children: [
-                                                                const Icon(Icons.location_pin, size: 10,),
-                                                                Text(user.userInfo!.address!.city,
-                                                                  softWrap: true, style: TextStyles.regularN90010,),
-                                                              ],
-                                                            ),
-                                                            Expanded(child: Container(),),
-                                                            Text(user.userArtInfo!.typeOfVenue != null ?
-                                                            user.userArtInfo!.typeOfVenue!.join(", ") :
-                                                            '', softWrap: true, style: TextStyles.semiBoldP40010,),
-                                                            verticalMargin24
-
-                                                          ],
-                                                        ),
-
-                                                      ),
-                                                    )
-
-
-                                                  ]
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ]);
+                                  ]) : Container(
+                                  padding: verticalPadding24,
+                                  height: MediaQuery.of(context).size.height -
+                                      kBottomNavigationBarHeight - Assets.marginApppBar,
+                                  child: Stack(children: [MapView(user: user!), Padding(
+                                    padding: _listView ? EdgeInsets.zero : horizontalPadding32,
+                                    child: buildSearch(),
+                                  )])
+                              );
                             }
-                            else { return Container(); } })) : MapView(user: user!),
+                            else { return Container(); } })) ,
                   floatingActionButton: FloatingActionButton(
                     onPressed: (){
                       setState(() {
@@ -298,4 +143,177 @@ class _ExploreViewState extends State<ExploreView> {
             return Container();
           });
   }
+
+  Widget buildSearch() {
+    return Container(
+      height: 50,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(50),
+        boxShadow: [
+          AppTheme.boxShadow
+        ],
+      ),
+      child: TextField(
+        controller: _searchController,
+        autofocus: false,
+        style: TextStyles.semiBoldAccent14,
+        decoration: InputDecoration(
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.filter_list, color: AppTheme.primaryColor,),
+            onPressed: () {
+              // Add your filter action here
+            },
+          ),
+          hintText: 'Search',
+          hintStyle: TextStyles.regularN90014,
+          prefixIcon: const Icon(Icons.search, color: AppTheme.n900),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(50),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+        ),
+        keyboardType: TextInputType.text,
+      ),
+    );
+  }
+
+  ListView buildListView(AsyncSnapshot<List<User>> snapshot) {
+    return ListView.builder(
+      physics: const ScrollPhysics(),
+      shrinkWrap: true,
+      scrollDirection: Axis.vertical,
+      itemCount: snapshot.data!.length,
+      itemBuilder: (BuildContext context, int index) {
+        var user = snapshot.data![index];
+
+        List<Widget> photos = [];
+
+        if (user.photos != null && user.photos!.isNotEmpty) {
+          photos = List.generate(
+            user.photos!.length,
+                (index) => ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+              child: FadeInImage(
+                width: double.infinity,
+                placeholder: const AssetImage(Assets.logo),
+                image: NetworkImage(user.photos![index].url!),
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        }
+
+        // Build your list item using the user data
+        return Container(
+          width: double.infinity,
+          padding: verticalPadding8,
+          child: InkWell(
+            onTap: () => context.pushNamed(
+              'profile',
+              pathParameters: {'userId': user.id},
+            ),
+            child: CommonCard(
+              padding: EdgeInsets.zero,
+              borderRadius: BorderRadius.circular(24),
+              child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+
+                    if(photos.isNotEmpty) ...[
+                      Stack(
+                        children: [
+                          SizedBox(
+                            height: 200,
+                            width: double.infinity,
+                            child: PageView.builder(
+                              onPageChanged: (pageId,) {
+                                setState(() {
+                                  currentIndices[
+                                  index] = pageId;
+                                });
+                              },
+                              padEnds: false,
+                              controller: controller,
+                              itemCount: photos.length,
+                              itemBuilder: (_, index) {
+                                return photos[index % photos.length];
+                              },
+                            ), // Select photo dynamically using index
+                          ),
+                          Positioned.fill(
+                            bottom: 12,
+                            child: Align(
+                              alignment: Alignment.bottomCenter,
+                              child: AnimatedSmoothIndicator(
+                                activeIndex: currentIndices.isNotEmpty ? currentIndices[
+                                index] : 0,
+                                count: photos.length,
+                                effect: const ExpandingDotsEffect(
+                                  spacing: 5,
+                                  dotHeight: 10,
+                                  dotWidth: 10,
+                                  dotColor: Colors.white,
+                                  activeDotColor: Colors.white,
+                                  // type: WormType.thin,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ]
+                    else ... [
+                      const SizedBox(
+                        width: double.infinity,
+                        height: 200,
+                        child:FadeInImage(
+                          placeholder: AssetImage(Assets.logoUrl),
+                          image: NetworkImage(Assets.logoUrl),
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
+                    ],
+                    SizedBox(
+                      height: 100,
+                      child: Padding(
+                        padding: horizontalPadding24 + verticalPadding12,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(user.userInfo!.name!, style: TextStyles.boldN90017,),
+                            Row(
+                              children: [
+                                const Icon(Icons.location_pin, size: 10,),
+                                Text(user.userInfo!.address!.city,
+                                  softWrap: true, style: TextStyles.regularN90010,),
+                              ],
+                            ),
+                            Expanded(child: Container(),),
+                            Text(user.userArtInfo!.typeOfVenue != null ?
+                            user.userArtInfo!.typeOfVenue!.join(", ") :
+                            '', softWrap: true, style: TextStyles.semiBoldP40010,),
+                            verticalMargin24
+
+                          ],
+                        ),
+
+                      ),
+                    )
+
+
+                  ]
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
 }

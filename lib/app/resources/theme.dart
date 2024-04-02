@@ -16,6 +16,7 @@ class AppTheme {
   static const p400 = Color(0xFF8da823);
   static const n900 = Color(0xFF292730);
   static const n200 = Color(0xFF8e8c92);
+  static const divider = Color(0xFFA8A8A8);
 
 
 
