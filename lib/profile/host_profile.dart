@@ -17,6 +17,7 @@ import 'package:lottie/lottie.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../app/resources/assets.dart';
+import '../utils/currency/currency_helper.dart';
 import '../widgets/audience.dart';
 
 class HostProfilePage extends StatefulWidget {
@@ -54,27 +55,27 @@ class _HostProfilePageState extends State<HostProfilePage> {
                 photos = List.generate(
                   user.photos!.length,
                       (index) => ShaderMask(
-                        // blendMode: BlendMode.src,
-                        shaderCallback: (Rect bounds) {
-                          return const LinearGradient(
-                              colors: [
-                                Colors.white,
-                                Colors.black,
-                              ],
-                              begin: Alignment.center,
-                              end: Alignment.bottomCenter
-                          ).createShader(bounds);
-                        },
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.all( Radius.circular(24)),
-                          child: FadeInImage(
-                            width: double.infinity,
-                            placeholder: const AssetImage(Assets.logo),
-                            image: NetworkImage(user.photos![index].url!),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                    // blendMode: BlendMode.src,
+                    shaderCallback: (Rect bounds) {
+                      return const LinearGradient(
+                          colors: [
+                            Colors.white,
+                            Colors.black,
+                          ],
+                          begin: Alignment.center,
+                          end: Alignment.bottomCenter
+                      ).createShader(bounds);
+                    },
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all( Radius.circular(24)),
+                      child: FadeInImage(
+                        width: double.infinity,
+                        placeholder: const AssetImage(Assets.logo),
+                        image: NetworkImage(user.photos![index].url!),
+                        fit: BoxFit.cover,
                       ),
+                    ),
+                  ),
                 );
               }
 
@@ -371,16 +372,55 @@ class _HostProfilePageState extends State<HostProfilePage> {
                 ),
                 bottomNavigationBar: !isArtist ?
                 Container(
-                  padding: buttonPadding,
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed:() {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => BookingPage(host: snapshot.data!,)),
-                      );
-                    },
-                    child: Text("Book", style: TextStyles.semiBoldAccent14,),),
+                  height: 110,
+                  decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.30),
+                          offset: const Offset(0, -10),
+                          blurRadius: 7,
+                          spreadRadius: 0,
+                        )
+                      ],
+                      color: AppTheme.white,
+                      borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(15.0),
+                          topRight: Radius.circular(15.0)
+                      )
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        horizontalMargin32,
+                        Column(
+                          children: [
+                            Expanded(child: Container()),
+                            Text('From ${user.bookingSettings!.basePrice!} '
+                                '${CurrencyHelper.currency(user.userInfo!.address!.country).currencySymbol}',
+                              style: TextStyles.boldN90014,),
+                            Text('Space per day',
+                              style: TextStyles.semiBoldN90012,),
+                            Expanded(child: Container()),
+
+                          ],
+                        ),
+                        Flexible(child: Container()),
+                        ElevatedButton(
+                          onPressed:() {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => BookingPage(host: snapshot.data!,)),
+                            );
+                          },
+                          child: Text('Book Now', style: TextStyles.semiBoldPrimary14,),),
+                        horizontalMargin32,
+                      ],
+                    ),
+                  ),
                 ) : null,
               );
             }

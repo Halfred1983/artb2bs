@@ -217,14 +217,14 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                                 ),
                                 calendarStyle: const CalendarStyle(
                                   rangeHighlightColor: AppTheme
-                                      .accentColourOrangeOpacity,
+                                      .primaryColorOpacity,
                                   isTodayHighlighted: true,
                                   selectedDecoration: BoxDecoration(
                                     color: AppTheme.primaryCalendarViolet,
                                     shape: BoxShape.circle,
                                   ),
                                   todayDecoration: BoxDecoration(
-                                    color: AppTheme.accentColourOrangeOpacity,
+                                    color: AppTheme.primaryColorOpacity,
                                     shape: BoxShape.circle,
                                   ),
                                   rangeStartDecoration: BoxDecoration(

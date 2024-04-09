@@ -12,10 +12,11 @@ import '../utils/common.dart';
 import 'common_card_widget.dart';
 
 class BookingCalendarWidget extends StatefulWidget {
-  BookingCalendarWidget(this.rangeStartChanged, {super.key, required this.host});
+  BookingCalendarWidget(this.rangeStartChanged, {super.key, required this.host, this.widget});
 
   final ValueChanged<DateTimeRangeWithInt> rangeStartChanged;
   final User host;
+  final Widget? widget;
 
   @override
   State<BookingCalendarWidget> createState() => _BookingCalendarWidgetState(rangeStartChanged);
@@ -112,7 +113,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     List<DateTime> dateList = [];
 
     // Loop through the dates and add them to the list
-    for (var date = start; date.isBeforeWithoutTime(end) || date.isAtSameMomentAs(end); date = date.add(Duration(days: 1))) {
+    for (var date = start; date.isBeforeWithoutTime(end) || date.isAtSameMomentAs(end); date = date.add(const Duration(days: 1))) {
       dateList.add(date);
     }
 
@@ -125,134 +126,150 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
   @override
   Widget build(BuildContext context) {
     return CommonCard(
-      child: TableCalendar(
-        availableGestures: AvailableGestures.none,//this single code will solve
-        availableCalendarFormats: const {CalendarFormat.month: 'Month'},
-        startingDayOfWeek: tc.StartingDayOfWeek.monday,
-        rangeStartDay: _rangeStart,
-        rangeEndDay: _rangeEnd,
-        rangeSelectionMode: _rangeSelectionMode,
-        calendarBuilders: CalendarBuilders(
-          markerBuilder: (BuildContext context, date, events) {
-            int freeSpaces = int.parse(widget.host.userArtInfo!.spaces!);
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          widget.widget ?? Container(),
+          TableCalendar(
+            headerStyle: HeaderStyle(
+              titleCentered: true,
+              titleTextStyle: TextStyles.boldS40017,
+              headerPadding: EdgeInsets.zero,
+              leftChevronIcon: const Icon(Icons.chevron_left, color: AppTheme.n900,),
+              rightChevronIcon: const Icon(Icons.chevron_right, color: AppTheme.n900,),
+            ),
+            daysOfWeekStyle: DaysOfWeekStyle(
+              weekdayStyle: TextStyles.semiBoldN90012,
+              weekendStyle: TextStyles.semiBoldN90012,
+            ),
+            availableGestures: AvailableGestures.none,//this single code will solve
+            availableCalendarFormats: const {CalendarFormat.month: 'Month'},
+            startingDayOfWeek: tc.StartingDayOfWeek.monday,
+            rangeStartDay: _rangeStart,
+            rangeEndDay: _rangeEnd,
+            rangeSelectionMode: _rangeSelectionMode,
+            calendarBuilders: CalendarBuilders(
+              markerBuilder: (BuildContext context, date, events) {
+                int freeSpaces = int.parse(widget.host.userArtInfo!.spaces!);
 
-            // if (events.isEmpty) {
-            //   return Container(
-            //     margin: const EdgeInsets.only(top: 40),
-            //     padding: const EdgeInsets.all(1),
-            //     child: Text(freeSpaces.toString(), style: TextStyles
-            //         .semiBoldViolet12),
-            //   );
-            // }
-            for(Object? e in events) {
-              Booking b = e as Booking;
-              freeSpaces = freeSpaces - int.parse(b.spaces!);
-            }
+                // if (events.isEmpty) {
+                //   return Container(
+                //     margin: const EdgeInsets.only(top: 40),
+                //     padding: const EdgeInsets.all(1),
+                //     child: Text(freeSpaces.toString(), style: TextStyles
+                //         .semiBoldViolet12),
+                //   );
+                // }
+                for(Object? e in events) {
+                  Booking b = e as Booking;
+                  freeSpaces = freeSpaces - int.parse(b.spaces!);
+                }
 
-            _unavailableDatesSpaces.forEach((day, spaces) {
-              if (isSameDay(day, date)) {
-                freeSpaces = freeSpaces - int.parse(spaces);
+                _unavailableDatesSpaces.forEach((day, spaces) {
+                  if (isSameDay(day, date)) {
+                    freeSpaces = freeSpaces - int.parse(spaces);
+                  }
+                });
+
+                return Container(
+                  margin: const EdgeInsets.only(top: 35),
+                  padding: const EdgeInsets.all(1),
+                  child: Text(freeSpaces.toString(), style: TextStyles
+                      .semiBoldAccent12),
+                );
+              },
+            ),
+
+            eventLoader: (day) {
+              return _getEventsForDay(day);
+            },
+            enabledDayPredicate: (day) {
+              if (_disabledDates.isEmpty && _unavailableDates.isEmpty) return true;
+
+              bool isEnabled = true;
+              _disabledDates.forEach((date, spaces) {
+                if (isSameDay(day, date)) {
+
+                  if (spaces <= 0 ||
+                      spaces < int.parse(widget.host.bookingSettings!.minSpaces!)) {
+                    isEnabled = false;
+                  }
+
+                }
+              });
+              _unavailableDates.forEach((date) {
+                if (isSameDay(day, date)) {
+                  isEnabled = false;
+                }
+              });
+
+              return isEnabled;
+            },
+            locale: 'en_GB',
+            firstDay: calculateFirstDay(),
+            lastDay: DateTime.now().add(const Duration(days: 1000)),
+            focusedDay: _focusedDay,
+            calendarFormat: CalendarFormat.month,
+            calendarStyle: CalendarStyle(
+              selectedTextStyle: TextStyles.semiBoldN90012,
+              rangeEndTextStyle: TextStyles.semiBoldN90012,
+              rangeStartTextStyle: TextStyles.semiBoldN90012,
+              todayTextStyle: TextStyles.semiBoldN90012,
+              rangeHighlightColor: AppTheme.primaryColorOpacity,
+              isTodayHighlighted: true,
+              selectedDecoration:  const BoxDecoration(
+                color: AppTheme.primaryColor,
+                shape: BoxShape.circle,
+              ),
+              todayDecoration: const BoxDecoration(
+                color: AppTheme.primaryColorOpacity,
+                shape: BoxShape.circle,
+              ),
+              rangeStartDecoration: const BoxDecoration(
+                color: AppTheme.primaryColor,
+                shape: BoxShape.circle,
+              ),
+              rangeEndDecoration: const BoxDecoration(
+                color: AppTheme.primaryColor,
+                shape: BoxShape.circle,
+              ),
+              disabledTextStyle: const TextStyle(color: Color(0xFFBFBFBF), decoration: TextDecoration.lineThrough),
+            ),
+            selectedDayPredicate: (day) {
+              return isSameDay(_selectedDay, day);
+            },
+            onDaySelected: (selectedDay, focusedDay) {
+              if (!isSameDay(_selectedDay, selectedDay)) {
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay;
+                  _rangeStart = null; // Important to clean those
+                  _rangeEnd = null;
+                  _rangeSelectionMode = RangeSelectionMode.toggledOff;
+                });
               }
-            });
+            },
+            onRangeSelected: (start, end, focusedDay) {
 
-            return Container(
-              margin: const EdgeInsets.only(top: 38),
-              padding: const EdgeInsets.all(1),
-              child: Text(freeSpaces.toString(), style: TextStyles
-                  .semiBoldAccent14),
-            );
-          },
-        ),
+              setState(() {
+                _selectedDay = null;
+                _focusedDay = focusedDay;
+                _rangeStart = start;
+                _rangeEnd = end;
+                if(start != null && end != null) {
+                  _rangeDateChange();
+                }
+                _rangeSelectionMode = RangeSelectionMode.toggledOn;
+              });
+            },
 
-        eventLoader: (day) {
-          return _getEventsForDay(day);
-        },
-        enabledDayPredicate: (day) {
-          if (_disabledDates.isEmpty && _unavailableDates.isEmpty) return true;
 
-          bool isEnabled = true;
-          _disabledDates.forEach((date, spaces) {
-            if (isSameDay(day, date)) {
-
-              if (spaces <= 0 ||
-                  spaces < int.parse(widget.host.bookingSettings!.minSpaces!)) {
-                isEnabled = false;
-              }
-
-            }
-          });
-          _unavailableDates.forEach((date) {
-            if (isSameDay(day, date)) {
-              isEnabled = false;
-            }
-          });
-
-          return isEnabled;
-        },
-        locale: 'en_GB',
-        firstDay: calculateFirstDay(),
-        lastDay: DateTime.now().add(const Duration(days: 1000)),
-        focusedDay: _focusedDay,
-        calendarFormat: CalendarFormat.month,
-        headerStyle: const HeaderStyle(
-            leftChevronIcon: Icon(Icons.chevron_left, color: AppTheme.primaryColor,),
-            rightChevronIcon: Icon(Icons.chevron_right, color: AppTheme.primaryColor,),
-            titleTextStyle: TextStyle(fontSize: 17.0, color: AppTheme.primaryColor),
-            titleCentered: true
-        ),
-        calendarStyle: const CalendarStyle(
-          rangeHighlightColor: AppTheme.accentColourOrangeOpacity,
-          isTodayHighlighted: true,
-          selectedDecoration:  BoxDecoration(
-            color: AppTheme.primaryCalendarViolet,
-            shape: BoxShape.circle,
-          ),
-          todayDecoration: BoxDecoration(
-            color: AppTheme.accentColourOrangeOpacity,
-            shape: BoxShape.circle,
-          ),
-          rangeStartDecoration: BoxDecoration(
-            color: AppTheme.primaryColourVioletOpacity,
-            shape: BoxShape.circle,
-          ),
-          rangeEndDecoration: BoxDecoration(
-            color: AppTheme.primaryColourVioletOpacity,
-            shape: BoxShape.circle,
-          ),
-          disabledTextStyle: TextStyle(color: Color(0xFFBFBFBF), decoration: TextDecoration.lineThrough),
-        ),
-        selectedDayPredicate: (day) {
-          return isSameDay(_selectedDay, day);
-        },
-        onDaySelected: (selectedDay, focusedDay) {
-          if (!isSameDay(_selectedDay, selectedDay)) {
-            setState(() {
-              _selectedDay = selectedDay;
+            onPageChanged: (focusedDay) {
               _focusedDay = focusedDay;
-              _rangeStart = null; // Important to clean those
-              _rangeEnd = null;
-              _rangeSelectionMode = RangeSelectionMode.toggledOff;
-            });
-          }
-        },
-        onRangeSelected: (start, end, focusedDay) {
-
-          setState(() {
-            _selectedDay = null;
-            _focusedDay = focusedDay;
-            _rangeStart = start;
-            _rangeEnd = end;
-            if(start != null && end != null) {
-              _rangeDateChange();
-            }
-            _rangeSelectionMode = RangeSelectionMode.toggledOn;
-          });
-        },
-
-
-        onPageChanged: (focusedDay) {
-          _focusedDay = focusedDay;
-        },
+            },
+          ),
+        ],
       ),
     );
   }

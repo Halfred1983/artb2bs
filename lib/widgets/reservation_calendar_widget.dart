@@ -234,14 +234,14 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                             titleCentered: true
                         ),
                         calendarStyle: const CalendarStyle(
-                          rangeHighlightColor: AppTheme.accentColourOrangeOpacity,
+                          rangeHighlightColor: AppTheme.primaryColorOpacity,
                           isTodayHighlighted: true,
                           selectedDecoration:  BoxDecoration(
                             color: AppTheme.primaryCalendarViolet,
                             shape: BoxShape.circle,
                           ),
                           todayDecoration: BoxDecoration(
-                            color: AppTheme.accentColourOrangeOpacity,
+                            color: AppTheme.primaryColorOpacity,
                             shape: BoxShape.circle,
                           ),
                           rangeStartDecoration: BoxDecoration(

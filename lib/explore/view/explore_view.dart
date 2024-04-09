@@ -128,13 +128,32 @@ class _ExploreViewState extends State<ExploreView> {
                               );
                             }
                             else { return Container(); } })) ,
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: (){
-                      setState(() {
-                        _listView = !_listView;
-                      });
-                    },
-                    child: Icon(_listView ? Icons.map : Icons.list),
+                  floatingActionButton: SizedBox(
+                    width: 110,
+                    height: 47,
+                    child: FloatingActionButton(
+                      onPressed: (){
+                        setState(() {
+                          _listView = !_listView;
+                        });
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if(_listView) ...[
+                            const Icon(Icons.map),
+                            horizontalMargin4,
+                            Text('Map', style: TextStyles.semiBoldPrimary14,)
+
+                          ]
+                          else ...[
+                            const Icon(Icons.list),
+                            horizontalMargin4,
+                            Text('List', style: TextStyles.semiBoldPrimary14,)
+                          ]
+                        ],
+                      ),
+                    ),
                   ),
                   floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
                 ),

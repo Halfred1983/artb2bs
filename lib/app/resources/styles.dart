@@ -9,6 +9,7 @@ class TextStyles {
   // Regular
   static final regularPrimary10 = _baseRegular[TextSize.size10].withColor(AppTheme.primaryColor);
   static final regularPrimary12 = _baseRegular[TextSize.size12].withColor(AppTheme.primaryColor);
+  static final regularN50012 = _baseRegular[TextSize.size12].withColor(AppTheme.n500);
   static final regularPrimary14 = _baseRegular[TextSize.size14].withColor(AppTheme.primaryColor);
   static final regularPrimary17 = _baseRegular[TextSize.size17].withColor(AppTheme.primaryColor);
   static final regularPrimary20 = _baseRegular[TextSize.size20].withColor(AppTheme.primaryColor);
@@ -86,6 +87,7 @@ class TextStyles {
   static final boldN90012 = _baseBold[TextSize.size12].withColor(AppTheme.n900);
   static final boldN90014 = _baseBold[TextSize.size14].withColor(AppTheme.n900);
   static final boldN90017 = _baseBold[TextSize.size17].withColor(AppTheme.n900);
+  static final boldS40017 = _baseBold[TextSize.size17].withColor(AppTheme.s400);
   static final boldN90020 = _baseBold[TextSize.size20].withColor(AppTheme.n900);
   static final boldN90024 = _baseBold[TextSize.size24].withColor(AppTheme.n900);
   static final boldN90029 = _baseBold[TextSize.size29].withColor(AppTheme.n900);

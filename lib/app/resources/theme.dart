@@ -16,6 +16,7 @@ class AppTheme {
   static const p400 = Color(0xFF8da823);
   static const n900 = Color(0xFF292730);
   static const n200 = Color(0xFF8e8c92);
+  static const n500 = Color(0xFF5a5960);
   static const divider = Color(0xFFA8A8A8);
 
 
@@ -23,7 +24,7 @@ class AppTheme {
 
 
 
-  static const accentColourOrangeOpacity = Color.fromRGBO(232,95,74,0.5);
+  static const primaryColorOpacity = Color.fromRGBO(201, 240, 50,0.4);
   static const primaryColourVioletOpacity = Color.fromRGBO(146,46,142,0.6);
   static const secondaryColourRed = Color(0xFFA40500);
   static const white = Color(0xFFFFFFFF);
@@ -62,9 +63,9 @@ class AppTheme {
       textButtonTheme: _textButtonTheme,
       unselectedWidgetColor: primaryColor,
       sliderTheme:  SliderThemeData(
-        showValueIndicator: ShowValueIndicator.always,
+          showValueIndicator: ShowValueIndicator.always,
           valueIndicatorTextStyle:  TextStyles.boldAccent17,
-          valueIndicatorColor: accentColourOrangeOpacity
+          valueIndicatorColor: primaryColorOpacity
       ),
       // textTheme:  const TextTheme(
       //     titleMedium: TextStyle(color: accentColor)
@@ -113,31 +114,31 @@ class AppTheme {
   );
 
 
-  static final stylePrimaryGreenButton = ElevatedButton.styleFrom(
-      backgroundColor: AppTheme.primaryColor,
-      foregroundColor: AppTheme.white);
+  // static final stylePrimaryGreenButton = ElevatedButton.styleFrom(
+  //     backgroundColor: AppTheme.primaryColor,
+  //     foregroundColor: AppTheme.white);
 
-  static final stylePrimaryGreyButton = ElevatedButton.styleFrom(
-    backgroundColor: AppTheme.backgroundGrey,
-    foregroundColor: AppTheme.white,
-  );
+  // static final stylePrimaryGreyButton = ElevatedButton.styleFrom(
+  //   backgroundColor: AppTheme.backgroundGrey,
+  //   foregroundColor: AppTheme.white,
+  // );
 
-  static final smallElevatedGreenButtonTheme =
-  ElevatedButton.styleFrom(
-    backgroundColor: AppTheme.primaryColor,
-    foregroundColor: AppTheme.white,
-    minimumSize: const Size(107, 32),
-    maximumSize: const Size(107, 32),
-  );
+  // static final smallElevatedGreenButtonTheme =
+  // ElevatedButton.styleFrom(
+  //   backgroundColor: AppTheme.primaryColor,
+  //   foregroundColor: AppTheme.white,
+  //   minimumSize: const Size(107, 32),
+  //   maximumSize: const Size(107, 32),
+  // );
 
-  static final smallElevatedGreyButtonTheme =
-  ElevatedButton.styleFrom(
-    backgroundColor: AppTheme.backgroundGrey,
-    foregroundColor: AppTheme.white,
-    minimumSize: const Size(107, 32),
-    maximumSize: const Size(107, 32),
-
-  );
+  // static final smallElevatedGreyButtonTheme =
+  // ElevatedButton.styleFrom(
+  //   backgroundColor: AppTheme.backgroundGrey,
+  //   foregroundColor: AppTheme.white,
+  //   minimumSize: const Size(107, 32),
+  //   maximumSize: const Size(107, 32),
+  //
+  // );
 
   static final _outlineButtonTheme = OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
@@ -154,43 +155,83 @@ class AppTheme {
   );
 
 
+  static const _floatingActionButton = FloatingActionButtonThemeData(
+    backgroundColor: AppTheme.n900,
+    foregroundColor: AppTheme.primaryColor,
+    shape: _buttonCornerRadius,
+    elevation: 1.0,
+  );
+
   static final _elevatedButtonTheme = ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: AppTheme.accentColor,
-      foregroundColor: AppTheme.primaryColor,
+    style: ButtonStyle(
+      backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return AppTheme.n900.withOpacity(0.5); // Disabled color
+        }
+        return AppTheme.n900; // Default color
+      }),
+      foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return AppTheme.primaryColor.withOpacity(0.5); // Disabled text color
+        }
+        return AppTheme.primaryColor; // Default text color
+      }),
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      minimumSize: const Size(200.0, 48.0),
-      shape: _buttonCornerRadius,
-      textStyle: TextStyles.semiBoldPrimary12,
-      // padding: const EdgeInsets.all(16.0),
-      elevation: 1.0,
-      shadowColor: AppTheme.backgroundGrey,
+      minimumSize: MaterialStateProperty.all( const Size(147.0, 48.0)),
+      shape: MaterialStateProperty.resolveWith<OutlinedBorder>((Set<MaterialState> states) {
+        return _buttonCornerRadius;
+      }),
+      textStyle: MaterialStateProperty.resolveWith<TextStyle>((Set<MaterialState> states) {
+        return TextStyles.semiBoldPrimary14;
+      }),
+      elevation: MaterialStateProperty.resolveWith<double>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return 0; // No elevation when disabled
+        }
+        return 1.0; // Default elevation
+      }),
+      shadowColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return AppTheme.backgroundGrey.withOpacity(0.5); // Disabled shadow color
+        }
+        return AppTheme.backgroundGrey; // Default shadow color
+      }),
     ),
   );
 
-  static const _floatingActionButton = FloatingActionButtonThemeData(
-      backgroundColor: AppTheme.white,
-      foregroundColor: AppTheme.primaryColor,
-      elevation: 2.0,
-    // ),
-  );
-
   static final _textButtonTheme = TextButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      // backgroundColor: AppTheme.accentColourOrange,
-      foregroundColor: AppTheme.primaryColor,
+    style: ButtonStyle(
+      backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return AppTheme.white.withOpacity(0.5); // Disabled background color
+        }
+        return AppTheme.white; // Default background color
+      }),
+      minimumSize: MaterialStateProperty.all( const Size(147.0, 48.0)),
+      shape: MaterialStateProperty.resolveWith<OutlinedBorder>((Set<MaterialState> states) {
+        return _buttonCornerRadius.copyWith(side: const BorderSide(
+          color: AppTheme.p400, // Default border color
+          width: 2.0,
+        ));
+      }),
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      // minimumSize: const Size(200.0, 48.0),
-      // shape: _buttonCornerRadius,
-      textStyle: TextStyles.semiBoldAccent12
-      // padding: const EdgeInsets.all(16.0),
-      // elevation: 1.0,
-      // shadowColor: AppTheme.backgroundGrey,
+      textStyle: MaterialStateProperty.resolveWith<TextStyle>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return TextStyles.semiBoldN90014.copyWith(color: AppTheme.n900.withOpacity(0.5)); // Disabled text style
+        }
+        return TextStyles.semiBoldN90014; // Default text style
+      }),
+      elevation: MaterialStateProperty.resolveWith<double>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return 0; // No elevation when disabled
+        }
+        return 1.0; // Default elevation
+      }),
     ),
   );
 
   static const _buttonCornerRadius = RoundedRectangleBorder(
-    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+    borderRadius: BorderRadius.all(Radius.circular(50.0)),
   );
 
   static final boxShadow = BoxShadow(

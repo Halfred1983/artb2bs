@@ -89,7 +89,7 @@ class UserProfileView extends StatelessWidget {
                             style: TextStyles.regularAccent14,),
                           activeColor: AppTheme.primaryColor,
                           inactiveTrackColor: AppTheme
-                              .accentColourOrangeOpacity,
+                              .primaryColorOpacity,
                           onChanged: (value) =>
                               context.read<HostCubit>().setActive(value),
                           value: user!.bookingSettings!.active!,
