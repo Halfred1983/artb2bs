@@ -216,6 +216,9 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
               rangeEndTextStyle: TextStyles.semiBoldN90012,
               rangeStartTextStyle: TextStyles.semiBoldN90012,
               todayTextStyle: TextStyles.semiBoldN90012,
+              defaultTextStyle: TextStyles.semiBoldN90012,
+              weekendTextStyle: TextStyles.semiBoldN90012,
+              withinRangeTextStyle: TextStyles.semiBoldN90012,
               rangeHighlightColor: AppTheme.primaryColorOpacity,
               isTodayHighlighted: true,
               selectedDecoration:  const BoxDecoration(
@@ -234,7 +237,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
                 color: AppTheme.primaryColor,
                 shape: BoxShape.circle,
               ),
-              disabledTextStyle: const TextStyle(color: Color(0xFFBFBFBF), decoration: TextDecoration.lineThrough),
+              disabledTextStyle: const TextStyle(color: Color(0xFFBFBFBF), fontSize: 12, decoration: TextDecoration.lineThrough),
             ),
             selectedDayPredicate: (day) {
               return isSameDay(_selectedDay, day);

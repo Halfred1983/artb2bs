@@ -16,7 +16,9 @@ class AppTheme {
   static const p400 = Color(0xFF8da823);
   static const n900 = Color(0xFF292730);
   static const n200 = Color(0xFF8e8c92);
+  static const n100 = Color(0xFF8b8a8f);
   static const n500 = Color(0xFF5a5960);
+  static const d400 = Color(0xFFb33b2b);
   static const divider = Color(0xFFA8A8A8);
 
 
@@ -241,5 +243,11 @@ class AppTheme {
     spreadRadius: 0,
   );
 
+  static final bottomBarShadow = BoxShadow(
+    color: Colors.grey.withOpacity(0.30),
+    offset: const Offset(0, -10),
+    blurRadius: 7,
+    spreadRadius: 0,
+  );
 
 }

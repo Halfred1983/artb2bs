@@ -62,8 +62,12 @@ class _PaymentPageState extends State<PaymentPage> {
       ],
       child: Scaffold(
           appBar: AppBar(
-            title: Text("Finalise your booking", style: TextStyles.boldAccent24,),
+            title: Text('Finalise your booking', style: TextStyles.boldN90017,),
             centerTitle: true,
+            backgroundColor: AppTheme.white,
+            iconTheme: const IconThemeData(
+              color: AppTheme.n900, //change your color here
+            ),
           ),
           body: BlocBuilder<PaymentBloc, PaymentState>(
             builder: (context, state) {
@@ -71,51 +75,88 @@ class _PaymentPageState extends State<PaymentPage> {
                 initialDetails: state.cardFieldInputDetails,
               );
               if (state.status == PaymentStatus.initial) {
-                return Padding(
-                  padding: horizontalPadding24,
-                  child: Column(
-                    children: [
-                      Text('Total ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}: ${widget.booking.totalPrice!}', style: TextStyles.semiBoldAccent14,),
-                      verticalMargin24,
-                      CardFormField(
-                        controller: controller,
-                        style: CardFormStyle(
-                            borderColor: AppTheme.primaryColor,
-                            cursorColor: AppTheme.accentColor,
-                            textColor: AppTheme.primaryColor,
-                            textErrorColor: AppTheme.accentColor,
-                            fontSize: 16
+                return Container(
+                  margin: verticalPadding24,
+                  padding: horizontalPadding32,
+                  color: AppTheme.white,
+                  width: MediaQuery.of(context).size.width,
+                  height: 700,
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Price Details', style: TextStyles.boldN90017),
+                            verticalMargin24,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              // children: [
+                              //   Text('${double.parse(widget.host.bookingSettings!.basePrice!)} ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}'
+                              //       ' x ${BookingService().daysBetween(widget.booking!.from!, widget.booking!.to!).toString()} days',
+                              //     style: TextStyles.regularN90014,),
+                              //   Text('${BookingService().calculateGrandTotal(BookingService().calculatePrice(widget.booking!, widget.host!),
+                              //       0)} ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}',
+                              //     style: TextStyles.regularN90014, ),
+                              // ],
+                            ),
+                            verticalMargin24,
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Total ', style: TextStyles.boldN90012),
+                                // Text('${BookingService().calculateGrandTotal(BookingService().calculatePrice(widget.booking!, widget.host!),
+                                //     0)} ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}',
+                                //   style: TextStyles.semiBoldN90014, ),
+                              ],
+                            )
+                          ],
                         ),
-                        countryCode: 'en_${widget.host.userInfo!.address!.country}',
-
-                      ),
-                      Expanded(child: Container()),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-
-                          onPressed:
-                              () {
-                            (controller.details.complete) ?
-                            context.read<PaymentBloc>().add(
-                              PaymentCreateIntent(
-                                billingDetails: BillingDetails(
-                                  email: widget.user.email,
+                        verticalMargin24,
+                        CardFormField(
+                          controller: controller,
+                          style: CardFormStyle(
+                              borderColor: AppTheme.primaryColor,
+                              cursorColor: AppTheme.accentColor,
+                              textColor: AppTheme.primaryColor,
+                              textErrorColor: AppTheme.accentColor,
+                              fontSize: 16
+                          ),
+                          countryCode: 'en_${widget.host.userInfo!.address!.country}',
+                        ),
+                        verticalMargin24,
+                        Text('Once your booking is finalised the host will have 48h to accept or reject your request.\n\n'+
+                            'If the 48h expire or the request is rejected\nwe will refund you within 3 business days.',
+                          style: TextStyles.regularN90014,),
+                        Expanded(child: Container()),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed:
+                                () {
+                              (controller.details.complete) ?
+                              context.read<PaymentBloc>().add(
+                                PaymentCreateIntent(
+                                  billingDetails: BillingDetails(
+                                    email: widget.user.email,
+                                  ),
+                                  grandTotal: BookingService().toStripeInt(widget.booking.totalPrice!).toString(),
+                                  currency: CurrencyHelper.currency(widget.host.userInfo!.address!.country)
                                 ),
-                                grandTotal: BookingService().toStripeInt(widget.booking.totalPrice!).toString(),
-                                currency: CurrencyHelper.currency(widget.host.userInfo!.address!.country)
-                              ),
-                            ) :
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Please fill the info', style: TextStyles.semiBoldAccent14,),
-                                  backgroundColor: AppTheme.accentColor,)
-                            );
-                            // context.read<BookingCubit>().save();
-                          },
-                          child: Text("Pay", style: TextStyles.semiBoldAccent14,),),
-                      ),
-                      verticalMargin32
-                    ],
+                              ) :
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Please fill the info', style: TextStyles.semiBoldAccent14,),
+                                    backgroundColor: AppTheme.accentColor,)
+                              );
+                              // context.read<BookingCubit>().save();
+                            },
+                            child: Text("Pay", style: TextStyles.semiBoldAccent14,),),
+                        ),
+                        verticalMargin32
+                      ],
+                    ),
                   ),
                 );
               }

@@ -62,8 +62,8 @@ class BookingCubit extends Cubit<BookingState> {
     }
   }
 
-  Booking finaliseBooking(String price, String commission, String totalPrice, User host) {
-    Booking booking = this.state.props[1] as Booking;
+  Booking finaliseBooking(Booking booking, String price, String commission, String totalPrice, User host) {
+    // Booking booking = this.state.props[1] as Booking;
     User user = this.state.props[0] as User;
 
     booking = booking.copyWith(price: price,

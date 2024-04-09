@@ -1,3 +1,4 @@
+import 'package:artb2b/booking/view/booking_confirmation_page.dart';
 import 'package:artb2b/payment/view/payment_page.dart';
 import 'package:artb2b/widgets/app_input_validators.dart';
 import 'package:artb2b/widgets/booking_calendar_widget.dart';
@@ -11,6 +12,7 @@ import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
+import '../../utils/currency/currency_helper.dart';
 import '../../widgets/input_text_widget.dart';
 import '../../widgets/summary_card.dart';
 import '../cubit/booking_cubit.dart';
@@ -85,7 +87,6 @@ class BookingView extends StatelessWidget {
                                       SizedBox(
                                         width: 100,
                                         child: InputQty.int(
-
                                           onQtyChanged: (spaceValue) => context.read<BookingCubit>().chooseSpaces(spaceValue.toString(), host, maxSpacesAvailable),
                                             qtyFormProps: const QtyFormProps(enableTyping: false),
                                             steps: 1,
@@ -123,16 +124,6 @@ class BookingView extends StatelessWidget {
                           ),
                           verticalMargin12,
 
-                          // InputTextWidget((spaceValue) => context.read<BookingCubit>().chooseSpaces(spaceValue, host, maxSpacesAvailable),
-                          //     'Number of spaces', TextInputType.number),
-                          // spaceError.length>1 ? Text(spaceError, style: TextStyles.semiBoldAccent14,) : Container(),
-                          // //Price
-                          // verticalMargin24,
-                          booking!.from != null &&
-                              booking!.to != null &&
-                              booking!.spaces != null ?
-                          SummaryCard(booking: booking, host: host) : Container(),
-                          verticalMargin32
                         ],
                       ),
                     ),
@@ -142,12 +133,7 @@ class BookingView extends StatelessWidget {
                     height: 110,
                     decoration: BoxDecoration(
                         boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.30),
-                            offset: const Offset(0, -10),
-                            blurRadius: 7,
-                            spreadRadius: 0,
-                          )
+                          AppTheme.bottomBarShadow
                         ],
                         color: AppTheme.white,
                         borderRadius: const BorderRadius.only(
@@ -162,23 +148,22 @@ class BookingView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             horizontalMargin32,
-                            Column(
+                            booking!.from != null &&
+                                booking!.to != null &&
+                                dataRangeError.isEmpty &&
+                                spaceError.isEmpty &&
+                                booking!.spaces != null ? Column(
                               children: [
                                 Expanded(child: Container()),
                                 Text('Total booking: ',
-                                  style: TextStyles.boldN90014,),
+                                  style: TextStyles.semiBoldN10014,),
 
-                                booking!.from != null &&
-                                    booking!.to != null &&
-                                    dataRangeError.isEmpty &&
-                                    spaceError.isEmpty &&
-                                    booking!.spaces != null ?
-                                Text('${BookingService().calculateGrandTotal(BookingService().calculatePrice(booking!, host!),
-                                    BookingService().calculateCommission(BookingService().calculatePrice(booking!, host!)))} GBP',
-                                  style: TextStyles.boldN90014, ) : Container(),
+                                Text('${BookingService().calculateGrandTotal(BookingService().calculatePrice(booking!, host),
+                                    BookingService().calculateCommission(BookingService().calculatePrice(booking!, host)))} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
+                                  style: TextStyles.boldN90014, ),
                                 Expanded(child: Container()),
                               ],
-                            ),
+                            ) : Container(),
                             Flexible(child: Container()),
                             ElevatedButton(
                               onPressed: booking!.from != null &&
@@ -188,23 +173,16 @@ class BookingView extends StatelessWidget {
                                   booking!.spaces != null ?
                                   () {
 
-                                Booking pendingBooking = context.read<BookingCubit>().finaliseBooking(
-                                    BookingService().calculatePrice(booking!, host).toString(),
-                                    BookingService().calculateCommission(
-                                        BookingService().calculatePrice(booking!, host)).toString(),
-                                    BookingService().calculateGrandTotal(BookingService().calculatePrice(booking!, host),
-                                        BookingService().calculateCommission(BookingService().calculatePrice(booking!, host))).toString(),
-                                    host
-                                );
-
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => PaymentPage(
-                                      booking: pendingBooking, user: user!, host: host)),
+                                  MaterialPageRoute(builder: (context) =>
+                                      BookingConfirmationPage(host: host, booking: booking!)
+                                  ),
                                 );
 
                               } : null,
-                              child: Text("Book", style: TextStyles.semiBoldAccent14,),),
+                              child: Text("Continue Booking", style: TextStyles.semiBoldPrimary14,),),
+                            horizontalMargin32,
                           ],
                         )
                     ),
