@@ -55,11 +55,14 @@ abstract class DatabaseService {
 
   Stream<List<User>> getHostsStream();
 
-  List<User> filterUsersByRadiusAndPriceAndDays(User user,
+  Future<List<User>> getHostsList();
+
+  List<User> filterUsersByRadiusAndPriceAndDaysAndTypes(User user,
       List<User> users,
       double radius,
       String priceInput,
       String daysInput,
+      List<String> venueTypes,
       );
 
   Future<User> updateUser({required User user});

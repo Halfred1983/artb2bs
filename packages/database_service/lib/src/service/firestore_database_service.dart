@@ -70,6 +70,20 @@ class FirestoreDatabaseService implements DatabaseService {
   }
 
   @override
+  @override
+  Future<List<User>> getHostsList() async {
+    var collectionReference = _firestore.collection('users');
+
+    var querySnapshot = await collectionReference.get();
+    return querySnapshot.docs.map((e) =>  User.fromJson(e.data()))
+        .where((user) {
+      return user.userInfo?.userType == UserType.gallery && user.bookingSettings != null &&
+          user.bookingSettings!.active != null &&
+          user.bookingSettings!.active == true;
+    }).toList();
+  }
+
+  @override
   Stream<DocumentSnapshot> getUserStream(String userId)  {
 
     var collectionReference = _firestore.collection('users');
@@ -103,12 +117,13 @@ class FirestoreDatabaseService implements DatabaseService {
   // }
 
   @override
-  List<User> filterUsersByRadiusAndPriceAndDays(
+  List<User> filterUsersByRadiusAndPriceAndDaysAndTypes(
       User user,
       List<User> users,
-      double radius,
-      String priceInput,
-      String daysInput,
+      double? radius,
+      String? priceInput,
+      String? daysInput,
+      List<String>? venueTypes,
       ) {
 
 
@@ -126,24 +141,30 @@ class FirestoreDatabaseService implements DatabaseService {
         return false; // Skip non-artist users
       }
 
-      if(priceInput.isNotEmpty) {
+      if(priceInput != null  && priceInput.isNotEmpty) {
         int price = int.parse(priceInput);
         if (int.parse(user.bookingSettings!.basePrice!) > price) {
           return false; // Price is not within the specified range
         }
       }
 
-      if(daysInput.isNotEmpty) {
+      if(daysInput != null && daysInput.isNotEmpty) {
         int days = int.parse(daysInput);
         if (int.parse(user.bookingSettings!.minLength!) > days) {
           return false; // User is not available for the specified number of days
         }
       }
 
-      // Check if the user is within the specified radius
-      final distance = geoFirePoint.distance(lat: user.userInfo!.address!.location!.latitude,
-          lng: user.userInfo!.address!.location!.longitude);
-      return distance <= radius;
+      if(radius != null) {
+        // Check if the user is within the specified radius
+        final distance = geoFirePoint.distance(
+            lat: user.userInfo!.address!.location!.latitude,
+            lng: user.userInfo!.address!.location!.longitude);
+        return distance <= radius;
+      }
+
+      return true;
+
     }).toList();
   }
 

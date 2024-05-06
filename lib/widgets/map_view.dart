@@ -154,7 +154,7 @@ class _MapViewState extends State<MapView> {
       usersStream,
           (double radius, String priceInput, String daysInput, List<User> users) {
         // Combine the results from the streams and filter as needed
-        return firebaseDatabaseService.filterUsersByRadiusAndPriceAndDays(widget.user, users, radius, priceInput, daysInput);
+        return firebaseDatabaseService.filterUsersByRadiusAndPriceAndDaysAndTypes(widget.user, users, radius, priceInput, daysInput, null);
       },
     );
   }

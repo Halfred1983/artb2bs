@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
@@ -14,8 +15,11 @@ import '../../app/resources/assets.dart';
 import '../../app/resources/styles.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
+import '../../utils/currency/currency_helper.dart';
 import '../../widgets/common_card_widget.dart';
 import '../../widgets/map_view.dart';
+import '../../widgets/price_slider.dart';
+import '../../widgets/tags.dart';
 import '../cubit/explore_cubit.dart';
 import '../cubit/explore_state.dart';
 
@@ -34,17 +38,17 @@ class _ExploreViewState extends State<ExploreView> {
   List<int> currentIndices = [];
 
   final TextEditingController _searchController = TextEditingController();
-  final StreamController<List<User>> _filteredStreamController = StreamController<List<User>>();
+  // final StreamController<List<User>> _filteredStreamController = StreamController<List<User>>();
 
 
   @override
   void initState() {
     super.initState();
-    firestoreDatabaseService.getHostsStream().listen((event) {
-      _filteredStreamController.add(event);
-      currentIndices = List<int>.generate(event.length, (index) => 0);
-    });
-    _searchController.addListener(_filterUsers);
+    // firestoreDatabaseService.getHostsStream().listen((event) {
+    //   _filteredStreamController.add(event);
+    //   currentIndices = List<int>.generate(event.length, (index) => 0);
+    // });
+    // _searchController.addListener(_filterUsers);
   }
 
   @override
@@ -52,31 +56,32 @@ class _ExploreViewState extends State<ExploreView> {
     super.dispose();
   }
 
-  void _filterUsers() {
-
-    String searchQuery = _searchController.text;
-    firestoreDatabaseService.getHostsStream().listen((users) {
-      List<User> filteredUsers = [];
-      if (searchQuery.isEmpty) {
-        filteredUsers = users;
-      } else {
-        filteredUsers = users.where((user) =>
-            user.userInfo!.name
-                .toString()
-                .toLowerCase()
-                .contains(searchQuery.toLowerCase())
-        ).toList();
-      }
-
-      // Add the filtered list to the StreamController
-      _filteredStreamController.add(filteredUsers);
-      currentIndices = List.filled(filteredUsers.length, 0);
-    });
-  }
+  // void _filterUsers() {
+  //
+  //   String searchQuery = _searchController.text;
+  //   firestoreDatabaseService.getHostsStream().listen((users) {
+  //     List<User> filteredUsers = [];
+  //     if (searchQuery.isEmpty) {
+  //       filteredUsers = users;
+  //     } else {
+  //       filteredUsers = users.where((user) =>
+  //           user.userInfo!.name
+  //               .toString()
+  //               .toLowerCase()
+  //               .contains(searchQuery.toLowerCase())
+  //       ).toList();
+  //     }
+  //
+  //     // Add the filtered list to the StreamController
+  //     _filteredStreamController.add(filteredUsers);
+  //     currentIndices = List.filled(filteredUsers.length, 0);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     User? user;
+    List<User> hosts;
     return
       BlocBuilder<ExploreCubit, ExploreState>(
           builder: (context, state) {
@@ -85,6 +90,7 @@ class _ExploreViewState extends State<ExploreView> {
             }
             if (state is LoadedState) {
               user = state.user;
+              hosts = state.hosts;
 
               return Padding(
                 padding: _listView ? horizontalPadding32 : EdgeInsets.zero,
@@ -97,37 +103,38 @@ class _ExploreViewState extends State<ExploreView> {
                   ),
                   body: SingleChildScrollView(
                     // physics: const ClampingScrollPhysics(),
-                      child: StreamBuilder<List<User>>(
-                          stream: _filteredStreamController.stream,
-                          builder: (context, snapshot){
-                            if (snapshot.hasError) {
-                              return const Text('Something went wrong');
-                            }
+                      child: Builder(
+                          builder: (context){
+                            // if (snapshot.hasError) {
+                            //   return const Text('Something went wrong');
+                            // }
+                            //
+                            // if (snapshot.connectionState == ConnectionState.waiting) {
+                            //   return const Text("Loading");
+                            // }
+                            // if(snapshot.hasData) {
 
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Text("Loading");
-                            }
-                            if(snapshot.hasData) {
-
-                              return  _listView ? Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    verticalMargin24,
-                                    buildSearch(),
-                                    verticalMargin32,
-                                    buildListView(snapshot)
-
-                                  ]) : Container(
-                                  padding: verticalPadding24,
-                                  height: MediaQuery.of(context).size.height -
-                                      kBottomNavigationBarHeight - Assets.marginApppBar,
-                                  child: Stack(children: [MapView(user: user!), Padding(
-                                    padding: _listView ? EdgeInsets.zero : horizontalPadding32,
-                                    child: buildSearch(),
-                                  )])
-                              );
-                            }
-                            else { return Container(); } })) ,
+                            return  _listView ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  verticalMargin24,
+                                  buildSearch(user!),
+                                  verticalMargin32,
+                                  buildListView(hosts)
+                                ]
+                            ) : Container(
+                                padding: verticalPadding24,
+                                height: MediaQuery.of(context).size.height -
+                                    kBottomNavigationBarHeight - Assets.marginApppBar,
+                                child: Stack(children: [MapView(user: user!), Padding(
+                                  padding: _listView ? EdgeInsets.zero : horizontalPadding32,
+                                  child: buildSearch(user!),
+                                )])
+                            );
+                            // }
+                            // else { return Container(); }
+                          }
+                      )) ,
                   floatingActionButton: SizedBox(
                     width: 110,
                     height: 47,
@@ -163,7 +170,8 @@ class _ExploreViewState extends State<ExploreView> {
           });
   }
 
-  Widget buildSearch() {
+  bool isFiltering = false;
+  Widget buildSearch(User user) {
     return Container(
       height: 50,
       decoration: BoxDecoration(
@@ -176,11 +184,27 @@ class _ExploreViewState extends State<ExploreView> {
         controller: _searchController,
         autofocus: false,
         style: TextStyles.semiBoldAccent14,
+        onChanged: (String value) {
+          context.read<ExploreCubit>().updateSearchQuery(value);
+        },
         decoration: InputDecoration(
           suffixIcon: IconButton(
-            icon: const Icon(Icons.filter_list, color: AppTheme.primaryColor,),
-            onPressed: () {
-              // Add your filter action here
+            icon: Stack(
+              children: [
+                const Icon(Icons.tune, size: 20, color: AppTheme.primaryColor,),
+                Positioned(
+                  bottom: 5,
+                  left: 7,
+                  child: isFiltering ? Icon(
+                    Icons.check,
+                    size: 20,
+                    color: Colors.red, // Adjust the color of the checkmark
+                  ) : Container()
+                )
+              ],
+            ),
+            onPressed: () async {
+              isFiltering = await _showModalBottomSheet(context, user);
             },
           ),
           hintText: 'Search',
@@ -199,14 +223,14 @@ class _ExploreViewState extends State<ExploreView> {
     );
   }
 
-  ListView buildListView(AsyncSnapshot<List<User>> snapshot) {
+  ListView buildListView(List<User> snapshot) {
     return ListView.builder(
       physics: const ScrollPhysics(),
       shrinkWrap: true,
       scrollDirection: Axis.vertical,
-      itemCount: snapshot.data!.length,
+      itemCount: snapshot.length,
       itemBuilder: (BuildContext context, int index) {
-        var user = snapshot.data![index];
+        var user = snapshot[index];
 
         List<Widget> photos = [];
 
@@ -335,4 +359,134 @@ class _ExploreViewState extends State<ExploreView> {
   }
 
 
+
+
+  ///// FILTER MODAL
+  List<String> _artistTags = [];
+  RangeValues _rangeValues = const RangeValues(20, 80);
+
+  Future<bool> _showModalBottomSheet(BuildContext context, User user) async {
+    final exploreCubit = context.read<ExploreCubit>();
+
+    bool? result = await showModalBottomSheet<bool>(
+        context: context,
+        isScrollControlled: true,
+        builder: (BuildContext context) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
+            child: Container(
+              padding: horizontalPadding32,
+              width: double.infinity,
+              height:  MediaQuery.of(context).size.height * 0.8,
+              clipBehavior: Clip.antiAlias,
+              decoration: ShapeDecoration(
+                color: Colors.white,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24),
+                    topRight: Radius.circular(24),
+                  ),
+                ),
+                shadows: [
+                  AppTheme.bottomBarShadow
+
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  verticalMargin32,
+                  Row(
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context, false); // Close the modal bottom sheet
+                          },
+                          child: const Icon(Icons.clear, size: 20, color: AppTheme.n900,)
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                              'Filters',
+                              style: TextStyles.boldN90017
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  verticalMargin32,
+                  const Divider(height: 0.5, thickness: 0.5, color: AppTheme.n200,),
+                  verticalMargin32,
+                  // Text(
+                  //     'Date availability',
+                  //     style: TextStyles.boldN90017
+                  // ),
+                  // verticalMargin24,
+                  Text(
+                      'Price range',
+                      style: TextStyles.boldN90017
+                  ),
+                  Text(
+                      'Price range space/day',
+                      style: TextStyles.regularN90014
+                  ),
+                  verticalMargin24,
+                  PriceSlider(user: user,  rangeValues: _rangeValues, onChanged: (RangeValues priceRangeValues) {
+                    // Do something with the new range values
+                    print('Start value: ${priceRangeValues.start}, End value: ${priceRangeValues.end}');
+                    _rangeValues = priceRangeValues;
+                    exploreCubit.updatePriceRange(priceRangeValues);
+
+                  },
+                  ),
+                  verticalMargin32,
+                  Text(
+                      'Venue category',
+                      style: TextStyles.boldN90017
+                  ),
+                  verticalMargin32,
+                  Tags(const [
+                    'Arty', 'Commercial', 'Coffee', 'Abstract'
+                  ],
+                    _artistTags,
+                        (artistTags) {
+                      setState(() {
+                        _artistTags = artistTags;
+                      });
+                      exploreCubit.updateVenueCategory(artistTags);
+                    },
+                  ),
+                  verticalMargin32,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      GestureDetector(onTap: () {
+                        exploreCubit.restFilters();
+                        _artistTags = [];
+                        _rangeValues = const RangeValues(20, 80);
+                        Navigator.pop(context, false);
+                      },
+                        child: Text('Reset Filters', style: TextStyles.semiBoldAccent14.copyWith(decoration: TextDecoration.underline),),),
+
+                      ElevatedButton(
+                        onPressed:
+                            () {
+                          exploreCubit.applyFilters();
+                          Navigator.pop(context, true);
+                        },
+                        child: Text('Apply', style: TextStyles.semiBoldPrimary14,),),
+                    ],
+                  ),
+
+
+
+                ],
+              ),
+            ),
+          );
+        });
+
+    return result ?? false; // Return false if result is null
+
+  }
 }
