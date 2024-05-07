@@ -7,19 +7,20 @@ import '../../utils/currency/currency_helper.dart';
 import 'booking_state.dart';
 
 class BookingCubit extends Cubit<BookingState> {
-  BookingCubit({required this.databaseService,
+  BookingCubit(this.host, {required this.databaseService,
     required this.userId}) : super(InitialState()) {
     getUser(userId);
   }
 
   final DatabaseService databaseService;
   final String userId;
+  final User host;
 
   void getUser(String userId) async {
     try {
       emit(LoadingState());
       final user = await databaseService.getUser(userId: userId);
-      emit(LoadedState(user!, Booking(bookingStatus:BookingStatus.pending )));
+      emit(LoadedState(user!, Booking(bookingStatus:BookingStatus.pending, spaces: host.bookingSettings!.minSpaces )));
     } catch (e) {
       emit(ErrorState());
     }

@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../app/resources/styles.dart';
+import '../app/resources/theme.dart';
 import '../booking/service/booking_service.dart';
 import '../utils/common.dart';
+import '../utils/currency/currency_helper.dart';
 import 'common_card_widget.dart';
 
 class SummaryCard extends StatelessWidget {
@@ -21,85 +23,141 @@ class SummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CommonCard(
+      padding: const EdgeInsets.only(right: 20, left: 20, top: 16),
         child: Column(
           children: [
-            Text('Your booking details:', style: TextStyles.semiBoldAccent14, ),
-            const Divider(thickness: 0.6, color: Colors.black38,),
-            Column(
+            Text('Your booking details:', style: TextStyles.boldN90017, ),
+            verticalMargin16,
+            const Divider(thickness: 0.5, color: AppTheme.divider,),
+            verticalMargin16,
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text('Spaces: ', style: TextStyles.semiBoldAccent14, ),
-                      Text(booking!.spaces!, style: TextStyles.semiBoldAccent14, ),
-                    ]
-                ),
-                verticalMargin12,
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text('Days: ', style: TextStyles.semiBoldAccent14, ),
-                      Text(BookingService().daysBetween(booking!.from!, booking!.to!).toString(), style: TextStyles.semiBoldAccent14, ),
-                    ]
-                ),
-                verticalMargin12,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Price per day: ', style: TextStyles.semiBoldAccent14, ),
-                    Text('${double.parse(host.bookingSettings!.basePrice!)} GBP', style: TextStyles.semiBoldAccent14, ),
+                    Text('Venue name', style: TextStyles.regularN10012),
+                    Text(host.userInfo!.name!, style: TextStyles.boldN90017),
+                    Text(host.userInfo!.address!.formattedAddress,
+                      softWrap: true, style: TextStyles.semiBoldN90012,),
                   ],
                 ),
-                verticalMargin12,
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text('From: ', style: TextStyles.semiBoldAccent14, ),
-                      Text(
-                        DateFormat.yMMMEd().format(booking!.from!), style: TextStyles.semiBoldAccent14, ),
-                    ]
-                ),
-                verticalMargin12,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text('To: ', style: TextStyles.semiBoldAccent14, ),
-                    Text(DateFormat.yMMMEd().format(booking!.to!), style: TextStyles.semiBoldAccent14, ),
-                  ],
-                ),
-                verticalMargin12,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text('Price: ', style: TextStyles.semiBoldAccent14, ),
-                    // Text('${booking!.spaces!} spaces X ${daysBetween(booking!.from!, booking!.to!)} days X ${int.parse(user!.bookingSettings!.basePrice!).toDouble()} GBP',
-                    //   style: TextStyles.semiBoldAccent14, ),
-                    Text('${BookingService().calculatePrice(booking!, host!)} GBP',
-                      style: TextStyles.semiBoldAccent14, ),
-                  ],
-                ),
-                verticalMargin12,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text('Commission (15%): ', style: TextStyles.semiBoldAccent14, ),
-                    Text('${BookingService().calculateCommission(
-                        BookingService().calculatePrice(booking!, host!))} GBP',
-                      style: TextStyles.semiBoldAccent14, ),
-                  ],
-                ),
-                verticalMargin12,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text('Grand Total: ', style: TextStyles.semiBoldAccent14, ),
-                    Text('${BookingService().calculateGrandTotal(BookingService().calculatePrice(booking!, host!),
-                        BookingService().calculateCommission(BookingService().calculatePrice(booking!, host!)))} GBP',
-                      style: TextStyles.semiBoldAccent14, ),
+                    Text('Booking id', style: TextStyles.regularN10012),
+                    Container(
+                        height: 30,
+                        margin: const EdgeInsets.all(5),
+                        clipBehavior: Clip.antiAlias,
+                        decoration: ShapeDecoration(
+                          color: AppTheme.n900,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                        ),
+                        child: Center(
+                          child: SelectableText(booking!.bookingId!.extractBookingId(),
+                            style: TextStyles.semiBoldAccent14,),
+                        )
+                    )
                   ],
                 ),
               ],
-            )
+            ),
+            verticalMargin16,
+            Container(
+              height: 70,
+              padding: const EdgeInsets.all(16),
+              clipBehavior: Clip.antiAlias,
+              decoration: ShapeDecoration(
+                color: AppTheme.s50,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('From', style: TextStyles.regularN10012),
+                      Text(
+                        DateFormat.yMMMEd().format(booking!.from!),
+                        style: TextStyles.boldN90012, ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('To', style: TextStyles.regularN10012),
+                      Text(
+                        DateFormat.yMMMEd().format(booking!.to!),
+                        style: TextStyles.boldN90012, ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            verticalMargin16,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Days', style: TextStyles.regularN10012),
+                    Text(BookingService().daysBetween(booking!.from!, booking!.to!).toString(),
+                      style: TextStyles.boldN90012, ),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Spaces', style: TextStyles.regularN10012),
+                    Text(booking!.spaces!,
+                      style: TextStyles.boldN90012, ),
+                  ],
+                ),
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Price/space', style: TextStyles.regularN10012),
+                    Text('${double.parse(host.bookingSettings!.basePrice!)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
+                      style: TextStyles.boldN90012, ),
+                  ],
+                ),
+              ],
+            ),
+            verticalMargin16,
+            const Divider(thickness: 0.5, color: AppTheme.divider,),
+            verticalMargin16,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Expanded(flex: 1, child: Container(),),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Total/Day', style: TextStyles.regularN10012),
+
+                    Text('${BookingService().calculatePricePerDay(double.parse(host.bookingSettings!.basePrice!),
+                        int.parse(booking!.spaces!))} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
+                      style: TextStyles.boldN90012, ),
+                  ],
+                ),
+
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Total', style: TextStyles.regularN10012),
+                    Text('${BookingService().calculateGrandTotal(BookingService().calculatePrice(booking!, host!),
+                        0)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
+                      style: TextStyles.boldN90012, ),
+                  ],
+                ),
+              ],
+            ),
+            verticalMargin16
           ],
         )
     );

@@ -29,7 +29,6 @@ class BookingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    User? user;
     Booking? booking;
     int maxSpacesAvailable = int.parse(host.userArtInfo!.spaces!);
     return
@@ -41,7 +40,6 @@ class BookingView extends StatelessWidget {
 
             if (state is LoadedState || state is DateRangeChosen
                 || state is SpacesChosen || state is DateRangeErrorState || state is SpacesErrorState) {
-              user = state.props[0] as User;
               booking = state.props[1] as Booking;
 
               if(state is DateRangeChosen) {

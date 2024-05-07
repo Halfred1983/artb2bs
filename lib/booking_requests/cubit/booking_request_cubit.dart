@@ -91,6 +91,12 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
     }
   }
 
+
+  void updateFilter(String filter, User user) {
+    emit(FilterState(user, filter));
+  }
+
+
   void exitAlert(User user) {
     emit(LoadedState(user));
   }

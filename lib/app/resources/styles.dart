@@ -28,6 +28,7 @@ class TextStyles {
 
   static final regularN90010 = _baseRegular[TextSize.size10].withColor(AppTheme.n900);
   static final regularN90012 = _baseRegular[TextSize.size12].withColor(AppTheme.n900);
+  static final regularN10012 = _baseRegular[TextSize.size12].withColor(AppTheme.n100);
   static final regularN90014 = _baseRegular[TextSize.size14].withColor(AppTheme.n900);
   static final regularN90017 = _baseRegular[TextSize.size17].withColor(AppTheme.n900);
   static final regularN90020 = _baseRegular[TextSize.size20].withColor(AppTheme.n900);
@@ -61,6 +62,8 @@ class TextStyles {
   static final semiBoldN90014 = _baseSemiBold[TextSize.size14].withColor(AppTheme.n900);
   static final semiBoldN20014 = _baseSemiBold[TextSize.size14].withColor(AppTheme.n200);
   static final semiBoldN10014 = _baseSemiBold[TextSize.size14].withColor(AppTheme.n100);
+  static final semiBoldSV30014 = _baseSemiBold[TextSize.size14].withColor(AppTheme.sv300);
+  static final semiBoldN60014 = _baseSemiBold[TextSize.size14].withColor(AppTheme.n600);
   static final semiBoldN90017 = _baseSemiBold[TextSize.size17].withColor(AppTheme.n900);
   static final semiBoldN90020 = _baseSemiBold[TextSize.size20].withColor(AppTheme.n900);
   static final semiBoldN90024 = _baseSemiBold[TextSize.size24].withColor(AppTheme.n900);
@@ -94,6 +97,7 @@ class TextStyles {
   static final boldN90029 = _baseBold[TextSize.size29].withColor(AppTheme.n900);
   static final boldWhite29 = _baseBold[TextSize.size29].withColor(AppTheme.white);
   static final boldS40029 = _baseBold[TextSize.size29].withColor(AppTheme.s400);
+  static final boldP40029 = _baseBold[TextSize.size29].withColor(AppTheme.p400);
 
   // Bold Underlined
 

@@ -23,6 +23,16 @@ class LoadedState extends BookingRequestState {
   List<Object> get props => [user];
 }
 
+class FilterState extends BookingRequestState {
+  FilterState(this.user, this.filter);
+
+  final User user;
+  final String filter;
+
+  @override
+  List<Object> get props => [user, filter];
+}
+
 
 class ErrorState extends BookingRequestState {
   @override

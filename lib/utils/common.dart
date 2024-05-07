@@ -105,6 +105,11 @@ extension StringExtension on String {
     return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 
+  String deCapitalize() {
+    return "${this[0].toLowerCase()}${substring(1).toLowerCase()}";
+  }
+
+
   String extractBookingId() {
     int dashIndex = indexOf('-');
     return dashIndex != -1 ? substring(0, dashIndex).toUpperCase() : this;
@@ -115,13 +120,30 @@ extension BookingStatusColorExtension on String {
   Color getColorForBookingStatus() {
     switch (toLowerCase()) {
       case 'accepted':
-        return Colors.green; // Set the color for accepted status
+        return AppTheme.sv300; // Set the color for accepted status
       case 'pending':
-        return Colors.orange; // Set the color for pending status
+        return AppTheme.wv500; // Set the color for pending status
       case 'cancelled':
-        return Colors.red; // Set the color for cancelled status
+        return AppTheme.dv400;
+      case 'rejected':
+        return AppTheme.dv400;
       default:
-        return AppTheme.primaryColor; // Default color if status is not recognized
+        return AppTheme.sv300; // Default color if status is not recognized
+    }
+  }
+
+  Color getBackgroundColorForBookingStatus() {
+    switch (toLowerCase()) {
+      case 'accepted':
+        return AppTheme.sv50; // Set the color for accepted status
+      case 'pending':
+        return AppTheme.wv50; // Set the color for pending status
+      case 'cancelled':
+        return AppTheme.dv50;
+      case 'rejected':
+        return AppTheme.dv50;
+      default:
+        return AppTheme.sv50; // Default color if status is not recognized
     }
   }
 }
@@ -130,11 +152,11 @@ extension PayoutStatusColorExtension on String {
   Color getColorForPayoutStatus() {
     switch (toLowerCase()) {
       case 'success':
-        return Colors.green; // Set the color for accepted status
+        return AppTheme.sv300; // Set the color for accepted status
       case 'unknown':
-        return Colors.orange; // Set the color for pending status
+        return AppTheme.wv500; // Set the color for pending status
       case 'failed':
-        return Colors.red; // Set the color for cancelled status
+        return AppTheme.dv400; // Set the color for cancelled status
       default:
         return AppTheme.primaryColor; // Default color if status is not recognized
     }

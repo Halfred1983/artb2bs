@@ -8,6 +8,10 @@ class BookingService {
     return (days * int.parse(host.bookingSettings!.basePrice!) * spaces).toDouble();
   }
 
+  double calculatePricePerDay(double pricePerSpace, int spaces) {
+    return pricePerSpace * spaces;
+  }
+
   double calculateCommission(double price) {
     return price * 0.15;
   }

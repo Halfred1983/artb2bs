@@ -105,15 +105,6 @@ class _ExploreViewState extends State<ExploreView> {
                     // physics: const ClampingScrollPhysics(),
                       child: Builder(
                           builder: (context){
-                            // if (snapshot.hasError) {
-                            //   return const Text('Something went wrong');
-                            // }
-                            //
-                            // if (snapshot.connectionState == ConnectionState.waiting) {
-                            //   return const Text("Loading");
-                            // }
-                            // if(snapshot.hasData) {
-
                             return  _listView ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -151,7 +142,6 @@ class _ExploreViewState extends State<ExploreView> {
                             const Icon(Icons.map),
                             horizontalMargin4,
                             Text('Map', style: TextStyles.semiBoldPrimary14,)
-
                           ]
                           else ...[
                             const Icon(Icons.list),
@@ -195,7 +185,7 @@ class _ExploreViewState extends State<ExploreView> {
                 Positioned(
                   bottom: 5,
                   left: 7,
-                  child: isFiltering ? Icon(
+                  child: isFiltering ? const Icon(
                     Icons.check,
                     size: 20,
                     color: Colors.red, // Adjust the color of the checkmark

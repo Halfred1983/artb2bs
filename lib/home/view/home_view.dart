@@ -149,7 +149,7 @@ class _HomeViewState extends State<HomeView> {
                           label: Text(pendingRequests!.toString()),
                           child: const Icon(Icons.add_alert_sharp, size: 22)
                       ) : const Icon(Icons.add_alert_sharp, size: 22,),
-                      title: Text("Requests", style: TextStyles.semiBoldN90012),
+                      title: Text("Bookings", style: TextStyles.semiBoldN90012),
                       backgroundColor: AppTheme.primaryColor,
                       selectedIcon: const Icon(Icons.add_alert_sharp, size: 20, color: AppTheme.n900,),
                     ),

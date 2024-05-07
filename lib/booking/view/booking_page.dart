@@ -25,7 +25,7 @@ class BookingPage extends StatelessWidget {
 
     return
       BlocProvider<BookingCubit>(
-        create: (context) => BookingCubit(
+        create: (context) => BookingCubit(host,
           databaseService: databaseService,
           userId: authService.getUser().id,
         ),

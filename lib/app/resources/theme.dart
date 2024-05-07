@@ -12,9 +12,17 @@ class AppTheme {
 
 
   static const s300 = Color(0xFF97b426);
+  static const s50 = Color(0xFFF5F8E9);
   static const s400 = Color(0xFF6a7e1b);
+  static const sv300 = Color(0xFF08C826);
+  static const sv50 = Color(0xFFE6FAE9);
+  static const wv50 = Color(0xFFFFF8E6);
+  static const wv500 = Color(0xFF9C7104);
+  static const dv50 = Color(0xFFFFEEEC);
+  static const dv400 = Color(0xFFB33B2B);
   static const p400 = Color(0xFF8da823);
   static const n900 = Color(0xFF292730);
+  static const n600 = Color(0xFF504E55);
   static const n200 = Color(0xFF8e8c92);
   static const n100 = Color(0xFF8b8a8f);
   static const n500 = Color(0xFF5a5960);
