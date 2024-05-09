@@ -1,22 +1,29 @@
+import 'dart:io';
+
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/booking/service/booking_service.dart';
 import 'package:artb2b/booking_requests/cubit/booking_request_cubit.dart';
 import 'package:artb2b/booking_requests/cubit/booking_request_state.dart';
 import 'package:artb2b/widgets/common_card_widget.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
+import 'package:artb2b/widgets/summary_card.dart';
 import 'package:choice/choice.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
+import 'package:map_launcher/map_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../injection.dart';
 import '../../../utils/common.dart';
 import '../../app/resources/theme.dart';
+import '../../widgets/scollable_chips.dart';
 
 class BookingRequestView extends StatelessWidget {
 
@@ -85,7 +92,7 @@ class BookingRequestView extends StatelessWidget {
                           ),
                           child: Padding(
                             padding: horizontalPadding32,
-                            child: InlineScrollableX(choices: choices,
+                            child: ScrollableChips(choices: choices,
                               onSelectionChanged:
                                   (selectedValue) {
                                 _filter = selectedValue;
@@ -114,7 +121,6 @@ class BookingRequestView extends StatelessWidget {
                                   }
 
                                   if(bookings.isNotEmpty) {
-                                    bool isArtist = user!.userInfo!.userType! == UserType.artist;
 
                                     return Padding(
                                       padding: horizontalPadding32,
@@ -124,8 +130,7 @@ class BookingRequestView extends StatelessWidget {
                                           itemBuilder: (context, index) {
                                             return FutureBuilder<User?>(
                                                 future: firestoreDatabaseService.getUser(
-                                                    userId:!isArtist? bookings[index].artistId! :
-                                                    bookings[index].hostId!),
+                                                    userId: bookings[index].hostId!),
                                                 builder: (context, snapshot) {
                                                   if (snapshot.hasData &&
                                                       snapshot.connectionState ==
@@ -133,12 +138,15 @@ class BookingRequestView extends StatelessWidget {
                                                     return Padding(
                                                         padding: verticalPadding8,
                                                         child: InkWell(
-                                                          onTap: () => context.pushNamed(
-                                                            'profile',
-                                                            pathParameters: {'userId': !isArtist ?
-                                                            bookings[index].artistId! :
-                                                            bookings[index].hostId!},
-                                                          ),
+                                                          onTap: () => _showBookingDetails(context,  bookings[index], snapshot.data!),
+
+
+                                                          //     context.pushNamed(
+                                                          //   'profile',
+                                                          //   pathParameters: {'userId': !isArtist ?
+                                                          //   bookings[index].artistId! :
+                                                          //   bookings[index].hostId!},
+                                                          // ),
                                                           child:
                                                           CommonCard(
                                                             padding: const EdgeInsets.all(16),
@@ -176,21 +184,7 @@ class BookingRequestView extends StatelessWidget {
                                                                                   ],
                                                                                 ),
                                                                                 Expanded(child: Container(),),
-                                                                                Container(
-                                                                                  height: 27,
-                                                                                  margin: const EdgeInsets.all(5),
-                                                                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                                                                  clipBehavior: Clip.antiAlias,
-                                                                                  decoration: ShapeDecoration(
-                                                                                    color: bookings[index].bookingStatus!.name.getBackgroundColorForBookingStatus(),
-                                                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                                                                                  ),
-                                                                                  child: Text(bookings[index].bookingStatus!.name.toString().capitalize(),
-                                                                                    style:
-                                                                                    TextStyles.semiBoldSV30014
-                                                                                        .withColor(bookings[index].bookingStatus!.name.getColorForBookingStatus()),),
-                                                                                )
-
+                                                                                StatusLabel( booking: bookings[index],),
                                                                               ],
                                                                             ),
                                                                             verticalMargin12,
@@ -287,61 +281,131 @@ class BookingRequestView extends StatelessWidget {
     }
     return text;
   }
-}
 
-
-class InlineScrollableX extends StatefulWidget {
-  InlineScrollableX({super.key, required this.choices, required this.onSelectionChanged, this.selectedValue});
-
-  final List<String> choices;
-  String? selectedValue;
-  final Function(String) onSelectionChanged; // Callback function to return selected values
-
-
-  @override
-  State<InlineScrollableX> createState() => _InlineScrollableXState();
-}
-
-class _InlineScrollableXState extends State<InlineScrollableX> {
-
-
-  void setSelectedValue(String? value) {
-    setState(()  {
-      widget.selectedValue = value;
-      widget.onSelectionChanged(value!);
-    });
+  void _showBookingDetails(BuildContext context, Booking booking, User host) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: horizontalPadding24,
+          child: Container(
+            padding: verticalPadding32 + horizontalPadding24,
+            height: MediaQuery.of(context).size.height * 0.75,
+            decoration: const BoxDecoration(
+              color: AppTheme.white,
+              borderRadius: BorderRadius.all(Radius.circular(16))
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      StatusLabel( booking: booking,),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ],
+                  ),
+                  verticalMargin16,
+                  SummaryCard(booking: booking, host: host, title: 'Booking details', padding: EdgeInsets.zero,),
+                  verticalMargin16,
+                  const Divider(thickness: 0.5, color: AppTheme.divider,),
+                  verticalMargin16,
+                  Text('Venue details', style: TextStyles.boldN90017),
+                  verticalMargin16,
+                  GestureDetector(
+                    onTap: () async {
+                      final availableMaps = await MapLauncher.installedMaps;
+                      print(availableMaps); // [AvailableMap { mapName: Google Maps, mapType: google }, ...]
+                      await availableMaps.first.showMarker(
+                        coords: Coords(host.userInfo!.address!.location!.latitude,
+                            host.userInfo!.address!.location!.longitude),
+                        title: host.userInfo!.name!,
+                      );
+                      // Implement your contact functionality
+                    },
+                    child: Text('📍 Venue location', style: TextStyles.semiBoldS40014,),
+                  ),
+                  verticalMargin16,
+                  TextButton(
+                    onPressed: () {
+                      _whatsapp();
+                    },
+                    child: const Text('📞 Contact customer service'),
+                  ),
+                  verticalMargin16,
+                  GestureDetector(
+                    onTap: () {
+                      _launchUrl('https://www.google.com');
+                    },
+                    child: Text('📝 Read T&Cs', style: TextStyles.semiBoldS40014),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
+
+  _whatsapp() async {
+    String contact = "656756200";
+    String text = '';
+    String androidUrl = "whatsapp://send?phone=$contact&text=$text";
+    String iosUrl = "https://wa.me/$contact?text=${Uri.parse(text)}";
+
+    String webUrl = 'https://api.whatsapp.com/send/?phone=$contact&text=hi';
+
+    try {
+      if (Platform.isIOS) {
+        if (await canLaunchUrl(Uri.parse(iosUrl))) {
+          await launchUrl(Uri.parse(iosUrl));
+        }
+      } else {
+        if (await canLaunchUrl(Uri.parse(androidUrl))) {
+          await launchUrl(Uri.parse(androidUrl));
+        }
+      }
+    } catch(e) {
+      print('object');
+      await launchUrl(Uri.parse(webUrl), mode: LaunchMode.externalApplication);
+    }
+  }
+
+  _launchUrl(String webUrl) async {
+    await launchUrl(Uri.parse(webUrl), mode: LaunchMode.externalApplication);
+  }
+
+}
+
+
+class StatusLabel extends StatelessWidget {
+  const StatusLabel({super.key, required this.booking});
+
+  final Booking booking;
 
   @override
   Widget build(BuildContext context) {
-    return Choice<String>.inline(
-      clearable: true,
-      value: ChoiceSingle.value(widget.selectedValue),
-      onChanged: ChoiceSingle.onChanged(setSelectedValue),
-      itemCount: widget.choices.length,
-      itemBuilder: (state, i) {
-        return ChoiceChip(
-          selectedColor: AppTheme.primaryColor,
-          backgroundColor: AppTheme.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-            side: const BorderSide(
-              color: AppTheme.accentColor,
-              width: 1,
-            ),
-          ),
-          selected: state.selected(widget.choices[i]),
-          onSelected: state.onSelected(widget.choices[i]),
-          label: Text(widget.choices[i], style: TextStyles.boldN90012),
-        );
-      },
-      listBuilder: ChoiceList.createScrollable(
-        spacing: 10,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 25,
-        ),
+    return Container(
+      height: 27,
+      margin: const EdgeInsets.all(5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      clipBehavior: Clip.antiAlias,
+      decoration: ShapeDecoration(
+        color: booking.bookingStatus!.name.getBackgroundColorForBookingStatus(),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
+      child: Text(booking.bookingStatus!.name.toString().capitalize(),
+        style:
+        TextStyles.semiBoldSV30014
+            .withColor(booking.bookingStatus!.name.getColorForBookingStatus()),),
     );
   }
+
+
 }
+

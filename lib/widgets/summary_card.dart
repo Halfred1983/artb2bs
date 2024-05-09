@@ -1,5 +1,6 @@
 
 import 'package:database_service/database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -11,22 +12,33 @@ import '../utils/currency/currency_helper.dart';
 import 'common_card_widget.dart';
 
 class SummaryCard extends StatelessWidget {
-  const SummaryCard({
+  SummaryCard({
     super.key,
     required this.booking,
     required this.host,
+    this.padding,
+    this.title
   });
 
   final Booking? booking;
   final User host;
+  EdgeInsets? padding;
+  String? title;
 
   @override
   Widget build(BuildContext context) {
     return CommonCard(
-      padding: const EdgeInsets.only(right: 20, left: 20, top: 16),
+        borderRadius: BorderRadius.zero,
+        boxShadow: const BoxShadow(
+          color: Colors.transparent, // Makes the shadow completely transparent
+          spreadRadius: 0,
+          blurRadius: 0,
+          offset: Offset(0, 0), // No offset from the container
+        ),
+        padding: padding ?? const EdgeInsets.only(right: 20, left: 20, top: 16),
         child: Column(
           children: [
-            Text('Your booking details:', style: TextStyles.boldN90017, ),
+            Text(title ?? 'Your booking details:', style: TextStyles.boldN90017, ),
             verticalMargin16,
             const Divider(thickness: 0.5, color: AppTheme.divider,),
             verticalMargin16,
