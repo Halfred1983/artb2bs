@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:artb2b/booking_requests/view/booking_request_page.dart';
 import 'package:artb2b/home/view/home_view.dart';
-import 'package:artb2b/login/view/login_view.dart';
+import 'package:artb2b/login/view/1_login_signup_view.dart';
 import 'package:artb2b/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../home/view/home_page.dart';
 import '../../login/cubit/login_cubit.dart';
+import '../../login/view/0_start_view.dart';
 import '../../profile/host_profile.dart';
 
 // This example shows how to use redirect to handle a sign-in flow.
@@ -47,7 +48,7 @@ class AppRouter {
       GoRoute(
         path: '/login',
         builder: (BuildContext context, GoRouterState state) =>
-            LoginView(),
+            const StartView(),
       ),
       GoRoute(
         path: "/profile/:userId",

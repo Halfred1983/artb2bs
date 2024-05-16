@@ -75,7 +75,6 @@ class AppTheme {
       sliderTheme:  SliderThemeData(
           showValueIndicator: ShowValueIndicator.always,
           valueIndicatorTextStyle:  TextStyles.boldAccent17,
-          valueIndicatorColor: primaryColorOpacity
       ),
       // textTheme:  const TextTheme(
       //     titleMedium: TextStyle(color: accentColor)

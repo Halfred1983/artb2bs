@@ -392,7 +392,7 @@ class StatusLabel extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       decoration: ShapeDecoration(
         color: booking.bookingStatus!.name.getBackgroundColorForBookingStatus(),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       child: Text(booking.bookingStatus!.name.toString().capitalize(),
         style:

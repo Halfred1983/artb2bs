@@ -1,6 +1,5 @@
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class TextStyles {
   const TextStyles._();
@@ -90,6 +89,7 @@ class TextStyles {
 
   static final boldN90010 = _baseBold[TextSize.size10].withColor(AppTheme.n900);
   static final boldN90012 = _baseBold[TextSize.size12].withColor(AppTheme.n900);
+  static final boldN90016 = _baseBold[TextSize.size17].withColor(AppTheme.n900);
   static final boldN90014 = _baseBold[TextSize.size14].withColor(AppTheme.n900);
   static final boldN90017 = _baseBold[TextSize.size17].withColor(AppTheme.n900);
   static final boldS40017 = _baseBold[TextSize.size17].withColor(AppTheme.s400);

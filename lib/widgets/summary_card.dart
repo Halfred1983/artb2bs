@@ -38,7 +38,7 @@ class SummaryCard extends StatelessWidget {
         padding: padding ?? const EdgeInsets.only(right: 20, left: 20, top: 16),
         child: Column(
           children: [
-            Text(title ?? 'Your booking details:', style: TextStyles.boldN90017, ),
+            Text(title ?? 'Booking details:', style: TextStyles.boldN90017, ),
             verticalMargin16,
             const Divider(thickness: 0.5, color: AppTheme.divider,),
             verticalMargin16,
@@ -118,7 +118,7 @@ class SummaryCard extends StatelessWidget {
                   children: [
                     Text('Days', style: TextStyles.regularN10012),
                     Text(BookingService().daysBetween(booking!.from!, booking!.to!).toString(),
-                      style: TextStyles.boldN90012, ),
+                      style: TextStyles.boldN90016, ),
                   ],
                 ),
                 Column(
@@ -126,7 +126,7 @@ class SummaryCard extends StatelessWidget {
                   children: [
                     Text('Spaces', style: TextStyles.regularN10012),
                     Text(booking!.spaces!,
-                      style: TextStyles.boldN90012, ),
+                      style: TextStyles.boldN90016, ),
                   ],
                 ),
 
@@ -135,7 +135,7 @@ class SummaryCard extends StatelessWidget {
                   children: [
                     Text('Price/space', style: TextStyles.regularN10012),
                     Text('${double.parse(host.bookingSettings!.basePrice!)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
-                      style: TextStyles.boldN90012, ),
+                      style: TextStyles.boldN90016, ),
                   ],
                 ),
               ],
@@ -154,7 +154,7 @@ class SummaryCard extends StatelessWidget {
 
                     Text('${BookingService().calculatePricePerDay(double.parse(host.bookingSettings!.basePrice!),
                         int.parse(booking!.spaces!))} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
-                      style: TextStyles.boldN90012, ),
+                      style: TextStyles.boldN90016, ),
                   ],
                 ),
 
@@ -164,7 +164,7 @@ class SummaryCard extends StatelessWidget {
                     Text('Total', style: TextStyles.regularN10012),
                     Text('${BookingService().calculateGrandTotal(BookingService().calculatePrice(booking!, host!),
                         0)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
-                      style: TextStyles.boldN90012, ),
+                      style: TextStyles.boldN90016, ),
                   ],
                 ),
               ],

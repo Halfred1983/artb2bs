@@ -8,9 +8,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../app/resources/styles.dart';
+import '1_login_signup_view.dart';
 
 
-class LoginView extends StatelessWidget {
+class StartView extends StatelessWidget {
+
+  const StartView({Key? key}) : super(key: key);
+
+  static Route<void> route() {
+    return MaterialPageRoute<void>(builder: (_) => StartView());
+  }
+
   @override
   Widget build(BuildContext context) {
     return const _LoginForm();
@@ -32,21 +40,46 @@ class _LoginForm extends StatelessWidget {
             Expanded(child: Container()),
             Image.asset(
               'assets/images/artb2b_logo.png',
-              height: 200,
-              width: 200,
+              height: 150,
+              width: 150,
             ),
+            verticalMargin32,
             SizedBox(
-              height: 350,
+              height: 300,
               child: Lottie.asset(
                 'assets/logo.json',
                 fit: BoxFit.fill,
               ),
             ),
             Expanded(child: Container()),
-            _GoogleLoginButton(),
-            verticalMargin12,
-            RegistrationScreen(),
-            verticalMargin48
+            Padding(
+                padding: horizontalPadding32,
+                child: Text('Where art finds space, and spaces find art!', style: TextStyles.boldN90024,
+                  textAlign: TextAlign.center,)),
+            verticalMargin32,
+            Padding(
+                padding: horizontalPadding32,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed:
+                        () {
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) =>
+                             LoginSignUpView()
+                            ),
+                          );
+
+                    },
+                    child: Text('Get started', style: TextStyles.boldPrimary17,),
+                  ),
+                )
+            ),
+            // _GoogleLoginButton(),
+            verticalMargin32,
+            // RegistrationScreen(),
           ],
         ),
       ),

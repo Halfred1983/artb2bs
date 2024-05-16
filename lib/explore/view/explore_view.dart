@@ -304,7 +304,7 @@ class _ExploreViewState extends State<ExploreView> {
                         width: double.infinity,
                         height: 200,
                         child:FadeInImage(
-                          placeholder: AssetImage(Assets.logoUrl),
+                          placeholder: AssetImage(Assets.logo),
                           image: NetworkImage(Assets.logoUrl),
                           fit: BoxFit.fitWidth,
                         ),
