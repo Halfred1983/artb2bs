@@ -99,7 +99,7 @@ class _GoogleLoginButtonState extends State<_GoogleLoginButton> {
     setState(() => _isLoading = true);
     context
         .read<LoginCubit>()
-        .login().then((value) => setState(() => _isLoading = false));
+        .loginWithGoogle().then((value) => setState(() => _isLoading = false));
   }
 
   @override

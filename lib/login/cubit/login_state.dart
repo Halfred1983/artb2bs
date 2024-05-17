@@ -2,21 +2,34 @@ part of 'login_cubit.dart';
 
 enum AuthStatus { unknown, authenticated, unauthenticated }
 
-class LoginState extends Equatable {
+abstract class LoginState extends Equatable {}
+
+
+class LoginResult extends LoginState {
   final AuthStatus status;
 
-  const LoginState._({this.status = AuthStatus.unknown});
-
-  const LoginState.authenticated()
-      : this._(
-          status: AuthStatus.authenticated,
-        );
-
-  const LoginState.unauthenticated()
-      : this._(
-          status: AuthStatus.unauthenticated,
-        );
+  LoginResult({this.status = AuthStatus.unknown});
 
   @override
   List<Object?> get props => [status];
+}
+
+class RegistrationResult extends LoginResult {
+  final AuthStatus status;
+
+  RegistrationResult({this.status = AuthStatus.unknown});
+
+  @override
+  List<Object?> get props => [status];
+}
+
+
+
+class LoginError extends LoginResult {
+  final AuthError error;
+
+  LoginError(this.error);
+
+  @override
+  List<Object?> get props => [error];
 }

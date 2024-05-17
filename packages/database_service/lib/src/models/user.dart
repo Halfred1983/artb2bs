@@ -72,4 +72,6 @@ enum UserStatus {
   artInfo,
   @JsonValue(3)
   paymentInfo,
+  @JsonValue(4)
+  notVerified,
 }

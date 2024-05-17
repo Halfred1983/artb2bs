@@ -1,6 +1,7 @@
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/login/cubit/login_cubit.dart';
 import 'package:artb2b/utils/common.dart';
+import 'package:artb2b/widgets/snackbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -94,17 +95,33 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
 
-  Future<void> _register() async {
-    try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-          email: _usernameController.text.trim(),
-          password: _passwordController.text.trim());
+  var _isLoading = false;
 
-      print('User registered: ${userCredential.user?.uid}');
-    } catch (e) {
-      print('Registration failed: $e');
+
+  Future<void> _register() async {
+    setState(() => _isLoading = true);
+
+    String username = _usernameController.text.trim();
+    String password = _passwordController.text.trim();
+    String confirmPassword = _confirmPasswordController.text.trim();
+
+    if(username.isEmpty || password.isEmpty) {
+      showCustomSnackBar('Please enter your email and password', context);
+      return;
     }
+
+    if (password != confirmPassword) {
+      showCustomSnackBar('Passwords do not match', context);
+      return;
+    }
+
+    context
+        .read<LoginCubit>()
+        .registerWithUsernameAndPassword(username, password)
+        .then((value) {
+          setState(() => _isLoading = false);
+        });
+
   }
 
   @override
@@ -117,9 +134,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         TextField(
           autofocus: false,
           style: TextStyles.semiBoldAccent14,
-          // onChanged: (String value) {
-          //   context.read<ExploreCubit>().updateSearchQuery(value);
-          // },
           decoration: InputDecoration(
             hintText: 'user@email.com',
             hintStyle: TextStyles.regularN90014,
@@ -233,8 +247,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: _register,
-            child: const Text('Create account'),
+            onPressed: () =>  _isLoading ? null : _register(),
+            child: _isLoading
+                ? Container(
+              width: 24,
+              height: 24,
+              padding: const EdgeInsets.all(2.0),
+              child: const CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 3,
+              ),
+            ) : const Text('Create account'),
           ),
         ),
       ],

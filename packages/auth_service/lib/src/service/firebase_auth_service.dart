@@ -105,6 +105,13 @@ class FirebaseAuthService implements AuthService {
         password: password,
       );
 
+      if(userCredential.user!.emailVerified == false) {
+        throw AuthError(
+            code: AuthErrorEnum.emailNotVerified,
+            message: 'Please verify your email'
+        );
+      }
+
       return _mapFirebaseUser(userCredential.user!);
     } on auth.FirebaseAuthException catch (e) {
       throw _determineError(e);
@@ -122,8 +129,10 @@ class FirebaseAuthService implements AuthService {
         password: password,
       );
 
+      _firebaseAuth!.currentUser!.sendEmailVerification();
+
       UserEntity userEntity = _mapFirebaseUser(_firebaseAuth!.currentUser!);
-      SharedPreferences.getInstance().then((cache) => cache.setString(userCacheKey, json.encode(userEntity.toJson())));
+      //SharedPreferences.getInstance().then((cache) => cache.setString(userCacheKey, json.encode(userEntity.toJson())));
 
       return userEntity;
     } on auth.FirebaseAuthException catch (e) {
@@ -178,25 +187,52 @@ class FirebaseAuthService implements AuthService {
   AuthError _determineError(auth.FirebaseAuthException exception) {
     switch (exception.code) {
       case 'invalid-email':
-        return AuthError.invalidEmail;
+        return AuthError(
+            code: AuthErrorEnum.invalidEmail,
+            message: 'Please enter a valid email'
+        );
       case 'user-disabled':
-        return AuthError.userDisabled;
+        return AuthError(
+            code: AuthErrorEnum.userDisabled,
+            message: 'Your user is disabled. Please contact support.'
+        );
       case 'user-not-found':
-        return AuthError.userNotFound;
+        return AuthError(
+            code: AuthErrorEnum.userNotFound,
+            message: 'The user was not found. Please register or use another email.'
+        );
       case 'wrong-password':
-        return AuthError.wrongPassword;
+        return AuthError(
+            code: AuthErrorEnum.wrongPassword,
+            message: 'Wrong password provided.'
+        );
       case 'email-already-in-use':
       case 'account-exists-with-different-credential':
-        return AuthError.emailAlreadyInUse;
+        return AuthError(
+            code: AuthErrorEnum.emailAlreadyInUse,
+            message: 'Email already in use. Please use another email.'
+        );
       case 'invalid-credential':
-        return AuthError.invalidCredential;
+        return AuthError(
+            code: AuthErrorEnum.invalidCredential,
+            message: 'Invalid credential. Please try again.'
+        );
       case 'operation-not-allowed':
-        return AuthError.operationNotAllowed;
+        return AuthError(
+            code: AuthErrorEnum.operationNotAllowed,
+            message: 'Operation not allowed. Please try again.'
+        );
       case 'weak-password':
-        return AuthError.weakPassword;
+        return AuthError(
+            code: AuthErrorEnum.weakPassword,
+            message: 'Weak password. Please try again.'
+        );
       case 'ERROR_MISSING_GOOGLE_AUTH_TOKEN':
       default:
-        return AuthError.error;
+        return AuthError(
+            code: AuthErrorEnum.error,
+            message: 'An error occurred. Please try again.'
+        );
     }
   }
 }
