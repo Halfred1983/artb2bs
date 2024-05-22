@@ -15,6 +15,9 @@ import '../../utils/common.dart';
 import '../../widgets/app_input_validators.dart';
 import '../../widgets/google_places.dart';
 import '../../widgets/loading_screen.dart';
+import '../../widgets/scollable_chips.dart';
+import '../../widgets/tags.dart';
+import '2_info_account.dart';
 
 
 class SelectAccountPage extends StatelessWidget {
@@ -44,117 +47,88 @@ class SelectAccountView extends StatelessWidget {
   SelectAccountView({Key? key}) : super(key: key);
 
 
-  String background = "";
+  UserType _userType = UserType.unknown;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OnboardingCubit, OnboardingState>(
       builder: (context, state) {
+        User? user;
         if( state is LoadingState) {
           return const LoadingScreen();
         }
+        if(state is LoadedState) {
+          user = state.user;
+          _userType = user.userInfo != null ? user.userInfo!.userType! : UserType.unknown;
+        }
+        if(state is UserTypeChosen) {
+          _userType = state.user.userInfo!.userType!;
+        }
+
         return Scaffold(
           body: Padding(
             padding: horizontalPadding48,
             child: Center (
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text('Create account', style: TextStyles.boldN90029),
-                  Text('Do you want to exhibit your art or host exhibitions?', style: TextStyles.regularN90014),
+                  Text('Do you want to exhibit your art or host exhibitions?', textAlign: TextAlign.center,
+                      style: TextStyles.regularN90014),
                   verticalMargin48,
-                  TextButton(onPressed: null, child: Text('Sign up as artist', style: TextStyles.semiBoldAccent14)),
+                  SizedBox(
+                      width: double.infinity,
+                      child: TextButton(
+                          style: TextButton.styleFrom(
+                            foregroundColor: AppTheme.n900,
+                            backgroundColor: _userType == UserType.artist ? AppTheme.primaryColor : Colors.white,
+                            side: BorderSide(color: _userType == UserType.artist ? AppTheme.primaryColor : AppTheme.accentColor, width: 2), // Border color and width
+
+                            // onSurface: Colors.grey,
+                            // padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          ),
+                          onPressed: () => context.read<OnboardingCubit>().chooseUserType(UserType.artist),
+                          child: Text('Sign up as artist',))
+                  ),
                   verticalMargin24,
-                  TextButton(onPressed: null, child: Text('Sign up as venue', style: TextStyles.semiBoldAccent14)),
+                  SizedBox(
+                      width: double.infinity,
+                      child : TextButton(
+                          style: TextButton.styleFrom(
+                            foregroundColor:  AppTheme.n900,
+                            backgroundColor: _userType == UserType.gallery ? AppTheme.primaryColor : Colors.white,
+                            side: BorderSide(color: _userType == UserType.gallery ? AppTheme.primaryColor : AppTheme.accentColor, width: 2), // Border color and width
+
+                            // onSurface: Colors.grey,
+                            // padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          ),
+                          onPressed: () => context.read<OnboardingCubit>().chooseUserType(UserType.gallery),
+                          child: Text('Sign up as venue'))
+                  ),
                 ],
               ),
             ),
           ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/home');
-            },
-            child: Text('Continue', style: TextStyles.boldN90029,)
+          floatingActionButton: Container(
+            padding: horizontalPadding32,
+            width: double.infinity,
+            child: FloatingActionButton(
+              backgroundColor: _userType != UserType.unknown ? AppTheme.n900 : AppTheme.disabledButton,
+              foregroundColor: _userType != UserType.unknown ? AppTheme.primaryColor : AppTheme.n900,
+                onPressed: () {
+                  _userType != UserType.unknown ? Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => InfoAccountPage()), // Replace NewPage with the actual class of your new page
+                  ) : null;
+                },
+                child: const Text('Continue',)
+            ),
           ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         );
-        // if (state is UserTypeChosen) {
-        //   final userType = state.artb2bUserEntityInfo.userType;
-        //   if (userType == UserType.artist) {
-        //     background = 'assets/images/artist.png';
-        //   }
-        //   else if (userType == UserType.gallery) {
-        //     background = 'assets/images/gallery.png';
-        //   }
-        // }
-        // return BlocListener<PersonalInfoCubit, PersonalInfoState>(
-        //   listener: (context, state) {
-        //     if (state is ErrorState) {
-        //       ScaffoldMessenger.of(context).showSnackBar(
-        //         SnackBar(
-        //           content: Text(state.errorMessage, style: TextStyles.semiBoldAccent14),
-        //         ),
-        //       );
-        //     }
-        //   },
-        //   child: _buildContent(context, state),
-        // );
       },
     );
   }
-
-
-  // Widget _buildContent(BuildContext context, PersonalInfoState state) {
-  //   if (state is DataSaved) {
-  //     return HomePage();
-  //   }
-  //
-  //   return Scaffold(
-  //       resizeToAvoidBottomInset: true,
-  //       appBar: AppBar(
-  //         title: Text("About you 1/2", style: TextStyles.boldAccent24,),
-  //         centerTitle: true,
-  //       ),
-  //       body: SingleChildScrollView(
-  //         child: Padding(
-  //             padding: horizontalPadding24,
-  //             child: Column(
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children:  [
-  //                   SizedBox(height: 100, width: 100,
-  //                       child: background.toString().length > 2 ? Container(
-  //                         decoration: BoxDecoration(
-  //                           image: DecorationImage(
-  //                               image: AssetImage(background)
-  //                           ),
-  //                         ),
-  //                       ) : Container()
-  //                   ),
-  //                   verticalMargin48,
-  //                   Center(child: Text('Are you an artist or a host', style:TextStyles.semiBoldAccent14,),),
-  //                   Text('', style: TextStyles.semiBoldAccent14),
-  //                   verticalMargin8,
-  //                   const _UserTypeDropdownButton(),
-  //                   verticalMargin24,
-  //                   Center(child: Text('Artist or Host name', style:TextStyles.semiBoldAccent14,),),
-  //                   _UserNameTextField((nameValue) => {
-  //                     context.read<PersonalInfoCubit>().chooseName(nameValue),
-  //                   }),
-  //                   verticalMargin24,
-  //                   Center(child: Text('Your location', style:TextStyles.semiBoldAccent14,),),
-  //                   const _LocationTextField(),
-  //                 ]
-  //             )
-  //         ),
-  //       ),
-  //       bottomNavigationBar: Container(
-  //           padding: buttonPadding,
-  //           child: ElevatedButton(
-  //             onPressed: () {
-  //               context.read<PersonalInfoCubit>().save();
-  //             },
-  //             child: Text("Continue", style: TextStyles.semiBoldAccent14,),)
-  //       )
-  //   );
-  // }
 }
 
 

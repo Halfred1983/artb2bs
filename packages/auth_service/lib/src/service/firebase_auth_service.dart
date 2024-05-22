@@ -111,8 +111,11 @@ class FirebaseAuthService implements AuthService {
             message: 'Please verify your email'
         );
       }
+      UserEntity userEntity = _mapFirebaseUser(_firebaseAuth!.currentUser!);
 
-      return _mapFirebaseUser(userCredential.user!);
+      SharedPreferences.getInstance().then((cache) => cache.setString(userCacheKey, json.encode(userEntity.toJson())));
+
+      return userEntity;
     } on auth.FirebaseAuthException catch (e) {
       throw _determineError(e);
     }

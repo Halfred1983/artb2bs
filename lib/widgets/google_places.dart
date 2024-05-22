@@ -50,9 +50,9 @@ class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         iconTheme: const IconThemeData(
-            color: AppTheme.primaryColor //change your color here
+            color: AppTheme.n900 //change your color here
         ),
-        title: Text("Your location", style: TextStyles.boldAccent24,),
+        title: Text("Your location", style: TextStyles.boldN90024,),
         centerTitle: true,
       ),
       body: Container(
@@ -61,91 +61,12 @@ class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
           verticalMargin12,
-          // Row(
-          //   children: <Widget>[
-          //     Expanded(
-          //       flex: 4,
-          //       child: AppTextField(
-          //         controller: _placeController,
-          //         key: const Key('Address place'),
-          //         autoCorrect: false,
-          //         onChanged: (value) {
-          //           if (value.isNotEmpty) {
-          //             autoCompleteSearch(value);
-          //           } else {
-          //             if (_predictions.length > 0 && mounted) {
-          //               setState(() {
-          //                 _predictions = [];
-          //               });
-          //             }
-          //           }
-          //         },
-          //       ),
-          //     ),
-          //     horizontalMargin12,
-          //     Expanded(
-          //         flex: 1,
-          //         child:
-          //         TextButton(
-          //           onPressed: () {
-          //             setState(() {
-          //               _placeController.text = '';
-          //               _predictions = [];
-          //             });
-          //           },
-          //             style: ButtonStyle(
-          //               overlayColor: MaterialStateColor.resolveWith((states) => AppTheme.accentColor),
-          //             ),
-          //             child:Text('Clear',
-          //             style: TextStyles.semiBoldViolet14.copyWith(decoration: TextDecoration.underline),)
-          //         ),
-          //
-          //     )
-          //   ],
-          // ),
-
-          // ListView.builder(
-          //   padding: EdgeInsets.zero,
-          //   itemCount: _predictions.length,
-          //   shrinkWrap: true,
-          //   physics: const NeverScrollableScrollPhysics(),
-          //   itemBuilder: (context, index) {
-          //     return ListTile(
-          //       title: Row(
-          //         mainAxisAlignment: MainAxisAlignment.start,
-          //         children: [
-          //           const Padding(
-          //             padding: EdgeInsets.only(right: 4.0),
-          //             child: Icon(Icons.location_on_outlined,
-          //               size: 30, color: AppTheme.black,),
-          //           ),
-          //           Flexible(
-          //            child: Text(_predictions[index].description ?? '',
-          //                 style: TextStyles.semiBoldViolet16,),
-          //           ),
-          //         ],
-          //       ),
-          //
-          //       onTap: () async {
-          //         debugPrint(_predictions[index].placeId);
-          //         var address = await getDetails(_predictions[index].placeId!);
-          //
-          //         Navigator.of(context).pop(address);
-          //
-          //       },
-          //     );
-          //   },
-          // ),
           GooglePlaceAutoCompleteTextField(
+            boxDecoration: BoxDecoration(),
             textEditingController: _placeController,
             googleAPIKey: apiKey,
-            inputDecoration: InputDecoration(
-              hintText: "Search your location",
-              border: InputBorder.none,
-              enabledBorder: InputBorder.none,
-            ),
+            inputDecoration:AppTheme.textInputDecoration.copyWith(hintText: 'Your location'),
             debounceTime: 400,
-            countries: ["in", "fr"],
             isLatLngRequired: true,
             getPlaceDetailWithLatLng: (Prediction prediction) {
               print("placeDetails" + prediction.lat.toString());
@@ -263,6 +184,7 @@ class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
         url,
       );
 
+      print(response.data);
       PlaceDetails placeDetails = PlaceDetails.fromJson(response.data);
 
 

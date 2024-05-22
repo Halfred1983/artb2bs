@@ -40,6 +40,20 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     }
   }
 
+  void chooseName(String name) {
+    User user = this.state.props[0] as User;
+
+    try {
+      if(name.isEmpty) emit(ErrorState(user, "Chose a valid user name"));
+      user = user.copyWith(userInfo: user.userInfo != null ?
+      user.userInfo!.copyWith(name: name) : UserInfo(name: name));
+
+      emit(NameChosen(user));
+    } catch (e) {
+      emit(ErrorState(user, "Chose a valid user name"));
+    }
+  }
+
 
   void choseAboutYou(String aboutYou) {
     User user = this.state.props[0] as User;
@@ -113,24 +127,42 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     }
   }
 
-  void hostVenue(List<String> typeVenue) {
+  void choseVenueType(List<String> typeVenue) {
     User user = this.state.props[0] as User;
     emit(LoadingState());
 
     try {
-        if (user.userArtInfo != null) {
+
           user = user.copyWith(
-              userArtInfo: user.userArtInfo!.copyWith(typeOfVenue: typeVenue));
-        }
-        else {
-          user = user.copyWith(userArtInfo: UserArtInfo(typeOfVenue: typeVenue));
-        }
+              userArtInfo: user.userArtInfo != null ?
+              user.userArtInfo!.copyWith(typeOfVenue: typeVenue)
+              : UserArtInfo(typeOfVenue: typeVenue));
+
         emit(LoadedState(user));
 
     } catch (e) {
       emit(ErrorState(user ,"Audience value not valid"));
     }
   }
+
+  void choseVibes(List<String> vibes) {
+    User user = this.state.props[0] as User;
+    emit(LoadingState());
+
+    try {
+
+      user = user.copyWith(
+          userArtInfo: user.userArtInfo != null ?
+          user.userArtInfo!.copyWith(vibes: vibes)
+              : UserArtInfo(vibes: vibes));
+
+      emit(LoadedState(user));
+
+    } catch (e) {
+      emit(ErrorState(user ,"Audience value not valid"));
+    }
+  }
+
 
 
   void artistTags(List<String> artistTags) {

@@ -91,7 +91,7 @@ class PersonalInfoView extends StatelessWidget {
                     }),
                     verticalMargin24,
                     Center(child: Text('Your location', style:TextStyles.semiBoldAccent14,),),
-                    const _LocationTextField(),
+                    const LocationTextField(),
                   ]
               )
           ),
@@ -188,15 +188,15 @@ class _UserNameTextFieldState extends State<_UserNameTextField> {
   }
 }
 
-class _LocationTextField extends StatefulWidget {
-  const _LocationTextField();
+class LocationTextField extends StatefulWidget {
+  const LocationTextField();
 
 
   @override
-  State<_LocationTextField> createState() => _LocationTextFieldState();
+  State<LocationTextField> createState() => _LocationTextFieldState();
 }
 
-class _LocationTextFieldState extends State<_LocationTextField> {
+class _LocationTextFieldState extends State<LocationTextField> {
 
   late UserAddress _address;
   late final TextEditingController _locationController;
@@ -218,18 +218,18 @@ class _LocationTextFieldState extends State<_LocationTextField> {
   @override
   Widget build(BuildContext context) {
     return
-      AppTextField(
+      TextField(
         // focusNode: focusNode,
         key: const Key('Location'),
         controller: _locationController,
-        labelText: '',
-        validator: AppInputValidators.required('Location'),
         textInputAction: TextInputAction.next,
         keyboardType: TextInputType.text,
         textCapitalization: TextCapitalization.words,
-        autoCorrect: false,
+        autocorrect: false,
+        enableSuggestions: false,
+        style: TextStyles.semiBoldN90014,
+        decoration:  AppTheme.textInputDecoration.copyWith(hintText: 'Your location'),
         onTap: () async {
-
           var locationResult = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const GoogleAddressLookup()),

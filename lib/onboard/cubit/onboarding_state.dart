@@ -59,6 +59,15 @@ class UserTypeChosen extends OnboardingState {
   List<Object> get props => [user];
 }
 
+class NameChosen extends OnboardingState {
+  NameChosen(this.user);
+  final User user;
+
+
+  @override
+  List<Object> get props => [user];
+}
+
 class ErrorState extends OnboardingState {
   final String errorMessage;
   final User user;

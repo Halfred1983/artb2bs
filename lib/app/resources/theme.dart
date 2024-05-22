@@ -28,6 +28,7 @@ class AppTheme {
   static const n500 = Color(0xFF5a5960);
   static const d400 = Color(0xFFb33b2b);
   static const divider = Color(0xFFA8A8A8);
+  static const disabledButton = Color(0xFFE3E3E4);
 
 
 
@@ -73,8 +74,8 @@ class AppTheme {
       textButtonTheme: _textButtonTheme,
       unselectedWidgetColor: primaryColor,
       sliderTheme:  SliderThemeData(
-          showValueIndicator: ShowValueIndicator.always,
-          valueIndicatorTextStyle:  TextStyles.boldAccent17,
+        showValueIndicator: ShowValueIndicator.always,
+        valueIndicatorTextStyle:  TextStyles.boldAccent17,
       ),
       // textTheme:  const TextTheme(
       //     titleMedium: TextStyle(color: accentColor)
@@ -164,11 +165,13 @@ class AppTheme {
   );
 
 
-  static const _floatingActionButton = FloatingActionButtonThemeData(
-    backgroundColor: AppTheme.n900,
-    foregroundColor: AppTheme.primaryColor,
-    shape: _buttonCornerRadius,
-    elevation: 1.0,
+  static final _floatingActionButton = FloatingActionButtonThemeData(
+      backgroundColor: AppTheme.n900,
+      foregroundColor: AppTheme.primaryColor,
+      extendedTextStyle: TextStyles.boldPrimary17,
+      shape: _buttonCornerRadius,
+      elevation: 1.0,
+      disabledElevation: 0
   );
 
   static final _elevatedButtonTheme = ElevatedButtonThemeData(
@@ -257,4 +260,32 @@ class AppTheme {
     spreadRadius: 0,
   );
 
+  static final textInputDecoration = InputDecoration(
+    hintText: 'Venue name',
+    hintStyle: TextStyles.regularN90014,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(50),
+      borderSide: const BorderSide(
+        color: AppTheme.accentColor, // Color of the border
+        width: 0.5, // Width of the border
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(50),
+      borderSide: const BorderSide(
+        color: AppTheme.accentColor, // Color when the TextField is focused
+        width: 0.5, // Width when focused
+      ),
+    ),
+    // Enabled border style
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(50),
+      borderSide: const BorderSide(
+        color: AppTheme.accentColor, // Color when the TextField is enabled
+        width: 0.5, // Width when enabled
+      ),
+    ),
+    filled: true,
+    fillColor: Colors.white,
+  );
 }

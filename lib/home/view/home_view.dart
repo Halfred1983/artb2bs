@@ -19,6 +19,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../explore/view/explore_page.dart';
 import '../../host/view/host_dashboard_page.dart';
+import '../../onboard/view/1_select_account.dart';
 import '../../onboard/view/art_info_page.dart';
 
 class HomeView extends StatefulWidget {
@@ -79,7 +80,7 @@ class _HomeViewState extends State<HomeView> {
                 pendingRequests = state.pendingRequests;
 
                 if (user!.userStatus == UserStatus.initialised) {
-                  return PersonalInfoPage();
+                  return SelectAccountPage();
                 }
                 if (user!.userStatus == UserStatus.personalInfo) {
                   return ArtInfoPage();
@@ -112,7 +113,7 @@ class _HomeViewState extends State<HomeView> {
                 body: Stack(
                     children: [
                       // _currentIndex == 0 ? widget : _widgetOptions.elementAt(_currentIndex),
-                      _widgetOptions.elementAt(_currentIndex),
+                       _widgetOptions.elementAt(_currentIndex),
                     ]
                 ),
                 bottomNavigationBar:
