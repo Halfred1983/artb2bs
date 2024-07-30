@@ -1,5 +1,9 @@
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/app/resources/theme.dart';
+import 'package:artb2b/onboard/view/2_info_account.dart';
+import 'package:artb2b/onboard/view/4_venue_address.dart';
+import 'package:artb2b/onboard/view/8_venue_description.dart';
+import 'package:artb2b/onboard/view/9_venue_audience.dart';
 
 import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
@@ -20,6 +24,9 @@ import 'package:go_router/go_router.dart';
 import '../../explore/view/explore_page.dart';
 import '../../host/view/host_dashboard_page.dart';
 import '../../onboard/view/1_select_account.dart';
+import '../../onboard/view/5_venue_spaces.dart';
+import '../../onboard/view/6_venue_price.dart';
+import '../../onboard/view/7_venue_photo.dart';
 import '../../onboard/view/art_info_page.dart';
 
 class HomeView extends StatefulWidget {
@@ -79,9 +86,32 @@ class _HomeViewState extends State<HomeView> {
                 user = state.user;
                 pendingRequests = state.pendingRequests;
 
-                if (user!.userStatus == UserStatus.initialised) {
+                //ONBOARDING FOR NEW USERS
+                if ( user!.userStatus == null || user!.userStatus == UserStatus.initialised ) {
                   return SelectAccountPage();
                 }
+                if (user!.userStatus == UserStatus.type) {
+                  return InfoAccountPage();
+                }
+                if (user!.userStatus == UserStatus.venueInfo) {
+                  return VenueAddressPage();
+                }
+                if (user!.userStatus == UserStatus.locationInfo) {
+                  return VenueSpacesPage();
+                }
+                if (user!.userStatus == UserStatus.spaceInfo) {
+                  return VenuePricePage();
+                }
+                if (user!.userStatus == UserStatus.priceInfo) {
+                  return VenuePhotoPage();
+                }
+                if (user!.userStatus == UserStatus.photoInfo) {
+                  return VenueDescription();
+                }
+                if (user!.userStatus == UserStatus.descriptionInfo) {
+                  return VenueAudience();
+                }
+
                 if (user!.userStatus == UserStatus.personalInfo) {
                   return ArtInfoPage();
                 }

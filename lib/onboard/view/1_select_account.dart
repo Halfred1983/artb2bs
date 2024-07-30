@@ -61,7 +61,8 @@ class SelectAccountView extends StatelessWidget {
           _userType = user.userInfo != null ? user.userInfo!.userType! : UserType.unknown;
         }
         if(state is UserTypeChosen) {
-          _userType = state.user.userInfo!.userType!;
+          user = state.user;
+          _userType = user.userInfo!.userType!;
         }
 
         return Scaffold(
@@ -113,13 +114,19 @@ class SelectAccountView extends StatelessWidget {
             padding: horizontalPadding32,
             width: double.infinity,
             child: FloatingActionButton(
-              backgroundColor: _userType != UserType.unknown ? AppTheme.n900 : AppTheme.disabledButton,
-              foregroundColor: _userType != UserType.unknown ? AppTheme.primaryColor : AppTheme.n900,
+                backgroundColor: _canContinue() ? AppTheme.n900 : AppTheme.disabledButton,
+                foregroundColor: _canContinue() ? AppTheme.primaryColor : AppTheme.n900,
                 onPressed: () {
-                  _userType != UserType.unknown ? Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => InfoAccountPage()), // Replace NewPage with the actual class of your new page
-                  ) : null;
+                  if(_canContinue()) {
+                    context.read<OnboardingCubit>().save(user!);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => InfoAccountPage()), // Replace NewPage with the actual class of your new page
+                    );
+                  }
+                  else {
+                    return;
+                  }
                 },
                 child: const Text('Continue',)
             ),
@@ -128,6 +135,10 @@ class SelectAccountView extends StatelessWidget {
         );
       },
     );
+  }
+
+  bool _canContinue() {
+    return _userType != UserType.unknown;
   }
 }
 

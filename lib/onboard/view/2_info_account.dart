@@ -93,7 +93,7 @@ class SelectAccountView extends StatelessWidget {
                                 style: TextStyles.boldN90014,
                               ),
                               TextSpan(
-                                text: 'your venue to attract artists and\nevent organizers.',
+                                text: 'your venue to attract artists and\nevent organisers.',
                                 style: TextStyles.regularN90014,
                               ),
                             ],

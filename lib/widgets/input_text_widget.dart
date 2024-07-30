@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../app/resources/theme.dart';
 import 'app_input_validators.dart';
 import 'app_text_field.dart';
 
@@ -49,6 +50,7 @@ class _InputTextWidgetState extends State<InputTextWidget> {
       textCapitalization: TextCapitalization.words,
       autoCorrect: false,
       onChanged: _nameChanged,
+      decoration: AppTheme.textInputDecoration.copyWith(hintText: 'What is in the picture?')
     );
   }
 }

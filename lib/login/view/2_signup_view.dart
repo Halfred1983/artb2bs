@@ -66,14 +66,7 @@ class _LoginForm extends StatelessWidget {
               ),
               verticalMargin48,
               GoogleLoginButton(),
-              verticalMargin48,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Don\'t have an account?', style: TextStyles.regularN90014,),
-                  Text('Sign up', style: TextStyles.boldAccent17,)
-                ],
-              ),
+
 
 
             ],
@@ -247,7 +240,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () =>  _isLoading ? null : _register(),
+            onPressed: !_isFilled() || _isLoading ? null : () => _register(),
             child: _isLoading
                 ? Container(
               width: 24,
@@ -262,6 +255,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
       ],
     );
+  }
+
+  bool _isFilled() {
+    return _confirmPasswordController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty &&
+        _usernameController.text.isNotEmpty;
   }
 }
 

@@ -1,4 +1,3 @@
-import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,7 +22,6 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     }
   }
 
-
   void chooseUserType(UserType userType) {
     User user = this.state.props[0] as User;
 
@@ -32,7 +30,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
       UserInfo userInfo = UserInfo(userType: userType);
 
-      user = user.copyWith(userInfo: userInfo);
+      user = user.copyWith(userInfo: userInfo, userStatus: UserStatus.type);
 
       emit(UserTypeChosen(user));
     } catch (e) {
@@ -133,12 +131,12 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
     try {
 
-          user = user.copyWith(
-              userArtInfo: user.userArtInfo != null ?
-              user.userArtInfo!.copyWith(typeOfVenue: typeVenue)
+      user = user.copyWith(
+          userArtInfo: user.userArtInfo != null ?
+          user.userArtInfo!.copyWith(typeOfVenue: typeVenue)
               : UserArtInfo(typeOfVenue: typeVenue));
 
-        emit(LoadedState(user));
+      emit(LoadedState(user));
 
     } catch (e) {
       emit(ErrorState(user ,"Audience value not valid"));
@@ -163,6 +161,20 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     }
   }
 
+  void chooseAddress(UserAddress artb2bUserEntityAddress) {
+    User user = this.state.props[0] as User;
+
+    try {
+      user = user.copyWith(userInfo:
+      user.userInfo != null ?
+      user.userInfo!.copyWith(address: artb2bUserEntityAddress) :
+      UserInfo(address: artb2bUserEntityAddress));
+
+      emit(AddressChosen(user));
+    } catch (e) {
+      emit(ErrorState(user, "Error in setting the address of the user"));
+    }
+  }
 
 
   void artistTags(List<String> artistTags) {
@@ -180,49 +192,73 @@ class OnboardingCubit extends Cubit<OnboardingState> {
       emit(LoadedState(user));
 
     } catch (e) {
-      emit(ErrorState(user ,"Audience value not valid"));
+      emit(ErrorState(user ,"Tags value not valid"));
     }
   }
 
-  void save() async {
+  void chooseBasePrice(String basePrice) {
     User user = this.state.props[0] as User;
-    emit(LoadingState());
 
-    if(user.userInfo!.userType! == UserType.gallery) {
-      try {
-        if (user.userArtInfo == null || user.userArtInfo!.spaces == null ||
-            user.userArtInfo!.spaces!.isEmpty ||
-            int.parse(user.userArtInfo!.spaces!) < 1 ||
-            user.userArtInfo!.audience!.isEmpty ||
-            user.userArtInfo!.typeOfVenue!.isEmpty
-        ) {
-          emit(ErrorState(user, "Spaces value not valid"));
-          return;
-        }
+    try {
+      // emit(LoadingState());
+
+      if (user.bookingSettings != null) {
+        user = user.copyWith(bookingSettings: user.bookingSettings!.copyWith(
+            basePrice: basePrice));
       }
-      catch (e) {
-        emit(ErrorState(user, "About you or Spaces value not valid"));
-        return;
+      else {
+        user = user.copyWith(
+            bookingSettings: BookingSettings(basePrice: basePrice));
       }
+
+      emit(LoadedState(user));
+    } catch (e) {
+      emit(ErrorState(user, e.toString()));
     }
+  }
+
+  void save(User user, [UserStatus? userStatus]) async {
+    // User user = this.state.props[0] as User;
+    emit(LoadingState());
+    //
+    // if(user.userInfo!.userType! == UserType.gallery) {
+    //   try {
+    //     if (user.userArtInfo == null || user.userArtInfo!.spaces == null ||
+    //         user.userArtInfo!.spaces!.isEmpty ||
+    //         int.parse(user.userArtInfo!.spaces!) < 1 ||
+    //         user.userArtInfo!.audience!.isEmpty ||
+    //         user.userArtInfo!.typeOfVenue!.isEmpty
+    //     ) {
+    //       emit(ErrorState(user, "Spaces value not valid"));
+    //       return;
+    //     }
+    //   }
+    //   catch (e) {
+    //     emit(ErrorState(user, "About you or Spaces value not valid"));
+    //     return;
+    //   }
+    // }
 
     try {
 
-      if (user.userArtInfo == null || user.userArtInfo!.aboutYou == null ||
-          user.userArtInfo!.aboutYou!.isEmpty) {
-        emit(ErrorState(user, "Tell us something about you"));
-        return;
-      }
-
-      if(user.userArtInfo != null) {
-        user = user.copyWith(
-            userStatus: UserStatus.artInfo,
-        );
-      }
+      // if (user.userArtInfo == null || user.userArtInfo!.aboutYou == null ||
+      //     user.userArtInfo!.aboutYou!.isEmpty) {
+      //   emit(ErrorState(user, "Tell us something about you"));
+      //   return;
+      // }
+      //
+      // if(user.userArtInfo != null) {
+      //   user = user.copyWith(
+      //     userStatus: UserStatus.artInfo,
+      //   );
+      // }
       // else {
       //   user = user.copyWith(
       //       userStatus: UserStatus.artInfo);
       // }
+      if(userStatus != null) {
+        user = user.copyWith(userStatus: userStatus);
+      }
 
       await databaseService.updateUser(user: user);
       emit(DataSaved(user));
@@ -230,5 +266,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
       emit(ErrorState(user, "Error saving the art details"));
     }
   }
+
+
 
 }

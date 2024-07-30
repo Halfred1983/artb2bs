@@ -12,14 +12,15 @@ import '../../injection.dart';
 import '../../utils/common.dart';
 import '../../widgets/loading_screen.dart';
 import '../../widgets/tags.dart';
+import '9_venue_audience.dart';
 
 
-class VenueInfoPage extends StatelessWidget {
+class VenueDescription extends StatelessWidget {
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => VenueInfoPage());
+    return MaterialPageRoute<void>(builder: (_) => VenueDescription());
   }
 
-  VenueInfoPage({Key? key}) : super(key: key);
+  VenueDescription({Key? key}) : super(key: key);
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
 
@@ -30,26 +31,24 @@ class VenueInfoPage extends StatelessWidget {
         databaseService: databaseService,
         userId: authService.getUser().id,
       ),
-      child: SelectAccountView(),
+      child: VenueDescriptionView(),
     );
   }
 }
 
 
 
-class SelectAccountView extends StatefulWidget {
-  SelectAccountView({Key? key}) : super(key: key);
+class VenueDescriptionView extends StatefulWidget {
+  VenueDescriptionView({Key? key}) : super(key: key);
 
   @override
-  State<SelectAccountView> createState() => _SelectAccountViewState();
+  State<VenueDescriptionView> createState() => _VenueDescriptionViewState();
 }
 
-class _SelectAccountViewState extends State<SelectAccountView> {
-  final TextEditingController _venueController = TextEditingController();
-  List<String> _venueType = [];
-  List<String> _vibes = [];
-  String _venueName = '';
+class _VenueDescriptionViewState extends State<VenueDescriptionView> {
+  final TextEditingController _venueDescriptionController = TextEditingController();
 
+  String _venueDescription = '';
 
 
   @override
@@ -73,54 +72,41 @@ class _SelectAccountViewState extends State<SelectAccountView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     verticalMargin48,
-                    Text('Tell us about your venue',
+                    Text('Now, let\'s describe your space',
                         style: TextStyles.boldN90029),
                     verticalMargin48,
-                    Text('Venue Name', style: TextStyles.boldN90016),
-                    verticalMargin8,
-                    TextField(
-                      controller: _venueController,
+                    Text('Share the magic of your space with a captivating description that will inspire artists and event planners alike!',
+                        style: TextStyles.semiBoldN90014),
+                    verticalMargin24,
+                    TextFormField(
+                      controller: _venueDescriptionController,
                       autofocus: false,
                       style: TextStyles.semiBoldN90014,
                       onChanged: (String value) {
-                        _venueName = value;
-                        context.read<OnboardingCubit>().chooseName(value);
+                        _venueDescription = value;
+                        context.read<OnboardingCubit>().choseAboutYou(value);
                       },
+                      maxLines: 10, // Adjust the number of lines as needed
                       autocorrect: false,
                       enableSuggestions: false,
-                      decoration: AppTheme.textInputDecoration,
+                      decoration: AppTheme.textAreaInputDecoration
+                          .copyWith(hintText: 'Tell us about your space. Min 50 characters.',),
                       keyboardType: TextInputType.text,
                     ),
-                    verticalMargin48,
-                    Text('Type of venue', style: TextStyles.boldN90016),
-                    verticalMargin4,
-                    Tags(const [
-                      'Restaurant', 'Bar', 'Coffee', 'Live music', 'Library',
-                      'Hotel', 'Lounge', 'Art centre', 'Gallery',
-                    ],
-                      _venueType,
-                          (venueType) {
-                        setState(() {
-                          _venueType = venueType;
-                        });
-                        context.read<OnboardingCubit>().choseVenueType(venueType);
-                      },
-                    ),
-                    verticalMargin48,
-                    Text('Vibes', style: TextStyles.boldN90016),
-                    verticalMargin4,
-                    Tags(const [
-                      'Arty', 'Indie', 'Party', 'Quiet',
-                      'Busy', 'Loud', 'Quirky', 'Chill',
-                    ],
-                      _vibes,
-                          (vibes) {
-                        setState(() {
-                          _vibes = vibes;
-                        });
-                        context.read<OnboardingCubit>().choseVibes(_vibes);
-                      },
-                    ),
+                    verticalMargin24,
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(21, 15, 21, 15),
+                      height: 76,
+                      decoration: BoxDecoration(
+                        color: AppTheme.s50,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Text(
+                        'You can change this whenever you'
+                            ' want from your listing settings.',
+                        style: TextStyles.regularN90014, textAlign: TextAlign.center,
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -134,10 +120,10 @@ class _SelectAccountViewState extends State<SelectAccountView> {
                 foregroundColor: _canContinue() ? AppTheme.primaryColor : AppTheme.n900,
                 onPressed: () {
                   if(_canContinue()) {
-                    context.read<OnboardingCubit>().save(user!, UserStatus.spaceInfo);
+                    context.read<OnboardingCubit>().save(user!, UserStatus.descriptionInfo);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => VenueAddressPage()), // Replace NewPage with the actual class of your new page
+                      MaterialPageRoute(builder: (context) => VenueAudience()), // Replace NewPage with the actual class of your new page
                     );
                   }
                   else {
@@ -155,6 +141,6 @@ class _SelectAccountViewState extends State<SelectAccountView> {
   }
 
   bool _canContinue() {
-    return _venueName.isNotEmpty && _venueType.isNotEmpty && _vibes.isNotEmpty;
+    return _venueDescription.isNotEmpty && _venueDescription.length>=50;
   }
 }

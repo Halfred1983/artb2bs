@@ -1,6 +1,6 @@
 import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/onboard/cubit/onboarding_state.dart';
-import 'package:artb2b/onboard/view/personal_info_view.dart';
+import 'package:artb2b/widgets/google_places.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import '../../app/resources/theme.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
 import '../../widgets/loading_screen.dart';
-import '../../widgets/tags.dart';
+import '5_venue_spaces.dart';
 
 
 class VenueAddressPage extends StatelessWidget {
@@ -30,32 +30,71 @@ class VenueAddressPage extends StatelessWidget {
         databaseService: databaseService,
         userId: authService.getUser().id,
       ),
-      child: SelectAccountView(),
+      child: SelectAddressView(),
     );
   }
 }
 
 
 
-class SelectAccountView extends StatefulWidget {
-  SelectAccountView({Key? key}) : super(key: key);
+class SelectAddressView extends StatefulWidget {
+  SelectAddressView({Key? key}) : super(key: key);
 
   @override
-  State<SelectAccountView> createState() => _SelectAccountViewState();
+  State<SelectAddressView> createState() => _SelectAddressViewState();
 }
 
-class _SelectAccountViewState extends State<SelectAccountView> {
-  final TextEditingController _venueController = TextEditingController();
+class _SelectAddressViewState extends State<SelectAddressView> {
+  final TextEditingController _aptBuilding = TextEditingController();
 
-
-
+  User? user;
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> addressInfo = [Container()];
     return BlocBuilder<OnboardingCubit, OnboardingState>(
       builder: (context, state) {
         if (state is LoadingState) {
           return const LoadingScreen();
+        }
+        if(state is AddressChosen || state is LoadedState) {
+          user = state.user!;
+          UserAddress? address = user!.userInfo!.address;
+          if(address != null) {
+            _aptBuilding.text = user!.userInfo!.address!.aptBuilding ?? '';
+
+            addressInfo = [
+              verticalMargin16,
+              Text('Country', style: TextStyles.boldN90016),
+              verticalMargin8,
+              InactiveTextField(label: address!.country,),
+              verticalMargin16,
+              Text('Address', style: TextStyles.boldN90016),
+              verticalMargin8,
+              InactiveTextField(label: address!.address+address!.number,),
+              TextField(
+                controller: _aptBuilding,
+                autofocus: false,
+                style: TextStyles.semiBoldN90014,
+                onChanged: (String value) {
+                  address = address!.copyWith(aptBuilding: value);
+                  context.read<OnboardingCubit>().chooseAddress(address!);
+                },
+                autocorrect: false,
+                enableSuggestions: false,
+                decoration: AppTheme.textInputDecoration.copyWith(hintText: 'Apt/Building',),
+                keyboardType: TextInputType.text,
+              ),
+              verticalMargin16,
+              Text('Province', style: TextStyles.boldN90016),
+              verticalMargin8,
+              InactiveTextField(label: address!.province,),
+              verticalMargin16,
+              Text('City', style: TextStyles.boldN90016),
+              verticalMargin8,
+              InactiveTextField(label: address!.city,),
+            ];
+          }
         }
         return Scaffold(
           body: SingleChildScrollView(
@@ -70,8 +109,8 @@ class _SelectAccountViewState extends State<SelectAccountView> {
                     Text('Where is your venue located',
                         style: TextStyles.boldN90029),
                     verticalMargin48,
-                    const LocationTextField(),
-
+                    const GoogleAddressLookup(),
+                    ...addressInfo
                   ],
                 ),
               ),
@@ -84,11 +123,14 @@ class _SelectAccountViewState extends State<SelectAccountView> {
                 backgroundColor:  true ? AppTheme.n900 : AppTheme.disabledButton,
                 foregroundColor: true ? AppTheme.primaryColor : AppTheme.n900,
                 onPressed: () {
-                  true ?
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => VenueAddressPage()), // Replace NewPage with the actual class of your new page
-                  ) : null;
+                  if(_canContinue()) {
+                    context.read<OnboardingCubit>().save(user!, UserStatus.locationInfo);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => VenueSpacesPage()), // Replace NewPage with the actual class of your new page
+                    );
+                  }
+                  else { return ; }
                 },
                 child: const Text('Continue',)
             ),
@@ -97,6 +139,36 @@ class _SelectAccountViewState extends State<SelectAccountView> {
               .centerDocked,
         );
       },
+    );
+  }
+
+  bool _canContinue() {
+    return user!.userInfo!.address != null;
+        // user!.userInfo.address!.country != null &&
+        // user!.userInfo.address!.address != null &&
+        // user!.userInfo.address!.province != null &&
+        // user!.userInfo.address!.city != null;
+  }
+}
+
+class InactiveTextField extends StatelessWidget {
+  const InactiveTextField({
+    super.key, required this.label,
+  });
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      autofocus: false,
+      enabled: false,
+      style: TextStyles.semiBoldN90014,
+      autocorrect: false,
+      enableSuggestions: false,
+      decoration: AppTheme.textInputDecoration.copyWith(hintText: label,
+          fillColor: AppTheme.disabledButton),
+      keyboardType: TextInputType.text,
     );
   }
 }

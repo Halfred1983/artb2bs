@@ -105,12 +105,14 @@ class FirebaseAuthService implements AuthService {
         password: password,
       );
 
-      if(userCredential.user!.emailVerified == false) {
-        throw AuthError(
-            code: AuthErrorEnum.emailNotVerified,
-            message: 'Please verify your email'
-        );
-      }
+      //TODO Uncomment this when email verification is needed
+      // if(userCredential.user!.emailVerified == false) {
+      //   throw AuthError(
+      //       code: AuthErrorEnum.emailNotVerified,
+      //       message: 'Please verify your email'
+      //   );
+      // }
+
       UserEntity userEntity = _mapFirebaseUser(_firebaseAuth!.currentUser!);
 
       SharedPreferences.getInstance().then((cache) => cache.setString(userCacheKey, json.encode(userEntity.toJson())));

@@ -224,7 +224,18 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
 
 const _$UserStatusEnumMap = {
   UserStatus.initialised: 0,
-  UserStatus.personalInfo: 1,
-  UserStatus.artInfo: 2,
-  UserStatus.paymentInfo: 3,
+  UserStatus.type: 2,
+  UserStatus.personalInfo: 3,
+  UserStatus.locationInfo: 4,
+  UserStatus.venueInfo: 5,
+  UserStatus.spaceInfo: 15,
+  UserStatus.priceInfo: 6,
+  UserStatus.photoInfo: 7,
+  UserStatus.descriptionInfo: 8,
+  UserStatus.capacityInfo: 9,
+  UserStatus.availabilityInfo: 10,
+  UserStatus.artInfo: 11,
+  UserStatus.paymentInfo: 12,
+  UserStatus.notVerified: 13,
+  UserStatus.completed: 14,
 };

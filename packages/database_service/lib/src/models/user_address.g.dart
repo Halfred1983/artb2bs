@@ -25,6 +25,8 @@ abstract class _$UserAddressCWProxy {
 
   UserAddress number(String number);
 
+  UserAddress aptBuilding(String? aptBuilding);
+
   UserAddress formattedAddress(String formattedAddress);
 
   UserAddress location(GeoFirePoint? location);
@@ -45,6 +47,7 @@ abstract class _$UserAddressCWProxy {
     String? locale,
     String? currencyCode,
     String? number,
+    String? aptBuilding,
     String? formattedAddress,
     GeoFirePoint? location,
   });
@@ -85,6 +88,10 @@ class _$UserAddressCWProxyImpl implements _$UserAddressCWProxy {
   UserAddress number(String number) => this(number: number);
 
   @override
+  UserAddress aptBuilding(String? aptBuilding) =>
+      this(aptBuilding: aptBuilding);
+
+  @override
   UserAddress formattedAddress(String formattedAddress) =>
       this(formattedAddress: formattedAddress);
 
@@ -109,6 +116,7 @@ class _$UserAddressCWProxyImpl implements _$UserAddressCWProxy {
     Object? locale = const $CopyWithPlaceholder(),
     Object? currencyCode = const $CopyWithPlaceholder(),
     Object? number = const $CopyWithPlaceholder(),
+    Object? aptBuilding = const $CopyWithPlaceholder(),
     Object? formattedAddress = const $CopyWithPlaceholder(),
     Object? location = const $CopyWithPlaceholder(),
   }) {
@@ -150,6 +158,10 @@ class _$UserAddressCWProxyImpl implements _$UserAddressCWProxy {
           ? _value.number
           // ignore: cast_nullable_to_non_nullable
           : number as String,
+      aptBuilding: aptBuilding == const $CopyWithPlaceholder()
+          ? _value.aptBuilding
+          // ignore: cast_nullable_to_non_nullable
+          : aptBuilding as String?,
       formattedAddress: formattedAddress == const $CopyWithPlaceholder() ||
               formattedAddress == null
           ? _value.formattedAddress
@@ -183,6 +195,7 @@ UserAddress _$UserAddressFromJson(Map<String, dynamic> json) => UserAddress(
       locale: json['locale'] as String,
       currencyCode: json['currencyCode'] as String,
       number: json['number'] as String,
+      aptBuilding: json['aptBuilding'] as String?,
       formattedAddress: json['formattedAddress'] as String,
       location: UserAddress._fromJson(json['location'] as Map<String, dynamic>),
     );
@@ -198,6 +211,7 @@ Map<String, dynamic> _$UserAddressToJson(UserAddress instance) =>
       'locale': instance.locale,
       'currencyCode': instance.currencyCode,
       'number': instance.number,
+      'aptBuilding': instance.aptBuilding,
       'formattedAddress': instance.formattedAddress,
       'location': UserAddress._toJson(instance.location),
     };

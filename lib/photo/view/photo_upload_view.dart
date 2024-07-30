@@ -57,10 +57,10 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
 
         return Scaffold(
             appBar: AppBar(
-              title: Text("Add a photo", style: TextStyles.boldAccent24,),
+              title: Text("Add a photo", style: TextStyles.boldN90017,),
               centerTitle: true,
               iconTheme: const IconThemeData(
-                color: AppTheme.primaryColor, //change your color here
+                color: AppTheme.n900, //change your color here
               ),
             ),
             body: SingleChildScrollView(
@@ -75,13 +75,13 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                           _getFromGallery();
                         },
                         child: DottedBorder(
-                            color: AppTheme.primaryColor,
-                            strokeWidth: 4,
+                            color: AppTheme.divider,
+                            strokeWidth: 2,
                             borderType: BorderType.RRect,
                             radius: const Radius.circular(10),
                             dashPattern: const [
-                              8,
-                              10,
+                              6,
+                              6,
                             ],
                             child: SizedBox(
                               height: 100,
@@ -89,10 +89,10 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text('Choose from gallery',
-                                    style: TextStyles.semiBoldAccent14,),
+                                    style: TextStyles.semiBoldN20014,),
                                   horizontalMargin16,
                                   const Icon(FontAwesomeIcons.image,
-                                      color: AppTheme.primaryColor),
+                                      color: AppTheme.n200),
                                 ],
                               ),
 
@@ -112,21 +112,27 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                                 fit: BoxFit.cover
                             ),
                             borderRadius: const BorderRadius.all(Radius
-                                .circular(20))
+                                .circular(12))
                         ),
-                        child: Align(
-                          alignment: Alignment.topRight,
-                          child: CircleAvatar(
-                            radius: 15,
-                            backgroundColor: AppTheme.white,
-                            child: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _imageFile = null;
-                                });
-                              },
-                              icon: const Icon(FontAwesomeIcons.xmark,
-                                  color: AppTheme.primaryColor),
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 15, right: 15),
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: CircleAvatar(
+                              radius: 28,
+                              backgroundColor: AppTheme.n900,
+                              child: Center(
+
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _imageFile = null;
+                                    });
+                                  },
+                                  child: const Icon(FontAwesomeIcons.trash,
+                                      color: AppTheme.white, size: 20,),
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -159,8 +165,8 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                               child: Align(
                                 alignment: Alignment.centerRight,
                                 child: Center(
-                                  child: Text('$_progress%',
-                                    style: TextStyles.semiBoldAccent14,),
+                                  child: Text('${_progress.round()}%',
+                                    style: TextStyles.semiBoldN90017,),
                                 ),
                               ),
                             ),
@@ -174,7 +180,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
             bottomNavigationBar: Container(
                 padding: buttonPadding,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: _imageFile != null ? ()  {
                     final uploadTask = context.read<PhotoCubit>()
                         .storePhoto(
                         user!.id + '/photos/' + path.basename(_imageFile!.path),
@@ -214,8 +220,9 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                           break;
                       }
                     });
-                  },
-                  child: Text("Upload", style: TextStyles.semiBoldAccent14,),)
+                  } : null,
+                  child: const Text('Upload',)
+                )
             )
         );
       },
@@ -225,15 +232,52 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
 
   /// Get from gallery
   _getFromGallery() async {
-    XFile? pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      maxWidth: 1800,
-      maxHeight: 1800,
-    );
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
+    try {
+      XFile? pickedFile = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1800,
+        maxHeight: 1800,
+      );
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = File(pickedFile.path);
+        });
+      }
+    }
+    catch (e) {
+      if (mounted) {
+        showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) { // <-- See this
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                title: const Center(child: Text('Error')),
+                content: const SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      Text(
+                          'Please chose a valid image.'),
+                    ],
+                  ),
+                ),
+                actionsAlignment: MainAxisAlignment.center,
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('OK', style: TextStyle(
+                        decoration: TextDecoration.underline
+                    ),),
+                    onPressed: () {
+                      Navigator.of(context)
+                        .pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      }
     }
   }
 

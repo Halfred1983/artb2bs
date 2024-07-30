@@ -1,6 +1,8 @@
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../../widgets/custom_slider.dart';
 export 'package:flutter/services.dart' show SystemUiOverlayStyle;
 
 class AppTheme {
@@ -88,16 +90,21 @@ class AppTheme {
 
   static ThemeData get themeArtist {
     return ThemeData(
-        primaryColor: primaryColorArtist,
-        canvasColor: Colors.white,
-        backgroundColor: backgroundColorArtist,
-        scaffoldBackgroundColor: backgroundColorArtist,
-        splashColor: accentColor.withOpacity(0.2),
-        highlightColor: accentColor.withOpacity(0.2),
-        appBarTheme: _appBarTheme,
-        elevatedButtonTheme: _elevatedButtonTheme,
-        // outlinedButtonTheme: _outlineButtonTheme,
-        unselectedWidgetColor: fideuramGreyArtist001
+      primaryColor: primaryColorArtist,
+      canvasColor: Colors.white,
+      backgroundColor: backgroundColorArtist,
+      scaffoldBackgroundColor: backgroundColorArtist,
+      splashColor: accentColor.withOpacity(0.2),
+      highlightColor: accentColor.withOpacity(0.2),
+      appBarTheme: _appBarTheme,
+      elevatedButtonTheme: _elevatedButtonTheme,
+      // outlinedButtonTheme: _outlineButtonTheme,
+      unselectedWidgetColor: fideuramGreyArtist001,
+      sliderTheme: SliderThemeData(
+        thumbShape: const CustomSliderThumbCircle(thumbRadius: 10), // Use the custom slider thumb shape
+        showValueIndicator: ShowValueIndicator.always,
+        valueIndicatorTextStyle: TextStyles.boldAccent17,
+      ),
     );
   }
 
@@ -178,13 +185,13 @@ class AppTheme {
     style: ButtonStyle(
       backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
-          return AppTheme.n900.withOpacity(0.5); // Disabled color
+          return disabledButton; // Disabled color
         }
         return AppTheme.n900; // Default color
       }),
       foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
-          return AppTheme.primaryColor.withOpacity(0.5); // Disabled text color
+          return  AppTheme.n900; // Disabled text color
         }
         return AppTheme.primaryColor; // Default text color
       }),
@@ -194,6 +201,9 @@ class AppTheme {
         return _buttonCornerRadius;
       }),
       textStyle: MaterialStateProperty.resolveWith<TextStyle>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return TextStyles.semiBoldN90014; // Disabled text color
+        }
         return TextStyles.semiBoldPrimary14;
       }),
       elevation: MaterialStateProperty.resolveWith<double>((Set<MaterialState> states) {
@@ -263,6 +273,8 @@ class AppTheme {
   static final textInputDecoration = InputDecoration(
     hintText: 'Venue name',
     hintStyle: TextStyles.regularN90014,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0), // Adjust padding to reduce height
+
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(50),
       borderSide: const BorderSide(
@@ -280,6 +292,36 @@ class AppTheme {
     // Enabled border style
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(50),
+      borderSide: const BorderSide(
+        color: AppTheme.accentColor, // Color when the TextField is enabled
+        width: 0.5, // Width when enabled
+      ),
+    ),
+    filled: true,
+    fillColor: Colors.white,
+  );
+  static final textAreaInputDecoration = InputDecoration(
+    hintText: 'Venue name',
+    hintStyle: TextStyles.regularN90014,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12), // Adjust padding to reduce height
+
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(15),
+      borderSide: const BorderSide(
+        color: AppTheme.accentColor, // Color of the border
+        width: 0.5, // Width of the border
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(15),
+      borderSide: const BorderSide(
+        color: AppTheme.accentColor, // Color when the TextField is focused
+        width: 0.5, // Width when focused
+      ),
+    ),
+    // Enabled border style
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(15),
       borderSide: const BorderSide(
         color: AppTheme.accentColor, // Color when the TextField is enabled
         width: 0.5, // Width when enabled

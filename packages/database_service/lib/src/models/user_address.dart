@@ -18,6 +18,7 @@ class UserAddress {
   final String locale;
   final String currencyCode;
   final String number;
+  String? aptBuilding = '';
   final String formattedAddress;
   @JsonKey(
       fromJson: _fromJson,
@@ -34,6 +35,7 @@ class UserAddress {
     required this.locale,
     required this.currencyCode,
     required this.number,
+    this.aptBuilding,
     required this.formattedAddress,
     this.location
   });

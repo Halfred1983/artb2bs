@@ -145,26 +145,30 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                       verticalMargin24,
 
                       TypeAheadField(
-                          minCharsForSuggestions: 1,
-                          textFieldConfiguration: TextFieldConfiguration(
-                              controller: _typeAheadController,
-                              style: TextStyles.semiBoldAccent14,
-                              decoration: InputDecoration(
-                                  hintText: 'Technique',
-                                  filled: true,
-                                  fillColor: AppTheme.white,
-                                  hintStyle: TextStyles.semiBoldAccent14,
-                                  focusedBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
-                                  ),
-                                  enabledBorder: const OutlineInputBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    borderSide: BorderSide(color: AppTheme.primaryColor, width: 1.0),
-                                  ),
-                                  border: const OutlineInputBorder()
-                              )
-                          ),
+                        onSelected: (technique) {
+                          _typeAheadController.text = technique.capitalize();;
+                          context.read<PhotoCubit>().chooseTechnique(technique.capitalize());
+                        },
+                          // : 1,
+                          // textFieldConfiguration: TextFieldConfiguration(
+                          //     controller: _typeAheadController,
+                          //     style: TextStyles.semiBoldAccent14,
+                          //     decoration: InputDecoration(
+                          //         hintText: 'Technique',
+                          //         filled: true,
+                          //         fillColor: AppTheme.white,
+                          //         hintStyle: TextStyles.semiBoldAccent14,
+                          //         focusedBorder: const OutlineInputBorder(
+                          //           borderRadius: BorderRadius.all(Radius.circular(10)),
+                          //           borderSide: BorderSide(color: AppTheme.accentColor, width: 1.0),
+                          //         ),
+                          //         enabledBorder: const OutlineInputBorder(
+                          //           borderRadius: BorderRadius.all(Radius.circular(10)),
+                          //           borderSide: BorderSide(color: AppTheme.primaryColor, width: 1.0),
+                          //         ),
+                          //         border: const OutlineInputBorder()
+                          //     )
+                          // ),
                           suggestionsCallback: (pattern) {
                             return getSuggestions(pattern);
                           },
@@ -175,10 +179,6 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
                                 child: Text(suggestion, style: TextStyles.semiBoldAccent14)
                             );
                           },
-                          onSuggestionSelected: (technique) {
-                            _typeAheadController.text = technique.capitalize();;
-                            context.read<PhotoCubit>().chooseTechnique(technique.capitalize());
-                          }
                       ),
                       //Price
                       verticalMargin24,

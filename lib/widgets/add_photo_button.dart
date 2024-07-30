@@ -22,13 +22,13 @@ class AddPhotoButton extends StatelessWidget {
       },
 
       child: DottedBorder(
-        color: AppTheme.primaryColor,
-        strokeWidth: 4,
+        color: AppTheme.divider,
+        strokeWidth: 2,
         borderType: BorderType.RRect,
-        radius: const Radius.circular(10),
+        radius: const Radius.circular(12),
         dashPattern: const [
-          8,
-          10,
+          6,
+          6,
         ],
         child: SizedBox(
           height: 150,
@@ -39,11 +39,11 @@ class AddPhotoButton extends StatelessWidget {
 
                 Text(
                   "+",
-                  style: TextStyles.semiBoldAccent14.copyWith(fontSize: 20),
+                  style: TextStyles.boldN90029.copyWith(color: AppTheme.n200),
                 ),
                 Text(
                   "Add Photo",
-                  style: TextStyles.semiBoldAccent14,
+                  style: TextStyles.semiBoldN20014,
                 ),
               ],
             ),

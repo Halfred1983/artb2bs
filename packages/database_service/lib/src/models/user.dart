@@ -66,12 +66,32 @@ class User {
 enum UserStatus {
   @JsonValue(0)
   initialised,
-  @JsonValue(1)
-  personalInfo,
   @JsonValue(2)
-  artInfo,
+  type,
   @JsonValue(3)
-  paymentInfo,
+  personalInfo,
   @JsonValue(4)
+  locationInfo,
+  @JsonValue(5)
+  venueInfo,
+  @JsonValue(15)
+  spaceInfo,
+  @JsonValue(6)
+  priceInfo,
+  @JsonValue(7)
+  photoInfo,
+  @JsonValue(8)
+  descriptionInfo,
+  @JsonValue(9)
+  capacityInfo,
+  @JsonValue(10)
+  availabilityInfo,
+  @JsonValue(11)
+  artInfo,
+  @JsonValue(12)
+  paymentInfo,
+  @JsonValue(13)
   notVerified,
+  @JsonValue(14)
+  completed,
 }
