@@ -115,7 +115,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                                 .circular(12))
                         ),
                         child: Padding(
-                          padding: EdgeInsets.only(top: 15, right: 15),
+                          padding: const EdgeInsets.only(top: 15, right: 15),
                           child: Align(
                             alignment: Alignment.topRight,
                             child: CircleAvatar(

@@ -7,9 +7,9 @@ part of 'business_hours.dart';
 // **************************************************************************
 
 abstract class _$BusinessHoursCWProxy {
-  BusinessHours from(String? from);
+  BusinessHours from(TimeOfDay? from);
 
-  BusinessHours to(String? to);
+  BusinessHours to(TimeOfDay? to);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `BusinessHours(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -18,8 +18,8 @@ abstract class _$BusinessHoursCWProxy {
   /// BusinessHours(...).copyWith(id: 12, name: "My name")
   /// ````
   BusinessHours call({
-    String? from,
-    String? to,
+    TimeOfDay? from,
+    TimeOfDay? to,
   });
 }
 
@@ -30,10 +30,10 @@ class _$BusinessHoursCWProxyImpl implements _$BusinessHoursCWProxy {
   final BusinessHours _value;
 
   @override
-  BusinessHours from(String? from) => this(from: from);
+  BusinessHours from(TimeOfDay? from) => this(from: from);
 
   @override
-  BusinessHours to(String? to) => this(to: to);
+  BusinessHours to(TimeOfDay? to) => this(to: to);
 
   @override
 
@@ -51,11 +51,11 @@ class _$BusinessHoursCWProxyImpl implements _$BusinessHoursCWProxy {
       from == const $CopyWithPlaceholder()
           ? _value.from
           // ignore: cast_nullable_to_non_nullable
-          : from as String?,
+          : from as TimeOfDay?,
       to == const $CopyWithPlaceholder()
           ? _value.to
           // ignore: cast_nullable_to_non_nullable
-          : to as String?,
+          : to as TimeOfDay?,
     );
   }
 }
@@ -72,12 +72,12 @@ extension $BusinessHoursCopyWith on BusinessHours {
 
 BusinessHours _$BusinessHoursFromJson(Map<String, dynamic> json) =>
     BusinessHours(
-      json['from'] as String?,
-      json['to'] as String?,
+      const TimeOfDayConverter().fromJson(json['from'] as String?),
+      const TimeOfDayConverter().fromJson(json['to'] as String?),
     );
 
 Map<String, dynamic> _$BusinessHoursToJson(BusinessHours instance) =>
     <String, dynamic>{
-      'from': instance.from,
-      'to': instance.to,
+      'from': const TimeOfDayConverter().toJson(instance.from),
+      'to': const TimeOfDayConverter().toJson(instance.to),
     };

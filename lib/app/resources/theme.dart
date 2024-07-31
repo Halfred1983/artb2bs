@@ -75,16 +75,11 @@ class AppTheme {
       outlinedButtonTheme: _outlineButtonTheme,
       textButtonTheme: _textButtonTheme,
       unselectedWidgetColor: primaryColor,
-      sliderTheme:  SliderThemeData(
+      sliderTheme: SliderThemeData(
+        thumbShape: const CustomSliderThumbCircle(thumbRadius: 20, min: 0, max: 1000), // Use the custom slider thumb shape
         showValueIndicator: ShowValueIndicator.always,
-        valueIndicatorTextStyle:  TextStyles.boldAccent17,
+        valueIndicatorTextStyle: TextStyles.boldAccent17,
       ),
-      // textTheme:  const TextTheme(
-      //     titleMedium: TextStyle(color: accentColor)
-      // ),
-      // textSelectionTheme: const TextSelectionThemeData(
-      //     cursorColor: accentColor
-      // ),
     );
   }
 
@@ -100,11 +95,6 @@ class AppTheme {
       elevatedButtonTheme: _elevatedButtonTheme,
       // outlinedButtonTheme: _outlineButtonTheme,
       unselectedWidgetColor: fideuramGreyArtist001,
-      sliderTheme: SliderThemeData(
-        thumbShape: const CustomSliderThumbCircle(thumbRadius: 10), // Use the custom slider thumb shape
-        showValueIndicator: ShowValueIndicator.always,
-        valueIndicatorTextStyle: TextStyles.boldAccent17,
-      ),
     );
   }
 

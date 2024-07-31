@@ -1,5 +1,6 @@
 import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/onboard/cubit/onboarding_state.dart';
+import 'package:artb2b/onboard/view/10_venue_opening_time.dart';
 import 'package:artb2b/onboard/view/4_venue_address.dart';
 import 'package:artb2b/widgets/number_slider.dart';
 import 'package:auth_service/auth.dart';
@@ -73,7 +74,7 @@ class _VenueDescriptionViewState extends State<VenueDescriptionView> {
                     Text('Venue capacity',
                         style: TextStyles.boldN90029),
                     verticalMargin48,
-                    Text('Set your venue\'s availability by choosing the days of the week and the specific rental time slots, including check-in and check-out hours.',
+                    Text('Set your venue\'s capacity by choosing the amount of people that fits into your venue.',
                         style: TextStyles.semiBoldN90014),
                     verticalMargin24,
                     NumberSlider(value: user != null &&
@@ -100,7 +101,7 @@ class _VenueDescriptionViewState extends State<VenueDescriptionView> {
                     context.read<OnboardingCubit>().save(user!, UserStatus.capacityInfo);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => VenueAudience()), // Replace NewPage with the actual class of your new page
+                      MaterialPageRoute(builder: (context) => VenueOpeningTimeView()), // Replace NewPage with the actual class of your new page
                     );
                   }
                   else {

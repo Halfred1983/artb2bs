@@ -228,7 +228,6 @@ const _$UserStatusEnumMap = {
   UserStatus.personalInfo: 3,
   UserStatus.locationInfo: 4,
   UserStatus.venueInfo: 5,
-  UserStatus.spaceInfo: 15,
   UserStatus.priceInfo: 6,
   UserStatus.photoInfo: 7,
   UserStatus.descriptionInfo: 8,
@@ -238,4 +237,6 @@ const _$UserStatusEnumMap = {
   UserStatus.paymentInfo: 12,
   UserStatus.notVerified: 13,
   UserStatus.completed: 14,
+  UserStatus.openingTimes: 15,
+  UserStatus.spaceInfo: 16,
 };

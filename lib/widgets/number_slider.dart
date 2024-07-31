@@ -1,15 +1,11 @@
-import 'package:artb2b/app/resources/theme.dart';
-import 'package:database_service/database.dart';
+import 'package:artb2b/utils/common.dart';
 import 'package:flutter/material.dart';
-
 import '../app/resources/styles.dart';
-import '../utils/common.dart';
-import '../utils/currency/currency_helper.dart';
+import '../app/resources/theme.dart';
 
 class NumberSlider extends StatefulWidget {
   int? value;
   final Function(int) onChanged;
-
 
   NumberSlider({super.key, required this.value, required this.onChanged});
   @override
@@ -25,7 +21,6 @@ class _NumberSliderState extends State<NumberSlider> {
     super.initState();
     _currentValue = widget.value ?? 0;
     _minController.text = _currentValue.toString();
-    // _minController.addListener(_updateMinValue);
   }
 
   @override
@@ -40,21 +35,23 @@ class _NumberSliderState extends State<NumberSlider> {
       children: [
         SizedBox(
           width: double.infinity,
-          child: Slider(
-            min: 0,
-            max: 1000,
-            divisions: 100,
-            inactiveColor: AppTheme.n200,
-            activeColor: AppTheme.n200,
-            label: _currentValue.toString(),
-            onChanged: (double value) {
-              setState(() {
-                _currentValue = value.toInt();
-                _minController.text = _currentValue.toString();
-              });
-              widget.onChanged(_currentValue);
-            },
-            value: _currentValue.toDouble(),
+          child: SliderTheme(
+            data: AppTheme.theme.sliderTheme, // Apply the custom slider theme
+            child: Slider(
+              min: 0,
+              max: 1000,
+              divisions: 100,
+              inactiveColor: AppTheme.n200,
+              activeColor: AppTheme.n200,
+              onChanged: (double value) {
+                setState(() {
+                  _currentValue = value.toInt();
+                  _minController.text = _currentValue.toString();
+                });
+                widget.onChanged(_currentValue);
+              },
+              value: _currentValue.toDouble(),
+            ),
           ),
         ),
         verticalMargin24,
@@ -65,17 +62,4 @@ class _NumberSliderState extends State<NumberSlider> {
       ],
     );
   }
-
-  // void _updateMinValue() {
-  //   double newStart = _minController.text.isEmpty ? 0 : double.parse(
-  //       _minController.text);
-  //   if (newStart <= _currentRangeValues.end) {
-  //     setState(() {
-  //       _currentRangeValues = RangeValues(newStart, _currentRangeValues.end);
-  //     });
-  //   } else {
-  //     // Handle the error, e.g., by resetting the text field to the current start value
-  //     _minController.text = _currentRangeValues.start.round().toString();
-  //   }
-  // }
 }

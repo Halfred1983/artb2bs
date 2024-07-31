@@ -217,6 +217,50 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     }
   }
 
+  final List<BusinessDay> _businessDays = <BusinessDay>[
+    BusinessDay(DayOfWeek.monday, [], false),
+    BusinessDay(DayOfWeek.tuesday, [], false),
+    BusinessDay(DayOfWeek.wednesday, [], false),
+    BusinessDay(DayOfWeek.thursday, [], false),
+    BusinessDay(DayOfWeek.friday, [], false),
+    BusinessDay(DayOfWeek.saturday, [], false),
+    BusinessDay(DayOfWeek.sunday, [], false),
+  ];
+
+
+  void updateBusinessDay(BusinessDay updatedDay) {
+    User user = this.state.props[0] as User;
+
+    emit(LoadingState());
+
+    List<BusinessDay> updatedBusinessDays = [];
+    if(user.userArtInfo != null) {
+
+      if(user.userArtInfo!.openingTimes == null ||
+          user.userArtInfo!.openingTimes!.isEmpty) {
+        user = user.copyWith(
+            userArtInfo: user.userArtInfo!.copyWith(
+                openingTimes: _businessDays)
+        );
+      }
+
+      // Update the business days list
+      updatedBusinessDays = user.userArtInfo!.openingTimes!
+          .map((day) {
+        return day.dayOfWeek == updatedDay.dayOfWeek ? updatedDay : day;
+      }).toList();
+
+      // Update the user object with the new business days list
+      user = user.copyWith(
+          userArtInfo: user.userArtInfo!.copyWith(
+              openingTimes: updatedBusinessDays)
+      );
+    }
+    emit(BusinessDaysUpdated(user, updatedBusinessDays));
+  }
+
+
+
   void save(User user, [UserStatus? userStatus]) async {
     // User user = this.state.props[0] as User;
     emit(LoadingState());

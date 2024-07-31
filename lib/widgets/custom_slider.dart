@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../app/resources/styles.dart';
+import '../app/resources/theme.dart';
+
 class CustomSliderThumbCircle extends SliderComponentShape {
   final double thumbRadius;
   final int min;
@@ -36,13 +39,13 @@ class CustomSliderThumbCircle extends SliderComponentShape {
     final paint = Paint()
       ..color = Colors.white // Thumb Background Color
       ..style = PaintingStyle.fill;
+    final borderPaint = Paint()
+      ..color = AppTheme.accentColor // Border Color
+      ..strokeWidth = 2.0
+      ..style = PaintingStyle.stroke;
 
     TextSpan span = TextSpan(
-      style: TextStyle(
-        fontSize: thumbRadius * .8,
-        fontWeight: FontWeight.w700,
-        color: sliderTheme.thumbColor, // Text Color of Value on Thumb
-      ),
+      style: TextStyles.semiBoldN90014,
       text: getValue(value),
     );
 
@@ -55,6 +58,7 @@ class CustomSliderThumbCircle extends SliderComponentShape {
     Offset textCenter = Offset(center.dx - (tp.width / 2), center.dy - (tp.height / 2));
 
     canvas.drawCircle(center, thumbRadius * .9, paint);
+    canvas.drawCircle(center, thumbRadius * .9, borderPaint);
     tp.paint(canvas, textCenter);
   }
 

@@ -79,6 +79,16 @@ class NameChosen extends OnboardingState {
   List<Object> get props => [user];
 }
 
+class BusinessDaysUpdated extends OnboardingState {
+  final List<BusinessDay> businessDays;
+  final User user;
+
+  BusinessDaysUpdated(this.user, this.businessDays);
+
+  @override
+  List<Object> get props => [user];
+}
+
 class ErrorState extends OnboardingState {
   final String errorMessage;
   final User user;

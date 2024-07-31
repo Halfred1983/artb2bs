@@ -1,5 +1,6 @@
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/app/resources/theme.dart';
+import 'package:artb2b/onboard/view/10_venue_opening_time.dart';
 import 'package:artb2b/onboard/view/2_info_account.dart';
 import 'package:artb2b/onboard/view/4_venue_address.dart';
 import 'package:artb2b/onboard/view/8_venue_description.dart';
@@ -23,6 +24,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../explore/view/explore_page.dart';
 import '../../host/view/host_dashboard_page.dart';
+import '../../onboard/view/11_onboard_end.dart';
 import '../../onboard/view/1_select_account.dart';
 import '../../onboard/view/5_venue_spaces.dart';
 import '../../onboard/view/6_venue_price.dart';
@@ -110,6 +112,12 @@ class _HomeViewState extends State<HomeView> {
                 }
                 if (user!.userStatus == UserStatus.descriptionInfo) {
                   return VenueAudience();
+                }
+                if (user!.userStatus == UserStatus.capacityInfo) {
+                  return VenueOpeningTime();
+                }
+                if (user!.userStatus == UserStatus.openingTimes) {
+                  return VenueOnboardEnd();
                 }
 
                 if (user!.userStatus == UserStatus.personalInfo) {

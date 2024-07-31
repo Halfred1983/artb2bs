@@ -74,8 +74,6 @@ enum UserStatus {
   locationInfo,
   @JsonValue(5)
   venueInfo,
-  @JsonValue(15)
-  spaceInfo,
   @JsonValue(6)
   priceInfo,
   @JsonValue(7)
@@ -94,4 +92,8 @@ enum UserStatus {
   notVerified,
   @JsonValue(14)
   completed,
+  @JsonValue(15)
+  openingTimes,
+  @JsonValue(16)
+  spaceInfo,
 }
