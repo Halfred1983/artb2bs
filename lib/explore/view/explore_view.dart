@@ -97,6 +97,7 @@ class _ExploreViewState extends State<ExploreView> {
                 child: Scaffold(
                   resizeToAvoidBottomInset: false,
                   appBar: AppBar(
+                    scrolledUnderElevation: 0,
                     title: Text('Explore', style: TextStyles.boldN90029,),
                     centerTitle: false,
                     titleSpacing: 0,

@@ -36,6 +36,7 @@ class ProfilePage extends StatelessWidget {
 
               return Scaffold(
                 appBar: AppBar(
+                  scrolledUnderElevation: 0,
                   title: Text(isArtist ? "Artist Profile" : "Host Profile", style: TextStyles.boldAccent24,),
                   centerTitle: true,
                   iconTheme: const IconThemeData(

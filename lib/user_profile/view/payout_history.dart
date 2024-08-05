@@ -27,6 +27,7 @@ class PayoutHistory extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             appBar: AppBar(
+              scrolledUnderElevation: 0,
               title: Text(
                 "Payout History",
                 style: TextStyles.boldAccent24,

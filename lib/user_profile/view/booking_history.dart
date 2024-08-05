@@ -25,6 +25,7 @@ class BookingHistory extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             appBar: AppBar(
+              scrolledUnderElevation: 0,
               title: Text(
                 "Booking History",
                 style: TextStyles.boldAccent24,
@@ -46,6 +47,7 @@ class BookingHistory extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Scaffold(
             appBar: AppBar(
+              scrolledUnderElevation: 0,
               title: Text(
                 "Booking History",
                 style: TextStyles.boldAccent24,
@@ -63,6 +65,7 @@ class BookingHistory extends StatelessWidget {
           List<Booking> pastBookings = snapshot.data ?? [];
           return Scaffold(
             appBar: AppBar(
+              scrolledUnderElevation: 0,
               title: Text(
                 "Booking History",
                 style: TextStyles.boldAccent24,

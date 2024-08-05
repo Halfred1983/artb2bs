@@ -56,8 +56,8 @@ class _TagsState extends State<Tags> {
               ? ChoiceList.createScrollable(
             spacing: 10,
             padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 25,
+              // horizontal: 20,
+              vertical: 12,
             ),
           )
               : ChoiceList.createWrapped(
@@ -92,8 +92,8 @@ class _TagsState extends State<Tags> {
               ? ChoiceList.createScrollable(
             spacing: 10,
             padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 25,
+              // horizontal: 20,
+              vertical: 12,
             ),
           )
               : ChoiceList.createWrapped(

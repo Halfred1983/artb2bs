@@ -59,6 +59,7 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
 
         return Scaffold(
             appBar: AppBar(
+              scrolledUnderElevation: 0,
               title: Text("Add your artwork", style: TextStyles.boldAccent24,),
               centerTitle: true,
               iconTheme: const IconThemeData(

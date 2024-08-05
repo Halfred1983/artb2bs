@@ -34,6 +34,7 @@ class UserProfileView extends StatelessWidget {
 
             return Scaffold(
                 appBar: AppBar(
+                  scrolledUnderElevation: 0,
                   title: Text("Your Profile", style: TextStyles.boldAccent24,),
                   centerTitle: true,
                   iconTheme: const IconThemeData(

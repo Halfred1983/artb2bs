@@ -33,6 +33,7 @@ class ExhibitionView extends StatelessWidget {
 
               return Scaffold(
                 appBar: AppBar(
+                  scrolledUnderElevation: 0,
                   title: Text("Your Bookings", style: TextStyles.semiBoldAccent14,),
                   centerTitle: true,
                 ),

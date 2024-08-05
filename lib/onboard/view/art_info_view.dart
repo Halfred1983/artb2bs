@@ -45,6 +45,7 @@ class ArtInfoView extends StatelessWidget {
         return Scaffold(
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
+              scrolledUnderElevation: 0,
               title: Text("About you 2/2", style: TextStyles.boldAccent24,),
               centerTitle: true,
             ),

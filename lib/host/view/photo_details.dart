@@ -48,6 +48,7 @@ class PhotoDetails extends StatelessWidget {
             builder: (context, state) {
               return Scaffold(
                   appBar: AppBar(
+                    scrolledUnderElevation: 0,
                     title: Text("Photo details", style: TextStyles.boldAccent24,),
                     centerTitle: true,
                     iconTheme: const IconThemeData(

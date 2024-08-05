@@ -21,6 +21,7 @@ class TextStyles {
   static final regularN200 = _baseRegular[TextSize.size14].withColor(AppTheme.n200);
   static final regularAccent17 = _baseRegular[TextSize.size17].withColor(AppTheme.accentColor);
   static final regularWhite17 = _baseRegular[TextSize.size17].withColor(AppTheme.white);
+  static final regularWhite14 = _baseRegular[TextSize.size14].withColor(AppTheme.white);
   static final regularAccent20 = _baseRegular[TextSize.size20].withColor(AppTheme.accentColor);
   static final regularAccent24 = _baseRegular[TextSize.size24].withColor(AppTheme.accentColor);
   static final regularAccent29 = _baseRegular[TextSize.size29].withColor(AppTheme.accentColor);

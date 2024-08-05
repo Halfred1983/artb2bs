@@ -173,6 +173,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
 
               return Scaffold(
                 appBar: AppBar(
+                  scrolledUnderElevation: 0,
                   title: Text(
                     "Availability Calendar", style: TextStyles.semiBoldAccent14,),
                   centerTitle: true,

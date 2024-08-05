@@ -183,6 +183,7 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
 
               return Scaffold(
                 appBar: AppBar(
+                  scrolledUnderElevation: 0,
                   title: Text(
                     "Space Availability Calendar", style: TextStyles.semiBoldAccent14,),
                   centerTitle: true,

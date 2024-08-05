@@ -45,6 +45,7 @@ class BookingConfirmationView extends StatelessWidget {
 
               return Scaffold(
                   appBar: AppBar(
+                    scrolledUnderElevation: 0,
                     title: Text('Confirm and pay', style: TextStyles.boldN90017,),
                     centerTitle: true,
                     backgroundColor: AppTheme.white,

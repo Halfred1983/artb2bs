@@ -58,7 +58,8 @@ class HostPaypalEditPage extends StatelessWidget {
               return Scaffold(
                   resizeToAvoidBottomInset: true,
                   appBar: AppBar(
-                  title: Text("Your Paypal settings", style: TextStyles.boldAccent24,),
+                    scrolledUnderElevation: 0,
+                    title: Text("Your Paypal settings", style: TextStyles.boldAccent24,),
                   centerTitle: true,
                   iconTheme: const IconThemeData(
                     color: AppTheme.primaryColor, //change your color here

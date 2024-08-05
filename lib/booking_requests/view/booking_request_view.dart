@@ -67,6 +67,7 @@ class BookingRequestView extends StatelessWidget {
 
               return Scaffold(
                   appBar: AppBar(
+                    scrolledUnderElevation: 0,
                     title: Padding(
                       padding: horizontalPadding32,
                       child: Text('Your Bookings', style: TextStyles.boldN90029,),

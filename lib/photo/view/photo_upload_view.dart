@@ -57,6 +57,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
 
         return Scaffold(
             appBar: AppBar(
+              scrolledUnderElevation: 0,
               title: Text("Add a photo", style: TextStyles.boldN90017,),
               centerTitle: true,
               iconTheme: const IconThemeData(

@@ -61,6 +61,7 @@ class PersonalInfoView extends StatelessWidget {
     return Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           title: Text("About you 1/2", style: TextStyles.boldAccent24,),
           centerTitle: true,
         ),

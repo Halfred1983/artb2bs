@@ -42,6 +42,7 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
 
               return Scaffold(
                   appBar: AppBar(
+                    scrolledUnderElevation: 0,
                     title: Text("Your Dashboard", style: TextStyles.boldAccent24,),
                     centerTitle: true,
                   ),

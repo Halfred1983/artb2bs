@@ -57,6 +57,7 @@ class BookingView extends StatelessWidget {
 
               return Scaffold(
                   appBar: AppBar(
+                    scrolledUnderElevation: 0,
                     title: Text('Select spaces and date', style: TextStyles.boldN90017,),
                     centerTitle: true,
                     backgroundColor: AppTheme.white,

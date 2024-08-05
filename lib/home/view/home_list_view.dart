@@ -203,11 +203,11 @@ class _HomeListState extends State<HomeList> {
                                           user.photos != null && user.photos!.isNotEmpty ?
 
                                           Container(constraints: const BoxConstraints(minWidth: 190,  maxHeight: 100),
-                                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(24),),
+                                              // decoration:  BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24))),
                                               child: FadingInPicture(url: user.photos![0].url!, radius: 24,)
                                           )
                                               : SizedBox(width: 190, child: Container(
-                                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(24),),
+                                              // decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24))),
                                               constraints: const BoxConstraints(minWidth: 190,  maxHeight: 100),
                                               child:FadingInPicture(url: Assets.logoUrl, radius: 24,))),
                                           Padding(
@@ -234,62 +234,6 @@ class _HomeListState extends State<HomeList> {
 
                                           )
 
-                                          // Row(
-                                          //   mainAxisSize: MainAxisSize.min,
-                                          //   children: [
-                                          //     Text(user.userInfo!.name!, style: TextStyles.semiBoldAccent14,),
-                                          //     Expanded(child: Container()),
-                                          //     Image.asset('assets/images/marker.png', width: 20,),
-                                          //     horizontalMargin12,
-                                          //     Text(user.userInfo!.address!.city,
-                                          //       softWrap: true, style: TextStyles.semiBoldAccent14,),
-                                          //   ],
-                                          // ),
-                                          // Row(
-                                          //   mainAxisAlignment: MainAxisAlignment.start,
-                                          //   mainAxisSize: MainAxisSize.min,
-                                          //   children: [
-                                          //     Text("Spaces: ", style: TextStyles.semiBoldAccent14,),
-                                          //     Text(user.userArtInfo!.spaces!, style: TextStyles.semiBoldAccent14,),
-                                          //     Expanded(child: Container()),
-                                          //     Text("Audience: ", style: TextStyles.semiBoldAccent14,),
-                                          //     Text(user.userArtInfo!.audience ?? 'n/a', style: TextStyles.semiBoldAccent14,),
-                                          //     Expanded(child: Container()),
-                                          //     Text("Audience: ", style: TextStyles.semiBoldAccent14,),
-                                          //     Text(user.userArtInfo!.audience ?? 'n/a', style: TextStyles.semiBoldAccent14,),
-                                          //   ],
-                                          // ),
-                                          // Row(
-                                          //   mainAxisAlignment: MainAxisAlignment.start,
-                                          //   mainAxisSize: MainAxisSize.max,
-                                          //   children: [
-                                          //     Flexible(flex: 1, child: Text("Type: ", softWrap: true, style: TextStyles.semiBoldAccent14,)),
-                                          //   ],
-                                          // ),
-                                          // Text(user.userArtInfo!.typeOfVenue != null ?
-                                          // user.userArtInfo!.typeOfVenue!.join(", ") : 'n/a', softWrap: true, style: TextStyles.semiBoldAccent14,),
-
-                                          // Row(
-                                          //   mainAxisAlignment: MainAxisAlignment.start,
-                                          //   mainAxisSize: MainAxisSize.max,
-                                          //   children: [
-                                          //     Text("Price per space per day: ", style: TextStyles.semiBoldAccent14,),
-                                          //     Expanded(child: Container()),
-                                          //     Text(' ${user.bookingSettings!.basePrice!} '
-                                          //         '${CurrencyHelper.currency(user.userInfo!.address!.country).currencySymbol}', style: TextStyles.semiBoldAccent14,),
-                                          //   ],
-                                          // ),
-                                          // Row(
-                                          //     mainAxisAlignment: MainAxisAlignment.start,
-                                          //     mainAxisSize: MainAxisSize.max,
-                                          //     children: [
-                                          //       Text("Min. spaces: ", style: TextStyles.semiBoldAccent14,),
-                                          //       Text(user.bookingSettings!.minSpaces!, style: TextStyles.semiBoldAccent14,),
-                                          //       Expanded(child: Container()),
-                                          //       Text("Min. days: ", style: TextStyles.semiBoldAccent14,),
-                                          //       Text(user.bookingSettings!.minLength!, style: TextStyles.semiBoldAccent14,),
-                                          //     ]
-                                          // ),
                                         ]
                                     ),
                                     Positioned(

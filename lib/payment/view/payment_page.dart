@@ -70,6 +70,7 @@ class _PaymentPageState extends State<PaymentPage> {
               if (state.status == PaymentStatus.initial) {
                 return Scaffold(
                   appBar: AppBar(
+                    scrolledUnderElevation: 0,
                     title: Text('Finalise your booking', style: TextStyles.boldN90017,),
                     centerTitle: true,
                     backgroundColor: AppTheme.white,
@@ -179,6 +180,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
                         return Scaffold(
                           appBar: AppBar(
+                            scrolledUnderElevation: 0,
                             title: Text('Finalise your booking', style: TextStyles.boldN90017,),
                             centerTitle: true,
                             backgroundColor: AppTheme.white,
@@ -238,6 +240,7 @@ class _PaymentPageState extends State<PaymentPage> {
               if(state.status == PaymentStatus.failure) {
                 return Scaffold(
                   appBar: AppBar(
+                    scrolledUnderElevation: 0,
                     title: Text('Finalise your booking', style: TextStyles.boldN90017,),
                     centerTitle: true,
                     backgroundColor: AppTheme.white,

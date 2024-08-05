@@ -3,6 +3,7 @@ import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
@@ -17,6 +18,7 @@ import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/onboard/cubit/onboarding_state.dart';
 
 import '../../widgets/tags.dart';
+import '../../widgets/venue_card.dart';
 
 class VenueOnboardEnd extends StatelessWidget {
   static Route<void> route() {
@@ -61,8 +63,7 @@ class _VenueOnboardEndViewState extends State<VenueOnboardEndView> {
         return Scaffold(
           body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 32.0, vertical: 48.0),
+              padding: horizontalPadding32 + verticalPadding48,
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,105 +77,7 @@ class _VenueOnboardEndViewState extends State<VenueOnboardEndView> {
                     Text('Your listing won’t be visible to others until you set the availability as open in your listing settings.',
                         style: TextStyles.semiBoldN90014),
                     verticalMargin24,
-                  Container(
-                    width: double.infinity,
-                    padding: verticalPadding8,
-                    child: CommonCard(
-                      padding: EdgeInsets.zero,
-                      borderRadius: BorderRadius.circular(24),
-                      child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-
-                            if(user!.photos == null && user.photos!.isEmpty) ...[
-                              const Stack(
-                                children: [
-                                  SizedBox(
-                                    height: 200,
-                                    width: double.infinity,
-                                    child: FadeInImage(
-                                      placeholder: AssetImage(Assets.logo),
-                                      image:NetworkImage(Assets.logoUrl),
-                                      fit: BoxFit.fitWidth,
-                                    ), // Select photo dynamically using index
-                                  ),
-                                ],
-                              ),
-                            ]
-                            else ... [
-                              Stack(
-                                children: [
-                                  SizedBox(
-                                    width: double.infinity,
-                                    height: 200,
-                                    child:FadeInImage(
-                                      placeholder: const AssetImage(Assets.logo),
-                                      image: NetworkImage(user.photos![0].url!),
-                                      fit: BoxFit.fitWidth,
-                                    ),
-                                  ),
-                                  Positioned(
-                                    right: 8,
-                                    top: 8,
-                                    child: Container(
-                                      width: 53,
-                                      height: 38,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(24),
-                                        color: AppTheme.n900,
-                                      ),
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text('From', style: TextStyles.regularPrimary10,),
-                                            Text(' ${user.bookingSettings!.basePrice!} '
-                                                '${CurrencyHelper.currency(user.userInfo!.address!.country).currencySymbol}',
-                                              style: TextStyles.semiBoldPrimary12,),
-
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
-
-                                ],
-                              ),
-                            ],
-                            SizedBox(
-                              height: 100,
-                              child: Padding(
-                                padding: horizontalPadding24 + verticalPadding12,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(user.userInfo!.name!, style: TextStyles.boldN90017,),
-                                    Row(
-                                      children: [
-                                        const Icon(Icons.location_pin, size: 10,),
-                                        Text(user.userInfo!.address!.city,
-                                          softWrap: true, style: TextStyles.regularN90010,),
-                                      ],
-                                    ),
-                                    Expanded(child: Container(),),
-                                    Text(user.userArtInfo!.typeOfVenue != null ?
-                                    user.userArtInfo!.typeOfVenue!.join(", ") :
-                                    '', softWrap: true, style: TextStyles.semiBoldP40010,),
-                                    verticalMargin24
-
-                                  ],
-                                ),
-
-                              ),
-                            )
-
-
-                          ]
-                      ),
-                    ),
-                  )
+                  VenueCard(user: user!)
                   ],
                 ),
               ),
@@ -204,3 +107,4 @@ class _VenueOnboardEndViewState extends State<VenueOnboardEndView> {
   }
 
 }
+

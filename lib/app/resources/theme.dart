@@ -17,6 +17,8 @@ class AppTheme {
   static const s50 = Color(0xFFF5F8E9);
   static const s400 = Color(0xFF6a7e1b);
   static const sv300 = Color(0xFF08C826);
+  static const s100 = Color(0xFF70DF81);
+  static const d200 = Color(0xFFFF715E);
   static const sv50 = Color(0xFFE6FAE9);
   static const wv50 = Color(0xFFFFF8E6);
   static const wv500 = Color(0xFF9C7104);
@@ -62,24 +64,25 @@ class AppTheme {
 
   static ThemeData get theme {
     return ThemeData(
-      primaryColor: primaryColor,
-      canvasColor: Colors.white,
-      fontFamily: 'OpenSans',
-      visualDensity: VisualDensity.adaptivePlatformDensity,
-      scaffoldBackgroundColor: backgroundColor,
-      splashColor: accentColor.withOpacity(0.2),
-      highlightColor: accentColor.withOpacity(0.2),
-      appBarTheme: _appBarTheme,
-      floatingActionButtonTheme: _floatingActionButton,
-      elevatedButtonTheme: _elevatedButtonTheme,
-      outlinedButtonTheme: _outlineButtonTheme,
-      textButtonTheme: _textButtonTheme,
-      unselectedWidgetColor: primaryColor,
-      sliderTheme: SliderThemeData(
-        thumbShape: const CustomSliderThumbCircle(thumbRadius: 20, min: 0, max: 1000), // Use the custom slider thumb shape
-        showValueIndicator: ShowValueIndicator.always,
-        valueIndicatorTextStyle: TextStyles.boldAccent17,
-      ),
+        primaryColor: primaryColor,
+        canvasColor: Colors.white,
+        fontFamily: 'OpenSans',
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        scaffoldBackgroundColor: backgroundColor,
+        splashColor: accentColor.withOpacity(0.2),
+        highlightColor: accentColor.withOpacity(0.2),
+        appBarTheme: _appBarTheme,
+        floatingActionButtonTheme: _floatingActionButton,
+        elevatedButtonTheme: _elevatedButtonTheme,
+        outlinedButtonTheme: _outlineButtonTheme,
+        textButtonTheme: _textButtonTheme,
+        unselectedWidgetColor: primaryColor,
+        sliderTheme: SliderThemeData(
+          thumbShape: const CustomSliderThumbCircle(thumbRadius: 20, min: 0, max: 1000), // Use the custom slider thumb shape
+          showValueIndicator: ShowValueIndicator.always,
+          valueIndicatorTextStyle: TextStyles.boldAccent17,
+        ),
+        segmentedButtonTheme: segmentedButtonStyle
     );
   }
 
@@ -158,6 +161,43 @@ class AppTheme {
       // padding: const EdgeInsets.all(16.0),
       elevation: 1.0,
       // shadowColor: AppTheme.backgroundGrey,
+    ),
+  );
+
+  static final SegmentedButtonThemeData segmentedButtonStyle = SegmentedButtonThemeData(
+    style: ButtonStyle(
+      backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.selected)) {
+          return AppTheme.primaryColor; // Selected color
+        }
+        return AppTheme.white; // Default color when not selected
+      }),
+      foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return AppTheme.n900.withOpacity(0.5); // Disabled text color
+        }
+        return AppTheme.n900; // Default text color
+      }),
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      minimumSize: MaterialStateProperty.all(const Size(147.0, 48.0)),
+      shape: MaterialStateProperty.resolveWith<OutlinedBorder>((Set<MaterialState> states) {
+        return AppTheme._buttonCornerRadius;
+      }),
+      textStyle: MaterialStateProperty.resolveWith<TextStyle>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return TextStyles.semiBoldN90014; // Disabled text style
+        }
+        return TextStyles.boldN90014; // Default text style
+      }),
+      shadowColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+        if (states.contains(MaterialState.disabled)) {
+          return AppTheme.backgroundGrey.withOpacity(0.5); // Disabled shadow color
+        }
+        return AppTheme.white; // Default shadow color
+      }),
+      iconSize: MaterialStateProperty.resolveWith<double>((Set<MaterialState> states) {
+        return 0.0;
+      }),
     ),
   );
 
