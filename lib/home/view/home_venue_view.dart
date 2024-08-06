@@ -20,6 +20,7 @@ import '../../app/resources/assets.dart';
 import '../../user_profile/view/user_profile_page.dart';
 import '../../utils/currency/currency_helper.dart';
 import '../../utils/user_utils.dart';
+import '../../widgets/exclamation_icon.dart';
 import '../../widgets/tags.dart';
 
 class HomeVenue extends StatefulWidget {
@@ -100,7 +101,7 @@ class _HomeVenueState extends State<HomeVenue> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   verticalMargin32,
-                  if(!UserUtils.isUserInformationComplete(user)) ...[
+                  if(UserUtils.isUserInformationComplete(user).isNotEmpty) ...[
                     Container(
                       padding: horizontalPadding16,
                       decoration: BoxDecoration(
@@ -119,15 +120,7 @@ class _HomeVenueState extends State<HomeVenue> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Your listing is not visible yet', style: TextStyles.regularN50012.copyWith(color: AppTheme.d200),),
-                              Container(
-                                  width: 20,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(color: AppTheme.d200)
-                                  ),
-                                  child: const Icon( FontAwesomeIcons.exclamation, color: AppTheme.d200, size: 15,)
-                              ),
+                              const ExclamationIcon(),
                             ],
                           ),
                           verticalMargin12,

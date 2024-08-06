@@ -1,23 +1,19 @@
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/host/cubit/host_state.dart';
-import 'package:artb2b/profile/host_profile.dart';
 import 'package:artb2b/utils/common.dart';
+import 'package:artb2b/utils/user_utils.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../../injection.dart';
-import '../../app/resources/assets.dart';
 import '../../app/resources/theme.dart';
-import '../../profile/profile.dart';
-import '../../widgets/audience.dart';
+import '../../widgets/exclamation_icon.dart';
 import '../../widgets/host_widget.dart';
 import '../../widgets/loading_screen.dart';
-import '../../widgets/venue_card.dart';
 import '../cubit/host_cubit.dart';
-import 'host_dashboard_view.dart';
+import 'host_booking_availability_page.dart';
 
 class HostSettingPage extends StatelessWidget {
 
@@ -96,11 +92,8 @@ class _HostSettingViewState extends State<HostSettingView> {
                 ),
               body: SingleChildScrollView(
                 physics: const ClampingScrollPhysics(),
-                child: Padding(
-                  padding: horizontalPadding24 + verticalPadding24,
-                  child: _selectedIndex == 0 ? _buildVenuePreview(user!) :
-                    _buildVenueSettings(user!),
-                ),
+                child: _selectedIndex == 0 ? _buildVenuePreview(user!) :
+                  _buildVenueSettings(user!),
               ),
             );
           },
@@ -108,11 +101,95 @@ class _HostSettingViewState extends State<HostSettingView> {
   }
 
   Widget _buildVenuePreview(User user) {
-   return HostProfileWidget(user: user);
+   return Padding(
+       padding: horizontalPadding24 + verticalPadding24,
+       child: HostProfileWidget(user: user));
   }
 
-  _buildVenueSettings(User user) {
-    return Container(width: 200, height: 100, color: Colors.yellow);
+  Widget _buildVenueSettings(User user) {
+
+    final List<String> tileTitles = [
+      'About Venue',
+      'Add/Edit photos',
+      'Payout Settings',
+      'Booking Settings',
+      'Booking Availability'
+    ];
+
+    List<VenueInformationMissing> missingInfo = UserUtils.isUserInformationComplete(user);
+
+    return Padding(
+      padding: verticalPadding24,
+      child: ListView.separated(
+        shrinkWrap: true,
+        padding: horizontalPadding8,
+        itemCount: tileTitles.length,
+        itemBuilder: (context, index) {
+          bool isMissing = false;
+          Widget targetPage = Container();
+          switch (index) {
+            case 0:
+              isMissing = missingInfo.any((info) => info.category == VenueInformationMissingCategory.venue);
+              break;
+            case 1:
+              isMissing = missingInfo.any((info) => info.category == VenueInformationMissingCategory.photo);
+              break;
+            case 2:
+              isMissing = missingInfo.any((info) => info.category == VenueInformationMissingCategory.payout);
+              break;
+            case 3:
+              isMissing = missingInfo.any((info) => info.category == VenueInformationMissingCategory.booking);
+              targetPage = HostBookingAvailabilityPage();
+              break;
+            case 4:
+              targetPage = HostBookingAvailabilityPage();
+              break;
+          }
+
+
+          return InkWell (
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => targetPage),
+              );
+            },
+            child: Container(
+              height: 90,
+              padding: horizontalPadding32,
+              decoration: const BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Colors.grey, width: 0.5),
+                  bottom: BorderSide(color: Colors.grey, width: 0.5),
+                ),
+              ),
+              child: Center(
+                child: ListTile(
+                  contentPadding: horizontalPadding8,
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(tileTitles[index], style: TextStyles.regularN90014,),
+                          if (isMissing) ...[
+                            horizontalMargin8,
+                            const ExclamationIcon()
+                          ]
+                        ],
+                      ),
+                      const Icon(Icons.play_arrow_sharp, color: AppTheme.n900, size: 20,)
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+        separatorBuilder: (context, index) => verticalMargin8,
+      ),
+    );
   }
 }
 

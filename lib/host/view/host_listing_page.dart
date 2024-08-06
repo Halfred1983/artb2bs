@@ -10,7 +10,6 @@ import '../../../injection.dart';
 import '../../widgets/loading_screen.dart';
 import '../../widgets/venue_card.dart';
 import '../cubit/host_cubit.dart';
-import 'host_dashboard_view.dart';
 import 'host_setting_page.dart';
 
 class HostListingPage extends StatelessWidget {

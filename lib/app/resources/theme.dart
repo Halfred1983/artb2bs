@@ -1,6 +1,7 @@
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 import '../../widgets/custom_slider.dart';
 export 'package:flutter/services.dart' show SystemUiOverlayStyle;
@@ -360,4 +361,44 @@ class AppTheme {
     filled: true,
     fillColor: Colors.white,
   );
+
+  static const calendarHeaderStyle = HeaderStyle(
+      leftChevronIcon: Icon(
+        Icons.chevron_left, color: AppTheme
+          .n900,),
+      rightChevronIcon: Icon(
+        Icons.chevron_right, color: AppTheme
+          .n900,),
+      titleTextStyle: TextStyle(
+          fontSize: 17.0, color: AppTheme
+          .n900),
+      titleCentered: true
+  );
+
+  static const calendarStyle = CalendarStyle(
+    rangeHighlightColor: AppTheme
+        .primaryColor,
+    isTodayHighlighted: true,
+    selectedDecoration: BoxDecoration(
+      color: AppTheme.primaryColor,
+      shape: BoxShape.circle,
+    ),
+    todayDecoration: BoxDecoration(
+      color: AppTheme.accentColor,
+      shape: BoxShape.circle,
+    ),
+    rangeStartDecoration: BoxDecoration(
+      color: AppTheme.accentColor,
+      shape: BoxShape.circle,
+    ),
+    rangeEndDecoration: BoxDecoration(
+      color: AppTheme.accentColor,
+      shape: BoxShape.circle,
+    ),
+    disabledTextStyle: TextStyle(color: Colors
+        .black54,
+        decoration: TextDecoration.lineThrough),
+  );
+
+
 }
