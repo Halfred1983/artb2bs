@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
+import '../../host/view/host_setting_page.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
 import '../../widgets/loading_screen.dart';
@@ -20,8 +21,8 @@ class VenueAudience extends StatelessWidget {
   static Route<void> route() {
     return MaterialPageRoute<void>(builder: (_) => VenueAudience());
   }
-
-  VenueAudience({Key? key}) : super(key: key);
+  bool isOnboarding;
+  VenueAudience({Key? key, this.isOnboarding = true}) : super(key: key);
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
 
@@ -32,7 +33,7 @@ class VenueAudience extends StatelessWidget {
         databaseService: databaseService,
         userId: authService.getUser().id,
       ),
-      child: VenueDescriptionView(),
+      child: VenueDescriptionView(isOnboarding: isOnboarding),
     );
   }
 }
@@ -40,7 +41,9 @@ class VenueAudience extends StatelessWidget {
 
 
 class VenueDescriptionView extends StatefulWidget {
-  VenueDescriptionView({Key? key}) : super(key: key);
+  VenueDescriptionView({Key? key, this.isOnboarding = true}) : super(key: key);
+
+  final bool isOnboarding;
 
   @override
   State<VenueDescriptionView> createState() => _VenueDescriptionViewState();
@@ -58,22 +61,36 @@ class _VenueDescriptionViewState extends State<VenueDescriptionView> {
           return const LoadingScreen();
         }
         User? user;
-        if(state is LoadedState) {
+        if(state is LoadedState || state is DataSaved) {
           user = state.user;
+
+          if(!widget.isOnboarding) {
+            _venueAudience = int.parse(user!.userArtInfo!.audience!);
+          }
         }
         return Scaffold(
+          appBar: !widget.isOnboarding ? AppBar(
+            scrolledUnderElevation: 0,
+            title: Text(user!.userInfo!.name!, style: TextStyles.boldN90017,),
+            centerTitle: true,
+            iconTheme: const IconThemeData(
+              color: AppTheme.n900, //change your color here
+            ),
+          ) : null,
           body: SingleChildScrollView(
             child: Padding(
-              padding: horizontalPadding32 + verticalPadding48,
+              padding: horizontalPadding32 + (widget.isOnboarding ? verticalPadding48 : EdgeInsets.zero),
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    verticalMargin48,
-                    Text('Venue capacity',
-                        style: TextStyles.boldN90029),
-                    verticalMargin48,
+                    if(widget.isOnboarding)... [
+                      verticalMargin48,
+                      Text('Venue capacity',
+                          style: TextStyles.boldN90029),
+                      verticalMargin48,
+                    ],
                     Text('Set your venue\'s capacity by choosing the amount of people that fits into your venue.',
                         style: TextStyles.semiBoldN90014),
                     verticalMargin24,
@@ -98,11 +115,23 @@ class _VenueDescriptionViewState extends State<VenueDescriptionView> {
                 foregroundColor: _canContinue() ? AppTheme.primaryColor : AppTheme.n900,
                 onPressed: () {
                   if(_canContinue()) {
-                    context.read<OnboardingCubit>().save(user!, UserStatus.capacityInfo);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => VenueOpeningTimeView()), // Replace NewPage with the actual class of your new page
-                    );
+                    if (widget.isOnboarding) {
+                      context.read<OnboardingCubit>().save(
+                          user!, UserStatus.capacityInfo);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            VenueOpeningTimeView()), // Replace NewPage with the actual class of your new page
+                      );
+                    }
+                    else {
+                      context.read<OnboardingCubit>().save(user!);
+                      Navigator.of(context)..pop()..pop();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HostSettingPage()),
+                      );
+                    }
                   }
                   else {
                     return;

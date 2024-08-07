@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
+import '../../host/view/host_setting_page.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
 import '../../widgets/loading_screen.dart';
@@ -18,8 +19,9 @@ class VenueInfoPage extends StatelessWidget {
   static Route<void> route() {
     return MaterialPageRoute<void>(builder: (_) => VenueInfoPage());
   }
+  bool isOnboarding;
 
-  VenueInfoPage({Key? key}) : super(key: key);
+  VenueInfoPage({Key? key, this.isOnboarding = true}) : super(key: key);
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
 
@@ -30,7 +32,7 @@ class VenueInfoPage extends StatelessWidget {
         databaseService: databaseService,
         userId: authService.getUser().id,
       ),
-      child: SelectAccountView(),
+      child: SelectAccountView(isOnboarding: isOnboarding),
     );
   }
 }
@@ -38,7 +40,9 @@ class VenueInfoPage extends StatelessWidget {
 
 
 class SelectAccountView extends StatefulWidget {
-  SelectAccountView({Key? key}) : super(key: key);
+  SelectAccountView({Key? key, this.isOnboarding = true}) : super(key: key);
+
+  final bool isOnboarding;
 
   @override
   State<SelectAccountView> createState() => _SelectAccountViewState();
@@ -60,22 +64,39 @@ class _SelectAccountViewState extends State<SelectAccountView> {
           return const LoadingScreen();
         }
         User? user;
-        if(state is LoadedState) {
+        if(state is LoadedState || state is DataSaved) {
           user = state.user;
+
+          if(!widget.isOnboarding) {
+            _venueName = user!.userInfo!.name!;
+            _venueController.text = _venueName;
+            _venueType = user.userArtInfo!.typeOfVenue!;
+            _vibes = user.userArtInfo!.vibes!;
+          }
         }
         return Scaffold(
+          appBar: !widget.isOnboarding ? AppBar(
+            scrolledUnderElevation: 0,
+            title: Text(user!.userInfo!.name!, style: TextStyles.boldN90017,),
+            centerTitle: true,
+            iconTheme: const IconThemeData(
+              color: AppTheme.n900, //change your color here
+            ),
+          ) : null,
           body: SingleChildScrollView(
             child: Padding(
-              padding: horizontalPadding32 + verticalPadding48,
+              padding: horizontalPadding32 + (widget.isOnboarding ? verticalPadding48 : EdgeInsets.zero),
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    verticalMargin48,
-                    Text('Tell us about your venue',
-                        style: TextStyles.boldN90029),
-                    verticalMargin48,
+                    if(widget.isOnboarding)... [
+                      verticalMargin48,
+                      Text('Tell us about your venue',
+                          style: TextStyles.boldN90029),
+                      verticalMargin48,
+                    ],
                     Text('Venue Name', style: TextStyles.boldN90016),
                     verticalMargin8,
                     TextField(
@@ -134,11 +155,23 @@ class _SelectAccountViewState extends State<SelectAccountView> {
                 foregroundColor: _canContinue() ? AppTheme.primaryColor : AppTheme.n900,
                 onPressed: () {
                   if(_canContinue()) {
-                    context.read<OnboardingCubit>().save(user!, UserStatus.spaceInfo);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => VenueAddressPage()), // Replace NewPage with the actual class of your new page
-                    );
+
+                    if(widget.isOnboarding) {
+                      context.read<OnboardingCubit>().save(user!, UserStatus.spaceInfo);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => VenueAddressPage()), // Replace NewPage with the actual class of your new page
+                      );
+                    }
+                    else {
+                      context.read<OnboardingCubit>().save(user!);
+                      Navigator.of(context)..pop()..pop()..pop();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HostSettingPage()),
+                      );
+                    }
+
                   }
                   else {
                     return;

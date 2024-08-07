@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
+import '../../host/view/host_setting_page.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
 import '../../widgets/loading_screen.dart';
@@ -19,7 +20,9 @@ class VenueAddressPage extends StatelessWidget {
     return MaterialPageRoute<void>(builder: (_) => VenueAddressPage());
   }
 
-  VenueAddressPage({Key? key}) : super(key: key);
+  bool isOnboarding;
+  VenueAddressPage({Key? key, this.isOnboarding = true}) : super(key: key);
+
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
 
@@ -30,7 +33,7 @@ class VenueAddressPage extends StatelessWidget {
         databaseService: databaseService,
         userId: authService.getUser().id,
       ),
-      child: SelectAddressView(),
+      child: SelectAddressView(isOnboarding: isOnboarding),
     );
   }
 }
@@ -38,8 +41,10 @@ class VenueAddressPage extends StatelessWidget {
 
 
 class SelectAddressView extends StatefulWidget {
-  SelectAddressView({Key? key}) : super(key: key);
+  SelectAddressView({Key? key, this.isOnboarding = true}) : super(key: key);
 
+
+  bool isOnboarding;
   @override
   State<SelectAddressView> createState() => _SelectAddressViewState();
 }
@@ -97,18 +102,28 @@ class _SelectAddressViewState extends State<SelectAddressView> {
           }
         }
         return Scaffold(
+          appBar: !widget.isOnboarding ? AppBar(
+            scrolledUnderElevation: 0,
+            title: Text(user!.userInfo!.name!, style: TextStyles.boldN90017,),
+            centerTitle: true,
+            iconTheme: const IconThemeData(
+              color: AppTheme.n900, //change your color here
+            ),
+          ) : null,
           body: SingleChildScrollView(
             child: Padding(
-              padding: horizontalPadding32 + verticalPadding48,
+              padding: horizontalPadding32 + (widget.isOnboarding ? verticalPadding48 : EdgeInsets.zero),
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    verticalMargin48,
-                    Text('Where is your venue located',
-                        style: TextStyles.boldN90029),
-                    verticalMargin48,
+                    if(widget.isOnboarding)... [
+                      verticalMargin48,
+                      Text('Where is your venue located',
+                          style: TextStyles.boldN90029),
+                      verticalMargin48,
+                    ],
                     const GoogleAddressLookup(),
                     ...addressInfo
                   ],
@@ -124,11 +139,23 @@ class _SelectAddressViewState extends State<SelectAddressView> {
                 foregroundColor: true ? AppTheme.primaryColor : AppTheme.n900,
                 onPressed: () {
                   if(_canContinue()) {
-                    context.read<OnboardingCubit>().save(user!, UserStatus.locationInfo);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => VenueSpacesPage()), // Replace NewPage with the actual class of your new page
-                    );
+                    if (widget.isOnboarding) {
+                      context.read<OnboardingCubit>().save(
+                          user!, UserStatus.locationInfo);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            VenueSpacesPage()), // Replace NewPage with the actual class of your new page
+                      );
+                    }
+                    else {
+                      context.read<OnboardingCubit>().save(user!);
+                      Navigator.of(context)..pop()..pop()..pop();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HostSettingPage()),
+                      );
+                    }
                   }
                   else { return ; }
                 },
@@ -144,10 +171,10 @@ class _SelectAddressViewState extends State<SelectAddressView> {
 
   bool _canContinue() {
     return user!.userInfo!.address != null;
-        // user!.userInfo.address!.country != null &&
-        // user!.userInfo.address!.address != null &&
-        // user!.userInfo.address!.province != null &&
-        // user!.userInfo.address!.city != null;
+    // user!.userInfo.address!.country != null &&
+    // user!.userInfo.address!.address != null &&
+    // user!.userInfo.address!.province != null &&
+    // user!.userInfo.address!.city != null;
   }
 }
 

@@ -32,7 +32,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
       user = user.copyWith(userInfo: userInfo, userStatus: UserStatus.type);
 
-      emit(UserTypeChosen(user));
+      emit(LoadedState(user));
     } catch (e) {
       emit(ErrorState(user, "Invalid value for user type"));
     }
@@ -46,7 +46,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
       user = user.copyWith(userInfo: user.userInfo != null ?
       user.userInfo!.copyWith(name: name) : UserInfo(name: name));
 
-      emit(NameChosen(user));
+      emit(LoadedState(user));
     } catch (e) {
       emit(ErrorState(user, "Chose a valid user name"));
     }

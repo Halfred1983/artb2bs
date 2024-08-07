@@ -1,8 +1,10 @@
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:input_quantity/input_quantity.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../onboard/view/6_venue_price.dart';
 import '../../widgets/custom_slider.dart';
 export 'package:flutter/services.dart' show SystemUiOverlayStyle;
 
@@ -400,5 +402,15 @@ class AppTheme {
         decoration: TextDecoration.lineThrough),
   );
 
+  static const quantityProps = QtyDecorationProps(
+    minusButtonConstrains: BoxConstraints(minHeight: 50, minWidth: 50),
+    plusButtonConstrains: BoxConstraints(minHeight: 50, minWidth: 50),
+    plusBtn: PlusMinusButton(text: '+'),
+    minusBtn: PlusMinusButton(text: '-'),
+    btnColor: AppTheme.accentColor,
+    isBordered: false,
+    borderShape: BorderShapeBtn.circle,
+    width: 54,
+  );
 
 }

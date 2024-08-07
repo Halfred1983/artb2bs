@@ -1,3 +1,4 @@
+import 'package:artb2b/host/view/host_setting_page.dart';
 import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/onboard/cubit/onboarding_state.dart';
 import 'package:artb2b/widgets/google_places.dart';
@@ -19,8 +20,9 @@ class VenueSpacesPage extends StatelessWidget {
   static Route<void> route() {
     return MaterialPageRoute<void>(builder: (_) => VenueSpacesPage());
   }
+  bool isOnboarding;
+  VenueSpacesPage({Key? key, this.isOnboarding = true}) : super(key: key);
 
-  VenueSpacesPage({Key? key}) : super(key: key);
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
 
@@ -31,7 +33,7 @@ class VenueSpacesPage extends StatelessWidget {
         databaseService: databaseService,
         userId: authService.getUser().id,
       ),
-      child: SelectSpacesView(),
+      child: SelectSpacesView(isOnboarding: isOnboarding),
     );
   }
 }
@@ -39,14 +41,16 @@ class VenueSpacesPage extends StatelessWidget {
 
 
 class SelectSpacesView extends StatefulWidget {
-  SelectSpacesView({Key? key}) : super(key: key);
+  SelectSpacesView({Key? key, this.isOnboarding = true}) : super(key: key);
+
+  final bool isOnboarding;
 
   @override
   State<SelectSpacesView> createState() => _SelectSpacesViewState();
 }
 
 class _SelectSpacesViewState extends State<SelectSpacesView> {
-
+  int _spaceValue = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -56,22 +60,33 @@ class _SelectSpacesViewState extends State<SelectSpacesView> {
           return const LoadingScreen();
         }
         User? user;
-        if(state is LoadedState) {
+        if(state is LoadedState || state is DataSaved) {
           user = state.user;
+          _spaceValue = int.parse(user!.userArtInfo!.spaces!);
         }
         return Scaffold(
+          appBar: !widget.isOnboarding ? AppBar(
+            scrolledUnderElevation: 0,
+            title: Text(user!.userInfo!.name!, style: TextStyles.boldN90017,),
+            centerTitle: true,
+            iconTheme: const IconThemeData(
+              color: AppTheme.n900, //change your color here
+            ),
+          ) : null,
           body: SingleChildScrollView(
             child: Padding(
-              padding: horizontalPadding32 + verticalPadding48,
+              padding: horizontalPadding32 + (widget.isOnboarding ? verticalPadding48 : EdgeInsets.zero),
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    verticalMargin48,
-                    Text('Spaces in your\nvenue',
-                        style: TextStyles.boldN90029),
-                    verticalMargin48,
+                    if(widget.isOnboarding)... [
+                      verticalMargin48,
+                      Text('Spaces in your\nvenue',
+                          style: TextStyles.boldN90029),
+                      verticalMargin48,
+                    ],
                     Text('How many spaces available?',
                         style: TextStyles.boldN90017),
                     verticalMargin12,
@@ -85,22 +100,16 @@ class _SelectSpacesViewState extends State<SelectSpacesView> {
                         SizedBox(
                           width: 200,
                           child: InputQty.int(
-                              onQtyChanged: (spaceValue) => context.read<OnboardingCubit>().chooseSpaces(spaceValue.toString()),
-                              qtyFormProps: QtyFormProps(enableTyping: false, style: TextStyles.boldN90029),
-                              steps: 1,
-                              maxVal: 999 ,
-                              minVal: 1,
-                              initVal: 1,
-                              decoration: const QtyDecorationProps(
-                                minusButtonConstrains: BoxConstraints(minHeight: 50, minWidth: 50),
-                                plusButtonConstrains: BoxConstraints(minHeight: 50, minWidth: 50),
-                                plusBtn: PlusMinusButton(text: '+'),
-                                minusBtn: PlusMinusButton(text: '-'),
-                                btnColor: AppTheme.accentColor,
-                                isBordered: false,
-                                borderShape: BorderShapeBtn.circle,
-                                width: 54,
-                              )
+                            onQtyChanged: (spaceValue) {
+                              _spaceValue = spaceValue;
+                              context.read<OnboardingCubit>().chooseSpaces(spaceValue.toString());
+                            },
+                            qtyFormProps: QtyFormProps(enableTyping: false, style: TextStyles.boldN90029),
+                            steps: 1,
+                            maxVal: 999 ,
+                            minVal: 1,
+                            initVal: _spaceValue,
+                            decoration: AppTheme.quantityProps,
                           ),
                         ),
                         Expanded(child: Container(),),
@@ -108,7 +117,7 @@ class _SelectSpacesViewState extends State<SelectSpacesView> {
                     ),
                     verticalMargin48,
                     verticalMargin48,
-                    Container(
+                    if(widget.isOnboarding)Container(
                       padding: const EdgeInsets.fromLTRB(21, 15, 21, 15),
                       height: 76,
                       decoration: BoxDecoration(
@@ -134,11 +143,23 @@ class _SelectSpacesViewState extends State<SelectSpacesView> {
                 foregroundColor: _canContinue() ? AppTheme.primaryColor : AppTheme.n900,
                 onPressed: () {
                   if(_canContinue()) {
-                    context.read<OnboardingCubit>().save(user!, UserStatus.spaceInfo);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => VenuePricePage()), // Replace NewPage with the actual class of your new page
-                    );
+
+                    if (widget.isOnboarding) {
+                      context.read<OnboardingCubit>().save(user!, UserStatus.spaceInfo);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            VenuePricePage()), // Replace NewPage with the actual class of your new page
+                      );
+                    }
+                    else {
+                      context.read<OnboardingCubit>().save(user!);
+                      Navigator.of(context)..pop()..pop();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HostSettingPage()),
+                      );
+                    }
                   }
                   else {
                     return;

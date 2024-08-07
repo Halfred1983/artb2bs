@@ -29,6 +29,7 @@ class UserCubit extends Cubit<UserState> {
         emit(LoadedState(user, pendingRequests: pendingRequests));
       }
     } catch (e) {
+      print(e.toString());
       emit(ErrorState());
     }
   }

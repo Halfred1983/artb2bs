@@ -1,5 +1,6 @@
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/host/cubit/host_state.dart';
+import 'package:artb2b/host/view/settings/host_venue_info_page.dart';
 import 'package:artb2b/utils/common.dart';
 import 'package:artb2b/utils/user_utils.dart';
 import 'package:auth_service/auth.dart';
@@ -13,12 +14,16 @@ import '../../widgets/exclamation_icon.dart';
 import '../../widgets/host_widget.dart';
 import '../../widgets/loading_screen.dart';
 import '../cubit/host_cubit.dart';
-import 'host_booking_availability_page.dart';
+import 'settings/host_booking_availability_page.dart';
 
 class HostSettingPage extends StatelessWidget {
+  static const String routeName = '/hostSetting';
 
-  static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => HostSettingPage());
+  static Route<void> route({int initialIndex = 0}) {
+    return MaterialPageRoute<void>(
+      builder: (_) => HostSettingPage(),
+      settings: RouteSettings(name: routeName),
+    );
   }
 
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
@@ -130,6 +135,7 @@ class _HostSettingViewState extends State<HostSettingView> {
           switch (index) {
             case 0:
               isMissing = missingInfo.any((info) => info.category == VenueInformationMissingCategory.venue);
+              targetPage = HostVenueInfoPage();
               break;
             case 1:
               isMissing = missingInfo.any((info) => info.category == VenueInformationMissingCategory.photo);

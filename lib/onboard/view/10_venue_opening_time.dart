@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
+import '../../host/view/host_setting_page.dart';
 import '../../injection.dart';
 import '../../widgets/loading_screen.dart';
 import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
@@ -20,7 +21,9 @@ class VenueOpeningTime extends StatelessWidget {
     return MaterialPageRoute<void>(builder: (_) => VenueOpeningTime());
   }
 
-  VenueOpeningTime({Key? key}) : super(key: key);
+  VenueOpeningTime({Key? key, this.isOnboarding = true}) : super(key: key);
+
+  bool isOnboarding;
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
 
@@ -31,12 +34,15 @@ class VenueOpeningTime extends StatelessWidget {
         databaseService: databaseService,
         userId: authService.getUser().id,
       ),
-      child: VenueOpeningTimeView(),
+      child: VenueOpeningTimeView(isOnboarding:isOnboarding),
     );
   }
 }
 
 class VenueOpeningTimeView extends StatefulWidget {
+  VenueOpeningTimeView({super.key, this.isOnboarding = true});
+
+  final bool isOnboarding;
   @override
   _VenueOpeningTimeViewState createState() => _VenueOpeningTimeViewState();
 }
@@ -72,24 +78,37 @@ class _VenueOpeningTimeViewState extends State<VenueOpeningTimeView> {
         }
         User? user;
         if (state is BusinessDaysUpdated) {
-          _businessDays = state.businessDays;
           user = state.user;
+          _businessDays = state.businessDays;
+        }
+        if (state is LoadedState || state is DataSaved) {
+          user = state.user;
+          _businessDays = user!.userArtInfo!.openingTimes!;
         }
         return Scaffold(
+          appBar: !widget.isOnboarding ? AppBar(
+            scrolledUnderElevation: 0,
+            title: Text(user!.userInfo!.name!, style: TextStyles.boldN90017,),
+            centerTitle: true,
+            iconTheme: const IconThemeData(
+              color: AppTheme.n900, //change your color here
+            ),
+          ) : null,
           body: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 32.0, vertical: 48.0),
+              padding: horizontalPadding32 + (widget.isOnboarding ? verticalPadding48 : EdgeInsets.zero),
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    verticalMargin48,
-                    const Text('Select open days and set opening hours',
-                        style: TextStyle(
-                            fontSize: 29, fontWeight: FontWeight.bold)),
-                    verticalMargin24,
+                    if(widget.isOnboarding)... [
+                      verticalMargin48,
+                      const Text('Select open days and set opening hours',
+                          style: TextStyle(
+                              fontSize: 29, fontWeight: FontWeight.bold)),
+                      verticalMargin24,
+                    ],
                     Text('Set your venue\'s capacity by choosing the amount of people that fits into your venue.',
                         style: TextStyles.semiBoldN90014),
                     verticalMargin24,
@@ -105,7 +124,7 @@ class _VenueOpeningTimeViewState extends State<VenueOpeningTimeView> {
                           .map((day) => day.dayOfWeek.toString().split('.').last)
                           .toList(),
 
-                      (selectedDays) {
+                          (selectedDays) {
                         setState(() {
                           _selectedDay = selectedDays.isNotEmpty ? selectedDays.first : null;
                           // for (var day in _businessDays) {
@@ -139,13 +158,24 @@ class _VenueOpeningTimeViewState extends State<VenueOpeningTimeView> {
               foregroundColor: _canContinue() ? AppTheme.primaryColor : AppTheme.n900,
               onPressed: () {
                 if (_canContinue()) {
-                  context.read<OnboardingCubit>().save(
-                      user!, UserStatus.openingTimes);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => VenueOnboardEnd()),
-                  );
+
+                  if (widget.isOnboarding) {
+                    context.read<OnboardingCubit>().save(
+                        user!, UserStatus.openingTimes);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => VenueOnboardEnd()),
+                    );
+                  }
+                  else {
+                    context.read<OnboardingCubit>().save(user!);
+                    Navigator.of(context)..pop()..pop();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HostSettingPage()),
+                    );
+                  }
                 }
               },
               child: const Text('Continue'),
@@ -199,60 +229,60 @@ class _VenueOpeningTimeViewState extends State<VenueOpeningTimeView> {
                         businessDay.hourInterval.isNotEmpty ? businessDay.hourInterval.first.from?.minute ?? 0 : 0,
                       );
                       return BlocProvider.value(
-                        value: context.read<OnboardingCubit>(),
-                        child: Container(
-                        padding: horizontalPadding24,
-                        color: AppTheme.white,
-                        height: 400,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Choose opening time', style: TextStyles.semiBoldN90017),
-                            verticalMargin12,
-                            SizedBox(
-                              height: 200,
-                              child: CupertinoDatePicker(
-                                mode: CupertinoDatePickerMode.time,
-                                initialDateTime: initialDate,
-                                use24hFormat: false,
-                                onDateTimeChanged: (DateTime newDateTime) {
-                                  setState(() {
-                                    final timeOfDay = TimeOfDay(hour: newDateTime.hour, minute: newDateTime.minute);
-                                    if (businessDay.hourInterval.isEmpty) {
-                                      businessDay.hourInterval.add(BusinessHours(timeOfDay, null));
-                                    } else {
-                                      businessDay.hourInterval.first.from = timeOfDay;
-                                    }
-                                  });
-                                  context.read<OnboardingCubit>().updateBusinessDay(businessDay);
-                                },
-                              ),
+                          value: context.read<OnboardingCubit>(),
+                          child: Container(
+                            padding: horizontalPadding24,
+                            color: AppTheme.white,
+                            height: 400,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('Choose opening time', style: TextStyles.semiBoldN90017),
+                                verticalMargin12,
+                                SizedBox(
+                                  height: 200,
+                                  child: CupertinoDatePicker(
+                                    mode: CupertinoDatePickerMode.time,
+                                    initialDateTime: initialDate,
+                                    use24hFormat: false,
+                                    onDateTimeChanged: (DateTime newDateTime) {
+                                      setState(() {
+                                        final timeOfDay = TimeOfDay(hour: newDateTime.hour, minute: newDateTime.minute);
+                                        if (businessDay.hourInterval.isEmpty) {
+                                          businessDay.hourInterval.add(BusinessHours(timeOfDay, null));
+                                        } else {
+                                          businessDay.hourInterval.first.from = timeOfDay;
+                                        }
+                                      });
+                                      context.read<OnboardingCubit>().updateBusinessDay(businessDay);
+                                    },
+                                  ),
+                                ),
+                                verticalMargin12,
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      if (businessDay.hourInterval.isEmpty) {
+                                        businessDay.hourInterval.add(BusinessHours(TimeOfDay(hour: initialDate.hour,
+                                            minute: initialDate.minute), null));
+                                      }
+                                      businessDay.hourInterval.first.from ??= TimeOfDay(hour: initialDate.hour, minute: initialDate.minute);
+                                      context.read<OnboardingCubit>().updateBusinessDay(businessDay);
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('Done'),
+                                  ),
+                                ),
+                              ],
                             ),
-                            verticalMargin12,
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (businessDay.hourInterval.isEmpty) {
-                                    businessDay.hourInterval.add(BusinessHours(TimeOfDay(hour: initialDate.hour,
-                                        minute: initialDate.minute), null));
-                                  }
-                                  businessDay.hourInterval.first.from ??= TimeOfDay(hour: initialDate.hour, minute: initialDate.minute);
-                                  context.read<OnboardingCubit>().updateBusinessDay(businessDay);
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('Done'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ));
+                          ));
                     },
                   );
                 },
                 child: Text(businessDay.hourInterval.isNotEmpty ?
                 businessDay.hourInterval.first.from?.format(context) ?? 'Select Time' : 'Select Time'
-                ,style: TextStyles.semiBoldN90014,),
+                  ,style: TextStyles.semiBoldN90014,),
               ),
             ],
           ),
@@ -266,62 +296,62 @@ class _VenueOpeningTimeViewState extends State<VenueOpeningTimeView> {
                   await showModalBottomSheet(
                     context: context,
                     builder: (_) {
-                    var initialDateTime = DateTime(
-                                  0,
-                                  0,
-                                  0,
-                                  businessDay.hourInterval.isNotEmpty ? businessDay.hourInterval.first.to?.hour ?? 18 : 18,
-                                  businessDay.hourInterval.isNotEmpty ? businessDay.hourInterval.first.to?.minute ?? 0 : 0,
-                                );
-                    return BlocProvider.value(
-                      value: context.read<OnboardingCubit>(),
-                      child: Container(
-                        padding: horizontalPadding24,
-                        color: AppTheme.white,
-                        height: 400,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Choose closing time', style: TextStyles.semiBoldN90017),
-                            verticalMargin12,
-                            SizedBox(
-                              height: 200,
-                              child: CupertinoDatePicker(
-                                mode: CupertinoDatePickerMode.time,
-                                initialDateTime: initialDateTime,
-                                use24hFormat: false,
-                                onDateTimeChanged: (DateTime newDateTime) {
-                                  setState(() {
-                                    final timeOfDay = TimeOfDay(hour: newDateTime.hour, minute: newDateTime.minute);
-                                    if (businessDay.hourInterval.isEmpty) {
-                                      businessDay.hourInterval.add(BusinessHours(null, timeOfDay));
-                                    } else {
-                                      businessDay.hourInterval.first.to = timeOfDay;
-                                    }
-                                  });
-                                  context.read<OnboardingCubit>().updateBusinessDay(businessDay);
-                                },
-                              ),
+                      var initialDateTime = DateTime(
+                        0,
+                        0,
+                        0,
+                        businessDay.hourInterval.isNotEmpty ? businessDay.hourInterval.first.to?.hour ?? 18 : 18,
+                        businessDay.hourInterval.isNotEmpty ? businessDay.hourInterval.first.to?.minute ?? 0 : 0,
+                      );
+                      return BlocProvider.value(
+                          value: context.read<OnboardingCubit>(),
+                          child: Container(
+                            padding: horizontalPadding24,
+                            color: AppTheme.white,
+                            height: 400,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('Choose closing time', style: TextStyles.semiBoldN90017),
+                                verticalMargin12,
+                                SizedBox(
+                                  height: 200,
+                                  child: CupertinoDatePicker(
+                                    mode: CupertinoDatePickerMode.time,
+                                    initialDateTime: initialDateTime,
+                                    use24hFormat: false,
+                                    onDateTimeChanged: (DateTime newDateTime) {
+                                      setState(() {
+                                        final timeOfDay = TimeOfDay(hour: newDateTime.hour, minute: newDateTime.minute);
+                                        if (businessDay.hourInterval.isEmpty) {
+                                          businessDay.hourInterval.add(BusinessHours(null, timeOfDay));
+                                        } else {
+                                          businessDay.hourInterval.first.to = timeOfDay;
+                                        }
+                                      });
+                                      context.read<OnboardingCubit>().updateBusinessDay(businessDay);
+                                    },
+                                  ),
+                                ),
+                                verticalMargin12,
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      if (businessDay.hourInterval.isEmpty ) {
+                                        businessDay.hourInterval.add(BusinessHours(null,
+                                            TimeOfDay(hour: initialDateTime.hour, minute: initialDateTime.minute)));
+                                      }
+                                      businessDay.hourInterval.first.to ??= TimeOfDay(hour: initialDateTime.hour, minute: initialDateTime.minute);
+                                      context.read<OnboardingCubit>().updateBusinessDay(businessDay);
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('Done'),
+                                  ),
+                                ),
+                              ],
                             ),
-                            verticalMargin12,
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (businessDay.hourInterval.isEmpty ) {
-                                    businessDay.hourInterval.add(BusinessHours(null,
-                                        TimeOfDay(hour: initialDateTime.hour, minute: initialDateTime.minute)));
-                                  }
-                                  businessDay.hourInterval.first.to ??= TimeOfDay(hour: initialDateTime.hour, minute: initialDateTime.minute);
-                                  context.read<OnboardingCubit>().updateBusinessDay(businessDay);
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('Done'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ));
+                          ));
                     },
                   );
                 },

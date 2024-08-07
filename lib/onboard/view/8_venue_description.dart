@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
+import '../../host/view/host_setting_page.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
 import '../../widgets/loading_screen.dart';
@@ -20,7 +21,10 @@ class VenueDescription extends StatelessWidget {
     return MaterialPageRoute<void>(builder: (_) => VenueDescription());
   }
 
-  VenueDescription({Key? key}) : super(key: key);
+  VenueDescription({Key? key, this.isOnboarding = true}) : super(key: key);
+
+  bool isOnboarding;
+
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
 
@@ -31,7 +35,7 @@ class VenueDescription extends StatelessWidget {
         databaseService: databaseService,
         userId: authService.getUser().id,
       ),
-      child: VenueDescriptionView(),
+      child: VenueDescriptionView(isOnboarding: isOnboarding),
     );
   }
 }
@@ -39,7 +43,9 @@ class VenueDescription extends StatelessWidget {
 
 
 class VenueDescriptionView extends StatefulWidget {
-  VenueDescriptionView({Key? key}) : super(key: key);
+  VenueDescriptionView({Key? key, this.isOnboarding = true}) : super(key: key);
+
+  final bool isOnboarding;
 
   @override
   State<VenueDescriptionView> createState() => _VenueDescriptionViewState();
@@ -59,22 +65,37 @@ class _VenueDescriptionViewState extends State<VenueDescriptionView> {
           return const LoadingScreen();
         }
         User? user;
-        if(state is LoadedState) {
+        if(state is LoadedState || state is DataSaved) {
           user = state.user;
+
+          if(!widget.isOnboarding) {
+            _venueDescription = user!.userArtInfo!.aboutYou!;
+            _venueDescriptionController.text =_venueDescription;
+          }
         }
         return Scaffold(
+          appBar: !widget.isOnboarding ? AppBar(
+            scrolledUnderElevation: 0,
+            title: Text(user!.userInfo!.name!, style: TextStyles.boldN90017,),
+            centerTitle: true,
+            iconTheme: const IconThemeData(
+              color: AppTheme.n900, //change your color here
+            ),
+          ) : null,
           body: SingleChildScrollView(
             child: Padding(
-              padding: horizontalPadding32 + verticalPadding48,
+              padding: horizontalPadding32 + (widget.isOnboarding ? verticalPadding48 : EdgeInsets.zero),
               child: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    verticalMargin48,
-                    Text('Now, let\'s describe your space',
-                        style: TextStyles.boldN90029),
-                    verticalMargin48,
+                    if(widget.isOnboarding)... [
+                      verticalMargin48,
+                      Text('Now, let\'s describe your space',
+                          style: TextStyles.boldN90029),
+                      verticalMargin48,
+                    ],
                     Text('Share the magic of your space with a captivating description that will inspire artists and event planners alike!',
                         style: TextStyles.semiBoldN90014),
                     verticalMargin24,
@@ -94,7 +115,8 @@ class _VenueDescriptionViewState extends State<VenueDescriptionView> {
                       keyboardType: TextInputType.text,
                     ),
                     verticalMargin24,
-                    Container(
+                    if(widget.isOnboarding)
+                      Container(
                       padding: const EdgeInsets.fromLTRB(21, 15, 21, 15),
                       height: 76,
                       decoration: BoxDecoration(
@@ -120,11 +142,21 @@ class _VenueDescriptionViewState extends State<VenueDescriptionView> {
                 foregroundColor: _canContinue() ? AppTheme.primaryColor : AppTheme.n900,
                 onPressed: () {
                   if(_canContinue()) {
-                    context.read<OnboardingCubit>().save(user!, UserStatus.descriptionInfo);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => VenueAudience()), // Replace NewPage with the actual class of your new page
-                    );
+                    if (widget.isOnboarding) {
+                      context.read<OnboardingCubit>().save(user!, UserStatus.descriptionInfo);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => VenueAudience()), // Replace NewPage with the actual class of your new page
+                      );
+                    }
+                    else {
+                      context.read<OnboardingCubit>().save(user!);
+                      Navigator.of(context)..pop()..pop();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HostSettingPage()),
+                      );
+                    }
                   }
                   else {
                     return;
