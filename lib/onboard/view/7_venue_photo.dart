@@ -12,6 +12,7 @@ import 'package:input_quantity/input_quantity.dart';
 
 import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
+import '../../host/view/host_setting_page.dart';
 import '../../host/view/photo_details.dart';
 import '../../injection.dart';
 import '../../login/view/2_signup_view.dart';
@@ -28,7 +29,9 @@ class VenuePhotoPage extends StatelessWidget {
     return MaterialPageRoute<void>(builder: (_) => VenuePhotoPage());
   }
 
-  VenuePhotoPage({Key? key}) : super(key: key);
+  VenuePhotoPage({Key? key, this.isOnboarding = true}) : super(key: key);
+
+  bool isOnboarding;
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
 
@@ -39,7 +42,7 @@ class VenuePhotoPage extends StatelessWidget {
         databaseService: databaseService,
         userId: authService.getUser().id,
       ),
-      child: SelectPhotoView(),
+      child: SelectPhotoView(isOnboarding:isOnboarding),
     );
   }
 }
@@ -47,8 +50,9 @@ class VenuePhotoPage extends StatelessWidget {
 
 
 class SelectPhotoView extends StatefulWidget {
-  SelectPhotoView({Key? key}) : super(key: key);
+  SelectPhotoView({Key? key, this.isOnboarding = true}) : super(key: key);
 
+  final bool isOnboarding;
   @override
   State<SelectPhotoView> createState() => _SelectPhotoViewState();
 }
@@ -64,13 +68,21 @@ class _SelectPhotoViewState extends State<SelectPhotoView> {
         if (state is LoadingState) {
           return const LoadingScreen();
         }
-        if(state is LoadedState) {
+        if(state is LoadedState || state is DataSaved) {
           _user = state.user;
         }
         return Scaffold(
+          appBar: !widget.isOnboarding ? AppBar(
+            scrolledUnderElevation: 0,
+            title: Text(_user!.userInfo!.name!, style: TextStyles.boldN90017,),
+            centerTitle: true,
+            iconTheme: const IconThemeData(
+              color: AppTheme.n900, //change your color here
+            ),
+          ) : null,
           body: SingleChildScrollView(
             child: Padding(
-              padding: horizontalPadding32 + verticalPadding48,
+              padding: horizontalPadding32 + (widget.isOnboarding ? verticalPadding48 : EdgeInsets.zero),
               child: Center(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height - 200),
@@ -79,10 +91,12 @@ class _SelectPhotoViewState extends State<SelectPhotoView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        verticalMargin48,
-                        Text('Venue Photos.\nShow off your space!',
-                            style: TextStyles.boldN90029),
-                        verticalMargin48,
+                        if(widget.isOnboarding)... [
+                          verticalMargin48,
+                          Text('Venue Photos.\nShow off your space!',
+                              style: TextStyles.boldN90029),
+                          verticalMargin48,
+                        ],
                         Text('Upload high-quality photos of your venue to attract artists and event organisers.',
                             style: TextStyles.semiBoldN90014),
                         verticalMargin24,
@@ -151,7 +165,8 @@ class _SelectPhotoViewState extends State<SelectPhotoView> {
                         verticalMargin24,
                         Flexible(child: Container(),),
 
-                        if(_user == null || _user!.photos == null || _user!.photos!.isEmpty) ... [
+                        if( (_user == null || _user!.photos == null || _user!.photos!.isEmpty)
+                         && widget.isOnboarding ) ... [
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -182,11 +197,23 @@ class _SelectPhotoViewState extends State<SelectPhotoView> {
                 foregroundColor: _canContinue() ? AppTheme.primaryColor : AppTheme.n900,
                 onPressed: () {
                   if(_canContinue()) {
-                    context.read<OnboardingCubit>().save(_user!, UserStatus.photoInfo);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => VenueDescription()), // Replace NewPage with the actual class of your new page
-                    );
+                    if (widget.isOnboarding) {
+                      context.read<OnboardingCubit>().save(
+                          _user!, UserStatus.photoInfo);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            VenueDescription()), // Replace NewPage with the actual class of your new page
+                      );
+                    }
+                    else {
+                      context.read<OnboardingCubit>().save(_user!);
+                      Navigator.of(context)..pop();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HostSettingPage()),
+                      );
+                    }
                   }
                   else {
                     return;

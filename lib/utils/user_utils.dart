@@ -11,7 +11,7 @@ class UserUtils {
     }
 
     // Check if the user has venue information
-    bool hasVenue = user.userArtInfo != null && user.userArtInfo!.typeOfVenue != null && user.userArtInfo!.typeOfVenue!.isNotEmpty;
+    bool hasVenue = isVenueInformationComplete(user).isEmpty;
     if (!hasVenue) {
       missingInformation.add(VenueInformationMissing.venueInformation);
     }
@@ -42,13 +42,50 @@ class UserUtils {
 
     return missingInformation;
   }
+
+  static List<VenueInformationMissing> isVenueInformationComplete(User user) {
+    List<VenueInformationMissing> missingInformation = [];
+
+    // Check if the user has a type of venue
+    bool hasType = user.userArtInfo != null && user.userArtInfo!.typeOfVenue != null && user.userArtInfo!.typeOfVenue!.isNotEmpty;
+    if (!hasType) {
+      missingInformation.add(VenueInformationMissing.type);
+    }
+
+    // Check if the user has vibes
+    bool hasVibes = user.userArtInfo != null && user.userArtInfo!.vibes != null && user.userArtInfo!.vibes!.isNotEmpty;
+    if (!hasVibes) {
+      missingInformation.add(VenueInformationMissing.vibes);
+    }
+
+    // Check if the user has opening hours
+    bool hasOpeningHours = user.userArtInfo != null
+        && user.userArtInfo!.openingTimes != null && user.userArtInfo!.openingTimes!.isNotEmpty
+    && user.userArtInfo!.openingTimes!.every((element) => element.hourInterval != null && element.hourInterval.isNotEmpty
+        || element.open != null);
+    if (!hasOpeningHours) {
+      missingInformation.add(VenueInformationMissing.openingHours);
+    }
+
+    // Check if the user has a venue description
+    bool hasVenueDescription = user.userArtInfo != null && user.userArtInfo!.aboutYou != null && user.userArtInfo!.aboutYou!.isNotEmpty;
+    if (!hasVenueDescription) {
+      missingInformation.add(VenueInformationMissing.venueDescription);
+    }
+
+    return missingInformation;
+  }
 }
 
 enum VenueInformationMissingCategory {
   venue,
   booking,
   photo,
-  payout
+  payout,
+  type,
+  vibes,
+  openingHours,
+  venueDescription
 }
 
 class VenueInformationMissing {
@@ -63,4 +100,8 @@ class VenueInformationMissing {
   static const basePriceMissing = VenueInformationMissing('basePriceMissing', VenueInformationMissingCategory.booking);
   static const minimumBookingDurationMissing = VenueInformationMissing('minimumBookingDurationMissing', VenueInformationMissingCategory.booking);
   static const minimumSpaceMissing = VenueInformationMissing('minimumSpaceMissing', VenueInformationMissingCategory.booking);
+  static const type = VenueInformationMissing('type', VenueInformationMissingCategory.type);
+  static const vibes = VenueInformationMissing('vibes', VenueInformationMissingCategory.vibes);
+  static const openingHours = VenueInformationMissing('openingHours', VenueInformationMissingCategory.openingHours);
+  static const venueDescription = VenueInformationMissing('venueDescription', VenueInformationMissingCategory.venueDescription);
 }

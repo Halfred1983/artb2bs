@@ -15,7 +15,7 @@ import '../../../widgets/add_photo_button.dart';
 import '../../app/resources/styles.dart';
 import '../../photo/view/photo_upload_page.dart';
 import '../cubit/host_cubit.dart';
-import 'host_dashboard_edit_page.dart';
+import 'settings/host_dashboard_edit_page.dart';
 import 'host_paypal_edit_page.dart';
 
 class HostDashboardPage extends StatelessWidget {

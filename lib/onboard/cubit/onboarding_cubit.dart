@@ -259,6 +259,43 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     emit(BusinessDaysUpdated(user, updatedBusinessDays));
   }
 
+  void chooseMinSpaces(String minSpaces) {
+    User user = this.state.props[0] as User;
+
+    try {
+      if (user.bookingSettings != null) {
+        user = user.copyWith(bookingSettings: user.bookingSettings!.copyWith(
+            minSpaces: minSpaces));
+      }
+      else {
+        user = user.copyWith(
+            bookingSettings: BookingSettings(minSpaces: minSpaces));
+      }
+
+      emit(LoadedState(user));
+    } catch (e) {
+      emit(ErrorState(user, e.toString()));
+    }
+  }
+
+  void chooseMinDays(String minLength) {
+    User user = this.state.props[0] as User;
+
+    try {
+      if (user.bookingSettings != null) {
+        user = user.copyWith(bookingSettings: user.bookingSettings!.copyWith(
+            minLength: minLength));
+      }
+      else {
+        user = user.copyWith(
+            bookingSettings: BookingSettings(minLength: minLength));
+      }
+
+      emit(LoadedState(user));
+    } catch (e) {
+      emit(ErrorState(user, e.toString()));
+    }
+  }
 
 
   void save(User user, [UserStatus? userStatus]) async {

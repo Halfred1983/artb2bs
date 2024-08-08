@@ -21,8 +21,9 @@ class VenueAudience extends StatelessWidget {
   static Route<void> route() {
     return MaterialPageRoute<void>(builder: (_) => VenueAudience());
   }
-  bool isOnboarding;
   VenueAudience({Key? key, this.isOnboarding = true}) : super(key: key);
+  bool isOnboarding;
+
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
 

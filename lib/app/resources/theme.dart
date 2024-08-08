@@ -413,4 +413,30 @@ class AppTheme {
     width: 54,
   );
 
+  static final numericPriceStyle = InputDecoration(
+      hintText: '0',
+      hintStyle: TextStyles.boldN90029.copyWith(color: AppTheme.n100), // Set the custom hint text style
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(
+          color: AppTheme.accentColor, // Color of the border
+          width: 0.5, // Width of the border
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(
+          color: AppTheme.accentColor, // Color when the TextField is focused
+          width: 0.5, // Width when focused
+        ),
+      ),
+      // Enabled border style
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(
+          color: AppTheme.accentColor, // Color when the TextField is enabled
+          width: 0.5, // Width when enabled
+        ),
+      )
+  );
 }

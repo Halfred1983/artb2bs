@@ -6,6 +6,7 @@ import 'package:artb2b/onboard/view/4_venue_address.dart';
 import 'package:artb2b/onboard/view/8_venue_description.dart';
 import 'package:artb2b/onboard/view/9_venue_audience.dart';
 import 'package:artb2b/utils/common.dart';
+import 'package:artb2b/utils/user_utils.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
@@ -78,6 +79,8 @@ class _HostVenueInfoViewState extends State<HostVenueInfoView> {
           if (state is LoadedState) {
             user = state.user;
           }
+          List<VenueInformationMissing> missingInfo = UserUtils.isVenueInformationComplete(user!);
+
           return Scaffold(
             appBar: AppBar(
               scrolledUnderElevation: 0,
@@ -100,21 +103,26 @@ class _HostVenueInfoViewState extends State<HostVenueInfoView> {
                     Widget targetPage = Container();
                     switch (index) {
                       case 0:
+                        isMissing = missingInfo.any((info) => info.category == VenueInformationMissingCategory.type);
                         targetPage = VenueInfoPage(isOnboarding: false,);
                         break;
                       case 1:
+                        isMissing = missingInfo.any((info) => info.category == VenueInformationMissingCategory.venue);
                         targetPage = VenueAddressPage(isOnboarding: false,);
                         break;
                       case 2:
+                        isMissing = missingInfo.any((info) => info.category == VenueInformationMissingCategory.venueDescription);
                         targetPage = VenueDescription(isOnboarding: false,);
                         break;
                       case 3:
+                        isMissing = missingInfo.any((info) => info.category == VenueInformationMissingCategory.vibes);
                         targetPage = VenueAudience(isOnboarding: false,);
                         break;
                       case 4:
                         targetPage = VenueSpacesPage(isOnboarding: false,);
                         break;
                       case 5:
+                        isMissing = missingInfo.any((info) => info.category == VenueInformationMissingCategory.openingHours);
                         targetPage = VenueOpeningTime(isOnboarding: false,);
                         break;
                     }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/app/resources/theme.dart';
+import 'package:artb2b/host/view/host_setting_page.dart';
 import 'package:artb2b/injection.dart';
 import 'package:artb2b/utils/common.dart';
 import 'package:artb2b/widgets/common_card_widget.dart';
@@ -102,30 +103,38 @@ class _HomeVenueState extends State<HomeVenue> {
                 children: [
                   verticalMargin32,
                   if(UserUtils.isUserInformationComplete(user).isNotEmpty) ...[
-                    Container(
-                      padding: horizontalPadding16,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: AppTheme.n100, width: 0.5),
-                      ),
-                      height: 100,
-                      width: double.infinity,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          verticalMargin16,
-                          Text('Information is missing', style: TextStyles.regularN90012,),
-                          verticalMargin4,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Your listing is not visible yet', style: TextStyles.regularN50012.copyWith(color: AppTheme.d200),),
-                              const ExclamationIcon(),
-                            ],
-                          ),
-                          verticalMargin12,
-                          Text('Edit', style: TextStyles.semiBoldN90012,)
-                        ],
+                    InkWell(
+                      onTap: () {
+                        // Add your action here
+                        Navigator.push(
+                          context,
+                          HostSettingPage.route(initialIndex: 1)                        );
+                      },
+                      child: Container(
+                        padding: horizontalPadding16,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppTheme.n100, width: 0.5),
+                        ),
+                        height: 100,
+                        width: double.infinity,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            verticalMargin16,
+                            Text('Information is missing', style: TextStyles.regularN90012,),
+                            verticalMargin4,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Your listing is not visible yet', style: TextStyles.regularN50012.copyWith(color: AppTheme.d200),),
+                                const ExclamationIcon(),
+                              ],
+                            ),
+                            verticalMargin12,
+                            Text('Edit', style: TextStyles.semiBoldN90012,)
+                          ],
+                        ),
                       ),
                     ),
                     verticalMargin32,
