@@ -13,6 +13,7 @@ import '../../app/resources/theme.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
 import '../../utils/currency/currency_helper.dart';
+import '../../widgets/dot_indicator.dart';
 import '../../widgets/loading_screen.dart';
 import '7_venue_photo.dart';
 
@@ -73,6 +74,11 @@ class _SelectPriceViewState extends State<SelectPriceView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     verticalMargin48,
+                    const LineIndicator(
+                      totalSteps: 9,
+                      currentStep: 4,
+                    ),
+                    verticalMargin24,
                     Text('Now, set up your rate per space',
                         style: TextStyles.boldN90029),
                     verticalMargin48,
@@ -100,7 +106,7 @@ class _SelectPriceViewState extends State<SelectPriceView> {
                               else {
                                 _price = value;
                               }
-                              context.read<OnboardingCubit>().chooseBasePrice(value);
+                              context.read<OnboardingCubit>().chooseBasePrice(_price);
                             },
                             autocorrect: false,
                             enableSuggestions: false,

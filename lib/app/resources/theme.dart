@@ -414,6 +414,7 @@ class AppTheme {
   );
 
   static final numericPriceStyle = InputDecoration(
+      contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16), // Add padding to center the text
       hintText: '0',
       hintStyle: TextStyles.boldN90029.copyWith(color: AppTheme.n100), // Set the custom hint text style
       border: OutlineInputBorder(

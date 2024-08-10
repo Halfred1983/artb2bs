@@ -51,28 +51,37 @@ class _HostBookingSettingsViewState extends State<HostBookingSettingsView> {
   final TextEditingController _daysController = TextEditingController();
   final TextEditingController _spacesController = TextEditingController();
   String _price = '0';
-  String _minDays = '0';
-  String _minSpaces = '0';
+  String _minDays = '1';
+  String _minSpaces = '1';
+
+  String _errorMessage = '';
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OnboardingCubit, OnboardingState>(
       builder: (context, state) {
+        _errorMessage = '';
         if (state is LoadingState) {
           return const LoadingScreen();
         }
         User? user;
-        if(state is LoadedState || state is DataSaved) {
+        if(state is LoadedState || state is DataSaved ||
+            state is ErrorState) {
           user = state.user;
 
           _price = user!.bookingSettings!.basePrice ?? '0';
           _minDays = user.bookingSettings!.minLength ?? '0';
-          _minDays = user.bookingSettings!.minSpaces ?? '0';
+          _minSpaces = user.bookingSettings!.minSpaces ?? '0';
 
-          _priceController.text = _price;
-          _daysController.text = _minDays;
-          _spacesController.text = _minDays;
+          _priceController.text = _price == '0' ? '' : _price;
+          _daysController.text = _minDays == '0' ? '' : _minDays;
+          _spacesController.text = _minSpaces == '0' ? '' : _minSpaces;
+
+          if(state is ErrorState) {
+            _errorMessage = state.errorMessage;
+          }
         }
+
         return Scaffold(
           appBar: AppBar(
             scrolledUnderElevation: 0,
@@ -114,7 +123,7 @@ class _HostBookingSettingsViewState extends State<HostBookingSettingsView> {
                               else {
                                 _price = value;
                               }
-                              context.read<OnboardingCubit>().chooseBasePrice(value);
+                              context.read<OnboardingCubit>().chooseBasePrice(_price);
                             },
                             autocorrect: false,
                             enableSuggestions: false,
@@ -151,7 +160,7 @@ class _HostBookingSettingsViewState extends State<HostBookingSettingsView> {
                               else {
                                 _minSpaces = value;
                               }
-                              context.read<OnboardingCubit>().chooseMinSpaces(value);
+                                context.read<OnboardingCubit>().chooseMinSpaces(_minSpaces);
                             },
                             autocorrect: false,
                             enableSuggestions: false,
@@ -164,6 +173,9 @@ class _HostBookingSettingsViewState extends State<HostBookingSettingsView> {
                         ),
                       ],
                     ),
+                    verticalMargin8,
+                    if(_errorMessage.isNotEmpty)
+                      Text(_errorMessage, style: TextStyles.boldN90014.copyWith(color: AppTheme.d200),),
                     verticalMargin48,
                     Text('How many days minimum per booking?',
                         style: TextStyles.boldN90017),
@@ -188,7 +200,7 @@ class _HostBookingSettingsViewState extends State<HostBookingSettingsView> {
                               else {
                                 _minDays = value;
                               }
-                              context.read<OnboardingCubit>().chooseMinDays(value);
+                              context.read<OnboardingCubit>().chooseMinDays(_minDays);
                             },
                             autocorrect: false,
                             enableSuggestions: false,
@@ -210,8 +222,8 @@ class _HostBookingSettingsViewState extends State<HostBookingSettingsView> {
             padding: horizontalPadding32,
             width: double.infinity,
             child: FloatingActionButton(
-                backgroundColor:  _canContinue(user.userArtInfo!.spaces) ? AppTheme.n900 : AppTheme.disabledButton,
-                foregroundColor: _canContinue(user.userArtInfo!.spaces) ? AppTheme.primaryColor : AppTheme.n900,
+                backgroundColor: _canContinue(user!.userArtInfo!.spaces) ? AppTheme.n900 : AppTheme.disabledButton,
+                foregroundColor: _canContinue(user!.userArtInfo!.spaces) ? AppTheme.primaryColor : AppTheme.n900,
                 onPressed: () {
                   if(_canContinue(user!.userArtInfo!.spaces)) {
                     context.read<OnboardingCubit>().save(user!);
@@ -238,57 +250,8 @@ class _HostBookingSettingsViewState extends State<HostBookingSettingsView> {
   bool _canContinue(String? hostMaxSpaces) {
     hostMaxSpaces = hostMaxSpaces ?? '0';
     return  int.parse(_price) > 0 && int.parse(_minDays) > 0
-        && int.parse(_minSpaces) > 0 && int.parse(_minSpaces) < int.parse(hostMaxSpaces);
+        && int.parse(_minSpaces) > 0 && int.parse(_minSpaces) <= int.parse(hostMaxSpaces);
   }
 }
 
-class PlusMinusButton extends StatelessWidget {
-  const PlusMinusButton({
-    super.key, required this.text,
-  });
 
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 25,
-      height: 25,
-      decoration: BoxDecoration(
-        color: Colors.transparent, // Circle color
-        shape: BoxShape.circle,
-        border: Border.all(color: AppTheme.accentColor, width: 3),
-      ),
-      child: Align(
-          alignment: Alignment.center,
-          child: Icon(
-            text == '+' ? Icons.add : Icons.remove,
-            color: AppTheme.accentColor,
-            size: 30,
-          )
-      ),
-    );
-  }
-}
-
-class InactiveTextField extends StatelessWidget {
-  const InactiveTextField({
-    super.key, required this.label,
-  });
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      autofocus: false,
-      enabled: false,
-      style: TextStyles.semiBoldN90014,
-      autocorrect: false,
-      enableSuggestions: false,
-      decoration: AppTheme.textInputDecoration.copyWith(hintText: label,
-          fillColor: AppTheme.disabledButton),
-      keyboardType: TextInputType.text,
-    );
-  }
-}

@@ -3,6 +3,7 @@ import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/home/bloc/user_cubit.dart';
 import 'package:artb2b/host/cubit/host_cubit.dart';
 import 'package:artb2b/host/cubit/host_state.dart';
+import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/user_profile/view/booking_history.dart';
 import 'package:artb2b/user_profile/view/payout_history.dart';
 import 'package:artb2b/widgets/common_card_widget.dart';
@@ -92,7 +93,7 @@ class UserProfileView extends StatelessWidget {
                           inactiveTrackColor: AppTheme
                               .primaryColorOpacity,
                           onChanged: (value) =>
-                              context.read<HostCubit>().setActive(value),
+                              context.read<OnboardingCubit>().setActive(value),
                           value: user!.bookingSettings!.active!,
                           title: Text(
                             'Active', style: TextStyles.semiBoldAccent14,),

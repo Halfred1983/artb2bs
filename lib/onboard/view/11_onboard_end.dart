@@ -13,6 +13,7 @@ import '../../app/resources/theme.dart';
 import '../../injection.dart';
 import '../../utils/currency/currency_helper.dart';
 import '../../widgets/common_card_widget.dart';
+import '../../widgets/dot_indicator.dart';
 import '../../widgets/loading_screen.dart';
 import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/onboard/cubit/onboarding_state.dart';
@@ -70,6 +71,11 @@ class _VenueOnboardEndViewState extends State<VenueOnboardEndView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     verticalMargin48,
+                    const LineIndicator(
+                      totalSteps: 9,
+                      currentStep: 9,
+                    ),
+                    verticalMargin24,
                     const Text('Great! your first listing is ready to go!',
                         style: TextStyle(
                             fontSize: 29, fontWeight: FontWeight.bold)),

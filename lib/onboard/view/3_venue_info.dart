@@ -11,6 +11,7 @@ import '../../app/resources/theme.dart';
 import '../../host/view/host_setting_page.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
+import '../../widgets/dot_indicator.dart';
 import '../../widgets/loading_screen.dart';
 import '../../widgets/tags.dart';
 
@@ -93,6 +94,11 @@ class _SelectAccountViewState extends State<SelectAccountView> {
                   children: [
                     if(widget.isOnboarding)... [
                       verticalMargin48,
+                      const LineIndicator(
+                        totalSteps: 9,
+                        currentStep: 1,
+                      ),
+                      verticalMargin24,
                       Text('Tell us about your venue',
                           style: TextStyles.boldN90029),
                       verticalMargin48,

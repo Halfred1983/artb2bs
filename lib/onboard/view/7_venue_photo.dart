@@ -20,6 +20,7 @@ import '../../photo/view/photo_upload_page.dart';
 import '../../utils/common.dart';
 import '../../utils/currency/currency_helper.dart';
 import '../../widgets/add_photo_button.dart';
+import '../../widgets/dot_indicator.dart';
 import '../../widgets/fadingin_picture.dart';
 import '../../widgets/loading_screen.dart';
 
@@ -93,6 +94,11 @@ class _SelectPhotoViewState extends State<SelectPhotoView> {
                       children: [
                         if(widget.isOnboarding)... [
                           verticalMargin48,
+                          const LineIndicator(
+                            totalSteps: 9,
+                            currentStep: 5,
+                          ),
+                          verticalMargin24,
                           Text('Venue Photos.\nShow off your space!',
                               style: TextStyles.boldN90029),
                           verticalMargin48,

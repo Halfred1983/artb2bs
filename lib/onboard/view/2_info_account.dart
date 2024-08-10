@@ -1,6 +1,7 @@
 import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/onboard/cubit/onboarding_state.dart';
 import 'package:artb2b/onboard/view/3_venue_info.dart';
+import 'package:artb2b/widgets/dot_indicator.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +56,11 @@ class SelectAccountView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const LineIndicator(
+                    totalSteps: 9,
+                    currentStep: 0,
+                  ),
+                  verticalMargin24,
                   Text('Let\'s get started with few easy steps',
                       style: TextStyles.boldN90029),
                   verticalMargin48,

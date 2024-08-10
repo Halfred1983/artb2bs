@@ -9,6 +9,7 @@ import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
 import '../../host/view/host_setting_page.dart';
 import '../../injection.dart';
+import '../../widgets/dot_indicator.dart';
 import '../../widgets/loading_screen.dart';
 import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/onboard/cubit/onboarding_state.dart';
@@ -104,6 +105,11 @@ class _VenueOpeningTimeViewState extends State<VenueOpeningTimeView> {
                   children: [
                     if(widget.isOnboarding)... [
                       verticalMargin48,
+                      const LineIndicator(
+                        totalSteps: 9,
+                        currentStep: 8,
+                      ),
+                      verticalMargin24,
                       const Text('Select open days and set opening hours',
                           style: TextStyle(
                               fontSize: 29, fontWeight: FontWeight.bold)),

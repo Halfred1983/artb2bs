@@ -1,4 +1,3 @@
-import 'package:artb2b/host/view/settings/host_dashboard_edit_page.dart';
 import 'package:artb2b/onboard/cubit/art_info_cubit.dart';
 import 'package:artb2b/widgets/app_text_field.dart';
 import 'package:artb2b/widgets/tags.dart';
@@ -38,7 +37,7 @@ class ArtInfoView extends StatelessWidget {
             return HomePage();
           }
           else {
-            return HostDashboardEditPage();
+            return Container();
           }
         }
 

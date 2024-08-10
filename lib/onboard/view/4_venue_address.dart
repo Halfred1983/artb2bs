@@ -1,5 +1,6 @@
 import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/onboard/cubit/onboarding_state.dart';
+import 'package:artb2b/widgets/dot_indicator.dart';
 import 'package:artb2b/widgets/google_places.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
@@ -120,6 +121,11 @@ class _SelectAddressViewState extends State<SelectAddressView> {
                   children: [
                     if(widget.isOnboarding)... [
                       verticalMargin48,
+                      const LineIndicator(
+                        totalSteps: 9,
+                        currentStep: 2,
+                      ),
+                      verticalMargin24,
                       Text('Where is your venue located',
                           style: TextStyles.boldN90029),
                       verticalMargin48,

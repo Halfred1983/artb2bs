@@ -1,6 +1,7 @@
 import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/onboard/cubit/onboarding_state.dart';
 import 'package:artb2b/onboard/view/4_venue_address.dart';
+import 'package:artb2b/widgets/dot_indicator.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
@@ -92,6 +93,11 @@ class _VenueDescriptionViewState extends State<VenueDescriptionView> {
                   children: [
                     if(widget.isOnboarding)... [
                       verticalMargin48,
+                      const LineIndicator(
+                        totalSteps: 9,
+                        currentStep: 6,
+                      ),
+                      verticalMargin24,
                       Text('Now, let\'s describe your space',
                           style: TextStyles.boldN90029),
                       verticalMargin48,

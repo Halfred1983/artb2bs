@@ -15,7 +15,6 @@ import '../../../widgets/add_photo_button.dart';
 import '../../app/resources/styles.dart';
 import '../../photo/view/photo_upload_page.dart';
 import '../cubit/host_cubit.dart';
-import 'settings/host_dashboard_edit_page.dart';
 import 'host_paypal_edit_page.dart';
 
 class HostDashboardPage extends StatelessWidget {
@@ -112,16 +111,6 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                         verticalMargin12,
                         BookingSettingsWidget(user: user),
                         verticalMargin12,
-                        Center(
-                          child: TextButton(onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => HostDashboardEditPage()),
-                          ),
-                            child: Text('Add/change your booking settings' ,style: TextStyles.semiBoldAccent14.copyWith(
-                                decoration: TextDecoration.underline
-                            ),),
-                          ),
-                        ),
                         verticalMargin32,
                         Text('Your payout settings', style: TextStyles.semiBoldAccent14, ),
                         const Divider(thickness: 0.6, color: Colors.black38,),

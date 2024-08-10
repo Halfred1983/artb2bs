@@ -12,6 +12,7 @@ import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
+import '../../widgets/dot_indicator.dart';
 import '../../widgets/loading_screen.dart';
 import '6_venue_price.dart';
 
@@ -83,6 +84,11 @@ class _SelectSpacesViewState extends State<SelectSpacesView> {
                   children: [
                     if(widget.isOnboarding)... [
                       verticalMargin48,
+                      const LineIndicator(
+                        totalSteps: 9,
+                        currentStep: 3,
+                      ),
+                      verticalMargin24,
                       Text('Spaces in your\nvenue',
                           style: TextStyles.boldN90029),
                       verticalMargin48,

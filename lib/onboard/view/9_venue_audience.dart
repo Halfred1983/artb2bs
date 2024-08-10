@@ -13,6 +13,7 @@ import '../../app/resources/theme.dart';
 import '../../host/view/host_setting_page.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
+import '../../widgets/dot_indicator.dart';
 import '../../widgets/loading_screen.dart';
 import '../../widgets/tags.dart';
 
@@ -88,6 +89,11 @@ class _VenueDescriptionViewState extends State<VenueDescriptionView> {
                   children: [
                     if(widget.isOnboarding)... [
                       verticalMargin48,
+                      const LineIndicator(
+                        totalSteps: 9,
+                        currentStep: 7,
+                      ),
+                      verticalMargin24,
                       Text('Venue capacity',
                           style: TextStyles.boldN90029),
                       verticalMargin48,

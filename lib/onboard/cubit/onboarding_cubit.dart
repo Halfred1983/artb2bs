@@ -81,7 +81,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     emit(LoadingState());
 
     try {
-      if(spaces.isNotEmpty && int.parse(spaces) > 0) {
+      if (_validateSpaces(spaces, user)) {
         if (user.userArtInfo != null) {
           user = user.copyWith(
               userArtInfo: user.userArtInfo!.copyWith(spaces: spaces));
@@ -103,25 +103,46 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
   void chooseAudience(String audience) {
     User user = this.state.props[0] as User;
+    String? currentErrorMessage;
+
+    if (state is ErrorState) {
+      currentErrorMessage = (state as ErrorState).errorMessage;
+    }
+
     emit(LoadingState());
 
     try {
-      if(audience.isNotEmpty && int.parse(audience) > 0) {
+      if (audience.isNotEmpty && int.parse(audience) > 0) {
         if (user.userArtInfo != null) {
           user = user.copyWith(
               userArtInfo: user.userArtInfo!.copyWith(audience: audience));
-        }
-        else {
+        } else {
           user = user.copyWith(userArtInfo: UserArtInfo(audience: audience));
         }
-        emit(LoadedState(user));
+        if(currentErrorMessage == null) {
+          emit(LoadedState(user));
+        } else {
+          emit(ErrorState(user, currentErrorMessage));
+        }
+      } else {
+        emit(ErrorState(user, currentErrorMessage ?? "Audience value not valid"));
       }
-      else {
-        emit(ErrorState(user ,"Audience value not valid"));
-      }
-
     } catch (e) {
-      emit(ErrorState(user ,"Audience value not valid"));
+      emit(ErrorState(user, currentErrorMessage ?? "Audience value not valid"));
+    }
+  }
+
+  bool _validateSpaces(String spaces, User user) {
+    if (spaces.isNotEmpty && int.parse(spaces) > 0) {
+      if (int.parse(spaces) <= int.parse(user.userArtInfo!.spaces!)) {
+        return true;
+      } else {
+        emit(ErrorState(user, "Chose a valid value for spaces. From 1 to ${user.userArtInfo!.spaces!}"));
+        return false;
+      }
+    } else {
+      emit(ErrorState(user, "Spaces value not valid"));
+      return false;
     }
   }
 
@@ -198,6 +219,11 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
   void chooseBasePrice(String basePrice) {
     User user = this.state.props[0] as User;
+    String? currentErrorMessage;
+
+    if (state is ErrorState) {
+      currentErrorMessage = (state as ErrorState).errorMessage;
+    }
 
     try {
       // emit(LoadingState());
@@ -211,7 +237,11 @@ class OnboardingCubit extends Cubit<OnboardingState> {
             bookingSettings: BookingSettings(basePrice: basePrice));
       }
 
-      emit(LoadedState(user));
+      if(currentErrorMessage == null) {
+        emit(LoadedState(user));
+      } else {
+        emit(ErrorState(user, currentErrorMessage));
+      }
     } catch (e) {
       emit(ErrorState(user, e.toString()));
     }
@@ -272,6 +302,11 @@ class OnboardingCubit extends Cubit<OnboardingState> {
             bookingSettings: BookingSettings(minSpaces: minSpaces));
       }
 
+      if(int.parse(minSpaces) > int.parse(user.userArtInfo!.spaces!)) {
+        emit(ErrorState(user, "Chose a valid value for spaces. From 1 to ${user.userArtInfo!.spaces!}"));
+        return;
+      }
+
       emit(LoadedState(user));
     } catch (e) {
       emit(ErrorState(user, e.toString()));
@@ -280,6 +315,11 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
   void chooseMinDays(String minLength) {
     User user = this.state.props[0] as User;
+    String? currentErrorMessage;
+
+    if (state is ErrorState) {
+      currentErrorMessage = (state as ErrorState).errorMessage;
+    }
 
     try {
       if (user.bookingSettings != null) {
@@ -290,13 +330,36 @@ class OnboardingCubit extends Cubit<OnboardingState> {
         user = user.copyWith(
             bookingSettings: BookingSettings(minLength: minLength));
       }
-
-      emit(LoadedState(user));
+      if(currentErrorMessage == null) {
+        emit(LoadedState(user));
+      } else {
+        emit(ErrorState(user, currentErrorMessage));
+      }
     } catch (e) {
       emit(ErrorState(user, e.toString()));
     }
   }
 
+
+  void setActive(bool active) async {
+    User user = this.state.props[0] as User;
+
+    try {
+      if (user.bookingSettings != null) {
+        user = user.copyWith(bookingSettings: user.bookingSettings!.copyWith(
+            active: active));
+      }
+      else {
+        user = user.copyWith(
+            bookingSettings: BookingSettings(active: active));
+      }
+      await databaseService.updateUser(user: user);
+      emit(LoadedState(user));
+
+    } catch (e) {
+      emit(ErrorState(user, e.toString()));
+    }
+  }
 
   void save(User user, [UserStatus? userStatus]) async {
     // User user = this.state.props[0] as User;

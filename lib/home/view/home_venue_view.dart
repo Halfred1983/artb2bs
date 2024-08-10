@@ -21,6 +21,7 @@ import '../../app/resources/assets.dart';
 import '../../user_profile/view/user_profile_page.dart';
 import '../../utils/currency/currency_helper.dart';
 import '../../utils/user_utils.dart';
+import '../../widgets/dot_indicator.dart';
 import '../../widgets/exclamation_icon.dart';
 import '../../widgets/tags.dart';
 

@@ -1,8 +1,7 @@
 import 'package:artb2b/app/resources/styles.dart';
-import 'package:artb2b/host/cubit/host_state.dart';
-import 'package:artb2b/host/view/settings/host_dashboard_edit_page.dart';
 import 'package:artb2b/host/view/settings/host_venue_booking_setting_page.dart';
 import 'package:artb2b/host/view/settings/host_venue_info_page.dart';
+import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/onboard/view/7_venue_photo.dart';
 import 'package:artb2b/utils/common.dart';
 import 'package:artb2b/utils/user_utils.dart';
@@ -13,11 +12,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../injection.dart';
 import '../../app/resources/theme.dart';
-import '../../onboard/view/6_venue_price.dart';
+import '../../onboard/cubit/onboarding_state.dart';
 import '../../widgets/exclamation_icon.dart';
 import '../../widgets/host_widget.dart';
 import '../../widgets/loading_screen.dart';
-import '../cubit/host_cubit.dart';
 import 'settings/host_booking_availability_page.dart';
 
 class HostSettingPage extends StatelessWidget {
@@ -41,8 +39,8 @@ class HostSettingPage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return
-      BlocProvider<HostCubit>(
-        create: (context) => HostCubit(
+      BlocProvider<OnboardingCubit>(
+        create: (context) => OnboardingCubit(
           databaseService: databaseService,
           userId: authService.getUser().id,
         ),
@@ -76,10 +74,8 @@ class _HostSettingViewState extends State<HostSettingView> {
   Widget build(BuildContext context) {
     User? user;
     return
-      BlocBuilder<HostCubit, HostState>(
+      BlocBuilder<OnboardingCubit, OnboardingState>(
           builder: (context, state) {
-            if(state is BookingSettingsDetail) {
-            }
             if (state is LoadingState) {
               return const LoadingScreen();
             }
@@ -118,20 +114,41 @@ class _HostSettingViewState extends State<HostSettingView> {
                     children: [
                       Container(
                         width: double.infinity,
-                        height: 70,
-                        color: Colors.white,
-                        padding: horizontalPadding12,
+                        height: 96,
+                        padding: horizontalPadding24 + verticalPadding24,
                         child: SwitchListTile(
                           subtitle: Text('When Active artists can book you',
-                            style: TextStyles.regularAccent14,),
-                          activeColor: AppTheme.primaryColor,
-                          inactiveTrackColor: AppTheme
-                              .primaryColorOpacity,
-                          onChanged: (value) =>
-                              context.read<HostCubit>().setActive(value),
+                            style: TextStyles.regularN90012),
+                          activeColor: AppTheme.accentColor,
+                          inactiveTrackColor: AppTheme.n900.withOpacity(0.2),
+                          onChanged: (value) {
+                            List<VenueInformationMissing> missingInfo = UserUtils.isUserInformationComplete(user!);
+                            if (missingInfo.isNotEmpty && !user!.bookingSettings!.active!) {
+
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Incomplete Information'),
+                                    content: Text('You need to fix the errors before setting your venue as active.'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text('OK'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            } else {
+                              context.read<OnboardingCubit>().setActive(value);
+                            }
+                          },
                           value: user!.bookingSettings!.active!,
                           title: Text(
-                            'Active', style: TextStyles.semiBoldAccent14,),
+                            'Active', style: TextStyles.regularN90014),
                         ),
                       ),
                       _buildVenueSettings(user!),
