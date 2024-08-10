@@ -70,7 +70,7 @@ class _VenueDescriptionViewState extends State<VenueDescriptionView> {
           user = state.user;
 
           if(!widget.isOnboarding) {
-            _venueDescription = user!.userArtInfo!.aboutYou!;
+            _venueDescription = user!.venueInfo!.aboutYou!;
             _venueDescriptionController.text =_venueDescription;
           }
         }

@@ -94,8 +94,8 @@ class ExploreCubit extends Cubit<ExploreState> {
       bool matchesPriceRange = basePrice >= startPrice && basePrice <= endPrice;
       bool matchesVenueCategory = filter.venueCategory == null || filter.venueCategory!.isEmpty;
       if(filter.venueCategory != null && filter.venueCategory!.isNotEmpty
-        && host.userArtInfo!.typeOfVenue != null) {
-        matchesVenueCategory = host.userArtInfo!.typeOfVenue!.any((venue) =>
+        && host.venueInfo!.typeOfVenue != null) {
+        matchesVenueCategory = host.venueInfo!.typeOfVenue!.any((venue) =>
             filter.venueCategory!.contains(
                 venue)); // Add more conditions for other filters...
       }

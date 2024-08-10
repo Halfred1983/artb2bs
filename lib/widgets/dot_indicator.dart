@@ -15,7 +15,7 @@ class LineIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: List.generate(totalSteps, (index) {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 4.0),

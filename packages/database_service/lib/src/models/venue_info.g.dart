@@ -1,31 +1,31 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_art_info.dart';
+part of 'venue_info.dart';
 
 // **************************************************************************
 // CopyWithGenerator
 // **************************************************************************
 
-abstract class _$UserArtInfoCWProxy {
-  UserArtInfo aboutYou(String? aboutYou);
+abstract class _$VenueInfoCWProxy {
+  VenueInfo aboutYou(String? aboutYou);
 
-  UserArtInfo spaces(String? spaces);
+  VenueInfo spaces(String? spaces);
 
-  UserArtInfo audience(String? audience);
+  VenueInfo audience(String? audience);
 
-  UserArtInfo vibes(List<String>? vibes);
+  VenueInfo vibes(List<String>? vibes);
 
-  UserArtInfo openingTimes(List<BusinessDay>? openingTimes);
+  VenueInfo openingTimes(List<BusinessDay>? openingTimes);
 
-  UserArtInfo typeOfVenue(List<String>? typeOfVenue);
+  VenueInfo typeOfVenue(List<String>? typeOfVenue);
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `UserArtInfo(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `VenueInfo(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
   /// ```dart
-  /// UserArtInfo(...).copyWith(id: 12, name: "My name")
+  /// VenueInfo(...).copyWith(id: 12, name: "My name")
   /// ````
-  UserArtInfo call({
+  VenueInfo call({
     String? aboutYou,
     String? spaces,
     String? audience,
@@ -35,41 +35,41 @@ abstract class _$UserArtInfoCWProxy {
   });
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfUserArtInfo.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfUserArtInfo.copyWith.fieldName(...)`
-class _$UserArtInfoCWProxyImpl implements _$UserArtInfoCWProxy {
-  const _$UserArtInfoCWProxyImpl(this._value);
+/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfVenueInfo.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfVenueInfo.copyWith.fieldName(...)`
+class _$VenueInfoCWProxyImpl implements _$VenueInfoCWProxy {
+  const _$VenueInfoCWProxyImpl(this._value);
 
-  final UserArtInfo _value;
-
-  @override
-  UserArtInfo aboutYou(String? aboutYou) => this(aboutYou: aboutYou);
+  final VenueInfo _value;
 
   @override
-  UserArtInfo spaces(String? spaces) => this(spaces: spaces);
+  VenueInfo aboutYou(String? aboutYou) => this(aboutYou: aboutYou);
 
   @override
-  UserArtInfo audience(String? audience) => this(audience: audience);
+  VenueInfo spaces(String? spaces) => this(spaces: spaces);
 
   @override
-  UserArtInfo vibes(List<String>? vibes) => this(vibes: vibes);
+  VenueInfo audience(String? audience) => this(audience: audience);
 
   @override
-  UserArtInfo openingTimes(List<BusinessDay>? openingTimes) =>
+  VenueInfo vibes(List<String>? vibes) => this(vibes: vibes);
+
+  @override
+  VenueInfo openingTimes(List<BusinessDay>? openingTimes) =>
       this(openingTimes: openingTimes);
 
   @override
-  UserArtInfo typeOfVenue(List<String>? typeOfVenue) =>
+  VenueInfo typeOfVenue(List<String>? typeOfVenue) =>
       this(typeOfVenue: typeOfVenue);
 
   @override
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `UserArtInfo(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `VenueInfo(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
   /// ```dart
-  /// UserArtInfo(...).copyWith(id: 12, name: "My name")
+  /// VenueInfo(...).copyWith(id: 12, name: "My name")
   /// ````
-  UserArtInfo call({
+  VenueInfo call({
     Object? aboutYou = const $CopyWithPlaceholder(),
     Object? spaces = const $CopyWithPlaceholder(),
     Object? audience = const $CopyWithPlaceholder(),
@@ -77,7 +77,7 @@ class _$UserArtInfoCWProxyImpl implements _$UserArtInfoCWProxy {
     Object? openingTimes = const $CopyWithPlaceholder(),
     Object? typeOfVenue = const $CopyWithPlaceholder(),
   }) {
-    return UserArtInfo(
+    return VenueInfo(
       aboutYou: aboutYou == const $CopyWithPlaceholder()
           ? _value.aboutYou
           // ignore: cast_nullable_to_non_nullable
@@ -106,17 +106,17 @@ class _$UserArtInfoCWProxyImpl implements _$UserArtInfoCWProxy {
   }
 }
 
-extension $UserArtInfoCopyWith on UserArtInfo {
-  /// Returns a callable class that can be used as follows: `instanceOfUserArtInfo.copyWith(...)` or like so:`instanceOfUserArtInfo.copyWith.fieldName(...)`.
+extension $VenueInfoCopyWith on VenueInfo {
+  /// Returns a callable class that can be used as follows: `instanceOfVenueInfo.copyWith(...)` or like so:`instanceOfVenueInfo.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
-  _$UserArtInfoCWProxy get copyWith => _$UserArtInfoCWProxyImpl(this);
+  _$VenueInfoCWProxy get copyWith => _$VenueInfoCWProxyImpl(this);
 }
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-UserArtInfo _$UserArtInfoFromJson(Map<String, dynamic> json) => UserArtInfo(
+VenueInfo _$VenueInfoFromJson(Map<String, dynamic> json) => VenueInfo(
       aboutYou: json['aboutYou'] as String?,
       spaces: json['spaces'] as String?,
       audience: json['audience'] as String?,
@@ -130,8 +130,7 @@ UserArtInfo _$UserArtInfoFromJson(Map<String, dynamic> json) => UserArtInfo(
           .toList(),
     );
 
-Map<String, dynamic> _$UserArtInfoToJson(UserArtInfo instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$VenueInfoToJson(VenueInfo instance) => <String, dynamic>{
       'aboutYou': instance.aboutYou,
       'spaces': instance.spaces,
       'audience': instance.audience,

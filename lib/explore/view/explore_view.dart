@@ -328,8 +328,8 @@ class _ExploreViewState extends State<ExploreView> {
                               ],
                             ),
                             Expanded(child: Container(),),
-                            Text(user.userArtInfo!.typeOfVenue != null ?
-                            user.userArtInfo!.typeOfVenue!.join(", ") :
+                            Text(user.venueInfo!.typeOfVenue != null ?
+                            user.venueInfo!.typeOfVenue!.join(", ") :
                             '', softWrap: true, style: TextStyles.semiBoldP40010,),
                             verticalMargin24
 

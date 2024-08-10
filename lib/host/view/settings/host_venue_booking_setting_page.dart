@@ -222,10 +222,10 @@ class _HostBookingSettingsViewState extends State<HostBookingSettingsView> {
             padding: horizontalPadding32,
             width: double.infinity,
             child: FloatingActionButton(
-                backgroundColor: _canContinue(user!.userArtInfo!.spaces) ? AppTheme.n900 : AppTheme.disabledButton,
-                foregroundColor: _canContinue(user!.userArtInfo!.spaces) ? AppTheme.primaryColor : AppTheme.n900,
+                backgroundColor: _canContinue(user!.venueInfo!.spaces) ? AppTheme.n900 : AppTheme.disabledButton,
+                foregroundColor: _canContinue(user!.venueInfo!.spaces) ? AppTheme.primaryColor : AppTheme.n900,
                 onPressed: () {
-                  if(_canContinue(user!.userArtInfo!.spaces)) {
+                  if(_canContinue(user!.venueInfo!.spaces)) {
                     context.read<OnboardingCubit>().save(user!);
                     Navigator.of(context).pop();
                     Navigator.pushReplacement(

@@ -11,18 +11,20 @@ import '../../app/resources/theme.dart';
 import '../../host/view/host_setting_page.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
+import '../../utils/user_utils.dart';
 import '../../widgets/dot_indicator.dart';
+import '../../widgets/dropdown_box.dart';
 import '../../widgets/loading_screen.dart';
 import '../../widgets/tags.dart';
 
 
-class VenueInfoPage extends StatelessWidget {
+class ArtistInfoPage extends StatelessWidget {
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => VenueInfoPage());
+    return MaterialPageRoute<void>(builder: (_) => ArtistInfoPage());
   }
   bool isOnboarding;
 
-  VenueInfoPage({Key? key, this.isOnboarding = true}) : super(key: key);
+  ArtistInfoPage({Key? key, this.isOnboarding = true}) : super(key: key);
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
 
@@ -33,29 +35,30 @@ class VenueInfoPage extends StatelessWidget {
         databaseService: databaseService,
         userId: authService.getUser().id,
       ),
-      child: SelectAccountView(isOnboarding: isOnboarding),
+      child: ArtistInfoView(isOnboarding: isOnboarding),
     );
   }
 }
 
 
 
-class SelectAccountView extends StatefulWidget {
-  SelectAccountView({Key? key, this.isOnboarding = true}) : super(key: key);
+class ArtistInfoView extends StatefulWidget {
+  ArtistInfoView({Key? key, this.isOnboarding = true}) : super(key: key);
 
   final bool isOnboarding;
 
   @override
-  State<SelectAccountView> createState() => _SelectAccountViewState();
+  State<ArtistInfoView> createState() => _ArtistInfoViewState();
 }
 
-class _SelectAccountViewState extends State<SelectAccountView> {
-  final TextEditingController _venueController = TextEditingController();
-  List<String> _venueType = [];
-  List<String> _vibes = [];
-  String _venueName = '';
+class _ArtistInfoViewState extends State<ArtistInfoView> {
+  final TextEditingController _artistController = TextEditingController();
+  final TextEditingController _biotController = TextEditingController();
+  String _artStyle = 'Art Style';
+  String _bio = '';
+  String _artistName = '';
 
-
+  final List<String> _artStyles = ['Art Style'] + ArtStyle.values.map((style) => style.toString().split('.').last.capitalize()).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -69,16 +72,16 @@ class _SelectAccountViewState extends State<SelectAccountView> {
           user = state.user;
 
           if(!widget.isOnboarding) {
-            _venueName = user!.userInfo!.name!;
-            _venueController.text = _venueName;
-            _venueType = user.venueInfo!.typeOfVenue!;
-            _vibes = user.venueInfo!.vibes!;
+            _artistName = user!.artInfo!.artistName!;
+            _artistController.text = _artistName;
+            _artStyle = user.artInfo!.artStyle.toString().capitalize()!;
+            _bio = user.artInfo!.biography!;
           }
         }
         return Scaffold(
           appBar: !widget.isOnboarding ? AppBar(
             scrolledUnderElevation: 0,
-            title: Text(user!.userInfo!.name!, style: TextStyles.boldN90017,),
+            title: Text(user!.artInfo!.artistName!, style: TextStyles.boldN90017,),
             centerTitle: true,
             iconTheme: const IconThemeData(
               color: AppTheme.n900, //change your color here
@@ -95,59 +98,66 @@ class _SelectAccountViewState extends State<SelectAccountView> {
                     if(widget.isOnboarding)... [
                       verticalMargin48,
                       const LineIndicator(
-                        totalSteps: 9,
+                        totalSteps: 3,
                         currentStep: 1,
                       ),
                       verticalMargin24,
-                      Text('Tell us about your venue',
+                      Text('Create your artist profile',
                           style: TextStyles.boldN90029),
                       verticalMargin48,
                     ],
-                    Text('Venue Name', style: TextStyles.boldN90016),
+                    Text('Artist Name', style: TextStyles.boldN90016),
                     verticalMargin8,
                     TextField(
-                      controller: _venueController,
+                      controller: _artistController,
                       autofocus: false,
                       style: TextStyles.semiBoldN90014,
                       onChanged: (String value) {
-                        _venueName = value;
-                        context.read<OnboardingCubit>().chooseName(value);
+                        _artistName = value;
+                        context.read<OnboardingCubit>().chooseArtistName(value);
                       },
                       autocorrect: false,
                       enableSuggestions: false,
-                      decoration: AppTheme.textInputDecoration,
+                      decoration: AppTheme.textInputDecoration.copyWith(hintText: 'Artist name'),
                       keyboardType: TextInputType.text,
                     ),
                     verticalMargin48,
-                    Text('Type of venue', style: TextStyles.boldN90016),
+                    Text('Primary art style', style: TextStyles.boldN90016),
                     verticalMargin4,
-                    Tags(const [
-                      'Restaurant', 'Bar', 'Coffee', 'Live music', 'Library',
-                      'Hotel', 'Lounge', 'Art centre', 'Gallery',
-                    ],
-                      _venueType,
-                          (venueType) {
-                        setState(() {
-                          _venueType = venueType;
-                        });
-                        context.read<OnboardingCubit>().choseVenueType(venueType);
+                    DropdownBox(
+                      items: _artStyles,
+                      selectedItem: _artStyle ?? 'Art Style',
+                      onChanged: (value) {
+                        if(value != null) {
+                          _artStyle = value;
+                          context.read<OnboardingCubit>().choseArtStyle(_artStyle);
+                        }
                       },
+                      hintText: 'Select an option',
                     ),
                     verticalMargin48,
-                    Text('Vibes', style: TextStyles.boldN90016),
+                    Text('Biography', style: TextStyles.boldN90016),
                     verticalMargin4,
-                    Tags(const [
-                      'Arty', 'Indie', 'Party', 'Quiet',
-                      'Busy', 'Loud', 'Quirky', 'Chill',
-                    ],
-                      _vibes,
-                          (vibes) {
-                        setState(() {
-                          _vibes = vibes;
-                        });
-                        context.read<OnboardingCubit>().choseVibes(_vibes);
+                    Text('Write a short biography about your artistic\njourney and style.',
+                        style: TextStyles.regularN90014),
+                    verticalMargin24,
+                    TextFormField(
+                      controller: _biotController,
+                      autofocus: false,
+                      style: TextStyles.semiBoldN90014,
+                      onChanged: (String value) {
+                        _bio = value;
+                        context.read<OnboardingCubit>().choseBio(value);
                       },
+                      maxLines: 10, // Adjust the number of lines as needed
+                      autocorrect: false,
+                      enableSuggestions: false,
+                      decoration: AppTheme.textAreaInputDecoration
+                          .copyWith(hintText: 'Tell us about your space. Min 50 characters.',),
+                      keyboardType: TextInputType.text,
                     ),
+                    verticalMargin24,
+                    verticalMargin24
                   ],
                 ),
               ),
@@ -163,7 +173,7 @@ class _SelectAccountViewState extends State<SelectAccountView> {
                   if(_canContinue()) {
 
                     if(widget.isOnboarding) {
-                      context.read<OnboardingCubit>().save(user!, UserStatus.spaceInfo);
+                      context.read<OnboardingCubit>().save(user!, UserStatus.artInfo);
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => VenueAddressPage()), // Replace NewPage with the actual class of your new page
@@ -194,6 +204,8 @@ class _SelectAccountViewState extends State<SelectAccountView> {
   }
 
   bool _canContinue() {
-    return _venueName.isNotEmpty && _venueType.isNotEmpty && _vibes.isNotEmpty;
+    return _artistName.isNotEmpty
+        && _bio.isNotEmpty
+        && _artStyle.isNotEmpty && _artStyle != 'Art Style';
   }
 }

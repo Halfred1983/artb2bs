@@ -245,10 +245,10 @@ class _MapViewState extends State<MapView> {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 Text("Spaces: ", style: TextStyles.semiBoldAccent14,),
-                                Text(user.userArtInfo!.spaces!, style: TextStyles.semiBoldAccent14,),
+                                Text(user.venueInfo!.spaces!, style: TextStyles.semiBoldAccent14,),
                                 Expanded(child: Container()),
                                 Text("Audience: ", style: TextStyles.semiBoldAccent14,),
-                                Text(user.userArtInfo!.audience?? 'n\a', style: TextStyles.semiBoldAccent14,),
+                                Text(user.venueInfo!.audience?? 'n\a', style: TextStyles.semiBoldAccent14,),
                               ],
                             ),
                             verticalMargin12,
@@ -259,7 +259,7 @@ class _MapViewState extends State<MapView> {
                                 Flexible(flex: 1, child: Text("Vibes: ", softWrap: true, style: TextStyles.semiBoldAccent14,)),
                               ],
                             ),
-                            Text(user.userArtInfo!.vibes!.join(", "), softWrap: true, style: TextStyles.semiBoldAccent14,),
+                            Text(user.venueInfo!.vibes!.join(", "), softWrap: true, style: TextStyles.semiBoldAccent14,),
 
                             verticalMargin12,
                             const Divider(thickness: 0.5, color: AppTheme.primaryColor,),

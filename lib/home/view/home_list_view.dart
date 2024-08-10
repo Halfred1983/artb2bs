@@ -82,7 +82,7 @@ class _HomeListState extends State<HomeList> {
               child: Scaffold(
                 resizeToAvoidBottomInset: false,
                 appBar: AppBar(
-                  title: Text("Hello, ${widget.user.userInfo!.name!}", style: TextStyles.semiBoldAccent14,),
+                  title: Text("Hello, ${widget.user.artInfo!.artistName!}", style: TextStyles.semiBoldAccent14,),
                   centerTitle: false,
                   titleSpacing: 0,
                   actions: [
@@ -225,8 +225,8 @@ class _HomeListState extends State<HomeList> {
                                                   ],
                                                 ),
                                                 verticalMargin8,
-                                                Text(user.userArtInfo!.typeOfVenue != null ?
-                                                user.userArtInfo!.typeOfVenue!.join(", ") :
+                                                Text(user.venueInfo!.typeOfVenue != null ?
+                                                user.venueInfo!.typeOfVenue!.join(", ") :
                                                 '', softWrap: true, style: TextStyles.semiBoldP40010,),
 
                                               ],

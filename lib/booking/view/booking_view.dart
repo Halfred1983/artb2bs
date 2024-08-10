@@ -30,7 +30,7 @@ class BookingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Booking? booking;
-    int maxSpacesAvailable = int.parse(host.userArtInfo!.spaces!);
+    int maxSpacesAvailable = int.parse(host.venueInfo!.spaces!);
     return
       BlocBuilder<BookingCubit, BookingState>(
           builder: (context, state) {
@@ -86,10 +86,10 @@ class BookingView extends StatelessWidget {
                                       SizedBox(
                                         width: 100,
                                         child: InputQty.int(
-                                          onQtyChanged: (spaceValue) => context.read<BookingCubit>().chooseSpaces(spaceValue.toString(), host, maxSpacesAvailable),
+                                            onQtyChanged: (spaceValue) => context.read<BookingCubit>().chooseSpaces(spaceValue.toString(), host, maxSpacesAvailable),
                                             qtyFormProps: const QtyFormProps(enableTyping: false),
                                             steps: 1,
-                                            maxVal: int.parse(host.userArtInfo!.spaces!) ,
+                                            maxVal: int.parse(host.venueInfo!.spaces!) ,
                                             minVal: int.parse(host.bookingSettings!.minSpaces!),
                                             initVal: int.parse(host.bookingSettings!.minSpaces!),
                                             decoration: const QtyDecorationProps(
@@ -117,9 +117,9 @@ class BookingView extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                              Text('When is your exhibition?', style: TextStyles.semiBoldN90014,),
-                              verticalMargin24
-                            ],),
+                                Text('When is your exhibition?', style: TextStyles.semiBoldN90014,),
+                                verticalMargin24
+                              ],),
                           ),
                           verticalMargin12,
 
@@ -165,22 +165,22 @@ class BookingView extends StatelessWidget {
                             ) : Container(),
                             Flexible(child: Container()),
                             ElevatedButton(
-                              onPressed: booking!.from != null &&
-                                  booking!.to != null &&
-                                  dataRangeError.isEmpty &&
-                                  spaceError.isEmpty &&
-                                  booking!.spaces != null ?
-                                  () {
+                                onPressed: booking!.from != null &&
+                                    booking!.to != null &&
+                                    dataRangeError.isEmpty &&
+                                    spaceError.isEmpty &&
+                                    booking!.spaces != null ?
+                                    () {
 
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) =>
-                                      BookingConfirmationPage(host: host, booking: booking!)
-                                  ),
-                                );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) =>
+                                        BookingConfirmationPage(host: host, booking: booking!)
+                                    ),
+                                  );
 
-                              } : null,
-                              child: Text("Continue Booking", style: TextStyles.semiBoldPrimary14,),),
+                                } : null,
+                                child: const Text('Continue Booking')),
                             horizontalMargin32,
                           ],
                         )

@@ -1,3 +1,4 @@
+import 'package:artb2b/utils/user_utils.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -59,12 +60,12 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     try {
       emit(LoadingState());
       if(aboutYou.isNotEmpty) {
-        if (user.userArtInfo != null) {
+        if (user.venueInfo != null) {
           user = user.copyWith(
-              userArtInfo: user.userArtInfo!.copyWith(aboutYou: aboutYou));
+              venueInfo: user.venueInfo!.copyWith(aboutYou: aboutYou));
         }
         else {
-          user = user.copyWith(userArtInfo: UserArtInfo(aboutYou: aboutYou));
+          user = user.copyWith(venueInfo: VenueInfo(aboutYou: aboutYou));
         }
         emit(LoadedState(user));
       }
@@ -76,18 +77,18 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     }
   }
 
-  void chooseSpaces(String spaces) {
+  void chooseSpaces(String spaces, {bool onboarding = true}) {
     User user = this.state.props[0] as User;
     emit(LoadingState());
 
     try {
-      if (_validateSpaces(spaces, user)) {
-        if (user.userArtInfo != null) {
+      if (onboarding || _validateSpaces(spaces, user)) {
+        if (user.venueInfo != null) {
           user = user.copyWith(
-              userArtInfo: user.userArtInfo!.copyWith(spaces: spaces));
+              venueInfo: user.venueInfo!.copyWith(spaces: spaces));
         }
         else {
-          user = user.copyWith(userArtInfo: UserArtInfo(spaces: spaces));
+          user = user.copyWith(venueInfo: VenueInfo(spaces: spaces));
         }
         emit(LoadedState(user));
       }
@@ -113,11 +114,11 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
     try {
       if (audience.isNotEmpty && int.parse(audience) > 0) {
-        if (user.userArtInfo != null) {
+        if (user.venueInfo != null) {
           user = user.copyWith(
-              userArtInfo: user.userArtInfo!.copyWith(audience: audience));
+              venueInfo: user.venueInfo!.copyWith(audience: audience));
         } else {
-          user = user.copyWith(userArtInfo: UserArtInfo(audience: audience));
+          user = user.copyWith(venueInfo: VenueInfo(audience: audience));
         }
         if(currentErrorMessage == null) {
           emit(LoadedState(user));
@@ -134,10 +135,11 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
   bool _validateSpaces(String spaces, User user) {
     if (spaces.isNotEmpty && int.parse(spaces) > 0) {
-      if (int.parse(spaces) <= int.parse(user.userArtInfo!.spaces!)) {
+      if (int.parse(spaces) <= int.parse(user.venueInfo!.spaces!)) {
         return true;
       } else {
-        emit(ErrorState(user, "Chose a valid value for spaces. From 1 to ${user.userArtInfo!.spaces!}"));
+        emit(ErrorState(user, "Chose a valid value for spaces. From 1 to ${user.venueInfo!.spaces!}. "
+            "You can change your space availability in venue settings."));
         return false;
       }
     } else {
@@ -153,9 +155,9 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     try {
 
       user = user.copyWith(
-          userArtInfo: user.userArtInfo != null ?
-          user.userArtInfo!.copyWith(typeOfVenue: typeVenue)
-              : UserArtInfo(typeOfVenue: typeVenue));
+          venueInfo: user.venueInfo != null ?
+          user.venueInfo!.copyWith(typeOfVenue: typeVenue)
+              : VenueInfo(typeOfVenue: typeVenue));
 
       emit(LoadedState(user));
 
@@ -171,9 +173,9 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     try {
 
       user = user.copyWith(
-          userArtInfo: user.userArtInfo != null ?
-          user.userArtInfo!.copyWith(vibes: vibes)
-              : UserArtInfo(vibes: vibes));
+          venueInfo: user.venueInfo != null ?
+          user.venueInfo!.copyWith(vibes: vibes)
+              : VenueInfo(vibes: vibes));
 
       emit(LoadedState(user));
 
@@ -203,12 +205,12 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     emit(LoadingState());
 
     try {
-      if (user.userArtInfo != null) {
+      if (user.venueInfo != null) {
         user = user.copyWith(
-            userArtInfo: user.userArtInfo!.copyWith(vibes: artistTags));
+            venueInfo: user.venueInfo!.copyWith(vibes: artistTags));
       }
       else {
-        user = user.copyWith(userArtInfo: UserArtInfo(vibes: artistTags));
+        user = user.copyWith(venueInfo: VenueInfo(vibes: artistTags));
       }
       emit(LoadedState(user));
 
@@ -264,25 +266,25 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     emit(LoadingState());
 
     List<BusinessDay> updatedBusinessDays = [];
-    if(user.userArtInfo != null) {
+    if(user.venueInfo != null) {
 
-      if(user.userArtInfo!.openingTimes == null ||
-          user.userArtInfo!.openingTimes!.isEmpty) {
+      if(user.venueInfo!.openingTimes == null ||
+          user.venueInfo!.openingTimes!.isEmpty) {
         user = user.copyWith(
-            userArtInfo: user.userArtInfo!.copyWith(
+            venueInfo: user.venueInfo!.copyWith(
                 openingTimes: _businessDays)
         );
       }
 
       // Update the business days list
-      updatedBusinessDays = user.userArtInfo!.openingTimes!
+      updatedBusinessDays = user.venueInfo!.openingTimes!
           .map((day) {
         return day.dayOfWeek == updatedDay.dayOfWeek ? updatedDay : day;
       }).toList();
 
       // Update the user object with the new business days list
       user = user.copyWith(
-          userArtInfo: user.userArtInfo!.copyWith(
+          venueInfo: user.venueInfo!.copyWith(
               openingTimes: updatedBusinessDays)
       );
     }
@@ -302,8 +304,9 @@ class OnboardingCubit extends Cubit<OnboardingState> {
             bookingSettings: BookingSettings(minSpaces: minSpaces));
       }
 
-      if(int.parse(minSpaces) > int.parse(user.userArtInfo!.spaces!)) {
-        emit(ErrorState(user, "Chose a valid value for spaces. From 1 to ${user.userArtInfo!.spaces!}"));
+      if(int.parse(minSpaces) > int.parse(user.venueInfo!.spaces!)) {
+        emit(ErrorState(user, "Chose a valid value for spaces. From 1 to ${user.venueInfo!.spaces!}. "
+            "You can change your space availability in venue settings."));
         return;
       }
 
@@ -361,6 +364,79 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     }
   }
 
+
+  /////////// Art Info ///////////
+
+  void choseArtStyle(String style) {
+    User user = this.state.props[0] as User;
+    emit(LoadingState());
+
+    try {
+
+      ArtStyle? artStyle = UserUtils().getArtStyleFromString(style);
+
+      if (user.artInfo != null) {
+        user = user.copyWith(
+            artInfo: user.artInfo!.copyWith(artStyle: artStyle));
+      }
+      else {
+        user = user.copyWith(artInfo: ArtInfo(artStyle: artStyle));
+      }
+
+      emit(LoadedState(user));
+
+    } catch (e) {
+      emit(ErrorState(user ,"ArtStyle value not valid"));
+    }
+  }
+
+
+  void chooseArtistName(String artistName) {
+    User user = this.state.props[0] as User;
+    emit(LoadingState());
+
+    try {
+
+      if (user.artInfo != null) {
+        user = user.copyWith(
+            artInfo: user.artInfo!.copyWith(artistName: artistName));
+      }
+      else {
+        user = user.copyWith(artInfo: ArtInfo(artistName: artistName));
+      }
+
+      emit(LoadedState(user));
+
+    } catch (e) {
+      emit(ErrorState(user ,"artistName value not valid"));
+    }
+  }
+
+  void choseBio(String biography) {
+    User user = this.state.props[0] as User;
+    emit(LoadingState());
+
+    try {
+
+      if (user.artInfo != null) {
+        user = user.copyWith(
+            artInfo: user.artInfo!.copyWith(biography: biography));
+      }
+      else {
+        user = user.copyWith(artInfo: ArtInfo(biography: biography));
+      }
+
+      emit(LoadedState(user));
+
+    } catch (e) {
+      emit(ErrorState(user ,"biography value not valid"));
+    }
+  }
+
+
+
+
+
   void save(User user, [UserStatus? userStatus]) async {
     // User user = this.state.props[0] as User;
     emit(LoadingState());
@@ -410,6 +486,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
       emit(ErrorState(user, "Error saving the art details"));
     }
   }
+
 
 
 

@@ -67,7 +67,7 @@ class _VenueDescriptionViewState extends State<VenueDescriptionView> {
           user = state.user;
 
           if(!widget.isOnboarding) {
-            _venueAudience = int.parse(user!.userArtInfo!.audience!);
+            _venueAudience = int.parse(user!.venueInfo!.audience!);
           }
         }
         return Scaffold(
@@ -102,7 +102,7 @@ class _VenueDescriptionViewState extends State<VenueDescriptionView> {
                         style: TextStyles.semiBoldN90014),
                     verticalMargin24,
                     NumberSlider(value: user != null &&
-                      user.userArtInfo!.audience != null ? int.parse(user.userArtInfo!.audience!)
+                      user.venueInfo!.audience != null ? int.parse(user.venueInfo!.audience!)
                         : 0, onChanged: (int value) {
                       // Do something with the new range values
                       _venueAudience = value;

@@ -10,6 +10,8 @@ import 'package:go_router/go_router.dart';
 import '../../app/resources/assets.dart';
 import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
+import '../../home/view/home_page.dart';
+import '../../home/view/home_view.dart';
 import '../../injection.dart';
 import '../../utils/currency/currency_helper.dart';
 import '../../widgets/common_card_widget.dart';
@@ -21,12 +23,12 @@ import 'package:artb2b/onboard/cubit/onboarding_state.dart';
 import '../../widgets/tags.dart';
 import '../../widgets/venue_card.dart';
 
-class VenueOnboardEnd extends StatelessWidget {
+class ArtistOnboardEnd extends StatelessWidget {
   static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => VenueOnboardEnd());
+    return MaterialPageRoute<void>(builder: (_) => ArtistOnboardEnd());
   }
 
-  VenueOnboardEnd({Key? key}) : super(key: key);
+  ArtistOnboardEnd({Key? key}) : super(key: key);
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
 
@@ -37,17 +39,17 @@ class VenueOnboardEnd extends StatelessWidget {
         databaseService: databaseService,
         userId: authService.getUser().id,
       ),
-      child: VenueOnboardEndView(),
+      child: ArtistOnboardEndView(),
     );
   }
 }
 
-class VenueOnboardEndView extends StatefulWidget {
+class ArtistOnboardEndView extends StatefulWidget {
   @override
-  _VenueOnboardEndViewState createState() => _VenueOnboardEndViewState();
+  _ArtistOnboardEndViewState createState() => _ArtistOnboardEndViewState();
 }
 
-class _VenueOnboardEndViewState extends State<VenueOnboardEndView> {
+class _ArtistOnboardEndViewState extends State<ArtistOnboardEndView> {
 
 
   @override
@@ -70,20 +72,45 @@ class _VenueOnboardEndViewState extends State<VenueOnboardEndView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    verticalMargin48,
-                    const LineIndicator(
-                      totalSteps: 9,
-                      currentStep: 8,
-                    ),
                     verticalMargin24,
-                    const Text('Great! your first listing is ready to go!',
+                    const Text('Congratulations\non completing\nyour profile setup!',
                         style: TextStyle(
                             fontSize: 29, fontWeight: FontWeight.bold)),
                     verticalMargin24,
-                    Text('Your listing won’t be visible to others until you set the availability as open in your listing settings.',
+                    Text('You’re now ready to discover and book\namazing venues for your art exhibitions.',
                         style: TextStyles.semiBoldN90014),
-                    verticalMargin24,
-                  VenueCard(user: user!)
+                    verticalMargin48,
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(21, 15, 21, 15),
+                      // margin: const EdgeInsets.fromLTRB(21, 15, 21, 15),
+                      height: 140,
+                      decoration: BoxDecoration(
+                        color: AppTheme.s50,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Center(
+                        child: RichText(
+                          softWrap: true,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: 'Pro Tip:',
+                                style: TextStyles.boldN90014,
+                              ),
+                              TextSpan(
+                                text:  ' Enhance your chances of getting\n'
+                                    'your booking requests accepted by uploading '
+                                    'your artwork to your portfolio.\nVenues love to'
+                                    'see the creativity and quality of your work '
+                                    'before confirming a booking.',
+                                style: TextStyles.regularN90014,
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+
+                    )
                   ],
                 ),
               ),
@@ -99,7 +126,7 @@ class _VenueOnboardEndViewState extends State<VenueOnboardEndView> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => VenueOnboardEndView()),
+                        builder: (context) => HomePage()),
                   );
               },
               child: const Text('Continue'),

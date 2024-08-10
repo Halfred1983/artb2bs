@@ -48,7 +48,71 @@ class _HostProfilePageState extends State<HostProfilePage> {
 
             if (snapshot.hasData && snapshot.data != null) {
               User user = snapshot.data!;
-              return HostProfileWidget(user: user);
+              return Scaffold(
+                  appBar: AppBar(
+                    scrolledUnderElevation: 0,
+                    title: Text(user.userInfo!.name!, style: TextStyles.boldN90017,),
+                    centerTitle: true,
+                    iconTheme: const IconThemeData(
+                      color: AppTheme.n900, //change your color here
+                    ),
+                    elevation: 0,
+                  ),
+                  body: HostProfileWidget(user: user),
+                  bottomNavigationBar:
+                  Container(
+                    width: double.infinity,
+                    height: 110,
+                    decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.30),
+                            offset: const Offset(0, -10),
+                            blurRadius: 7,
+                            spreadRadius: 0,
+                          )
+                        ],
+                        color: AppTheme.white,
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(15.0),
+                            topRight: Radius.circular(15.0)
+                        )
+                    ),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          horizontalMargin32,
+                          Column(
+                            children: [
+                              Expanded(child: Container()),
+                              Text('From ${user.bookingSettings!.basePrice!} '
+                                  '${CurrencyHelper.currency(user.userInfo!.address!.country).currencySymbol}',
+                                style: TextStyles.boldN90014,),
+                              Text('Space per day',
+                                style: TextStyles.semiBoldN90012,),
+                              Expanded(child: Container()),
+
+                            ],
+                          ),
+                          Flexible(child: Container()),
+                          ElevatedButton(
+                            onPressed:() {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => BookingPage(host: snapshot.data!,)),
+                              );
+                            },
+                            child: Text('Book Now', style: TextStyles.semiBoldPrimary14,),),
+                          horizontalMargin32,
+                        ],
+                      ),
+                    ),
+                  )
+              );
+
             }
             else {
               return Container();

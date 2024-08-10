@@ -2,8 +2,10 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:database_service/database.dart';
 import 'package:database_service/src/models/photo.dart';
+import 'package:database_service/src/models/venue_info.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'art_info.dart';
 import 'artwork.dart';
 import 'booking_settings.dart';
 
@@ -20,7 +22,8 @@ class User {
   final String imageUrl;
   final UserStatus? userStatus;
   final UserInfo? userInfo;
-  final UserArtInfo? userArtInfo;
+  final VenueInfo? venueInfo;
+  ArtInfo? artInfo;
   List<Artwork>? artworks;
   List<Photo>? photos;
   BookingSettings? bookingSettings;
@@ -39,8 +42,9 @@ class User {
     )
     required this.userStatus,
     this.userInfo,
-    this.userArtInfo,
+    this.venueInfo,
     this.artworks,
+    this.artInfo,
     this.photos,
     this.bookingSettings,
     // this.bookings,

@@ -64,10 +64,14 @@ class _VenueOpeningTimeViewState extends State<VenueOpeningTimeView> {
   void initState() {
     super.initState();
     // Initialize _businessDays with data from the user model
-    final user = context.read<OnboardingCubit>().state.user;
-    if (user != null) {
-      _businessDays = user.businessDays;
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final user = context.read<OnboardingCubit>().state.user;
+      if (user != null) {
+        setState(() {
+          _businessDays = user!.venueInfo!.openingTimes ??  _businessDays;
+        });
+      }
+    });
   }
 
   @override
@@ -84,7 +88,7 @@ class _VenueOpeningTimeViewState extends State<VenueOpeningTimeView> {
         }
         if (state is LoadedState || state is DataSaved) {
           user = state.user;
-          _businessDays = user!.userArtInfo!.openingTimes!;
+          _businessDays = user!.venueInfo!.openingTimes ??  _businessDays;
         }
         return Scaffold(
           appBar: !widget.isOnboarding ? AppBar(

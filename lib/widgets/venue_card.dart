@@ -137,11 +137,11 @@ Widget build(BuildContext context) {
                           softWrap: true, style: TextStyles.regularN90010,),
                       ],
                     ),
-                    verticalMargin12,                                    Text(user.userArtInfo!.vibes != null ?
-                    user.userArtInfo!.vibes!.join(", ") :
+                    verticalMargin12,                                    Text(user.venueInfo!.vibes != null ?
+                    user.venueInfo!.vibes!.join(", ") :
                     '', softWrap: true, style: TextStyles.semiBoldP40010,),
                     verticalMargin8,
-                    Text(user.userArtInfo!.typeOfVenue!.join(", "),
+                    Text(user.venueInfo!.typeOfVenue!.join(", "),
                       softWrap: true, style: TextStyles.semiBoldN90010,),
                   ],
                 ),

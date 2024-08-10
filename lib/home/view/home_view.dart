@@ -1,15 +1,5 @@
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/app/resources/theme.dart';
-import 'package:artb2b/host/view/host_setting_page.dart';
-import 'package:artb2b/onboard/view/10_venue_opening_time.dart';
-import 'package:artb2b/onboard/view/2_info_account.dart';
-import 'package:artb2b/onboard/view/4_venue_address.dart';
-import 'package:artb2b/onboard/view/8_venue_description.dart';
-import 'package:artb2b/onboard/view/9_venue_audience.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import 'package:stylish_bottom_bar/model/bar_items.dart';
-import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 import 'package:artb2b/artwork/view/artist_dashboard_page.dart';
 import 'package:artb2b/booking_requests/view/booking_request_page.dart';
 import 'package:artb2b/exhibition/view/exhibition_page.dart';
@@ -17,22 +7,29 @@ import 'package:artb2b/home/bloc/user_cubit.dart';
 import 'package:artb2b/home/bloc/user_state.dart';
 import 'package:artb2b/home/view/home_list_view.dart';
 import 'package:artb2b/notification/bloc/notification_bloc.dart';
-import 'package:artb2b/onboard/view/personal_info_page.dart';
+import 'package:artb2b/onboard/view/10_venue_opening_time.dart';
+import 'package:artb2b/onboard/view/2_info_account.dart';
+import 'package:artb2b/onboard/view/4_venue_address.dart';
+import 'package:artb2b/onboard/view/8_venue_description.dart';
+import 'package:artb2b/onboard/view/9_venue_audience.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 import '../../explore/view/explore_page.dart';
 import '../../host/view/host_dashboard_page.dart';
 import '../../host/view/host_listing_page.dart';
-import '../../onboard/view/11_onboard_end.dart';
+import '../../onboard/view/11_a_artist_onboard_end.dart';
 import '../../onboard/view/1_select_account.dart';
+import '../../onboard/view/2_a_info_account.dart';
+import '../../onboard/view/4_a_artist_address.dart';
 import '../../onboard/view/5_venue_spaces.dart';
 import '../../onboard/view/6_venue_price.dart';
 import '../../onboard/view/7_venue_photo.dart';
-import '../../onboard/view/art_info_page.dart';
 import 'home_venue_view.dart';
 
 class HomeView extends StatefulWidget {
@@ -96,37 +93,43 @@ class _HomeViewState extends State<HomeView> {
                 if ( user!.userStatus == null || user!.userStatus == UserStatus.initialised ) {
                   return SelectAccountPage();
                 }
-                if (user!.userStatus == UserStatus.type) {
+                if (user!.userStatus == UserStatus.type && user!.userInfo!.userType == UserType.gallery) {
                   return InfoAccountPage();
                 }
-                if (user!.userStatus == UserStatus.venueInfo) {
+                if (user!.userStatus == UserStatus.type && user!.userInfo!.userType == UserType.artist) {
+                  return InfoArtistAccountPage();
+                }
+                if (user!.userStatus == UserStatus.artInfo && user!.userInfo!.userType == UserType.artist) {
+                  return ArtistAddressPage();
+                }
+                // if (user!.userStatus == UserStatus.locationInfo && user!.userInfo!.userType == UserType.artist) {
+                //   return ArtistOnboardEnd();
+                // }
+                if (user!.userStatus == UserStatus.venueInfo && user!.userInfo!.userType == UserType.gallery) {
                   return VenueAddressPage();
                 }
-                if (user!.userStatus == UserStatus.locationInfo) {
+                if (user!.userStatus == UserStatus.locationInfo && user!.userInfo!.userType == UserType.gallery) {
                   return VenueSpacesPage();
                 }
-                if (user!.userStatus == UserStatus.spaceInfo) {
+                if (user!.userStatus == UserStatus.spaceInfo && user!.userInfo!.userType == UserType.gallery) {
                   return VenuePricePage();
                 }
-                if (user!.userStatus == UserStatus.priceInfo) {
+                if (user!.userStatus == UserStatus.priceInfo && user!.userInfo!.userType == UserType.gallery) {
                   return VenuePhotoPage();
                 }
-                if (user!.userStatus == UserStatus.photoInfo) {
+                if (user!.userStatus == UserStatus.photoInfo && user!.userInfo!.userType == UserType.gallery) {
                   return VenueDescription();
                 }
-                if (user!.userStatus == UserStatus.descriptionInfo) {
+                if (user!.userStatus == UserStatus.descriptionInfo && user!.userInfo!.userType == UserType.gallery) {
                   return VenueAudience();
                 }
-                if (user!.userStatus == UserStatus.capacityInfo) {
+                if (user!.userStatus == UserStatus.capacityInfo && user!.userInfo!.userType == UserType.gallery) {
                   return VenueOpeningTime();
                 }
                 // if (user!.userStatus == UserStatus.openingTimes) {
                 //   return VenueOnboardEnd();
                 // }
 
-                if (user!.userStatus == UserStatus.personalInfo) {
-                  return ArtInfoPage();
-                }
 
                 if(user!.userInfo!.userType == UserType.gallery) {
                   widget = HomeVenue(user: user!);

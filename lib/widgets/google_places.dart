@@ -12,7 +12,6 @@ import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/place_details.dart';
 import 'package:google_places_flutter/model/prediction.dart';
 
-import '../onboard/cubit/personal_info_cubit.dart';
 import '../utils/currency/currency_helper.dart';
 
 

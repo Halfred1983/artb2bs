@@ -241,7 +241,7 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                                 calendarFormat: CalendarFormat.month,
                                 calendarBuilders: CalendarBuilders(
                                   markerBuilder: (BuildContext context, date, events) {
-                                    int freeSpaces = int.parse(user!.userArtInfo!.spaces!);
+                                    int freeSpaces = int.parse(user!.venueInfo!.spaces!);
 
                                     // if (events.isEmpty) {
                                     //   return Container(

@@ -54,178 +54,198 @@ class _HostProfileWidgetState extends State<HostProfileWidget> {
       );
     }
 
-    return SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        child: Padding(
-            padding: horizontalPadding8 + verticalPadding8,
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Stack(
-                    children: [
-                      SizedBox(
-                        height: 500,
-                        width: double.infinity,
-                        child: PageView.builder(
-                          onPageChanged: (pageId,) {
-                            setState(() {
-                              _currentIndex = pageId;
-                            });
-                          },
-                          padEnds: false,
-                          controller: controller,
-                          itemCount: widget.user.photos!.length,
-                          itemBuilder: (_, index) {
-                            return photos[index % photos.length];
-                          },
-                        ), // Select photo dynamically using index
-                      ),
-                      Positioned(
-                        bottom: 24,
-                        left: 0,
-                        right: 0,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            AnimatedSmoothIndicator(
-                              activeIndex: _currentIndex,
-                              count: widget.user.photos!.length,
-                              effect: const ExpandingDotsEffect(
-                                spacing: 5,
-                                dotHeight: 10,
-                                dotWidth: 10,
-                                dotColor: Colors.white,
-                                activeDotColor: Colors.white,
-                                // type: WormType.thin,
+    return
+      // Scaffold(
+      // appBar: AppBar(
+      //   scrolledUnderElevation: 0,
+      //   title: Text(widget.user.userInfo!.name!, style: TextStyles.boldN90017,),
+      //   centerTitle: true,
+      //   iconTheme: const IconThemeData(
+      //     color: AppTheme.n900, //change your color here
+      //   ),
+      //   elevation: 0,
+      // ),
+      SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
+          child: Padding(
+              padding: horizontalPadding8 + verticalPadding8,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      children: [
+                        SizedBox(
+                          height: 500,
+                          width: double.infinity,
+                          child: PageView.builder(
+                            onPageChanged: (pageId,) {
+                              setState(() {
+                                _currentIndex = pageId;
+                              });
+                            },
+                            padEnds: false,
+                            controller: controller,
+                            itemCount: widget.user.photos!.length,
+                            itemBuilder: (_, index) {
+                              return photos[index % photos.length];
+                            },
+                          ), // Select photo dynamically using index
+                        ),
+                        Positioned(
+                          bottom: 24,
+                          left: 0,
+                          right: 0,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              AnimatedSmoothIndicator(
+                                activeIndex: _currentIndex,
+                                count: widget.user.photos!.length,
+                                effect: const ExpandingDotsEffect(
+                                  spacing: 5,
+                                  dotHeight: 10,
+                                  dotWidth: 10,
+                                  dotColor: Colors.white,
+                                  activeDotColor: Colors.white,
+                                  // type: WormType.thin,
+                                ),
                               ),
+                            ],
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 48,
+                          left: -10,
+                          child: Padding(
+                            padding: horizontalPadding32,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(widget.user.userInfo!.name!,
+                                  style: TextStyles.boldWhite29,),
+                                Text(
+                                  widget.user.userInfo!.address!.formattedAddress,
+                                  style: TextStyles.regularWhite14,),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    verticalMargin32,
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    AudienceWidget(
+                                      audienceCount: widget.user.venueInfo!
+                                          .audience != null
+                                          ? int.parse(
+                                          widget.user.venueInfo!.audience!)
+                                          : 0,),
+                                    Text(widget.user.venueInfo!.audience ??
+                                        0.toString(),
+                                      style: TextStyles.boldAccent20,),
+                                  ],
+                                ),
+                                verticalMargin8,
+                                Text('Audience/Day',
+                                  style: TextStyles.semiBoldN20014,)
+                              ],
+                            ),
+
+                            horizontalMargin12,
+                            const SizedBox(height: 48,
+                                child: VerticalDivider(
+                                    color: AppTheme.divider)),
+                            horizontalMargin12,
+
+                            Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(widget.user.venueInfo!.spaces!,
+                                      style: TextStyles.boldAccent20,),
+                                    const Icon(
+                                      Icons.crop_free_sharp, size: 24,
+                                      color: AppTheme.accentColor,),
+                                  ],
+                                ),
+                                verticalMargin8,
+                                Text('Total Spaces',
+                                  style: TextStyles.semiBoldN20014,)
+                              ],
                             ),
                           ],
                         ),
-                      ),
-                      Positioned(
-                        bottom: 48,
-                        left: -10,
-                        child: Padding(
-                          padding: horizontalPadding32,
+                        verticalMargin32,
+                        Padding(
+                          padding: horizontalPadding24,
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(widget.user.userInfo!.name!,
-                                style: TextStyles.boldWhite29,),
+                              Text(widget.user.venueInfo!.aboutYou!,
+                                style: TextStyles.regularN200,),
+                              verticalMargin32,
+                              const SizedBox(width: 325,
+                                  child: Divider(
+                                      height: 1, color: AppTheme.divider)),
+                              verticalMargin32,
                               Text(
-                                widget.user.userInfo!.address!.formattedAddress,
-                                style: TextStyles.regularWhite14,),
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  verticalMargin32,
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Column(
-                            children: [
-                              Row(
-                                children: [
-                                  AudienceWidget(
-                                    audienceCount: widget.user.userArtInfo!
-                                        .audience != null
-                                        ? int.parse(
-                                        widget.user.userArtInfo!.audience!)
-                                        : 0,),
-                                  Text(widget.user.userArtInfo!.audience ??
-                                      0.toString(),
-                                    style: TextStyles.boldAccent20,),
-                                ],
-                              ),
+                                'Opening hours', style: TextStyles.semiBoldN90014,),
                               verticalMargin8,
-                              Text('Audience/Day',
-                                style: TextStyles.semiBoldN20014,)
-                            ],
-                          ),
-
-                          horizontalMargin12,
-                          const SizedBox(height: 48,
-                              child: VerticalDivider(
-                                  color: AppTheme.divider)),
-                          horizontalMargin12,
-
-                          Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Text(widget.user.userArtInfo!.spaces!,
-                                    style: TextStyles.boldAccent20,),
-                                  const Icon(
-                                    Icons.crop_free_sharp, size: 24,
-                                    color: AppTheme.accentColor,),
-                                ],
+                              Column(
+                                children: widget.user.venueInfo?.openingTimes?.map((e) =>
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(e.dayOfWeek.toString().split('.').last.capitalize() + ' ', style: TextStyles.regularN90014,),
+                                        if(e.hourInterval.isEmpty) Text('n/a', style: TextStyles.regularN90014,) else
+                                          Text(e.hourInterval.map((interval) {
+                                            if(interval.from == null || interval.to == null) {
+                                              return 'n/a';
+                                            }
+                                            final from = '${interval.from!.hour.toString().padLeft(2, '0')}:${interval.from!.minute.toString().padLeft(2, '0')}';
+                                            final to = '${interval.to!.hour.toString().padLeft(2, '0')}:${interval.to!.minute.toString().padLeft(2, '0')}';
+                                            return '$from-$to';
+                                          }).join(', '), style: TextStyles.regularN90014,),
+                                      ],
+                                    )
+                                ).toList() ?? [],
                               ),
+                              verticalMargin32,
+                              Text('Booking requirements',
+                                style: TextStyles.semiBoldN90014,),
                               verticalMargin8,
-                              Text('Total Spaces',
-                                style: TextStyles.semiBoldN20014,)
+                              Text('${double.parse(widget.user.bookingSettings!.basePrice!)} '
+                                  '${CurrencyHelper.currency(widget.user.userInfo!.address!.country).currencySymbol}'
+                                , style: TextStyles.regularN90014,),
+                              verticalMargin8,
+                              Text('Min spaces: ${widget.user.bookingSettings!
+                                  .minSpaces ?? 'n/a'}', style: TextStyles.regularN90014,),
+                              verticalMargin8,
+                              Text('Min days: ${widget.user.bookingSettings!
+                                  .minLength ?? 'n/a'}', style: TextStyles.regularN90014,),
+                              verticalMargin32
                             ],
                           ),
-                        ],
-                      ),
-                      verticalMargin32,
-                      Text(widget.user.userArtInfo!.aboutYou!,
-                        style: TextStyles.regularN200,),
-                      verticalMargin32,
-                      const SizedBox(width: 325,
-                          child: Divider(
-                              height: 1, color: AppTheme.divider)),
-                      verticalMargin32,
-                      Text(
-                        'Opening hours', style: TextStyles.semiBoldN90014,),
-                      verticalMargin8,
-                      Column(
-                        children: widget.user.userArtInfo?.openingTimes?.map((e) =>
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(e.dayOfWeek.toString().split('.').last.capitalize() + ' ', style: TextStyles.regularN90014,),
-                                if(e.hourInterval.isEmpty) Text('n/a', style: TextStyles.regularN90014,) else
-                                Text(e.hourInterval.map((interval) {
-                                  if(interval.from == null || interval.to == null) {
-                                    return 'n/a';
-                                  }
-                                  final from = '${interval.from!.hour.toString().padLeft(2, '0')}:${interval.from!.minute.toString().padLeft(2, '0')}';
-                                  final to = '${interval.to!.hour.toString().padLeft(2, '0')}:${interval.to!.minute.toString().padLeft(2, '0')}';
-                                  return '$from-$to';
-                                }).join(', '), style: TextStyles.regularN90014,),
-                              ],
-                            )
-                        ).toList() ?? [],
-                      ),
-                      verticalMargin32,
-                      Text('Booking requirements',
-                        style: TextStyles.semiBoldN90014,),
-                      verticalMargin8,
-                  Text('${double.parse(widget.user.bookingSettings!.basePrice!)} '
-                      '${CurrencyHelper.currency(widget.user.userInfo!.address!.country).currencySymbol}'
-                         , style: TextStyles.regularN90014,),
-                      verticalMargin8,
-                      Text('Min spaces: ${widget.user.bookingSettings!
-                          .minSpaces ?? 'n/a'}', style: TextStyles.regularN90014,),
-                      verticalMargin8,
-                      Text('Min days: ${widget.user.bookingSettings!
-                          .minLength ?? 'n/a'}', style: TextStyles.regularN90014,),
-                      verticalMargin32
-                    ],
-                  ),
-                ]
-            )
-        )
-    );
+                        )
+
+                      ],
+                    ),
+                  ]
+              )
+          )
+      );
   }
 }

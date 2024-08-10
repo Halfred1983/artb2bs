@@ -70,7 +70,7 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                           verticalMargin12,
                           Text('About you: ', style: TextStyles.semiBoldPrimary14, ),
                           verticalMargin12,
-                          Text(user!.userArtInfo!.aboutYou!, style: TextStyles.semiBoldPrimary14, textAlign: TextAlign.left,),
+                          Text(user!.venueInfo!.aboutYou!, style: TextStyles.semiBoldPrimary14, textAlign: TextAlign.left,),
                           verticalMargin24,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,

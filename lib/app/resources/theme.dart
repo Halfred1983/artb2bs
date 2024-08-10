@@ -224,18 +224,18 @@ class AppTheme {
       }),
       foregroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
-          return  AppTheme.n900; // Disabled text color
+          return AppTheme.n900; // Disabled text color
         }
         return AppTheme.primaryColor; // Default text color
       }),
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      minimumSize: MaterialStateProperty.all( const Size(147.0, 48.0)),
+      minimumSize: MaterialStateProperty.all(const Size(147.0, 48.0)),
       shape: MaterialStateProperty.resolveWith<OutlinedBorder>((Set<MaterialState> states) {
         return _buttonCornerRadius;
       }),
       textStyle: MaterialStateProperty.resolveWith<TextStyle>((Set<MaterialState> states) {
         if (states.contains(MaterialState.disabled)) {
-          return TextStyles.semiBoldN90014; // Disabled text color
+          return TextStyles.semiBoldN90014; // Disabled text style
         }
         return TextStyles.semiBoldPrimary14;
       }),
@@ -253,7 +253,6 @@ class AppTheme {
       }),
     ),
   );
-
   static final _textButtonTheme = TextButtonThemeData(
     style: ButtonStyle(
       backgroundColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {

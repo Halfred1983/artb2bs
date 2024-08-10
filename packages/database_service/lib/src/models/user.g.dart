@@ -21,9 +21,11 @@ abstract class _$UserCWProxy {
 
   User userInfo(UserInfo? userInfo);
 
-  User userArtInfo(UserArtInfo? userArtInfo);
+  User venueInfo(VenueInfo? venueInfo);
 
   User artworks(List<Artwork>? artworks);
+
+  User artInfo(ArtInfo? artInfo);
 
   User photos(List<Photo>? photos);
 
@@ -45,8 +47,9 @@ abstract class _$UserCWProxy {
     String? imageUrl,
     UserStatus? userStatus,
     UserInfo? userInfo,
-    UserArtInfo? userArtInfo,
+    VenueInfo? venueInfo,
     List<Artwork>? artworks,
+    ArtInfo? artInfo,
     List<Photo>? photos,
     BookingSettings? bookingSettings,
     String? balance,
@@ -81,10 +84,13 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
   User userInfo(UserInfo? userInfo) => this(userInfo: userInfo);
 
   @override
-  User userArtInfo(UserArtInfo? userArtInfo) => this(userArtInfo: userArtInfo);
+  User venueInfo(VenueInfo? venueInfo) => this(venueInfo: venueInfo);
 
   @override
   User artworks(List<Artwork>? artworks) => this(artworks: artworks);
+
+  @override
+  User artInfo(ArtInfo? artInfo) => this(artInfo: artInfo);
 
   @override
   User photos(List<Photo>? photos) => this(photos: photos);
@@ -112,8 +118,9 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
     Object? imageUrl = const $CopyWithPlaceholder(),
     Object? userStatus = const $CopyWithPlaceholder(),
     Object? userInfo = const $CopyWithPlaceholder(),
-    Object? userArtInfo = const $CopyWithPlaceholder(),
+    Object? venueInfo = const $CopyWithPlaceholder(),
     Object? artworks = const $CopyWithPlaceholder(),
+    Object? artInfo = const $CopyWithPlaceholder(),
     Object? photos = const $CopyWithPlaceholder(),
     Object? bookingSettings = const $CopyWithPlaceholder(),
     Object? balance = const $CopyWithPlaceholder(),
@@ -147,14 +154,18 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
           ? _value.userInfo
           // ignore: cast_nullable_to_non_nullable
           : userInfo as UserInfo?,
-      userArtInfo: userArtInfo == const $CopyWithPlaceholder()
-          ? _value.userArtInfo
+      venueInfo: venueInfo == const $CopyWithPlaceholder()
+          ? _value.venueInfo
           // ignore: cast_nullable_to_non_nullable
-          : userArtInfo as UserArtInfo?,
+          : venueInfo as VenueInfo?,
       artworks: artworks == const $CopyWithPlaceholder()
           ? _value.artworks
           // ignore: cast_nullable_to_non_nullable
           : artworks as List<Artwork>?,
+      artInfo: artInfo == const $CopyWithPlaceholder()
+          ? _value.artInfo
+          // ignore: cast_nullable_to_non_nullable
+          : artInfo as ArtInfo?,
       photos: photos == const $CopyWithPlaceholder()
           ? _value.photos
           // ignore: cast_nullable_to_non_nullable
@@ -191,12 +202,15 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       userInfo: json['userInfo'] == null
           ? null
           : UserInfo.fromJson(json['userInfo'] as Map<String, dynamic>),
-      userArtInfo: json['userArtInfo'] == null
+      venueInfo: json['venueInfo'] == null
           ? null
-          : UserArtInfo.fromJson(json['userArtInfo'] as Map<String, dynamic>),
+          : VenueInfo.fromJson(json['venueInfo'] as Map<String, dynamic>),
       artworks: (json['artworks'] as List<dynamic>?)
           ?.map((e) => Artwork.fromJson(e as Map<String, dynamic>))
           .toList(),
+      artInfo: json['artInfo'] == null
+          ? null
+          : ArtInfo.fromJson(json['artInfo'] as Map<String, dynamic>),
       photos: (json['photos'] as List<dynamic>?)
           ?.map((e) => Photo.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -215,7 +229,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'imageUrl': instance.imageUrl,
       'userStatus': _$UserStatusEnumMap[instance.userStatus],
       'userInfo': instance.userInfo?.toJson(),
-      'userArtInfo': instance.userArtInfo?.toJson(),
+      'venueInfo': instance.venueInfo?.toJson(),
+      'artInfo': instance.artInfo?.toJson(),
       'artworks': instance.artworks?.map((e) => e.toJson()).toList(),
       'photos': instance.photos?.map((e) => e.toJson()).toList(),
       'bookingSettings': instance.bookingSettings?.toJson(),

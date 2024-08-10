@@ -47,33 +47,40 @@ class UserUtils {
     List<VenueInformationMissing> missingInformation = [];
 
     // Check if the user has a type of venue
-    bool hasType = user.userArtInfo != null && user.userArtInfo!.typeOfVenue != null && user.userArtInfo!.typeOfVenue!.isNotEmpty;
+    bool hasType = user.venueInfo != null && user.venueInfo!.typeOfVenue != null && user.venueInfo!.typeOfVenue!.isNotEmpty;
     if (!hasType) {
       missingInformation.add(VenueInformationMissing.type);
     }
 
     // Check if the user has vibes
-    bool hasVibes = user.userArtInfo != null && user.userArtInfo!.vibes != null && user.userArtInfo!.vibes!.isNotEmpty;
+    bool hasVibes = user.venueInfo != null && user.venueInfo!.vibes != null && user.venueInfo!.vibes!.isNotEmpty;
     if (!hasVibes) {
       missingInformation.add(VenueInformationMissing.vibes);
     }
 
     // Check if the user has opening hours
-    bool hasOpeningHours = user.userArtInfo != null
-        && user.userArtInfo!.openingTimes != null && user.userArtInfo!.openingTimes!.isNotEmpty
-    && user.userArtInfo!.openingTimes!.every((element) => element.hourInterval != null && element.hourInterval.isNotEmpty
+    bool hasOpeningHours = user.venueInfo != null
+        && user.venueInfo!.openingTimes != null && user.venueInfo!.openingTimes!.isNotEmpty
+    && user.venueInfo!.openingTimes!.every((element) => element.hourInterval != null && element.hourInterval.isNotEmpty
         || element.open != null);
     if (!hasOpeningHours) {
       missingInformation.add(VenueInformationMissing.openingHours);
     }
 
     // Check if the user has a venue description
-    bool hasVenueDescription = user.userArtInfo != null && user.userArtInfo!.aboutYou != null && user.userArtInfo!.aboutYou!.isNotEmpty;
+    bool hasVenueDescription = user.venueInfo != null && user.venueInfo!.aboutYou != null && user.venueInfo!.aboutYou!.isNotEmpty;
     if (!hasVenueDescription) {
       missingInformation.add(VenueInformationMissing.venueDescription);
     }
 
     return missingInformation;
+  }
+
+  ArtStyle? getArtStyleFromString(String artStyle) {
+    return ArtStyle.values.firstWhere(
+          (style) => style.toString().split('.').last.toLowerCase() == artStyle.toLowerCase(),
+      orElse: () => throw Exception('Art style not found'),
+    );
   }
 }
 

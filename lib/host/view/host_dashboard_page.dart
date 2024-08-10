@@ -94,15 +94,15 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                         verticalMargin12,
                         Text('About you: ', style: TextStyles.semiBoldAccent14, ),
                         verticalMargin12,
-                        Text(user!.userArtInfo!.aboutYou!, style: TextStyles.semiBoldAccent14, textAlign: TextAlign.left,),
+                        Text(user!.venueInfo!.aboutYou!, style: TextStyles.semiBoldAccent14, textAlign: TextAlign.left,),
                         verticalMargin24,
                         Row(
                           children: [
                             Text('Spaces: ', style: TextStyles.semiBoldAccent14, ),
-                            Text(user!.userArtInfo!.spaces!, style: TextStyles.semiBoldAccent14, ),
+                            Text(user!.venueInfo!.spaces!, style: TextStyles.semiBoldAccent14, ),
                             Expanded(child: Container()),
                             Text('Audience: ', style: TextStyles.semiBoldAccent14, ),
-                            Text(user!.userArtInfo!.audience ?? 'n/a', style: TextStyles.semiBoldAccent14, ),
+                            Text(user!.venueInfo!.audience ?? 'n/a', style: TextStyles.semiBoldAccent14, ),
                           ],
                         ),
                         verticalMargin32,

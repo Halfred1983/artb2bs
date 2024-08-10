@@ -67,7 +67,7 @@ class ProfilePage extends StatelessWidget {
                               verticalMargin12,
                               Text('About the host: ', style: TextStyles.semiBoldAccent14, ),
                               verticalMargin12,
-                              Text(snapshot.data!.userArtInfo!.aboutYou!, style: TextStyles.semiBoldAccent14, textAlign: TextAlign.left,),
+                              Text(snapshot.data!.venueInfo!.aboutYou!, style: TextStyles.semiBoldAccent14, textAlign: TextAlign.left,),
 
                               Row(
                                 children: [
@@ -113,7 +113,7 @@ class ProfilePage extends StatelessWidget {
                                   Flexible(flex: 1, child: Text("Vibes: ", softWrap: true, style: TextStyles.semiBoldAccent14,)),
                                 ],
                               ),
-                              Text(snapshot.data!.userArtInfo!.vibes!.join(", "), softWrap: true, style: TextStyles.semiBoldAccent14,),
+                              Text(snapshot.data!.venueInfo!.vibes!.join(", "), softWrap: true, style: TextStyles.semiBoldAccent14,),
                               verticalMargin32,
 
                               Text(isArtist ? 'Artworks' : 'Photos', style: TextStyles.semiBoldAccent14, ),

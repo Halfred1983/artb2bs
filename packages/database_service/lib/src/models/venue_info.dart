@@ -4,11 +4,11 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'business_day.dart';
 
-part 'user_art_info.g.dart';
+part 'venue_info.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 @CopyWith()
-class UserArtInfo {
+class VenueInfo {
 
   String? aboutYou;
   String? spaces;
@@ -17,7 +17,7 @@ class UserArtInfo {
   List<BusinessDay>? openingTimes;
   List<String>? typeOfVenue;
 
-  UserArtInfo({
+  VenueInfo({
     this.aboutYou,
     this.spaces,
     this.audience,
@@ -27,10 +27,10 @@ class UserArtInfo {
   });
 
 
-  factory UserArtInfo.fromJson(Map<String, dynamic> json)
-  => _$UserArtInfoFromJson(json);
+  factory VenueInfo.fromJson(Map<String, dynamic> json)
+  => _$VenueInfoFromJson(json);
 
-  Map<String, dynamic> toJson() => _$UserArtInfoToJson(this);
+  Map<String, dynamic> toJson() => _$VenueInfoToJson(this);
 
 }
 

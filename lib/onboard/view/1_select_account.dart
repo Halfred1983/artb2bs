@@ -1,8 +1,5 @@
-import 'package:artb2b/home/view/home_page.dart';
 import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/onboard/cubit/onboarding_state.dart';
-import 'package:artb2b/widgets/app_dropdown.dart';
-import 'package:artb2b/widgets/app_text_field.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
@@ -12,11 +9,8 @@ import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
-import '../../widgets/app_input_validators.dart';
-import '../../widgets/google_places.dart';
 import '../../widgets/loading_screen.dart';
-import '../../widgets/scollable_chips.dart';
-import '../../widgets/tags.dart';
+import '2_a_info_account.dart';
 import '2_info_account.dart';
 
 
@@ -99,9 +93,6 @@ class SelectAccountView extends StatelessWidget {
                             foregroundColor:  AppTheme.n900,
                             backgroundColor: _userType == UserType.gallery ? AppTheme.primaryColor : Colors.white,
                             side: BorderSide(color: _userType == UserType.gallery ? AppTheme.primaryColor : AppTheme.accentColor, width: 2), // Border color and width
-
-                            // onSurface: Colors.grey,
-                            // padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                           ),
                           onPressed: () => context.read<OnboardingCubit>().chooseUserType(UserType.gallery),
                           child: Text('Sign up as venue'))
@@ -118,11 +109,22 @@ class SelectAccountView extends StatelessWidget {
                 foregroundColor: _canContinue() ? AppTheme.primaryColor : AppTheme.n900,
                 onPressed: () {
                   if(_canContinue()) {
-                    context.read<OnboardingCubit>().save(user!);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => InfoAccountPage()), // Replace NewPage with the actual class of your new page
-                    );
+
+                    if(_userType == UserType.gallery) {
+                      context.read<OnboardingCubit>().save(user!);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            InfoAccountPage()), // Replace NewPage with the actual class of your new page
+                      );
+                    } else if (_userType == UserType.artist) {
+                      context.read<OnboardingCubit>().save(user!);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) =>
+                            InfoArtistAccountPage()), // Replace NewPage with the actual class of your new page
+                      );
+                    }
                   }
                   else {
                     return;

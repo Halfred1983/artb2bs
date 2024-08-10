@@ -182,7 +182,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                               );
                             }
                             else {
-                              int freeSpaces = int.parse(widget.user.userArtInfo!.spaces!);
+                              int freeSpaces = int.parse(widget.user.venueInfo!.spaces!);
 
                               // if (events.isEmpty) {
                               //   return Container(

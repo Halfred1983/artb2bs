@@ -65,7 +65,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     List<Booking> bookings = await firestoreDatabaseService.findBookingsByUser(widget.host);
 
     Map<DateTime, int> dateSpaces = {};
-    int availableSpaces = int.parse(widget.host.userArtInfo!.spaces!);
+    int availableSpaces = int.parse(widget.host.venueInfo!.spaces!);
 
     for (var booking in bookings) {
       if(booking.bookingStatus == BookingStatus.accepted) {
@@ -151,7 +151,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
             rangeSelectionMode: _rangeSelectionMode,
             calendarBuilders: CalendarBuilders(
               markerBuilder: (BuildContext context, date, events) {
-                int freeSpaces = int.parse(widget.host.userArtInfo!.spaces!);
+                int freeSpaces = int.parse(widget.host.venueInfo!.spaces!);
 
                 // if (events.isEmpty) {
                 //   return Container(
@@ -325,7 +325,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
   int findMinimumValueInDateRange(
       Map<DateTime, int> datesBookedSpaces,
       Map<DateTime, String> datesUnavailableSpaces, DateTime? startDate, DateTime? endDate) {
-    int minValue = int.parse(widget.host.userArtInfo!.spaces!); // Initialize to null
+    int minValue = int.parse(widget.host.venueInfo!.spaces!); // Initialize to null
 
     int unavailableSpaces = 0;
     if(startDate != null && endDate != null) {
