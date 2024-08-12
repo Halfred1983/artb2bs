@@ -29,6 +29,7 @@ class AppTheme {
   static const dv400 = Color(0xFFB33B2B);
   static const p400 = Color(0xFF8da823);
   static const n900 = Color(0xFF292730);
+  static const n300 = Color(0xFF727076);
   static const n600 = Color(0xFF504E55);
   static const n200 = Color(0xFF8e8c92);
   static const n100 = Color(0xFF8b8a8f);
@@ -43,7 +44,6 @@ class AppTheme {
 
 
   static const primaryColorOpacity = Color.fromRGBO(201, 240, 50,0.4);
-  static const primaryColourVioletOpacity = Color.fromRGBO(146,46,142,0.6);
   static const secondaryColourRed = Color(0xFFA40500);
   static const white = Color(0xFFFFFFFF);
   static const backgroundGrey = Color(0xFFF9F9F9);
@@ -52,17 +52,6 @@ class AppTheme {
 
 
 
-  static const primaryColorArtist = primaryCalendarViolet;
-  static const primaryCalendarViolet = Color(0xB2E3BDFF);
-  static const accentColorArtist = Color(0x95C8ECFF);
-  static const backgroundColorArtist = Color(0x95C8ECFF);
-  static const fideuramGreyArtist001 = Color(0x95C8ECFF);
-
-  static const primaryColorGallery = fideuramGreenGallery001;
-  static const fideuramGreenGallery001 = Color(0xEABC67B2);
-  static const accentColorGallery = Color(0xEABC67B2);
-  static const backgroundColorGallery = Color(0xEABC67B2);
-  static const fideuramGreyGalleryt001 = Color(0x6BDE8295);
 
 
   static ThemeData get theme {
@@ -86,35 +75,6 @@ class AppTheme {
           valueIndicatorTextStyle: TextStyles.boldAccent17,
         ),
         segmentedButtonTheme: segmentedButtonStyle
-    );
-  }
-
-  static ThemeData get themeArtist {
-    return ThemeData(
-      primaryColor: primaryColorArtist,
-      canvasColor: Colors.white,
-      backgroundColor: backgroundColorArtist,
-      scaffoldBackgroundColor: backgroundColorArtist,
-      splashColor: accentColor.withOpacity(0.2),
-      highlightColor: accentColor.withOpacity(0.2),
-      appBarTheme: _appBarTheme,
-      elevatedButtonTheme: _elevatedButtonTheme,
-      // outlinedButtonTheme: _outlineButtonTheme,
-      unselectedWidgetColor: fideuramGreyArtist001,
-    );
-  }
-
-  static ThemeData get themeGallery {
-    return ThemeData(
-        primaryColor: primaryColorGallery,
-        canvasColor: Colors.white,
-        backgroundColor: backgroundColorGallery,
-        scaffoldBackgroundColor: backgroundColorGallery,
-        splashColor: accentColor.withOpacity(0.2),
-        highlightColor: accentColor.withOpacity(0.2),
-        appBarTheme: _appBarTheme,
-        elevatedButtonTheme: _elevatedButtonTheme,
-        unselectedWidgetColor: fideuramGreyGalleryt001
     );
   }
 

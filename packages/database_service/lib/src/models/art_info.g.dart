@@ -13,6 +13,8 @@ abstract class _$ArtInfoCWProxy {
 
   ArtInfo artistName(String? artistName);
 
+  ArtInfo collections(List<Collection> collections);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `ArtInfo(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -23,6 +25,7 @@ abstract class _$ArtInfoCWProxy {
     String? biography,
     ArtStyle? artStyle,
     String? artistName,
+    List<Collection>? collections,
   });
 }
 
@@ -42,6 +45,10 @@ class _$ArtInfoCWProxyImpl implements _$ArtInfoCWProxy {
   ArtInfo artistName(String? artistName) => this(artistName: artistName);
 
   @override
+  ArtInfo collections(List<Collection> collections) =>
+      this(collections: collections);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `ArtInfo(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -53,6 +60,7 @@ class _$ArtInfoCWProxyImpl implements _$ArtInfoCWProxy {
     Object? biography = const $CopyWithPlaceholder(),
     Object? artStyle = const $CopyWithPlaceholder(),
     Object? artistName = const $CopyWithPlaceholder(),
+    Object? collections = const $CopyWithPlaceholder(),
   }) {
     return ArtInfo(
       biography: biography == const $CopyWithPlaceholder()
@@ -67,6 +75,11 @@ class _$ArtInfoCWProxyImpl implements _$ArtInfoCWProxy {
           ? _value.artistName
           // ignore: cast_nullable_to_non_nullable
           : artistName as String?,
+      collections:
+          collections == const $CopyWithPlaceholder() || collections == null
+              ? _value.collections
+              // ignore: cast_nullable_to_non_nullable
+              : collections as List<Collection>,
     );
   }
 }
@@ -85,12 +98,17 @@ ArtInfo _$ArtInfoFromJson(Map<String, dynamic> json) => ArtInfo(
       biography: json['biography'] as String?,
       artStyle: $enumDecodeNullable(_$ArtStyleEnumMap, json['artStyle']),
       artistName: json['artistName'] as String?,
+      collections: (json['collections'] as List<dynamic>?)
+              ?.map((e) => Collection.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$ArtInfoToJson(ArtInfo instance) => <String, dynamic>{
       'biography': instance.biography,
       'artStyle': _$ArtStyleEnumMap[instance.artStyle],
       'artistName': instance.artistName,
+      'collections': instance.collections.map((e) => e.toJson()).toList(),
     };
 
 const _$ArtStyleEnumMap = {

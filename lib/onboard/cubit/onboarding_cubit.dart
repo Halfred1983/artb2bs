@@ -435,47 +435,12 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
 
 
-
-
   void save(User user, [UserStatus? userStatus]) async {
     // User user = this.state.props[0] as User;
     emit(LoadingState());
-    //
-    // if(user.userInfo!.userType! == UserType.gallery) {
-    //   try {
-    //     if (user.userArtInfo == null || user.userArtInfo!.spaces == null ||
-    //         user.userArtInfo!.spaces!.isEmpty ||
-    //         int.parse(user.userArtInfo!.spaces!) < 1 ||
-    //         user.userArtInfo!.audience!.isEmpty ||
-    //         user.userArtInfo!.typeOfVenue!.isEmpty
-    //     ) {
-    //       emit(ErrorState(user, "Spaces value not valid"));
-    //       return;
-    //     }
-    //   }
-    //   catch (e) {
-    //     emit(ErrorState(user, "About you or Spaces value not valid"));
-    //     return;
-    //   }
-    // }
 
     try {
 
-      // if (user.userArtInfo == null || user.userArtInfo!.aboutYou == null ||
-      //     user.userArtInfo!.aboutYou!.isEmpty) {
-      //   emit(ErrorState(user, "Tell us something about you"));
-      //   return;
-      // }
-      //
-      // if(user.userArtInfo != null) {
-      //   user = user.copyWith(
-      //     userStatus: UserStatus.artInfo,
-      //   );
-      // }
-      // else {
-      //   user = user.copyWith(
-      //       userStatus: UserStatus.artInfo);
-      // }
       if(userStatus != null) {
         user = user.copyWith(userStatus: userStatus);
       }

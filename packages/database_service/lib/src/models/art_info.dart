@@ -1,5 +1,6 @@
 
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:database_service/src/models/collection.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'business_day.dart';
@@ -13,11 +14,13 @@ class ArtInfo {
   String? biography;
   ArtStyle? artStyle;
   String? artistName;
+  List<Collection> collections = [];
 
   ArtInfo({
     this.biography,
     this.artStyle,
     this.artistName,
+    this.collections = const [],
   });
 
 
@@ -25,6 +28,10 @@ class ArtInfo {
   => _$ArtInfoFromJson(json);
 
   Map<String, dynamic> toJson() => _$ArtInfoToJson(this);
+
+  bool hasCollectionWithName(String name) {
+    return collections.any((collection) => collection.name == name);
+  }
 
 }
 

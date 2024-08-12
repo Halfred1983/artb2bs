@@ -1,6 +1,7 @@
 import 'package:artb2b/utils/common.dart';
 import 'package:artb2b/widgets/audience.dart';
 import 'package:database_service/database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -126,9 +127,16 @@ class _HostProfileWidgetState extends State<HostProfileWidget> {
                               children: [
                                 Text(widget.user.userInfo!.name!,
                                   style: TextStyles.boldWhite29,),
-                                Text(
-                                  widget.user.userInfo!.address!.formattedAddress,
-                                  style: TextStyles.regularWhite14,),
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width - 2 * horizontalPadding32.horizontal, // Adjust width to fit within screen bounds considering padding
+                                  child: Text(
+                                    widget.user.userInfo!.address!.formattedAddress,
+                                    style: TextStyles.regularWhite14,
+                                    softWrap: true,
+                                    maxLines: 3, // Allow unlimited lines
+                                    overflow: TextOverflow.visible, // Display all text
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -227,7 +235,7 @@ class _HostProfileWidgetState extends State<HostProfileWidget> {
                               Text('Booking requirements',
                                 style: TextStyles.semiBoldN90014,),
                               verticalMargin8,
-                              Text('${double.parse(widget.user.bookingSettings!.basePrice!)} '
+                              Text('Price per space: ${double.parse(widget.user.bookingSettings!.basePrice!)} '
                                   '${CurrencyHelper.currency(widget.user.userInfo!.address!.country).currencySymbol}'
                                 , style: TextStyles.regularN90014,),
                               verticalMargin8,

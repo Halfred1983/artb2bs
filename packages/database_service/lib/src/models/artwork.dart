@@ -26,6 +26,7 @@ class Artwork {
   String? height;
   String? width;
   String? technique;
+  String? type;
 
   Artwork({
     this.url,
@@ -37,6 +38,7 @@ class Artwork {
     this.height,
     this.width,
     this.technique,
+    this.type,
   });
 
   factory Artwork.empty() => Artwork(

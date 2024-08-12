@@ -122,13 +122,13 @@ class ProfilePage extends StatelessWidget {
                               //ARTIST
                               isArtist ?
 
-                              snapshot.data!.artworks != null
-                                  && snapshot.data!.artworks!.isNotEmpty ?
+                              snapshot.data!.artInfo!.collections[0].artworks != null
+                                  && snapshot.data!.artInfo!.collections[0].artworks.isNotEmpty ?
                               SingleChildScrollView(
                                 physics: const ScrollPhysics(),
                                 child: MasonryGridView.count(
                                   physics: const BouncingScrollPhysics(),
-                                  itemCount: snapshot.data!.artworks!.length,
+                                  itemCount: snapshot.data!.artInfo!.collections[0].artworks.length,
                                   scrollDirection: Axis.vertical,
                                   shrinkWrap: true,
                                   mainAxisSpacing: 10,
@@ -138,15 +138,15 @@ class ProfilePage extends StatelessWidget {
                                     return InkWell(
                                       onTap: () => Navigator.push(
                                         context,
-                                        MaterialPageRoute(builder: (context) => ArtworkDetails(artwork: snapshot.data!.artworks![index], isOwner: false,), ),
+                                        MaterialPageRoute(builder: (context) => ArtworkDetails(artwork: snapshot.data!.artInfo!.collections[0].artworks![index], isOwner: false,), ),
                                       ),
                                       child: Stack(
                                         children: [
-                                          FadingInPicture(url: snapshot.data!.artworks![index].url!),
+                                          FadingInPicture(url: snapshot.data!.artInfo!.collections[0].artworks![index].url!),
                                           Positioned(
                                             bottom: 15,
                                             right: 25,
-                                            child: Text(snapshot.data!.artworks![index].name!,
+                                            child: Text(snapshot.data!.artInfo!.collections[0].artworks![index].name!,
                                               style: TextStyles.semiBoldAccent14,),
                                           )
                                         ],

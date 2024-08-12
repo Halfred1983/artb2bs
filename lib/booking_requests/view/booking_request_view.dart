@@ -121,6 +121,7 @@ class BookingRequestView extends StatelessWidget {
                                     return Padding(
                                       padding: horizontalPadding32,
                                       child: ListView.builder(
+                                          physics: const NeverScrollableScrollPhysics(), // Prevents ListView from scrolling on its own
                                           shrinkWrap: true,
                                           itemCount: bookings.length,
                                           itemBuilder: (context, index) {

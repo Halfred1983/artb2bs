@@ -23,8 +23,6 @@ abstract class _$UserCWProxy {
 
   User venueInfo(VenueInfo? venueInfo);
 
-  User artworks(List<Artwork>? artworks);
-
   User artInfo(ArtInfo? artInfo);
 
   User photos(List<Photo>? photos);
@@ -48,7 +46,6 @@ abstract class _$UserCWProxy {
     UserStatus? userStatus,
     UserInfo? userInfo,
     VenueInfo? venueInfo,
-    List<Artwork>? artworks,
     ArtInfo? artInfo,
     List<Photo>? photos,
     BookingSettings? bookingSettings,
@@ -87,9 +84,6 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
   User venueInfo(VenueInfo? venueInfo) => this(venueInfo: venueInfo);
 
   @override
-  User artworks(List<Artwork>? artworks) => this(artworks: artworks);
-
-  @override
   User artInfo(ArtInfo? artInfo) => this(artInfo: artInfo);
 
   @override
@@ -119,7 +113,6 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
     Object? userStatus = const $CopyWithPlaceholder(),
     Object? userInfo = const $CopyWithPlaceholder(),
     Object? venueInfo = const $CopyWithPlaceholder(),
-    Object? artworks = const $CopyWithPlaceholder(),
     Object? artInfo = const $CopyWithPlaceholder(),
     Object? photos = const $CopyWithPlaceholder(),
     Object? bookingSettings = const $CopyWithPlaceholder(),
@@ -158,10 +151,6 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
           ? _value.venueInfo
           // ignore: cast_nullable_to_non_nullable
           : venueInfo as VenueInfo?,
-      artworks: artworks == const $CopyWithPlaceholder()
-          ? _value.artworks
-          // ignore: cast_nullable_to_non_nullable
-          : artworks as List<Artwork>?,
       artInfo: artInfo == const $CopyWithPlaceholder()
           ? _value.artInfo
           // ignore: cast_nullable_to_non_nullable
@@ -205,9 +194,6 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       venueInfo: json['venueInfo'] == null
           ? null
           : VenueInfo.fromJson(json['venueInfo'] as Map<String, dynamic>),
-      artworks: (json['artworks'] as List<dynamic>?)
-          ?.map((e) => Artwork.fromJson(e as Map<String, dynamic>))
-          .toList(),
       artInfo: json['artInfo'] == null
           ? null
           : ArtInfo.fromJson(json['artInfo'] as Map<String, dynamic>),
@@ -231,7 +217,6 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'userInfo': instance.userInfo?.toJson(),
       'venueInfo': instance.venueInfo?.toJson(),
       'artInfo': instance.artInfo?.toJson(),
-      'artworks': instance.artworks?.map((e) => e.toJson()).toList(),
       'photos': instance.photos?.map((e) => e.toJson()).toList(),
       'bookingSettings': instance.bookingSettings?.toJson(),
       'balance': instance.balance,

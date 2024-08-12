@@ -3,14 +3,21 @@ import 'package:artb2b/artwork/cubit/artist_cubit.dart';
 import 'package:artb2b/artwork/cubit/artist_state.dart';
 import 'package:artb2b/widgets/fadingin_picture.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
+import 'package:artb2b/widgets/photo_grid.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:database_service/database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import '../../app/resources/styles.dart';
 import '../../injection.dart';
+import '../../onboard/view/4_venue_address.dart';
 import '../../photo/view/artwork_upload_page.dart';
+import '../../photo/view/new_collection_page.dart';
+import '../../user_profile/view/user_profile_page.dart';
 import '../../utils/common.dart';
 import '../../widgets/add_photo_button.dart';
 import '../../widgets/tags.dart';
@@ -41,135 +48,260 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
               user = state.user;
 
               return Scaffold(
-                  appBar: AppBar(
-                    scrolledUnderElevation: 0,
-                    title: Text("Your Dashboard", style: TextStyles.boldAccent24,),
-                    centerTitle: true,
-                  ),
-                  body: SingleChildScrollView(
-                    physics: const ClampingScrollPhysics(),
-                    child: Padding(
-                      padding: horizontalPadding24,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Image.asset("assets/images/artist.png", width: 60,),
-                              horizontalMargin16,
-                              Text(user!.userInfo!.name!, style: TextStyles.semiBoldPrimary14, ),
-                              Expanded(child: Container()),
-                              Image.asset('assets/images/marker.png', width: 20,),
-                              horizontalMargin12,
-                              Text(user!.userInfo!.address!.city,
-                                softWrap: true, style: TextStyles.semiBoldPrimary14,),
-                            ],
-                          ),
-                          const Divider(thickness: 0.6, color: Colors.black38,),
-                          verticalMargin12,
-                          Text('About you: ', style: TextStyles.semiBoldPrimary14, ),
-                          verticalMargin12,
-                          Text(user!.venueInfo!.aboutYou!, style: TextStyles.semiBoldPrimary14, textAlign: TextAlign.left,),
-                          verticalMargin24,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text('Profile Views: ', style: TextStyles.semiBoldPrimary14, ),
-                              FutureBuilder(
-                                  future: firestoreDatabaseService.getViewCounter(user!.id),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState == ConnectionState.waiting) {
-                                      return const CircularProgressIndicator(color: AppTheme.primaryColor,);
-                                    } else if (snapshot.connectionState == ConnectionState.active
-                                        || snapshot.connectionState == ConnectionState.done) {
-                                      if (snapshot.hasData && snapshot.data != null) {
-                                        return Text(snapshot.data.toString(), style: TextStyles.semiBoldPrimary14, );
-                                      }
-                                      return Text('n/a', style: TextStyles.semiBoldPrimary14, );
-                                    }
-                                    return Text('n/a', style: TextStyles.semiBoldPrimary14, );
-                                  }
+                backgroundColor: AppTheme.white,
+                body: SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(),
+                  child: SafeArea(
+                    child: Column(
+                      children: [
+                        Container(
+                          color: AppTheme.backgroundColor,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: AppTheme.white,
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(16),
+                                bottomRight: Radius.circular(16),
                               ),
-                              // Expanded(child: Container()),
-                              // Expanded(child: Container()),
-                              // Text('Status: ', style: TextStyles.semiBoldAccent16, ),
-                              // Text('Active ✅', style: TextStyles.semiBoldViolet16, ),
-                            ],
+                            ),
+                            child: Padding(
+                              padding: horizontalPadding24 + verticalPadding24,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      ClipRRect(
+                                          borderRadius: BorderRadius.circular(30.0),
+                                          child: CachedNetworkImage(
+                                              fit: BoxFit.cover,
+                                              width: 60,
+                                              height: 60,
+                                              placeholder: (context, url) =>
+                                                  Image.asset(
+                                                      user!.userInfo!.userType! ==
+                                                          UserType.gallery
+                                                          ?
+                                                      'assets/images/gallery.png'
+                                                          : 'assets/images/artist.png'),
+                                              imageUrl: user!.imageUrl
+                                          )
+                                      ),
+                                      horizontalMargin8,
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(user!.artInfo!.artistName!, style: TextStyles.boldN90024,),
+                                          verticalMargin4,
+                                          Text(user!.userInfo!.address!.address+','+user!.userInfo!.address!.city,
+                                            style: TextStyles.boldN90014,),
+                                        ],
+                                      ),
+                                      Expanded(child: Container()),
+                                      InkWell(
+                                          onTap: () {
+                                            // Add your action here
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => UserProfilePage()),
+                                            );
+                                          },
+                                          child: Container(
+                                            width: 24,
+                                            height: 24,
+                                            decoration: const BoxDecoration(
+                                              color: Colors.grey,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: const Icon(Icons.edit, size: 12,),
+                                          )
+                                      )
+                                    ],
+                                  ),
+                                  verticalMargin24,
+                                  Text(user!.artInfo!.biography!, style: TextStyles.regularN90014, textAlign: TextAlign.justify,),
+                                  verticalMargin24,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        height: 80,
+                                        width: 160,
+                                        padding: horizontalPadding16 + verticalPadding12,
+                                        decoration: BoxDecoration(
+                                          color: AppTheme.backgroundGrey,
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(user!.artInfo!.collections.length.toString(), style: TextStyles.boldN90024,),
+                                            verticalMargin4,
+                                            Text('Collections', style: TextStyles.regularN90014.copyWith(color: AppTheme.n300),),
+                                          ],
+                                        ),
+                                      ),
+
+
+                                      Container(
+                                        height: 80,
+                                        width: 160,
+                                        padding: horizontalPadding16 + verticalPadding12,
+                                        decoration: BoxDecoration(
+                                          color: AppTheme.backgroundGrey,
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(user!.artInfo!.collections.length.toString(), style: TextStyles.boldN90024,),
+                                            verticalMargin4,
+                                            Text('Exhibitions', style: TextStyles.regularN90014.copyWith(color: AppTheme.n300),),
+                                          ],
+                                        ),
+                                      ),
+                                      // Text('Profile Views: ', style: TextStyles.semiBoldPrimary14, ),
+                                      // FutureBuilder(
+                                      //     future: firestoreDatabaseService.getViewCounter(user!.id),
+                                      //     builder: (context, snapshot) {
+                                      //       if (snapshot.connectionState == ConnectionState.waiting) {
+                                      //         return const CircularProgressIndicator(color: AppTheme.primaryColor,);
+                                      //       } else if (snapshot.connectionState == ConnectionState.active
+                                      //           || snapshot.connectionState == ConnectionState.done) {
+                                      //         if (snapshot.hasData && snapshot.data != null) {
+                                      //           return Text(snapshot.data.toString(), style: TextStyles.semiBoldPrimary14, );
+                                      //         }
+                                      //         return Text('n/a', style: TextStyles.semiBoldPrimary14, );
+                                      //       }
+                                      //       return Text('n/a', style: TextStyles.semiBoldPrimary14, );
+                                      //     }
+                                      // ),
+                                      // Expanded(child: Container()),
+                                      // Expanded(child: Container()),
+                                      // Text('Status: ', style: TextStyles.semiBoldAccent16, ),
+                                      // Text('Active ✅', style: TextStyles.semiBoldViolet16, ),
+                                    ],
+                                  ),
+
+                                ],
+                              ),
+                            ),
                           ),
-                          verticalMargin32,
-                          Text('Your artworks: ', style: TextStyles.semiBoldPrimary14, ),
-                          const Divider(thickness: 0.6, color: Colors.black38,),
-                          //ARTIST
-                          StreamBuilder(
-                              stream: firestoreDatabaseService.findArtworkByUser(user: user!),
-                              builder: (context, snapshot){
-                                if (snapshot.hasError) {
-                                  return const Text('Something went wrong');
-                                }
+                        ),
 
-                                if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return const Text("Loading");
-                                }
+                        Container(
+                          color: AppTheme.backgroundColor,
+                          child: Padding(
+                            padding: horizontalPadding24 + verticalPadding24,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                verticalMargin32,
+                                //ARTIST
+                                StreamBuilder(
+                                  stream: firestoreDatabaseService.findArtworkByUser(user: user!),
+                                  builder: (context, snapshot){
+                                    if (snapshot.hasError) {
+                                      return const Text('Something went wrong');
+                                    }
 
-                                if(snapshot.hasData) {
-                                  User user = User.fromJson(snapshot.data!.data() as Map<String, dynamic>);
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return const Text("Loading");
+                                    }
 
-                                  return user.artworks != null && user.artworks!.isNotEmpty ?
-                                  SingleChildScrollView(
-                                    physics: const ScrollPhysics(),
-                                    child: MasonryGridView.count(
-                                      physics: const BouncingScrollPhysics(),
-                                      itemCount: user.artworks!.length + 1,
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      mainAxisSpacing: 10,
-                                      crossAxisSpacing: 6,
-                                      crossAxisCount: 2,
-                                      itemBuilder: (context, index) {
-                                        if(index == 0) {
-                                          return AddPhotoButton(
-                                              action: () => Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ArtworkUploadPage()),
-                                              ));
-                                        }
-                                        return InkWell(
-                                          onTap: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => ArtworkDetails(artwork: user.artworks![index - 1], isOwner: true)),
-                                          ),
-                                          child: Stack(
-                                            children: [
-                                              FadingInPicture(url: user.artworks![index - 1].url!),
-                                              Positioned(
-                                                bottom: 15,
-                                                right: 25,
-                                                child: Text(user.artworks![index - 1].name!,
-                                                  style: TextStyles.semiBoldPrimary14,),
-                                              )
-                                            ],
-                                          ),
+                                    if(snapshot.hasData) {
+                                      User user = User.fromJson(snapshot.data!.data() as Map<String, dynamic>);
+                                      if (user.artInfo!.collections.isEmpty) {
+                                        return Text(
+                                          'You have no art collection yet, start by adding a new one',
+                                          style: TextStyles.regularN90014,
                                         );
+                                      } else {
+                                        user.artInfo!.collections.sort((a, b) => b.artworks.length.compareTo(a.artworks.length));
 
-                                      },
-                                    ),
-                                  ) : AddPhotoButton(
-                                      action: () => Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ArtworkUploadPage()),
-                                      ));
-                                }
-                                return Container();
-                              }),
-                        ],
-                      ),
+                                        return Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            for (var collection in user.artInfo!.collections)
+                                              InkWell(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => ArtworkUploadPage(collectionId: collection.name!),
+                                                    ),
+                                                  );
+                                                },
+                                                child: Container(
+                                                  margin: EdgeInsets.only(bottom: 16),
+                                                  height: 220,
+                                                  width: double.infinity,
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      verticalMargin4,
+                                                      collection.artworks.isEmpty ? Text('This collection is empty', style: TextStyles.semiBoldN90014,) :
+                                                      PhotoGridWidget(
+                                                        artworks: collection.artworks,
+                                                        moreCount: collection.artworks.length > 4 ? collection.artworks.length - 4 : 0,
+                                                      ),
+                                                      verticalMargin8,
+                                                      Text(collection.name!, style: TextStyles.boldN90017,),
+
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        );
+                                      }
+                                    }
+                                    return Container();
+                                  },
+                                )
+
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  )
+                  ),
+                ),
+                floatingActionButton: Container(
+                  padding: horizontalPadding32,
+                  width: 200,
+                  child: FloatingActionButton(
+                      backgroundColor:  AppTheme.n900,
+                      foregroundColor: AppTheme.primaryColor,
+                      onPressed: () {
+
+                        // context.read<OnboardingCubit>().save(user!, UserStatus.spaceInfo);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => NewCollectionPage()), // Replace NewPage with the actual class of your new page
+                        );
+                      },
+                      child:  Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                              decoration: const BoxDecoration(
+                                color: AppTheme.primaryColor,
+                                shape: BoxShape.circle,
+                              ),
+                              width: 18,
+                              child: const Icon(Icons.add, size: 13, color: AppTheme.black,)
+                          ),
+                          horizontalMargin4,
+                          const Text('Add New',),
+                        ],
+                      )
+                  ),
+                ),
+                floatingActionButtonLocation: FloatingActionButtonLocation
+                    .centerDocked,
               );
             }
             return Container();

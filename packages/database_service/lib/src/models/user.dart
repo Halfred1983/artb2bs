@@ -24,7 +24,7 @@ class User {
   final UserInfo? userInfo;
   final VenueInfo? venueInfo;
   ArtInfo? artInfo;
-  List<Artwork>? artworks;
+  // List<Artwork>? artworks;
   List<Photo>? photos;
   BookingSettings? bookingSettings;
   // List<Booking>? bookings;
@@ -43,7 +43,7 @@ class User {
     required this.userStatus,
     this.userInfo,
     this.venueInfo,
-    this.artworks,
+    // this.artworks,
     this.artInfo,
     this.photos,
     this.bookingSettings,

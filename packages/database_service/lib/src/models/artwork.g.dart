@@ -25,6 +25,8 @@ abstract class _$ArtworkCWProxy {
 
   Artwork technique(String? technique);
 
+  Artwork type(String? type);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Artwork(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -41,6 +43,7 @@ abstract class _$ArtworkCWProxy {
     String? height,
     String? width,
     String? technique,
+    String? type,
   });
 }
 
@@ -79,6 +82,9 @@ class _$ArtworkCWProxyImpl implements _$ArtworkCWProxy {
   Artwork technique(String? technique) => this(technique: technique);
 
   @override
+  Artwork type(String? type) => this(type: type);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Artwork(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -96,6 +102,7 @@ class _$ArtworkCWProxyImpl implements _$ArtworkCWProxy {
     Object? height = const $CopyWithPlaceholder(),
     Object? width = const $CopyWithPlaceholder(),
     Object? technique = const $CopyWithPlaceholder(),
+    Object? type = const $CopyWithPlaceholder(),
   }) {
     return Artwork(
       url: url == const $CopyWithPlaceholder()
@@ -134,6 +141,10 @@ class _$ArtworkCWProxyImpl implements _$ArtworkCWProxy {
           ? _value.technique
           // ignore: cast_nullable_to_non_nullable
           : technique as String?,
+      type: type == const $CopyWithPlaceholder()
+          ? _value.type
+          // ignore: cast_nullable_to_non_nullable
+          : type as String?,
     );
   }
 }
@@ -158,6 +169,7 @@ Artwork _$ArtworkFromJson(Map<String, dynamic> json) => Artwork(
       height: json['height'] as String?,
       width: json['width'] as String?,
       technique: json['technique'] as String?,
+      type: json['type'] as String?,
     );
 
 Map<String, dynamic> _$ArtworkToJson(Artwork instance) => <String, dynamic>{
@@ -170,4 +182,5 @@ Map<String, dynamic> _$ArtworkToJson(Artwork instance) => <String, dynamic>{
       'height': instance.height,
       'width': instance.width,
       'technique': instance.technique,
+      'type': instance.type,
     };

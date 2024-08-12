@@ -2,6 +2,7 @@
 import 'package:database_service/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 import '../app/resources/styles.dart';
@@ -51,8 +52,16 @@ class SummaryCard extends StatelessWidget {
                   children: [
                     Text('Venue name', style: TextStyles.regularN10012),
                     Text(host.userInfo!.name!, style: TextStyles.boldN90017),
-                    Text(host.userInfo!.address!.formattedAddress,
-                      softWrap: true, style: TextStyles.semiBoldN90012,),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width - 3 * horizontalPadding32.horizontal, // Adjust width to fit within screen bounds considering padding
+                      child: Text(
+                        host.userInfo!.address!.formattedAddress,
+                        softWrap: true,
+                        style: TextStyles.semiBoldN90012,
+                        maxLines: 4, // Allow up to 2 lines
+                        overflow: TextOverflow.ellipsis, // Add ellipsis if text overflows
+                      ),
+                    ),
                   ],
                 ),
                 Column(
@@ -62,6 +71,7 @@ class SummaryCard extends StatelessWidget {
                     Container(
                         height: 30,
                         margin: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
                         clipBehavior: Clip.antiAlias,
                         decoration: ShapeDecoration(
                           color: AppTheme.n900,
@@ -126,7 +136,7 @@ class SummaryCard extends StatelessWidget {
                   children: [
                     Text('Spaces', style: TextStyles.regularN10012),
                     Text(booking!.spaces!,
-                      style: TextStyles.boldN90016, ),
+                      style: TextStyles.boldN90016,textAlign: TextAlign.center, ),
                   ],
                 ),
 

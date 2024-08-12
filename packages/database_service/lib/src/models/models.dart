@@ -12,5 +12,6 @@ export 'refund.dart';
 export 'accepted.dart';
 export 'unavailable.dart';
 export 'unavailable_spaces.dart';
+export 'collection.dart';
 export 'business_day.dart';
 export 'business_hours.dart';

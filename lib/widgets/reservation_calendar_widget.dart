@@ -233,27 +233,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                             titleTextStyle: TextStyle(fontSize: 17.0, color: AppTheme.primaryColor),
                             titleCentered: true
                         ),
-                        calendarStyle: const CalendarStyle(
-                          rangeHighlightColor: AppTheme.primaryColorOpacity,
-                          isTodayHighlighted: true,
-                          selectedDecoration:  BoxDecoration(
-                            color: AppTheme.primaryCalendarViolet,
-                            shape: BoxShape.circle,
-                          ),
-                          todayDecoration: BoxDecoration(
-                            color: AppTheme.primaryColorOpacity,
-                            shape: BoxShape.circle,
-                          ),
-                          rangeStartDecoration: BoxDecoration(
-                            color: AppTheme.primaryColourVioletOpacity,
-                            shape: BoxShape.circle,
-                          ),
-                          rangeEndDecoration: BoxDecoration(
-                            color: AppTheme.primaryColourVioletOpacity,
-                            shape: BoxShape.circle,
-                          ),
-                          disabledTextStyle: TextStyle(color: Color(0xFFBFBFBF), decoration: TextDecoration.lineThrough),
-                        ),
+                        calendarStyle: AppTheme.calendarStyle,
                         selectedDayPredicate: (day) {
                           return isSameDay(_selectedDay, day);
                         },
