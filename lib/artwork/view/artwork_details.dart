@@ -49,10 +49,10 @@ class ArtworkDetails extends StatelessWidget {
               return Scaffold(
                   appBar: AppBar(
                     scrolledUnderElevation: 0,
-                    title: Text("Artwork details", style: TextStyles.boldAccent24,),
+                    title: Text("Artwork details", style: TextStyles.boldN90017,),
                     centerTitle: true,
                     iconTheme: const IconThemeData(
-                      color: AppTheme.primaryColor, //change your color here
+                      color: AppTheme.n900, //change your color here
                     ),
                     actions: isOwner == true ? [
                       PopupMenuButton<int>(
@@ -82,46 +82,45 @@ class ArtworkDetails extends StatelessWidget {
                               ),
                             ),
                             verticalMargin24,
-                            Text('Name:', style: TextStyles.semiBoldAccent14,),
+                            Text(artwork.name ?? 'n/a', style: TextStyles.boldN90020,),
                             verticalMargin8,
-                            Text(artwork.name ?? 'n/a', style: TextStyles.semiBoldAccent14,),
+                            Text('Dimensions W:${artwork.width!}cm x H:${artwork.height!}cm', style: TextStyles.regularN90014,),
+                            verticalMargin8,
+                            Text(artwork.technique ?? 'n/a', style: TextStyles.regularN90014,),
+                            verticalMargin12,
                             Divider(thickness: 0.5, color: AppTheme.black.withOpacity(0.4),),
-                            verticalMargin24,
-                            Text('Year:', style: TextStyles.semiBoldAccent14,),
-                            verticalMargin8,
-                            Text(artwork.name ?? 'n/a', style: TextStyles.semiBoldAccent14,),
-                            Divider(thickness: 0.5, color: AppTheme.black.withOpacity(0.4),),
-                            verticalMargin24,
-                            Text('Technique:', style: TextStyles.semiBoldAccent14,),
-                            verticalMargin8,
-                            Text(artwork.technique ?? 'n/a', style: TextStyles.semiBoldAccent14,),
-                            Divider(thickness: 0.5, color: AppTheme.black.withOpacity(0.4),),
-                            verticalMargin24,
-                            Text('Price:', style: TextStyles.semiBoldAccent14,),
-                            verticalMargin8,
-                            Text(artwork.price != null ? '${artwork.price} ${artwork.currencyCode}' : 'n/a', style: TextStyles.semiBoldAccent14,),
-                            Divider(thickness: 0.5, color: AppTheme.black.withOpacity(0.4),),
-                            verticalMargin24,
-                            Text('Size:', style: TextStyles.semiBoldAccent14,),
-                            verticalMargin8,
+                            verticalMargin12,
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Icon(FontAwesomeIcons.arrowsLeftRight, color: AppTheme.primaryColor, size: 30,),
-                                horizontalMargin8,
-                                Text(artwork.width != null ? '${artwork.width} cm' : 'n/a', style: TextStyles.semiBoldAccent14,),
-                                horizontalMargin24,
-                                const Icon(FontAwesomeIcons.arrowsUpDown, color: AppTheme.primaryColor, size: 30,),
-                                horizontalMargin8,
-                                Text(artwork.height != null ? '${artwork.height} cm' : 'n/a', style: TextStyles.semiBoldAccent14,),
+                                Text('Type:', style: TextStyles.boldN90017,),
+                                Text(artwork.type ?? 'n/a', style: TextStyles.boldN90017,),
                               ],
                             ),
-                            Divider(thickness: 0.5, color: AppTheme.black.withOpacity(0.4),),
-                            verticalMargin24,
-                            Text('Vibes:', style: TextStyles.semiBoldAccent14,),
-                            verticalMargin8,
-                            Text( (artwork.tags != null && artwork.tags!.isNotEmpty) ? artwork.tags!.join(", ") : 'n/a',
-                              style: TextStyles.semiBoldAccent14,),
+                            verticalMargin16,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Technique:', style: TextStyles.boldN90017,),
+                                Text(artwork.technique ?? 'n/a', style: TextStyles.boldN90017,),
+                              ],
+                            ),
+                            verticalMargin16,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Year:', style: TextStyles.boldN90017,),
+                                Text(artwork.year ?? 'n/a', style: TextStyles.boldN90017,),
+                              ],
+                            ),
+                            verticalMargin16,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Price:', style: TextStyles.boldN90017,),
+                                Text(artwork.price != null ? '${artwork.price} ${artwork.currencyCode}' : 'n/a', style: TextStyles.boldN90017,),
+                              ],
+                            )
                           ],
                         ),
                       )

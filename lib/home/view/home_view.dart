@@ -194,7 +194,7 @@ class _HomeViewState extends State<HomeView> {
                     ),
                     BottomBarItem(
                       icon: const Icon(Icons.dashboard, size: 20, color: AppTheme.n200,),
-                      title: Text("Dashboard", style: TextStyles.semiBoldN90012),
+                      title: Text("Portfolio", style: TextStyles.semiBoldN90012),
                       backgroundColor: AppTheme.primaryColor,
                       selectedIcon: const Icon(Icons.dashboard, size: 20, color: AppTheme.n900,),
                     ),

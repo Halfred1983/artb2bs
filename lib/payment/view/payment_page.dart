@@ -1,4 +1,5 @@
 import 'package:artb2b/booking/cubit/booking_state.dart';
+import 'package:artb2b/home/view/home_page.dart';
 import 'package:artb2b/payment/bloc/payment_bloc.dart';
 import 'package:artb2b/utils/common.dart';
 import 'package:artb2b/utils/currency/currency_helper.dart';
@@ -247,7 +248,7 @@ class _PaymentPageState extends State<PaymentPage> {
                               onPressed:
                                   () {
                                 _controllerCenter.stop();
-                                GoRouter.of(context).go('/bookingRequests');
+                                MaterialPageRoute(builder: (context) => HomePage(index: 3));
                               },
                               child: Text("Close", style: TextStyles.semiBoldPrimary14,),)),
                         floatingActionButtonLocation: FloatingActionButtonLocation

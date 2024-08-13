@@ -16,6 +16,7 @@ import '../../app/resources/styles.dart';
 import '../../injection.dart';
 import '../../onboard/view/4_venue_address.dart';
 import '../../photo/view/artwork_upload_page.dart';
+import '../../photo/view/collection_page.dart';
 import '../../photo/view/new_collection_page.dart';
 import '../../user_profile/view/user_profile_page.dart';
 import '../../utils/common.dart';
@@ -229,12 +230,12 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                      builder: (context) => ArtworkUploadPage(collectionId: collection.name!),
+                                                      builder: (context) => CollectionPage(collectionId: collection.name!),
                                                     ),
                                                   );
                                                 },
                                                 child: Container(
-                                                  margin: EdgeInsets.only(bottom: 16),
+                                                  margin: EdgeInsets.only(bottom: 24),
                                                   height: 220,
                                                   width: double.infinity,
                                                   child: Column(
@@ -248,6 +249,9 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                                       ),
                                                       verticalMargin8,
                                                       Text(collection.name!, style: TextStyles.boldN90017,),
+                                                      Text(collection.collectionVibes!, style: TextStyles.semiBoldN90014,
+                                                        maxLines: 1, // Set the maximum number of lines to display
+                                                        overflow: TextOverflow.ellipsis,),
 
                                                     ],
                                                   ),

@@ -26,13 +26,13 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
     }
   }
 
-  void acceptBooking(Booking booking, User user) async {
+  void acceptBooking(Booking booking, User host, User artist) async {
       try {
         emit(LoadingState());
 
-        var bookings = await databaseService.findBookingsByUser(user);
+        var bookings = await databaseService.findBookingsByUser(host);
 
-        int freeSpaces = int.parse(user.venueInfo!.spaces!) -  int.parse(booking.spaces!);
+        int freeSpaces = int.parse(host.venueInfo!.spaces!) -  int.parse(booking.spaces!);
         for(var book in bookings) {
           if(booking.from!.isBeforeWithoutTime(book.to!) && booking.to!.isAfterWithoutTime(book.from!)
               && booking.bookingId != book.bookingId &&
@@ -45,7 +45,7 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
         if(freeSpaces < 0) {
           emit(OverlapErrorState('There are not enough free spaces for '
               'the dates:\n from ${DateFormat.yMMMEd().format(booking.from!)} \n'
-              'to ${DateFormat.yMMMEd().format(booking.to!)}', user));
+              'to ${DateFormat.yMMMEd().format(booking.to!)}', host));
         }
         else {
           booking = booking.copyWith(bookingStatus: BookingStatus.accepted , reviewdTime: DateTime.now());
@@ -54,7 +54,13 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
               artistId: booking.artistId, bookingId: booking.bookingId,
           acceptedTimestamp: DateTime.now());
           await databaseService.createAccepted(accepted);
-          emit(LoadedState(user));
+
+          host = host.copyWith(exhibitionCount: host.exhibitionCount + 1);
+          artist = artist.copyWith(exhibitionCount: artist.exhibitionCount + 1);
+
+          await databaseService.updateUser(user: host);
+          await databaseService.updateUser(user: artist);
+          emit(LoadedState(host));
         }
       } catch (e) {
         emit(ErrorState());

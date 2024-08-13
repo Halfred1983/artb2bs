@@ -30,7 +30,7 @@ class ArtInfo {
   Map<String, dynamic> toJson() => _$ArtInfoToJson(this);
 
   bool hasCollectionWithName(String name) {
-    return collections.any((collection) => collection.name == name);
+    return collections.any((collection) => collection.name!.toLowerCase() == name.toLowerCase());
   }
 
 }

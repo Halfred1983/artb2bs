@@ -7,16 +7,24 @@ class FadingInPicture extends StatelessWidget {
   FadingInPicture({
     super.key,
     this.radius,
+    this.applyBottomRadius = false,
     required this.url,
   });
 
   final String url;
   double? radius;
+  bool applyBottomRadius;
+
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.only(topLeft: Radius.circular(radius??0), topRight: Radius.circular(radius??0)),
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(radius ?? 0),
+        topRight: Radius.circular(radius ?? 0),
+        bottomLeft: applyBottomRadius ? Radius.circular(radius ?? 0) : Radius.zero,
+        bottomRight: applyBottomRadius ? Radius.circular(radius ?? 0) : Radius.zero,
+      ),
       child: ShaderMask(
         shaderCallback: (rect) {
           return const LinearGradient(

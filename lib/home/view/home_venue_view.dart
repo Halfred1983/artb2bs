@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/app/resources/theme.dart';
+import 'package:artb2b/home/view/home_page.dart';
 import 'package:artb2b/host/view/host_setting_page.dart';
 import 'package:artb2b/injection.dart';
 import 'package:artb2b/utils/common.dart';
@@ -108,8 +109,8 @@ class _HomeVenueState extends State<HomeVenue> {
                       onTap: () {
                         // Add your action here
                         Navigator.push(
-                          context,
-                          HostSettingPage.route(initialIndex: 1)                        );
+                            context,
+                            HostSettingPage.route(initialIndex: 1)                        );
                       },
                       child: Container(
                         padding: horizontalPadding16,
@@ -144,23 +145,37 @@ class _HomeVenueState extends State<HomeVenue> {
                   verticalMargin16,
                   VenueCard(user: user, showActive: true,),
                   verticalMargin32,
-                  Text('Reservations', style: TextStyles.boldN90014,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('Reservations', style: TextStyles.boldN90014,),
+                      InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => HomePage(index: 3,)),
+                            );
+                          },
+                          child: Text('See all', style: TextStyles.semiBoldAccent14,)
+                      ),
+                    ],
+                  ),
                   Tags(
                     _bookingStatus.map((status) =>
                     status.name
                         .toString()
                         .split('.')
                         .last).toList(),
-          
+
                     _bookingStatus
                         .where((status) => _selectedStatus == status.name.toString().split('.').last)
                         .map((status) => status.name.toString().split('.').last)
                         .toList(),
-          
+
                         (selectedStatus) {
                       setState(() {
                         _selectedStatus = selectedStatus.isNotEmpty ? selectedStatus.first : null;
-          
+
                       });
                       // context.read<OnboardingCubit>().updateBusinessDay(
                       //     _businessDays.firstWhere((day) =>

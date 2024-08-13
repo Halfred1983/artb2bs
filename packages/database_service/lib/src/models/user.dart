@@ -24,10 +24,9 @@ class User {
   final UserInfo? userInfo;
   final VenueInfo? venueInfo;
   ArtInfo? artInfo;
-  // List<Artwork>? artworks;
   List<Photo>? photos;
   BookingSettings? bookingSettings;
-  // List<Booking>? bookings;
+  int exhibitionCount = 0;
   String? balance;
 
   User({
@@ -47,7 +46,7 @@ class User {
     this.artInfo,
     this.photos,
     this.bookingSettings,
-    // this.bookings,
+    this.exhibitionCount = 0,
     this.balance
   });
 

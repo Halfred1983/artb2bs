@@ -29,6 +29,8 @@ abstract class _$UserCWProxy {
 
   User bookingSettings(BookingSettings? bookingSettings);
 
+  User exhibitionCount(int exhibitionCount);
+
   User balance(String? balance);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `User(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
@@ -49,6 +51,7 @@ abstract class _$UserCWProxy {
     ArtInfo? artInfo,
     List<Photo>? photos,
     BookingSettings? bookingSettings,
+    int? exhibitionCount,
     String? balance,
   });
 }
@@ -94,6 +97,10 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
       this(bookingSettings: bookingSettings);
 
   @override
+  User exhibitionCount(int exhibitionCount) =>
+      this(exhibitionCount: exhibitionCount);
+
+  @override
   User balance(String? balance) => this(balance: balance);
 
   @override
@@ -116,6 +123,7 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
     Object? artInfo = const $CopyWithPlaceholder(),
     Object? photos = const $CopyWithPlaceholder(),
     Object? bookingSettings = const $CopyWithPlaceholder(),
+    Object? exhibitionCount = const $CopyWithPlaceholder(),
     Object? balance = const $CopyWithPlaceholder(),
   }) {
     return User(
@@ -163,6 +171,11 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
           ? _value.bookingSettings
           // ignore: cast_nullable_to_non_nullable
           : bookingSettings as BookingSettings?,
+      exhibitionCount: exhibitionCount == const $CopyWithPlaceholder() ||
+              exhibitionCount == null
+          ? _value.exhibitionCount
+          // ignore: cast_nullable_to_non_nullable
+          : exhibitionCount as int,
       balance: balance == const $CopyWithPlaceholder()
           ? _value.balance
           // ignore: cast_nullable_to_non_nullable
@@ -204,6 +217,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
           ? null
           : BookingSettings.fromJson(
               json['bookingSettings'] as Map<String, dynamic>),
+      exhibitionCount: json['exhibitionCount'] as int? ?? 0,
       balance: json['balance'] as String?,
     );
 
@@ -219,6 +233,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'artInfo': instance.artInfo?.toJson(),
       'photos': instance.photos?.map((e) => e.toJson()).toList(),
       'bookingSettings': instance.bookingSettings?.toJson(),
+      'exhibitionCount': instance.exhibitionCount,
       'balance': instance.balance,
     };
 

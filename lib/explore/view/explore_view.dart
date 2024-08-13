@@ -4,9 +4,7 @@ import 'dart:ui';
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:database_service/database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -182,15 +180,15 @@ class _ExploreViewState extends State<ExploreView> {
           suffixIcon: IconButton(
             icon: Stack(
               children: [
-                const Icon(Icons.tune, size: 20, color: AppTheme.primaryColor,),
+                const Icon(Icons.tune, size: 20, color: AppTheme.accentColor,),
                 Positioned(
-                  bottom: 5,
-                  left: 7,
-                  child: isFiltering ? const Icon(
-                    Icons.check,
-                    size: 20,
-                    color: Colors.red, // Adjust the color of the checkmark
-                  ) : Container()
+                    bottom: 5,
+                    left: 7,
+                    child: isFiltering ? const Icon(
+                      Icons.check,
+                      size: 20,
+                      color: Colors.red, // Adjust the color of the checkmark
+                    ) : Container()
                 )
               ],
             ),
@@ -315,25 +313,53 @@ class _ExploreViewState extends State<ExploreView> {
                       height: 100,
                       child: Padding(
                         padding: horizontalPadding24 + verticalPadding12,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(user.userInfo!.name!, style: TextStyles.boldN90017,),
-                            Row(
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(Icons.location_pin, size: 10,),
-                                Text(user.userInfo!.address!.city,
-                                  softWrap: true, style: TextStyles.regularN90010,),
+                                Text(user.userInfo!.name!, style: TextStyles.boldN90017,),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.location_pin, size: 10,),
+                                    Text(user.userInfo!.address!.city,
+                                      softWrap: true, style: TextStyles.regularN90010,),
+                                  ],
+                                ),
+                                Expanded(child: Container(),),
+                                Text(user.venueInfo!.typeOfVenue != null ?
+                                user.venueInfo!.typeOfVenue!.join(", ") :
+                                '', softWrap: true, style: TextStyles.semiBoldP40010,),
+                                verticalMargin24
+
                               ],
                             ),
-                            Expanded(child: Container(),),
-                            Text(user.venueInfo!.typeOfVenue != null ?
-                            user.venueInfo!.typeOfVenue!.join(", ") :
-                            '', softWrap: true, style: TextStyles.semiBoldP40010,),
-                            verticalMargin24
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text('From', style: TextStyles.regularAccent12,),
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(24),
+                                    color: AppTheme.primaryColor,
+                                  ),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(' ${user.bookingSettings!.basePrice!} '
+                                            '${CurrencyHelper.currency(user.userInfo!.address!.country).currencySymbol}',
+                                          style: TextStyles.semiBoldN90017,),
 
-                          ],
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )],
                         ),
 
                       ),
