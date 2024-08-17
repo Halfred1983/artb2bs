@@ -9,11 +9,14 @@ import '../../../../injection.dart';
 
 class BookingRequestPage extends StatelessWidget {
 
-  BookingRequestPage({super.key});
+  BookingRequestPage({super.key, this.isEmbedded = false, this.choices});
 
   static Route<void> route(User host) {
     return MaterialPageRoute<void>(builder: (_) => BookingRequestPage());
   }
+
+  bool isEmbedded = false;
+  List<String>? choices;
 
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
@@ -27,7 +30,7 @@ class BookingRequestPage extends StatelessWidget {
           databaseService: databaseService,
           userId: authService.getUser().id,
         ),
-        child:BookingRequestView()
+        child:BookingRequestView(isEmbedded : isEmbedded, choices: choices,),
       );
   }
 }

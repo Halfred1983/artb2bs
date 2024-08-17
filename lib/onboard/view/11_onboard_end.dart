@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import '../../app/resources/assets.dart';
 import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
+import '../../home/view/home_page.dart';
 import '../../injection.dart';
 import '../../utils/currency/currency_helper.dart';
 import '../../widgets/common_card_widget.dart';
@@ -99,7 +100,7 @@ class _VenueOnboardEndViewState extends State<VenueOnboardEndView> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => VenueOnboardEndView()),
+                        builder: (context) => HomePage()),
                   );
               },
               child: const Text('Continue'),

@@ -144,11 +144,12 @@ class PhotoCubit extends Cubit<PhotoState> {
     emit(ArtworkUploadedState(artwork));
   }
 
-  void savePhoto(String downloadUrl, User user) {
-    Photo photo = state.props[2] as Photo;
-
-    photo = photo.copyWith(url: downloadUrl);
-    user.photos?.add(photo);
+  void savePhoto(Photo photo, String downloadUrl, User user) {
+    if (user.photos == null) {
+      user = user.copyWith(photos: [photo]);
+    } else {
+      user.photos?.add(photo);
+    }
 
     databaseService.updateUser(user: user);
 

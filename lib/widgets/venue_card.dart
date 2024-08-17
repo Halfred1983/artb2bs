@@ -31,7 +31,7 @@ Widget build(BuildContext context) {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
 
-            if(user!.photos == null && user.photos!.isEmpty) ...[
+            if(user!.photos == null || user.photos!.isEmpty) ...[
               const Stack(
                 children: [
                   SizedBox(

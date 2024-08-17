@@ -15,6 +15,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../login/cubit/login_cubit.dart';
 import '../../../login/view/login_page.dart';
 import '../../../utils/common.dart';
+import '../../app/resources/assets.dart';
 import '../../widgets/loading_screen.dart';
 
 
@@ -64,7 +65,7 @@ class UserProfileView extends StatelessWidget {
                                                     ?
                                                 'assets/images/gallery.png'
                                                     : 'assets/images/artist.png'),
-                                        imageUrl: user!.imageUrl
+                                        imageUrl: user!.imageUrl.isNotEmpty ? user!.imageUrl : Assets.logoUrl,
                                     )
                                 ),
                                 horizontalMargin24,

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:artb2b/onboard/view/7_venue_photo.dart';
 import 'package:database_service/database.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -29,6 +30,9 @@ class PhotoUploadView extends StatefulWidget {
 }
 
 class _PhotoUploadViewState extends State<PhotoUploadView> {
+  final TextEditingController _photoDescriptionController = TextEditingController();
+
+  String _photoDescription = '';
 
   GlobalKey<FormState> key = GlobalKey();
   File? _imageFile;
@@ -38,7 +42,6 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
   User? user;
   double _progress = 0;
 
-  final TextEditingController _typeAheadController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -140,11 +143,20 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                       ) : Container(),
 
                       verticalMargin24,
-
-                      InputTextWidget((description) =>
-                          context.read<PhotoCubit>().chooseDescription(description),
-                          'What is the photo of?'),
-                      // verticalMargin48,
+                      Text('Photo description', style: TextStyles.boldN90016),
+                      verticalMargin8,
+                      TextField(
+                        controller: _photoDescriptionController,
+                        autofocus: false,
+                        style: TextStyles.semiBoldN90014,
+                        onChanged: (String value) {
+                          _photoDescription = value;
+                        },
+                        autocorrect: false,
+                        enableSuggestions: false,
+                        decoration: AppTheme.textInputDecoration.copyWith(hintText: 'What is the photo about?',),
+                        keyboardType: TextInputType.text,
+                      ),
                       //Year
                       verticalMargin24,
 
@@ -215,7 +227,10 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                           _downloadUrl =
                           await taskSnapshot.ref.getDownloadURL();
                           if (context.mounted) {
-                            context.read<PhotoCubit>().savePhoto(
+                            Photo photo = Photo(
+                                url: _downloadUrl!,
+                                description: _photoDescription);
+                            context.read<PhotoCubit>().savePhoto(photo,
                                 _downloadUrl!, user!);
                           }
                           break;
@@ -335,8 +350,10 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                   decoration: TextDecoration.underline
               ),),
               onPressed: () {
-                Navigator.of(context)
-                  ..pop()..pop();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => VenuePhotoPage(isOnboarding: false,)), // Replace NewPage with the actual class of your new page
+                );
               },
             ),
           ],

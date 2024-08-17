@@ -55,11 +55,9 @@ class LoadedState extends PhotoState {
   LoadedState(this.user);
 
   final User user;
-  // final Artwork artwork;
-  // final Photo photo;
 
   @override
-  List<Object> get props => [user,];
+  List<Object> get props => [user];
 }
 
 class ErrorState extends PhotoState {

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/app/resources/theme.dart';
+import 'package:artb2b/booking_requests/view/booking_request_page.dart';
 import 'package:artb2b/home/view/home_page.dart';
 import 'package:artb2b/host/view/host_setting_page.dart';
 import 'package:artb2b/injection.dart';
@@ -13,6 +14,7 @@ import 'package:artb2b/widgets/map_view.dart';
 import 'package:artb2b/widgets/venue_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_service/database.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -110,7 +112,8 @@ class _HomeVenueState extends State<HomeVenue> {
                         // Add your action here
                         Navigator.push(
                             context,
-                            HostSettingPage.route(initialIndex: 1)                        );
+                            HostSettingPage.route(initialIndex: 1)
+                        );
                       },
                       child: Container(
                         padding: horizontalPadding16,
@@ -160,67 +163,10 @@ class _HomeVenueState extends State<HomeVenue> {
                       ),
                     ],
                   ),
-                  Tags(
-                    _bookingStatus.map((status) =>
-                    status.name
-                        .toString()
-                        .split('.')
-                        .last).toList(),
 
-                    _bookingStatus
-                        .where((status) => _selectedStatus == status.name.toString().split('.').last)
-                        .map((status) => status.name.toString().split('.').last)
-                        .toList(),
-
-                        (selectedStatus) {
-                      setState(() {
-                        _selectedStatus = selectedStatus.isNotEmpty ? selectedStatus.first : null;
-
-                      });
-                      // context.read<OnboardingCubit>().updateBusinessDay(
-                      //     _businessDays.firstWhere((day) =>
-                      //         selectedDays.contains(day.dayOfWeek
-                      //             .toString()
-                      //             .split('.')
-                      //             .last)));
-                    },
-                    isScrollable: true,
-                    isMultiple: false,
-                  ),
-                  FutureBuilder<List<Booking>>(
-                    future: firestoreDatabaseService.findBookingsByUser(user),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: Lottie.asset(
-                            'assets/loading.json',
-                            fit: BoxFit.fill,
-                          ),
-                        );
-                      }
-                      if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      }
-                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Text('You have no bookings yet.' , style: TextStyles.regularN90012,);
-                      }
-                      final bookings = snapshot.data!;
-                      if(_selectedStatus != null) {
-                        bookings.retainWhere((booking) => booking.bookingStatus == _selectedStatus);
-                      }
-
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: bookings.length,
-                        itemBuilder: (context, index) {
-                          final booking = bookings[index];
-                          return ListTile(
-                            title: Text('Booking ID: ${booking.bookingId}'),
-                            subtitle: Text('From: ${booking.from} To: ${booking.to}'),
-                          );
-                        },
-                      );
-                    },
+                  SizedBox(
+                    height: 300,
+                    child: BookingRequestPage(isEmbedded: true, choices: [BookingStatus.pending.name.toString(), BookingStatus.accepted.name.toString()]),
                   ),
                   verticalMargin32
                 ],

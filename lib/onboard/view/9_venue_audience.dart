@@ -128,7 +128,7 @@ class _VenueDescriptionViewState extends State<VenueDescriptionView> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) =>
-                            VenueOpeningTimeView()), // Replace NewPage with the actual class of your new page
+                            VenueOpeningTime()), // Replace NewPage with the actual class of your new page
                       );
                     }
                     else {

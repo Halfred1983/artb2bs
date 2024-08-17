@@ -49,10 +49,10 @@ class PhotoDetails extends StatelessWidget {
               return Scaffold(
                   appBar: AppBar(
                     scrolledUnderElevation: 0,
-                    title: Text("Photo details", style: TextStyles.boldAccent24,),
+                    title: Text("Photo details", style: TextStyles.boldN90017,),
                     centerTitle: true,
                     iconTheme: const IconThemeData(
-                      color: AppTheme.primaryColor, //change your color here
+                      color: AppTheme.n900, //change your color here
                     ),
                     actions: isOwner ? [
                       PopupMenuButton<int>(
@@ -82,10 +82,10 @@ class PhotoDetails extends StatelessWidget {
                               ),
                             ),
                             verticalMargin24,
-                            Text('Description:', style: TextStyles.semiBoldAccent14,),
+                            Text('Description:', style: TextStyles.semiBoldN90017,),
                             verticalMargin8,
-                            Text(photo.description ?? 'n/a', style: TextStyles.semiBoldAccent14,),
-                            Divider(thickness: 0.5, color: AppTheme.black.withOpacity(0.4),),
+                            Text(photo.description ?? 'n/a', style: TextStyles.boldN90014,),
+                            // Divider(thickness: 0.5, color: AppTheme.black.withOpacity(0.4),),
                           ],
                         ),
                       )

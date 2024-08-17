@@ -1,6 +1,7 @@
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/login/cubit/login_cubit.dart';
 import 'package:artb2b/utils/common.dart';
+import 'package:artb2b/utils/user_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -99,6 +100,25 @@ class _LoginScreenState extends State<LoginScreen> {
 
   var _isLoading = false;
 
+  @override
+  void dispose() {
+    _usernameController.removeListener(_updateState);
+    _passwordController.removeListener(_updateState);
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameController.addListener(_updateState);
+    _passwordController.addListener(_updateState);
+  }
+
+  void _updateState() {
+    setState(() {});
+  }
 
   Future<void> _login() async {
     setState(() => _isLoading = true);
@@ -109,6 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if(username.isEmpty || password.isEmpty) {
       showCustomSnackBar('Please enter your email and password', context);
+      setState(() => _isLoading = false);
       return;
     }
 
@@ -138,6 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Text('Email', style: TextStyles.semiBoldN90014,),
           verticalMargin4,
           TextField(
+            autocorrect: false, // Disable auto-correct
             autofocus: false,
             style: TextStyles.semiBoldAccent14,
             decoration: InputDecoration(
@@ -177,6 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Text('Password', style: TextStyles.semiBoldN90014,),
           verticalMargin4,
           TextField(
+            autocorrect: false,
             controller: _passwordController,
             decoration: InputDecoration(
               hintText: 'Password',
@@ -215,7 +238,7 @@ class _LoginScreenState extends State<LoginScreen> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: () =>  _isLoading ? null : _login(),
+              onPressed: !_canContinue() ||_isLoading ? null : () => _login(),
               child: _isLoading
                   ? Container(
                 width: 24,
@@ -231,6 +254,12 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
+  }
+
+  bool _canContinue() {
+    return _usernameController.text.isNotEmpty &&
+        UserUtils().isValidEmail(_usernameController.text)
+        && _passwordController.text.isNotEmpty;
   }
 }
 

@@ -2,16 +2,12 @@ import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/login/cubit/login_cubit.dart';
 import 'package:artb2b/utils/common.dart';
 import 'package:artb2b/widgets/snackbar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:lottie/lottie.dart';
 
 import '../../app/resources/styles.dart';
+import '../../utils/user_utils.dart';
 import '../../widgets/google_sign_in_button.dart';
-import '0_start_view.dart';
 
 
 class SignUpView extends StatelessWidget {
@@ -90,6 +86,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   var _isLoading = false;
 
+  @override
+  void dispose() {
+    _usernameController.removeListener(_updateState);
+    _passwordController.removeListener(_updateState);
+    _confirmPasswordController.removeListener(_updateState);
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameController.addListener(_updateState);
+    _passwordController.addListener(_updateState);
+    _confirmPasswordController.addListener(_updateState);
+  }
 
   Future<void> _register() async {
     setState(() => _isLoading = true);
@@ -117,6 +131,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   }
 
+  void _updateState() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -125,6 +143,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         Text('Email', style: TextStyles.semiBoldN90014,),
         verticalMargin4,
         TextField(
+          autocorrect: false,
           autofocus: false,
           style: TextStyles.semiBoldAccent14,
           decoration: InputDecoration(
@@ -164,6 +183,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         Text('Password', style: TextStyles.semiBoldN90014,),
         verticalMargin4,
         TextField(
+          autocorrect: false,
           controller: _passwordController,
           decoration: InputDecoration(
             hintText: 'Password',
@@ -202,6 +222,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         Text('Confirm Password', style: TextStyles.semiBoldN90014,),
         verticalMargin4,
         TextField(
+          autocorrect: false,
           controller: _confirmPasswordController,
           decoration: InputDecoration(
             hintText: 'Confirm Password',
@@ -240,7 +261,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: !_isFilled() || _isLoading ? null : () => _register(),
+            onPressed: !_canContinue() || _isLoading ? null : () => _register(),
             child: _isLoading
                 ? Container(
               width: 24,
@@ -257,10 +278,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
   }
 
-  bool _isFilled() {
+  bool _canContinue() {
     return _confirmPasswordController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty &&
-        _usernameController.text.isNotEmpty;
+        _usernameController.text.isNotEmpty &&
+    UserUtils().isValidEmail(_usernameController.text);
+
   }
 }
 

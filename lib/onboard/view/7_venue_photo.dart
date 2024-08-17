@@ -143,7 +143,7 @@ class _SelectPhotoViewState extends State<SelectPhotoView> {
                                   ),
                                   child: Stack(
                                     children: [
-                                      FadingInPicture(radius: 12, url:  _user!.photos![index - 1].url!),
+                                      FadingInPicture(radius: 12, url:  _user!.photos![index - 1].url!, applyBottomRadius: true,),
                                       Positioned(
                                         bottom: 15,
                                         right: 25,

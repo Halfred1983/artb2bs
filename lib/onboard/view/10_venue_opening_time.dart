@@ -50,13 +50,13 @@ class VenueOpeningTimeView extends StatefulWidget {
 
 class _VenueOpeningTimeViewState extends State<VenueOpeningTimeView> {
   List<BusinessDay> _businessDays = [
-    BusinessDay(DayOfWeek.monday, [], false),
-    BusinessDay(DayOfWeek.tuesday, [], false),
-    BusinessDay(DayOfWeek.wednesday, [], false),
-    BusinessDay(DayOfWeek.thursday, [], false),
-    BusinessDay(DayOfWeek.friday, [], false),
-    BusinessDay(DayOfWeek.saturday, [], false),
-    BusinessDay(DayOfWeek.sunday, [], false),
+    BusinessDay(DayOfWeek.monday, [], null),
+    BusinessDay(DayOfWeek.tuesday, [], null),
+    BusinessDay(DayOfWeek.wednesday, [], null),
+    BusinessDay(DayOfWeek.thursday, [], null),
+    BusinessDay(DayOfWeek.friday, [], null),
+    BusinessDay(DayOfWeek.saturday, [], null),
+    BusinessDay(DayOfWeek.sunday, [], null),
   ];
   String? _selectedDay;
 
