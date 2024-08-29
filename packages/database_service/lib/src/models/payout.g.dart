@@ -123,7 +123,7 @@ Payout _$PayoutFromJson(Map<String, dynamic> json) => Payout(
       _$JsonConverterFromJson<Timestamp, DateTime>(
           json['timestamp'], const TimestampConverter().fromJson),
       json['userId'] as String?,
-      json['amount'] as int?,
+      (json['amount'] as num?)?.toInt(),
       json['currencyCode'] as String?,
       json['paypalAccount'] as String?,
     );

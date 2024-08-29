@@ -1,7 +1,4 @@
 import 'package:artb2b/payment/view/payment_page.dart';
-import 'package:artb2b/widgets/app_input_validators.dart';
-import 'package:artb2b/widgets/booking_calendar_widget.dart';
-import 'package:artb2b/widgets/common_card_widget.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +11,9 @@ import '../../app/resources/theme.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
 import '../../utils/currency/currency_helper.dart';
-import '../../widgets/input_text_widget.dart';
-import '../../widgets/summary_card.dart';
 import '../cubit/booking_cubit.dart';
 import '../cubit/booking_state.dart';
 import '../service/booking_service.dart';
-import 'package:input_quantity/input_quantity.dart';
 
 class BookingConfirmationView extends StatelessWidget {
 

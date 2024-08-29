@@ -1,86 +1,150 @@
-import 'dart:io';
-
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/booking_requests/cubit/booking_request_cubit.dart';
 import 'package:artb2b/booking_requests/cubit/booking_request_state.dart';
+import 'package:artb2b/utils/common.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../injection.dart';
-import '../../../utils/common.dart';
 import '../../app/resources/theme.dart';
 import '../../widgets/scollable_chips.dart';
+import 'booking_card.dart';
 import 'booking_dialog.dart';
-import 'booking_list.dart';
 
-class BookingRequestView extends StatelessWidget {
-  final FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
+class BookingRequestView extends StatefulWidget {
   final List<String> choices;
-  String _filter = 'Pending';
-  bool isEmbedded = false;
+  final bool isEmbedded;
+  final User user;
 
   BookingRequestView({
     super.key,
     this.isEmbedded = false,
     List<String>? choices,
+    required this.user,
   }) : choices = choices ?? ['All'] + BookingStatus.values.map((e) => e.name.capitalize()).toList();
+
+  @override
+  State<BookingRequestView> createState() => _BookingRequestViewState();
+}
+
+class _BookingRequestViewState extends State<BookingRequestView> {
+
+  final Map<String, User> _userCache = {}; // Cache for user data
+  final int _pageSize = 10;
+
+  final PagingController<int, Booking> _pagingController =
+  PagingController(firstPageKey: 0);
+
+  String _filter = 'All';
+
+  @override
+  void initState() {
+    super.initState();
+
+    _pagingController.addPageRequestListener((pageKey) {
+      _fetchPage(pageKey);
+    });
+  }
+
+
+  Future<void> _fetchPage(int pageKey, {bool reset = false}) async {
+    try {
+      if(reset) {
+        _pagingController.itemList!.clear();
+      }
+
+      // Fetch the bookings from your data source (e.g., API or database)
+      final newItems = await context.read<BookingRequestCubit>()
+          .fetchBookingList(reset: reset, user: widget.user, filter: _filter);
+
+      // Load host and artist data in parallel and cache it
+      await Future.wait(newItems.map((booking) async {
+        if (!_userCache.containsKey(booking.hostId)) {
+          _userCache[booking.hostId!] = await locator<FirestoreDatabaseService>().getUser(userId: booking.hostId!) as User;
+        }
+        if (!_userCache.containsKey(booking.artistId)) {
+          _userCache[booking.artistId!] = await locator<FirestoreDatabaseService>().getUser(userId: booking.artistId!) as User;
+        }
+      }));
+
+      final isLastPage = newItems.length < _pageSize; // Determine if it's the last page
+      if (isLastPage) {
+        _pagingController.appendLastPage(newItems);
+      } else {
+        final nextPageKey = pageKey + newItems.length;
+        _pagingController.appendPage(newItems, nextPageKey);
+      }
+    } catch (error) {
+      _pagingController.error = error;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BookingRequestCubit, BookingRequestState>(
-      builder: (context, state) {
-        if (state is LoadingState) {
-          return const LoadingScreen();
-        }
-        if (state is OverlapErrorState) {
-          return _buildErrorDialog(context, state.message, state.user);
-        }
-        if (state is LoadedState || state is FilterState) {
-          User user = state.props[0] as User;
-          _filter = state is FilterState ? state.filter : _filter;
+        builder: (context, state) {
+          if (state is LoadingState && state.bookings.isEmpty) {
+            return const LoadingScreen();
+          } else if (state is ErrorState) {
+            return _buildErrorDialog(context, state.error, state.user);
+          } else if (state is LoadedState) {
 
 
-          Widget body = SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
+            Widget body = Column(
               children: [
-                _buildFilterSection(context, user),
-                verticalMargin24,
-                StreamBuilder(
-                  stream: firestoreDatabaseService.findBookingsByUserStream(user),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return SizedBox(
-                          height: MediaQuery.of(context).size.height,
-                          child: const LoadingScreen());
-                    }
-                    if (snapshot.hasData && snapshot.data != null) {
-                      List<Booking> bookings = snapshot.data!;
-                      if (_filter != 'All') {
-                        bookings = bookings.where((element) =>
-                        element.bookingStatus == BookingStatus.values.byName(_filter.deCapitalize())).toList();
-                      }
-                      bookings.sort((a, b) => b.from!.compareTo(a.from!)); // Sort by date descending
-                      return BookingList(
-                        isEmbedded: isEmbedded,
-                        user: user,
-                        bookings: bookings,
-                        onBookingTap: (booking) => _showBookingDetails(context, booking, user),
-                      );
-                    } else {
-                      return _buildEmptyState();
-                    }
-                  },
+                _buildFilterSection(context, state.user),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      verticalMargin24,
+                      if (state.bookings.isEmpty || (_pagingController.itemList != null && _pagingController.itemList!.isEmpty))
+                        Padding(
+                          padding: horizontalPadding24,
+                          child: Text(
+                            'No bookings for the selected criteria',
+                            style: TextStyles.boldN90029,
+                          ),
+                        )
+                      else
+                        Expanded(
+                            child: Padding(
+                              padding: widget.isEmbedded
+                                  ? EdgeInsets.zero
+                                  : horizontalPadding32,
+                              child:
+                              PagedListView<int, Booking>(
+                                pagingController: _pagingController,
+                                builderDelegate: PagedChildBuilderDelegate<Booking>(
+                                    itemBuilder: (context, item, index) {
+
+                                      final host = _userCache[item.hostId!];
+                                      final artist = _userCache[item.artistId!];
+
+                                      return BookingCard(
+                                        booking: item,
+                                        host: host!,
+                                        artist: artist!,
+                                        user: widget.user,
+                                        onTap: (booking) => _showBookingDetails(context, booking, widget.user),
+                                        isEmbedded: widget.isEmbedded,
+                                      );
+                                    }
+                                ),
+                              ),
+                            )
+                        ),
+                    ],
+                  ),
                 ),
               ],
-            ),
-          );
+            );
 
-          if(!isEmbedded) {
-            return Scaffold(
+            if (!widget.isEmbedded) {
+              return Scaffold(
                 appBar: AppBar(
                   scrolledUnderElevation: 0,
                   title: Padding(
@@ -91,14 +155,49 @@ class BookingRequestView extends StatelessWidget {
                   centerTitle: false,
                   titleSpacing: 0,
                 ),
-                body: body
-            );
-          }
+                body: body,
+              );
+            }
 
-          return body;
+            return body;
+          }
+          else {
+            return const LoadingScreen();
+          }
         }
-        return Container();
-      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildFilterSection(BuildContext context, User user) {
+    return Container(
+      decoration: ShapeDecoration(
+        color: widget.isEmbedded ? AppTheme.backgroundColor : AppTheme.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+      child: Padding(
+        padding: EdgeInsets.zero,
+        child: ScrollableChips(
+          choices: widget.choices,
+          onSelectionChanged: (selectedValue) {
+
+            //RESET FILTER ??
+            setState(() {
+              _filter = selectedValue;
+              _fetchPage(0, reset: true );
+            });
+
+
+            // context.read<BookingRequestCubit>().updateFilter(_filter, user);
+          },
+          selectedValue: _filter,
+        ),
+      ),
     );
   }
 
@@ -120,128 +219,35 @@ class BookingRequestView extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterSection(BuildContext context, User user) {
-    return Container(
-      decoration: ShapeDecoration(
-        color: isEmbedded ? AppTheme.backgroundColor : AppTheme.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      ),
-      child: Padding(
-        padding: EdgeInsets.zero,
-        child: ScrollableChips(
-          choices: choices,
-          onSelectionChanged: (selectedValue) {
-            _filter = selectedValue;
-            context.read<BookingRequestCubit>().updateFilter(_filter, user);
-          },
-          selectedValue: _filter,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Padding(
-      padding: horizontalPadding32,
-      child: Padding(
-        padding: horizontalPadding24,
-        child: Text('No bookings for the selected criteria', style: TextStyles.boldN90029),
-      ),
-    );
-  }
-
   void _showBookingDetails(BuildContext context, Booking booking, User user) {
-    // Retrieve host and artist data and show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return FutureBuilder<User?>(
-          future: firestoreDatabaseService.getUser(userId: booking.hostId!),
-          builder: (context, hostSnapshot) {
-            if (hostSnapshot.connectionState == ConnectionState.done && hostSnapshot.hasData) {
-              return FutureBuilder<User?>(
-                future: firestoreDatabaseService.getUser(userId: booking.artistId!),
-                builder: (context, artistSnapshot) {
-                  if (artistSnapshot.connectionState == ConnectionState.done && artistSnapshot.hasData) {
-
-                        return BookingDetailsDialog(
-                          booking: booking,
-                          host: hostSnapshot.data!,
-                          artist: artistSnapshot.data!,
-                          currentUser: user,
-                        );
-                  }
-                  return const LoadingScreen();
-                },
-              );
-            }
-            return const LoadingScreen();
-          },
-        );
-      },
-    );
+    Future.delayed(Duration.zero, () {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return FutureBuilder<User?>(
+            future: locator<FirestoreDatabaseService>().getUser(userId: booking.hostId!),
+            builder: (context, hostSnapshot) {
+              if (hostSnapshot.connectionState == ConnectionState.done && hostSnapshot.hasData) {
+                return FutureBuilder<User?>(
+                  future: locator<FirestoreDatabaseService>().getUser(userId: booking.artistId!),
+                  builder: (context, artistSnapshot) {
+                    if (artistSnapshot.connectionState == ConnectionState.done && artistSnapshot.hasData) {
+                      return BookingDetailsDialog(
+                        booking: booking,
+                        host: hostSnapshot.data!,
+                        artist: artistSnapshot.data!,
+                        currentUser: user,
+                      );
+                    }
+                    return const LoadingScreen();
+                  },
+                );
+              }
+              return const LoadingScreen();
+            },
+          );
+        },
+      );
+    });
   }
 }
-
-
-String breakLineAtWord(String text, String word) {
-  int index = text.indexOf(word);
-  if (index != -1) {
-    return text.substring(0, index + word.length) + '\n' + text.substring(index + word.length);
-  }
-  return text;
-}
-
-_whatsapp() async {
-  String contact = "656756200";
-  String text = '';
-  String androidUrl = "whatsapp://send?phone=$contact&text=$text";
-  String iosUrl = "https://wa.me/$contact?text=${Uri.parse(text)}";
-
-  String webUrl = 'https://api.whatsapp.com/send/?phone=$contact&text=hi';
-
-  try {
-    if (Platform.isIOS) {
-      if (await canLaunchUrl(Uri.parse(iosUrl))) {
-        await launchUrl(Uri.parse(iosUrl));
-      }
-    } else {
-      if (await canLaunchUrl(Uri.parse(androidUrl))) {
-        await launchUrl(Uri.parse(androidUrl));
-      }
-    }
-  } catch(e) {
-    print('object');
-    await launchUrl(Uri.parse(webUrl), mode: LaunchMode.externalApplication);
-  }
-}
-
-_launchUrl(String webUrl) async {
-  await launchUrl(Uri.parse(webUrl), mode: LaunchMode.externalApplication);
-}
-
-
-class StatusLabel extends StatelessWidget {
-  const StatusLabel({super.key, required this.booking});
-
-  final Booking booking;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 27,
-      margin: const EdgeInsets.all(5),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      clipBehavior: Clip.antiAlias,
-      decoration: ShapeDecoration(
-        color: booking.bookingStatus!.name.getBackgroundColorForBookingStatus(),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      ),
-      child: Text(booking.bookingStatus!.name.toString().capitalize(),
-        style:
-        TextStyles.semiBoldSV30014
-            .withColor(booking.bookingStatus!.name.getColorForBookingStatus()),),
-    );
-  }
-}
-

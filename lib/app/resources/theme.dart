@@ -334,18 +334,24 @@ class AppTheme {
           fontSize: 17.0, color: AppTheme
           .n900),
       titleCentered: true
+
   );
 
-  static const calendarStyle = CalendarStyle(
-    rangeHighlightColor: AppTheme
-        .primaryColor,
+  static final calendarStyle = CalendarStyle(
+    todayTextStyle: TextStyle(
+        color: AppTheme.n900,
+        fontWeight: FontWeight.bold),
+    selectedTextStyle: TextStyle(
+        color: AppTheme.n900,
+    ),
+    rangeHighlightColor: AppTheme.primaryColor,
     isTodayHighlighted: true,
     selectedDecoration: BoxDecoration(
       color: AppTheme.primaryColor,
       shape: BoxShape.circle,
     ),
     todayDecoration: BoxDecoration(
-      color: AppTheme.accentColor,
+      color: AppTheme.primaryColor.withOpacity(0.4),
       shape: BoxShape.circle,
     ),
     rangeStartDecoration: BoxDecoration(

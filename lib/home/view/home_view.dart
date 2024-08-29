@@ -143,7 +143,7 @@ class _HomeViewState extends State<HomeView> {
                       widget,
                       ExplorePage(),
                       ArtistDashboardPage(),
-                      BookingRequestPage(),
+                      BookingRequestPage(user: user!),
                       ExhibitionPage(),
                       // UserProfilePage(),
                     ];
@@ -153,7 +153,7 @@ class _HomeViewState extends State<HomeView> {
                       widget,
                       HostListingPage(),
                       HostDashboardPage(),
-                      BookingRequestPage(),
+                      BookingRequestPage(user: user!),
                       ExhibitionPage(),
                       // UserProfilePage(),
                     ];

@@ -23,6 +23,8 @@ abstract class _$UserCWProxy {
 
   User venueInfo(VenueInfo? venueInfo);
 
+  User payoutInfo(PayoutInfo? payoutInfo);
+
   User artInfo(ArtInfo? artInfo);
 
   User photos(List<Photo>? photos);
@@ -48,6 +50,7 @@ abstract class _$UserCWProxy {
     UserStatus? userStatus,
     UserInfo? userInfo,
     VenueInfo? venueInfo,
+    PayoutInfo? payoutInfo,
     ArtInfo? artInfo,
     List<Photo>? photos,
     BookingSettings? bookingSettings,
@@ -87,6 +90,9 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
   User venueInfo(VenueInfo? venueInfo) => this(venueInfo: venueInfo);
 
   @override
+  User payoutInfo(PayoutInfo? payoutInfo) => this(payoutInfo: payoutInfo);
+
+  @override
   User artInfo(ArtInfo? artInfo) => this(artInfo: artInfo);
 
   @override
@@ -120,6 +126,7 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
     Object? userStatus = const $CopyWithPlaceholder(),
     Object? userInfo = const $CopyWithPlaceholder(),
     Object? venueInfo = const $CopyWithPlaceholder(),
+    Object? payoutInfo = const $CopyWithPlaceholder(),
     Object? artInfo = const $CopyWithPlaceholder(),
     Object? photos = const $CopyWithPlaceholder(),
     Object? bookingSettings = const $CopyWithPlaceholder(),
@@ -159,6 +166,10 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
           ? _value.venueInfo
           // ignore: cast_nullable_to_non_nullable
           : venueInfo as VenueInfo?,
+      payoutInfo: payoutInfo == const $CopyWithPlaceholder()
+          ? _value.payoutInfo
+          // ignore: cast_nullable_to_non_nullable
+          : payoutInfo as PayoutInfo?,
       artInfo: artInfo == const $CopyWithPlaceholder()
           ? _value.artInfo
           // ignore: cast_nullable_to_non_nullable
@@ -207,6 +218,9 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       venueInfo: json['venueInfo'] == null
           ? null
           : VenueInfo.fromJson(json['venueInfo'] as Map<String, dynamic>),
+      payoutInfo: json['payoutInfo'] == null
+          ? null
+          : PayoutInfo.fromJson(json['payoutInfo'] as Map<String, dynamic>),
       artInfo: json['artInfo'] == null
           ? null
           : ArtInfo.fromJson(json['artInfo'] as Map<String, dynamic>),
@@ -217,7 +231,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
           ? null
           : BookingSettings.fromJson(
               json['bookingSettings'] as Map<String, dynamic>),
-      exhibitionCount: json['exhibitionCount'] as int? ?? 0,
+      exhibitionCount: (json['exhibitionCount'] as num?)?.toInt() ?? 0,
       balance: json['balance'] as String?,
     );
 
@@ -230,6 +244,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'userStatus': _$UserStatusEnumMap[instance.userStatus],
       'userInfo': instance.userInfo?.toJson(),
       'venueInfo': instance.venueInfo?.toJson(),
+      'payoutInfo': instance.payoutInfo?.toJson(),
       'artInfo': instance.artInfo?.toJson(),
       'photos': instance.photos?.map((e) => e.toJson()).toList(),
       'bookingSettings': instance.bookingSettings?.toJson(),

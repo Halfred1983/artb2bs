@@ -2,7 +2,9 @@ import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class HostState extends Equatable {}
+abstract class HostState extends Equatable {
+  get user => null;
+}
 
 class InitialState extends HostState {
   @override
@@ -14,9 +16,9 @@ class LoadingState extends HostState {
   List<Object> get props => [];
 }
 
+
 class LoadedState extends HostState {
   LoadedState(this.user);
-
   final User user;
 
   @override

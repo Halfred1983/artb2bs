@@ -5,7 +5,14 @@ const admin = require('firebase-admin');
 const moment = require('moment');
 const axios = require('axios');
 
+const { v4: uuidv4 } = require('uuid');
+const { Storage } = require('@google-cloud/storage');
+const path = require('path');
+
 admin.initializeApp();
+const db = admin.firestore();
+const storage = new Storage();
+
 
 const generatedResponse = function(intent) {
     switch (intent.status) {
@@ -220,7 +227,7 @@ exports.sendBookingNotification = functions.firestore
 
       // Fetch the artist's last name from the "users" collection
       const artistDoc = await admin.firestore().collection('users').doc(artistId).get();
-      const artistName = artistDoc.data().userInfo.name;
+      const artistName = artistDoc.data().artInfo.artistName;
 
       const totalPrice = bookingData.totalPrice;
       const currencyCode = bookingData.currencyCode;
@@ -341,151 +348,370 @@ exports.markPendingBookingsAsCancelled = functions.pubsub
 
 
 
+const WISE_API_BASE_URL = 'https://api.sandbox.transferwise.tech';
+
+// Helper function to make an authenticated request using the personal token
+async function makeWiseApiRequest(endpoint, method = 'GET', data = null) {
+    const personalToken = functions.config().wise.api_key;
+
+    try {
+        const response = await axios({
+            url: `${WISE_API_BASE_URL}${endpoint}`,
+            method: method,
+            headers: {
+                'Authorization': `Bearer ${personalToken}`,
+                'Content-Type': 'application/json',
+            },
+            data: data
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error(`Error making request to ${endpoint}:`, error.response ? error.response.data : error.message);
+        throw new Error(`Failed to make API request to ${endpoint}`);
+    }
+}
+
+// Helper function to upload PDF to Firebase Storage
+async function uploadPDFToStorage(pdfBuffer, userId, fileName) {
+    const bucketName = admin.storage().bucket().name;
+    const filePath = `${userId}/receipts/${fileName}`;
+    const file = storage.bucket(bucketName).file(filePath);
+
+    await file.save(pdfBuffer, {
+        contentType: 'application/pdf',
+    });
+
+    const signedUrl = await file.getSignedUrl({
+        action: 'read',
+        expires: '03-01-2500',
+    });
+
+    return signedUrl[0];
+}
 
 
+// Function to create a bank account ID for a customer
+exports.createBankAccount = functions.https.onRequest(async (req, res) => {
+    const userId = req.body.userId;
 
-//exports.scheduledPaypalPayout = functions.pubsub
-//  .schedule('36 16 * * *') // Set the schedule to run at 5:30 AM every day
-//  .timeZone('Europe/London') // Set your timezone
-//  .onRun(async (context) => {
+    if (!userId) {
+        return res.status(400).send('Missing userId');
+    }
+
+    try {
+        const userDoc = await admin.firestore().collection('users').doc(userId).get();
+        if (!userDoc.exists) {
+            return res.status(404).send('User not found');
+        }
+
+        const userData = userDoc.data();
+        const payoutInfo = userData.payoutInfo;
+
+        if (!payoutInfo) {
+            return res.status(400).send('User payout info is missing');
+        }
+
+        const profiles = await makeWiseApiRequest(`/v1/profiles`);
+        const profileId = profiles[0].id;
+
+            const bankAccount = await makeWiseApiRequest(`/v1/accounts`, 'POST', {
+            profile: profileId,
+            accountHolderName: payoutInfo.accountHolder,
+            currency: payoutInfo.currency,
+            type: 'iban',
+            details: {
+                iban: payoutInfo.iban,
+                legalType: 'PRIVATE',
+            },
+        });
+
+        const bankAccountId = bankAccount.id;
+
+        await admin.firestore().collection('users').doc(userId).update({
+            'payoutInfo.bankAccountId': bankAccountId,
+        });
+
+        res.status(200).send('Bank account created successfully');
+    } catch (error) {
+        console.error('Error creating bank account:', error);
+        res.status(500).send(error.message);
+    }
+});
+
+
+// Function to process monthly payouts for hosts
+exports.processMonthlyPayouts = functions.pubsub.schedule('0 16 1 * *')
+    .timeZone('Europe/London')
+    .onRun(async (context) => {
+        const usersSnapshot = await admin.firestore().collection('users')
+            .where('userInfo.userType', '==', 1)
+            .get();
+
+        for (const userDoc of usersSnapshot.docs) {
+            const userData = userDoc.data();
+            const payoutInfo = userData.payoutInfo;
+            const balance = userData.balance;
+
+            if (!payoutInfo || !balance || parseFloat(balance) <= 0) {
+                console.log(`Skipping user ${userDoc.id}: Missing payout info or zero balance`);
+                continue;
+            }
+
+            try {
+                const profiles = await makeWiseApiRequest(`/v1/profiles`);
+                const profileId = profiles[0].id;
+
+                let bankAccountId = payoutInfo.bankAccountId;
+
+                if (!bankAccountId) {
+                    console.log(`Creating bank account for user ${userDoc.id}`);
+                    const bankAccount = await makeWiseApiRequest(`/v1/accounts`, 'POST', {
+                        profile: profileId,
+                        accountHolderName: payoutInfo.accountHolder,
+                        currency: payoutInfo.currency,
+                        type: 'iban',
+                        details: {
+                            iban: payoutInfo.accountNumber,
+                            legalType: 'PRIVATE',
+                        },
+                    });
+                    bankAccountId = bankAccount.id;
+
+                    await admin.firestore().collection('users').doc(userDoc.id).update({
+                        'payoutInfo.bankAccountId': bankAccountId,
+                    });
+                }
+
+                const quoteData = {
+                    sourceCurrency: payoutInfo.currency,
+                    targetCurrency: payoutInfo.currency,
+                    sourceAmount: parseFloat(balance),
+                    targetAmount: null,
+                    profileId: profileId,
+                    targetAccount: bankAccountId,
+                    preferredPayIn: "BALANCE",
+                };
+                const quote = await makeWiseApiRequest(`/v3/profiles/${profileId}/quotes`, 'POST', quoteData);
+
+                const payoutRef = admin.firestore().collection('payouts').doc();
+                await payoutRef.set({
+                    userId: userDoc.id,
+                    sourceAmount: quote.sourceAmount,
+                    targetAmount: quote.paymentOptions[0].targetAmount,
+                    totalFee: quote.paymentOptions[0].fee.total,
+                    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+                    quoteId: quote.id,
+                    payoutStatus: 0, // Initiated
+                });
+
+                const transferData = {
+                    sourceAccount: null,
+                    targetAccount: bankAccountId,
+                    quoteUuid: quote.id,
+                    customerTransactionId: uuidv4(),
+                    details: {
+                        reference: "Monthly payout",
+                        transferPurpose: "verification.transfers.purpose.pay.bills",
+                    },
+                };
+                const transfer = await makeWiseApiRequest('/v1/transfers', 'POST', transferData);
+
+                await payoutRef.update({
+                    transferId: transfer.id,
+                    customerTransactionId: transfer.customerTransactionId,
+                    payoutStatus: 1, // On Progress
+                });
+
+                const fundTransfer = await makeWiseApiRequest(`/v3/profiles/${profileId}/transfers/${transfer.id}/payments`, 'POST', {
+                    type: 'BALANCE',
+                });
+
+                await payoutRef.update({
+                    payoutStatus: fundTransfer.status === 'COMPLETED' ? 2 : 4, // 2 for Completed, 4 for Failed
+                });
+
+                await admin.firestore().collection('users').doc(userDoc.id).update({
+                    balance: "0",
+                });
+
+                console.log(`Payout processed successfully for user ${userDoc.id}`);
+            } catch (error) {
+                console.error(`Error processing payout for user ${userDoc.id}:`, error.message);
+            }
+        }
+    });
+
+//
+//
+//// Main function to get profile, create recipient, and send money
+//exports.sendPayout = functions.https.onRequest(async (req, res) => {
+//    const userId = req.body.userId;
+//    console.log('userid:', userId);
+//
+//    if (!userId) {
+//        console.log(' missing userid:', userId);
+//        return res.status(400).send('Missing userId');
+//    }
+//
 //    try {
-//      const usersSnapshot = await admin.firestore().collection('users').get();
-//
-//      const promises = [];
-//
-//      usersSnapshot.forEach((userDoc) => {
-//        const user = userDoc.data();
-//        const userId = userDoc.id;
-//        const currencyCode = user.userInfo.address.currencyCode;
-//
-//        // Check if user has a PayPal account
-//        if (user.bookingSettings && user.bookingSettings.paypalAccount) {
-//          const amount = parseFloat(user.balance || '0'); // You might need to adjust this based on your user data structure
-//
-//            console.log('send '+amount+' '+currencyCode+' to '+user.bookingSettings.paypalAccount);
-//
-//          promises.push(sendPaypalPayout(userId, user.bookingSettings.paypalAccount, amount, currencyCode ));
+//        // Step 1: Get the user's Firestore document
+//        const userDoc = await admin.firestore().collection('users').doc(userId).get();
+//        if (!userDoc.exists) {
+//            console.log('userid not found:', userId);
+//            return res.status(404).send('User not found');
 //        }
-//      });
 //
-//      // Wait for all promises to resolve
-//      await Promise.all(promises);
+//        const userData = userDoc.data();
+//        const payoutInfo = userData.payoutInfo;
+//        const balance = userData.balance;
 //
-//      console.log('Scheduled PayPal Payouts completed.');
-//      return null;
-//    } catch (error) {
-//      console.error('Scheduled PayPal Payouts Error:', error);
-//      return null;
-//    }
-//  });
+//        if (!payoutInfo || !balance) {
+//            return res.status(400).send('User payout info or balance is missing');
+//        }
 //
-//async function sendPaypalPayout(userId, receiverEmail, amount, currencyCode) {
-//  try {
-//    // Fetch PayPal auth token
-//    const paypalAuthToken = await getPaypalAuthToken();
+//// Step 2: Get Wise profile ID
+//        const profiles = await makeWiseApiRequest(`/v1/profiles`); // Ensure you're using the correct version
+//        const profileId = profiles[0].id; // Assuming we use the first profile ID
+//        console.log('Wise profile ID retrieved:', profileId);
 //
-//    // Make a request to the PayPal Payouts API
-//    const response = await axios.post(
-//      'https://api-m.sandbox.paypal.com/v1/payments/payouts',
-//      {
-//        sender_batch_header: {
-//                  sender_batch_id: `batch_${userId}_${Date.now()}`,
-//                  email_subject: 'You have a new payout from ArtB2B!',
-//                  email_message: 'You received a new payout. Thanks for using our service! ArtB2B'
-//        },
-//        items: [
-//          {
-//            recipient_type: 'EMAIL',
-//            amount: {
-//              value: amount.toFixed(2),
-//              currency: currencyCode,
-//            },
-//            receiver: receiverEmail,
-//            note: 'Payment from ArtB2B',
-//            sender_item_id: `item_${userId}_1`,
-//          },
-//        ],
-//      },
-//      {
-//        headers: {
-//          'Content-Type': 'application/json',
-//          Authorization: `Bearer ${paypalAuthToken}`,
-//        },
-//      }
-//    );
+//        // Step 3: Check if the user already has a bank account ID
+//        let bankAccountId;
+//        if (payoutInfo.bankAccountId) {
+//            console.log('Bank account ID already exists for user:', userId);
+//            // Use the existing bank account ID
+//            bankAccountId = payoutInfo.bankAccountId;
+//            console.log('Using existing bank account ID:', bankAccountId);
+//        } else {
+//            console.log('No bank account ID found for user:', userId);
+//            // Create a new recipient account if no bank account ID exists
+//            console.log('Creating new bank account for user:', userId);
+//            const bankAccount = await makeWiseApiRequest(`/v1/accounts`, 'POST', {
+//                profile: profileId, // Use the first profile ID
+//                accountHolderName: payoutInfo.accountHolder,
+//                currency: payoutInfo.currency,
+//                type: 'iban',
+//                details: {
+//                    iban: payoutInfo.accountNumber,
+//                    legalType: 'PRIVATE', // or 'BUSINESS'
+//                },
+//            });
 //
-//    // Log the PayPal Payout response
-//    console.log('PayPal Payout Response:', response.data);
+//            bankAccountId = bankAccount.id;
 //
-//    // Initialize the status
-//    let status = 'initialized';
+//            // Store the new bank account ID in the user's Firestore document
+//            await admin.firestore().collection('users').doc(userId).update({
+//                'payoutInfo.bankAccountId': bankAccountId,
+//            });
+//            console.log('Stored new bank account ID in Firestore for user:', userId);
+//        }
 //
-//    // Check if the PayPal payout was successful (HTTP status code 2xx)
-//    if (response.status >= 200 && response.status < 300) {
-//      // Insert entry in payouts collection
-//      await admin.firestore().collection('payouts').add({
-//        userId: userId,
-//        amount: amount,
-//        currencyCode: currencyCode,
-//        timestamp: admin.firestore.FieldValue.serverTimestamp(),
-//        status: '0',
-//      });
 //
-//      // Update user's balance to 0
-//      await admin.firestore().collection('users').doc(userId).update({
-//        balance: '0',
-//      });
+//                console.log(' quote:', userId);
 //
-//      console.log(`Payout for user ${userId} completed. Balance updated to 0.`);
-//    } else {
-//    await admin.firestore().collection('payouts').add({
+//
+//        // Step 4: Create a quote
+//        const quoteData = {
+//            sourceCurrency: "EUR",
+//            targetCurrency: "EUR",
+//            sourceAmount: parseFloat(balance),
+//            targetAmount: null,
+//            profileId: profileId, // store to db
+//            targetAccount: bankAccountId, // Now using the bank account ID we ensured exists
+//            preferredPayIn: "BALANCE",
+//        };
+//        const quote = await makeWiseApiRequest(`/v3/profiles/${profileId}/quotes`, 'POST', quoteData);
+//
+//        console.log(' quote id :', quote.id);
+//
+//        // Save relevant information from the quote in Firestore
+//        const payoutRef = db.collection('payouts').doc();
+//        await payoutRef.set({
 //            userId: userId,
-//            amount: amount,
-//            currencyCode: currencyCode,
-//            timestamp: admin.firestore.FieldValue.serverTimestamp(),
-//            status: '1',
-//          });
-//      console.error(`PayPal Payout for user ${userId} failed. Status Code: ${response.status}`);
-//    }
-//  } catch (error) {
-//  await admin.firestore().collection('payouts').add({
-//          userId: userId,
-//          amount: amount,
-//          currencyCode: currencyCode,
-//          timestamp: admin.firestore.FieldValue.serverTimestamp(),
-//          status: '1',
+//            sourceAmount: quote.sourceAmount,
+//            targetAmount: quote.paymentOptions[0].targetAmount,
+//            totalFee: quote.paymentOptions[0].fee.total,
+//            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+//            quoteId: quote.id,
+//            payoutStatus: 0, // Initiated
 //        });
-//    console.error(`PayPal Payout for user ${userId} Error:`, error.response ? error.response.data : error.message);
-//  }
-//}
 //
-//async function getPaypalAuthToken() {
-//    const clientId = 'Ad4ikZGk8HA0wYDuRGD4XfmjEfXW2trGLo7ZiFzYYt7YhwRQjpoMu8QsoJ0EM7oLYEcjsp7Tgo8vCTR-';
-//    const clientSecret = 'EGx7cWt3CJkgM5Lv06mzej5Dg43BwHSCTxLnurH_VU1FhgKJ8oCFKVV_PKmlg2SNdc_jrF4iHi-MG1co';
-//
-//    // Encode credentials using Buffer
-//    const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+//                console.log(' stored in payout collection id :', quote.id);
 //
 //
-//  try {
-//    const response = await axios.post(
-//      'https://api-m.sandbox.paypal.com/v1/oauth2/token',
-//      'grant_type=client_credentials',
-//      {
-//        headers: {
-//          'Content-Type': 'application/x-www-form-urlencoded',
-//          'Authorization': `Basic ${credentials}`,
-//        },
-//      }
-//    );
+//        // Step 5: Create a transfer
+//        const transferData = {
+//            sourceAccount: null,
+//            targetAccount: bankAccountId,
+//            quoteUuid: quote.id,
+//            customerTransactionId: uuidv4(),
+//            details: {
+//                reference: "to my friend",
+//                transferPurpose: "verification.transfers.purpose.pay.bills"
+//            }
+//        };
+//        const transfer = await makeWiseApiRequest('/v1/transfers', 'POST', transferData);
 //
-//    return response.data.access_token;
-//  } catch (error) {
-//    console.error('PayPal Auth Token Error:', error.response ? error.response.data : error.message);
-//    throw error;
-//  }
-//}
-
+//                console.log('transfer done :', transfer.id);
+//
+//        // Update the payout status in Firestore
+//        await payoutRef.update({
+//            transferId: transfer.id,
+//            customerTransactionId: transfer.customerTransactionId,
+//            payoutStatus: 1, // On Progress
+//        });
+//
+//                        console.log('updated  payout :', transfer.id);
+//
+//
+//        // Step 6: Fund the transfer
+//        const fundTransfer = await makeWiseApiRequest(`/v3/profiles/${profileId}/transfers/${transfer.id}/payments`, 'POST', {
+//            type: 'BALANCE',
+//        });
+//                                console.log('funded  payout :', transfer.id);
+//
+//
+//        // Update the payout status in Firestore based on the transfer status
+//        await payoutRef.update({
+//            payoutStatus: fundTransfer.status === 'COMPLETED' ? 2 : 4, // 2 for Completed, 4 for Failed
+//        });
+//
+//              console.log('payout completed  payout :', transfer.id);
+//
+//
+//           //This needs to be done on a later stage because the invoice is not yet available
+////
+////        // Step 7: Retrieve the receipt PDF
+////        const receiptResponse = await axios.get(`${WISE_API_BASE_URL}/v1/transfers/${transfer.id}/receipt.pdf`, {
+////            headers: {
+////                'Authorization': `Bearer ${functions.config().wise.api_key}`,
+////            }
+////        });
+////
+////                      console.log('invoice  payout :', transfer.id);
+////
+////
+////        // Step 8: Upload the receipt PDF to Firebase Storage
+////        const receiptFileName = `wise_invoice_${new Date().toISOString().slice(0, 10)}.pdf`;
+////        const receiptUrl = await uploadPDFToStorage(receiptResponse.data, userId, receiptFileName);
+////
+////                      console.log('invoice  stored :', transfer.id);
+////
+////
+////        // Step 9: Update the payout object in Firestore with the receipt URL
+////        await payoutRef.update({
+////            receiptUrl: receiptUrl,
+////        });
+////
+////                      console.log('payout updated  stored :', transfer.id);
+//
+//        res.status(200).send('Payout processed successfully');
+//
+//    } catch (error) {
+//        console.error('Error processing payout:', error);
+//        res.status(500).send(error.message);
+//    }
+//});
 
 
 /* eslint-disable */

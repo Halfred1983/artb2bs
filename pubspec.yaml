@@ -74,6 +74,8 @@ dependencies:
   table_calendar: ^3.0.9
   intl: ^0.19.0
   flutter_stripe: ^11.0.0
+  country_picker: ^2.0.26
+  currency_picker: ^2.0.21
 #  flutter_stripe_web: ^6.0.0
 #  stripe_platform_interface: ^11.0.0
   http: ^1.0.0
@@ -81,6 +83,8 @@ dependencies:
   google_fonts: ^6.2.1
   map_launcher: ^3.3.0
   url_launcher: ^6.2.6
+  infinite_scroll_pagination: ^4.0.0
+
 
   #  firebase_messaging: ^14.2.0
 #  awesome_notifications: ^0.7.4+1
@@ -95,7 +99,7 @@ dev_dependencies:
   injectable_generator: ^2.1.6
 #  auto_route_generator: ^7.1.1
   build_runner:
-  json_serializable: ^6.7.0
+  json_serializable: ^6.8.0
   freezed: ^2.3.5
   flutter_launcher_icons: ^0.13.1
   # The "flutter_lints" package below contains a set of recommended lints to

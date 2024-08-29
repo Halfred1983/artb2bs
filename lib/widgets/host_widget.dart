@@ -53,19 +53,33 @@ class _HostProfileWidgetState extends State<HostProfileWidget> {
               ),
             ),
       );
+    } else {
+      photos = [
+        ShaderMask(
+          // blendMode: BlendMode.src,
+            shaderCallback: (Rect bounds) {
+              return const LinearGradient(
+                  colors: [
+                    Colors.white,
+                    Colors.black,
+                  ],
+                  begin: Alignment.center,
+                  end: Alignment.bottomCenter
+              ).createShader(bounds);
+            },
+            child: const ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(24)),
+                child: Image(
+                  image: AssetImage(Assets.logo),
+                  fit: BoxFit.cover,
+                )
+            )
+        ),
+
+      ];
     }
 
     return
-      // Scaffold(
-      // appBar: AppBar(
-      //   scrolledUnderElevation: 0,
-      //   title: Text(widget.user.userInfo!.name!, style: TextStyles.boldN90017,),
-      //   centerTitle: true,
-      //   iconTheme: const IconThemeData(
-      //     color: AppTheme.n900, //change your color here
-      //   ),
-      //   elevation: 0,
-      // ),
       SingleChildScrollView(
           physics: const ClampingScrollPhysics(),
           child: Padding(
@@ -87,7 +101,7 @@ class _HostProfileWidgetState extends State<HostProfileWidget> {
                             },
                             padEnds: false,
                             controller: controller,
-                            itemCount: widget.user.photos!.length,
+                            itemCount: photos.length,
                             itemBuilder: (_, index) {
                               return photos[index % photos.length];
                             },
@@ -103,7 +117,7 @@ class _HostProfileWidgetState extends State<HostProfileWidget> {
                             children: [
                               AnimatedSmoothIndicator(
                                 activeIndex: _currentIndex,
-                                count: widget.user.photos!.length,
+                                count: photos.length,
                                 effect: const ExpandingDotsEffect(
                                   spacing: 5,
                                   dotHeight: 10,

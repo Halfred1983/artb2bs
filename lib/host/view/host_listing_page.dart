@@ -37,14 +37,17 @@ class HostListingPage extends StatelessWidget {
           final user = User.fromJson(snapshot.data!.data() as Map<String, dynamic>);
           return Scaffold(
               appBar: AppBar(
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    verticalMargin32,
-                    Text("Your listings", style: TextStyles.boldN90029,),
-                    verticalMargin48,
-                  ],
+                title: Padding(
+                  padding: horizontalPadding12,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      verticalMargin48,
+                      Text("Your listings", style: TextStyles.boldN90029,),
+                      verticalMargin48,
+                    ],
+                  ),
                 ),
                 centerTitle: false,
               ),

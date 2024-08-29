@@ -1,6 +1,7 @@
 
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:database_service/database.dart';
+import 'package:database_service/src/models/payout_info.dart';
 import 'package:database_service/src/models/photo.dart';
 import 'package:database_service/src/models/venue_info.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -23,6 +24,7 @@ class User {
   final UserStatus? userStatus;
   final UserInfo? userInfo;
   final VenueInfo? venueInfo;
+  final PayoutInfo? payoutInfo;
   ArtInfo? artInfo;
   List<Photo>? photos;
   BookingSettings? bookingSettings;
@@ -42,7 +44,7 @@ class User {
     required this.userStatus,
     this.userInfo,
     this.venueInfo,
-    // this.artworks,
+    this.payoutInfo,
     this.artInfo,
     this.photos,
     this.bookingSettings,
@@ -50,8 +52,14 @@ class User {
     this.balance
   });
 
-  factory User.fromJson(Map<String, dynamic?> json)
-  => _$UserFromJson(json);
+  factory User.fromJson(Map<String, dynamic?> json) {
+    try {
+      return _$UserFromJson(json);
+    } catch (error) {
+      print('Error decoding User from JSON: $error');
+      rethrow;
+    }
+  }
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
 

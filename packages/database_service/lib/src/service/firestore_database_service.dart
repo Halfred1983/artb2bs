@@ -17,7 +17,7 @@ class FirestoreDatabaseService implements DatabaseService {
 
   @override
   Future<void> addUser({required User userEntity}) {
-    try  {
+    try {
       userEntity = userEntity.copyWith(userStatus: UserStatus.initialised);
       return _firestore.collection('users')
           .doc(userEntity.id)
@@ -29,10 +29,10 @@ class FirestoreDatabaseService implements DatabaseService {
 
   @override
   Future<User?> getUser({required String userId}) async {
-    try  {
+    try {
       var documentSnapshot = (await _firestore.collection('users')
           .doc(userId).get());
-      if(documentSnapshot.exists) {
+      if (documentSnapshot.exists) {
         var data = documentSnapshot.data();
         return User.fromJson(data!);
       }
@@ -45,7 +45,7 @@ class FirestoreDatabaseService implements DatabaseService {
 
   @override
   Future<User> updateUser({required User user}) async {
-    try  {
+    try {
       await _firestore.collection('users')
           .doc(user.id).update(user.toJson());
       return user;
@@ -55,16 +55,16 @@ class FirestoreDatabaseService implements DatabaseService {
   }
 
   @override
-  Stream<List<User>> getHostsStream()  {
-
+  Stream<List<User>> getHostsStream() {
     var collectionReference = _firestore.collection('users');
 
     return collectionReference.snapshots().map((querySnapshot) {
-      return querySnapshot.docs.map((e) =>  User.fromJson(e.data()))
+      return querySnapshot.docs.map((e) => User.fromJson(e.data()))
           .where((user) {
-        return user.userInfo?.userType == UserType.gallery && user.bookingSettings != null &&
-        user.bookingSettings!.active != null &&
-        user.bookingSettings!.active == true;
+        return user.userInfo?.userType == UserType.gallery &&
+            user.bookingSettings != null &&
+            user.bookingSettings!.active != null &&
+            user.bookingSettings!.active == true;
       }).toList();
     });
   }
@@ -75,23 +75,25 @@ class FirestoreDatabaseService implements DatabaseService {
     var collectionReference = _firestore.collection('users');
 
     var querySnapshot = await collectionReference.get();
-    return querySnapshot.docs.map((e) =>  User.fromJson(e.data()))
+    return querySnapshot.docs.map((e) => User.fromJson(e.data()))
         .where((user) {
-      return user.userInfo?.userType == UserType.gallery && user.bookingSettings != null &&
+      return user.userInfo?.userType == UserType.gallery &&
+          user.bookingSettings != null &&
           user.bookingSettings!.active != null &&
           user.bookingSettings!.active == true;
     }).toList();
   }
 
   @override
-  Stream<DocumentSnapshot> getUserStream(String userId)  {
-
+  Stream<DocumentSnapshot> getUserStream(String userId) {
     var collectionReference = _firestore.collection('users');
 
     return collectionReference
         .where('id', isEqualTo: userId)
         .snapshots().map((querySnapshot) {
-      return querySnapshot.docs.toList().first;
+      return querySnapshot.docs
+          .toList()
+          .first;
     });
   }
 
@@ -117,16 +119,12 @@ class FirestoreDatabaseService implements DatabaseService {
   // }
 
   @override
-  List<User> filterUsersByRadiusAndPriceAndDaysAndTypes(
-      User user,
+  List<User> filterUsersByRadiusAndPriceAndDaysAndTypes(User user,
       List<User> users,
       double? radius,
       String? priceInput,
       String? daysInput,
-      List<String>? venueTypes,
-      ) {
-
-
+      List<String>? venueTypes,) {
     final geo = GeoFlutterFire();
     final geoFirePoint = geo.point(
       latitude: user.userInfo!.address!.location!.latitude,
@@ -134,28 +132,27 @@ class FirestoreDatabaseService implements DatabaseService {
     );
 
     return users.where((user) {
-
       if (user.bookingSettings != null &&
           user.bookingSettings!.active != null &&
           user.bookingSettings!.active == false) {
         return false; // Skip non-artist users
       }
 
-      if(priceInput != null  && priceInput.isNotEmpty) {
+      if (priceInput != null && priceInput.isNotEmpty) {
         int price = int.parse(priceInput);
         if (int.parse(user.bookingSettings!.basePrice!) > price) {
           return false; // Price is not within the specified range
         }
       }
 
-      if(daysInput != null && daysInput.isNotEmpty) {
+      if (daysInput != null && daysInput.isNotEmpty) {
         int days = int.parse(daysInput);
         if (int.parse(user.bookingSettings!.minLength!) > days) {
           return false; // User is not available for the specified number of days
         }
       }
 
-      if(radius != null) {
+      if (radius != null) {
         // Check if the user is within the specified radius
         final distance = geoFirePoint.distance(
             lat: user.userInfo!.address!.location!.latitude,
@@ -164,7 +161,6 @@ class FirestoreDatabaseService implements DatabaseService {
       }
 
       return true;
-
     }).toList();
   }
 
@@ -184,7 +180,7 @@ class FirestoreDatabaseService implements DatabaseService {
 
   @override
   Future<String> addBooking({required Booking booking}) async {
-    try  {
+    try {
       String id = const Uuid().v4();
 
       booking.bookingId = id;
@@ -226,14 +222,13 @@ class FirestoreDatabaseService implements DatabaseService {
 
   @override
   Future<void> updateBooking({required Booking booking}) async {
-    try  {
+    try {
       Future.wait([
         _firestore.collection('bookings')
             .doc(booking.bookingId).update(booking.toJson()),
         // updateBookingInUser(booking.hostId!, booking, true),
         // updateBookingInUser(booking.artistId!, booking, false),
       ]);
-
     } on Exception {
       rethrow;
     }
@@ -259,7 +254,7 @@ class FirestoreDatabaseService implements DatabaseService {
 
   @override
   Future<void> createRefundRequest(Refund refundRequest) async {
-    try  {
+    try {
       await _firestore.collection('refunds')
           .doc(refundRequest.bookingId)
           .set(refundRequest.toJson());
@@ -270,7 +265,7 @@ class FirestoreDatabaseService implements DatabaseService {
 
   @override
   Future<void> createAccepted(Accepted accepted) async {
-    try  {
+    try {
       await _firestore.collection('accepted')
           .doc(accepted.bookingId)
           .set(accepted.toJson());
@@ -310,7 +305,8 @@ class FirestoreDatabaseService implements DatabaseService {
   @override
   Future<void> setDisabledDates(String userId, Unavailable unavailable) async {
     try {
-      final DocumentReference userDocRef = _firestore.collection('disabledDates')
+      final DocumentReference userDocRef = _firestore.collection(
+          'disabledDates')
           .doc(userId);
 
       // Retrieve the current list of Unavailiable items from Firestore
@@ -321,23 +317,30 @@ class FirestoreDatabaseService implements DatabaseService {
         final List<dynamic>? unavailableDataList =
             (userDoc.data() as Map<String, dynamic>)['unavailableDate'] ?? [];
 
-        currentUnavailiableList = unavailableDataList!.map((data) => Unavailable.fromJson(data)).toList();
+        currentUnavailiableList =
+            unavailableDataList!.map((data) => Unavailable.fromJson(data))
+                .toList();
       }
 
       // Add the new Unavailiable item to the list
       currentUnavailiableList.add(unavailable);
 
       // Update the Firestore document with the updated list
-      await userDocRef.set({'unavailableDate': currentUnavailiableList.map((e) => e.toJson()).toList()});
+      await userDocRef.set({
+        'unavailableDate': currentUnavailiableList.map((e) => e.toJson())
+            .toList()
+      });
     } on Exception catch (e) {
       throw e;
     }
   }
 
   @override
-  Future<void> setDisabledSpaces(String userId, UnavailableSpaces unavailableSpaces) async {
+  Future<void> setDisabledSpaces(String userId,
+      UnavailableSpaces unavailableSpaces) async {
     try {
-      final DocumentReference userDocRef = _firestore.collection('disabledSpaces')
+      final DocumentReference userDocRef = _firestore.collection(
+          'disabledSpaces')
           .doc(userId);
 
       // Retrieve the current list of Unavailiable items from Firestore
@@ -348,14 +351,19 @@ class FirestoreDatabaseService implements DatabaseService {
         final List<dynamic>? unavailableDataList =
             (userDoc.data() as Map<String, dynamic>)['unavailableSpaces'] ?? [];
 
-        currentUnavailiableList = unavailableDataList!.map((data) => UnavailableSpaces.fromJson(data)).toList();
+        currentUnavailiableList =
+            unavailableDataList!.map((data) => UnavailableSpaces.fromJson(data))
+                .toList();
       }
 
       // Add the new Unavailiable item to the list
       currentUnavailiableList.add(unavailableSpaces);
 
       // Update the Firestore document with the updated list
-      await userDocRef.set({'unavailableSpaces': currentUnavailiableList.map((e) => e.toJson()).toList()});
+      await userDocRef.set({
+        'unavailableSpaces': currentUnavailiableList.map((e) => e.toJson())
+            .toList()
+      });
     } on Exception catch (e) {
       throw e;
     }
@@ -368,11 +376,12 @@ class FirestoreDatabaseService implements DatabaseService {
         .doc(userId)
         .get();
 
-    if(snapshot.exists) {
+    if (snapshot.exists) {
       final List<dynamic>? unavailableDataList =
       (snapshot.data() as Map<String, dynamic>)['unavailableDate'];
 
-      return unavailableDataList!.map((data) => Unavailable.fromJson(data)).toList();
+      return unavailableDataList!.map((data) => Unavailable.fromJson(data))
+          .toList();
     } else {
       return [];
     }
@@ -385,35 +394,43 @@ class FirestoreDatabaseService implements DatabaseService {
         .doc(userId)
         .get();
 
-    if(snapshot.exists) {
+    if (snapshot.exists) {
       final List<dynamic>? unavailableDataList =
       (snapshot.data() as Map<String, dynamic>)['unavailableSpaces'];
 
-      return unavailableDataList!.map((data) => UnavailableSpaces.fromJson(data)).toList();
+      return unavailableDataList!.map((data) =>
+          UnavailableSpaces.fromJson(data)).toList();
     } else {
       return [];
     }
   }
 
   @override
-  Future<void> saveDisabledDates(String userId, List<Unavailable> unavailableList) async {
+  Future<void> saveDisabledDates(String userId,
+      List<Unavailable> unavailableList) async {
     try {
-      final DocumentReference userDocRef = _firestore.collection('disabledDates')
+      final DocumentReference userDocRef = _firestore.collection(
+          'disabledDates')
           .doc(userId);
 
-      await userDocRef.set({'unavailableDate': unavailableList.map((e) => e.toJson()).toList()});
+      await userDocRef.set(
+          {'unavailableDate': unavailableList.map((e) => e.toJson()).toList()});
     } on Exception catch (e) {
       throw e;
     }
   }
 
   @override
-  Future<void> saveDisabledSpaces(String userId, List<UnavailableSpaces> unavailableList) async {
+  Future<void> saveDisabledSpaces(String userId,
+      List<UnavailableSpaces> unavailableList) async {
     try {
-      final DocumentReference userDocRef = _firestore.collection('disabledSpaces')
+      final DocumentReference userDocRef = _firestore.collection(
+          'disabledSpaces')
           .doc(userId);
 
-      await userDocRef.set({'unavailableSpaces': unavailableList.map((e) => e.toJson()).toList()});
+      await userDocRef.set({
+        'unavailableSpaces': unavailableList.map((e) => e.toJson()).toList()
+      });
     } on Exception catch (e) {
       throw e;
     }
@@ -422,7 +439,9 @@ class FirestoreDatabaseService implements DatabaseService {
   @override
   Future<List<Booking>> findBookingsByUser(User user) async {
     List<Booking> bookings = [];
-    var userId = user.userInfo!.userType == UserType.gallery ? 'hostId' : 'artistId';
+    var userId = user.userInfo!.userType == UserType.gallery
+        ? 'hostId'
+        : 'artistId';
 
     try {
       final QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firestore
@@ -466,21 +485,53 @@ class FirestoreDatabaseService implements DatabaseService {
 
   @override
   Stream<List<Booking>> findBookingsByUserStream(User user) {
-    var userId = user.userInfo!.userType == UserType.gallery ? 'hostId' : 'artistId';
+    var userId = user.userInfo!.userType == UserType.gallery
+        ? 'hostId'
+        : 'artistId';
 
     try {
       return _firestore
           .collection('bookings')
           .where(userId, isEqualTo: user.id)
           .snapshots()
-          .map((querySnapshot) => querySnapshot.docs.map((document) {
-        return Booking.fromJson(document.data());
-      }).toList());
+          .map((querySnapshot) =>
+          querySnapshot.docs.map((document) {
+            return Booking.fromJson(document.data());
+          }).toList());
     } catch (e) {
       print('Error fetching bookings: $e');
       // Return an empty stream in case of error
       return Stream.value([]);
     }
   }
+
+  Stream<List<DocumentSnapshot>> findBookingsByUserNordStream(User user, {int limit = 10,
+    DocumentSnapshot? startAfter, BookingStatus? status}) {
+    var userId = user.userInfo!.userType == UserType.gallery ? 'hostId' : 'artistId';
+
+    Query query = _firestore.collection('bookings')
+        .where(userId, isEqualTo: user.id)
+        .orderBy('from', descending: true)
+        .limit(limit);
+
+    print('user Id '+userId);
+    print('user Id '+user.id);
+
+    if (startAfter != null) {
+      query = query.startAfterDocument(startAfter);
+    }
+
+  if (status != null) {
+    query = query.where('bookingStatus', isEqualTo: status.index);
+  }
+
+  return query.snapshots().map((querySnapshot) => querySnapshot.docs);
+        // .map((querySnapshot) =>
+        // querySnapshot.docs.map((document) {
+        //   return Booking.fromJson(document.data() as Map<String, dynamic>);
+        // })
+        //     .toList());
+  }
+
 }
 

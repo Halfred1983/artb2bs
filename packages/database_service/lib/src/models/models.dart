@@ -10,6 +10,7 @@ export 'booking.dart';
 export 'payout.dart';
 export 'refund.dart';
 export 'accepted.dart';
+export 'payout_info.dart';
 export 'unavailable.dart';
 export 'unavailable_spaces.dart';
 export 'collection.dart';

@@ -57,11 +57,11 @@ class AppRouter {
           userId: state.pathParameters["userId"].toString(),
         ),
       ),
-      GoRoute(
-        path: "/bookingRequests",
-        name: "bookingRequests",
-        builder: (context, state) => BookingRequestPage(),
-      )
+      // GoRoute(
+      //   path: "/bookingRequests",
+      //   name: "bookingRequests",
+      //   builder: (context, state) => BookingRequestPage(),
+      // )
     ],
     redirect: (BuildContext context, GoRouterState state) {
       final bool loggedIn = loginCubit.state.status == AuthStatus.authenticated;

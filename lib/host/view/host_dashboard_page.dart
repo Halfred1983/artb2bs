@@ -1,4 +1,5 @@
 import 'package:artb2b/host/cubit/host_state.dart';
+import 'package:artb2b/host/view/payout_info_page.dart';
 import 'package:artb2b/host/view/photo_details.dart';
 import 'package:artb2b/widgets/booking_settings.dart';
 import 'package:artb2b/widgets/fadingin_picture.dart';
@@ -15,7 +16,6 @@ import '../../../widgets/add_photo_button.dart';
 import '../../app/resources/styles.dart';
 import '../../photo/view/photo_upload_page.dart';
 import '../cubit/host_cubit.dart';
-import 'host_paypal_edit_page.dart';
 
 class HostDashboardPage extends StatelessWidget {
 
@@ -131,7 +131,7 @@ class _HostDashboardViewState extends State<HostDashboardView> {
                         Center(
                           child: TextButton(onPressed: () => Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => HostPaypalEditPage()),
+                            MaterialPageRoute(builder: (context) => PayoutInfoPage()),
                           ),
                             child: Text('Add/change your payout account' ,style: TextStyles.semiBoldAccent14.copyWith(
                                 decoration: TextDecoration.underline

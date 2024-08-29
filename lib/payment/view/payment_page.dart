@@ -3,6 +3,7 @@ import 'package:artb2b/home/view/home_page.dart';
 import 'package:artb2b/payment/bloc/payment_bloc.dart';
 import 'package:artb2b/utils/common.dart';
 import 'package:artb2b/utils/currency/currency_helper.dart';
+import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:auth_service/auth.dart';
 import 'package:confetti/confetti.dart';
 import 'package:database_service/database.dart';
@@ -17,6 +18,7 @@ import '../../app/resources/theme.dart';
 import '../../booking/cubit/booking_cubit.dart';
 import '../../booking/service/booking_service.dart';
 import '../../injection.dart';
+import '../../widgets/snackbar.dart';
 import '../../widgets/summary_card.dart';
 
 class PaymentPage extends StatefulWidget {
@@ -150,10 +152,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                     currency: CurrencyHelper.currency(widget.host.userInfo!.address!.country)
                                 ),
                               ) :
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('Please fill the info', style: TextStyles.semiBoldAccent14,),
-                                    backgroundColor: AppTheme.accentColor,)
-                              );
+                              showCustomSnackBar('Please fill the info', context);
                               // context.read<BookingCubit>().save();
                             },
                             child: Text("Pay", style: TextStyles.semiBoldAccent14,),),
@@ -170,14 +169,10 @@ class _PaymentPageState extends State<PaymentPage> {
 
               return BlocBuilder<BookingCubit, BookingState>(
                   builder: (context, state) {
-                    // if( state is PaymentLoadingState) {
-                    //
-                    // }
                     if (state is PaymentLoadedState) {
-                      User user = state.props[0] as User;
+                      // User user = state.props[0] as User;
                       Booking booking = state.props[1] as Booking;
 
-                      _controllerCenter.play();
 
                       return Scaffold(
                         appBar: AppBar(
@@ -248,7 +243,10 @@ class _PaymentPageState extends State<PaymentPage> {
                               onPressed:
                                   () {
                                 _controllerCenter.stop();
-                                MaterialPageRoute(builder: (context) => HomePage(index: 3));
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => HomePage(index: 3)),
+                                );
                               },
                               child: Text("Close", style: TextStyles.semiBoldPrimary14,),)),
                         floatingActionButtonLocation: FloatingActionButtonLocation

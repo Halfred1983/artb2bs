@@ -109,7 +109,7 @@ class BookingView extends StatelessWidget {
                             ),
                           ),
                           verticalMargin12,
-                          dataRangeError.length>1 ? Text(dataRangeError, style: TextStyles.semiBoldAccent14,) : Container(),
+                          dataRangeError.length>1 ? Text(dataRangeError, style: TextStyles.semiBoldN90014.copyWith(color: AppTheme.d200),) : Container(),
                           verticalMargin12,
                           BookingCalendarWidget((dateRangeChoosen) =>
                               context.read<BookingCubit>().chooseRange(dateRangeChoosen, host), host: host,

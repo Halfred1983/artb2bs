@@ -33,7 +33,7 @@ class BookingSummaryCard extends StatelessWidget {
                 'assets/images/artist.png' : 'assets/images/gallery.png',
                   width: 40,),
                 horizontalMargin12,
-                Text(user.userInfo!.name!,
+                Text(user.artInfo!.artistName!,
                   style: TextStyles.semiBoldAccent14,),
               ],
             ),

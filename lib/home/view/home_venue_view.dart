@@ -166,7 +166,7 @@ class _HomeVenueState extends State<HomeVenue> {
 
                   SizedBox(
                     height: 300,
-                    child: BookingRequestPage(isEmbedded: true, choices: [BookingStatus.pending.name.toString(), BookingStatus.accepted.name.toString()]),
+                    child: BookingRequestPage(user: user, isEmbedded: true, choices: [BookingStatus.pending.name.toString(), BookingStatus.accepted.name.toString()]),
                   ),
                   verticalMargin32
                 ],

@@ -132,13 +132,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
         children: [
           widget.widget ?? Container(),
           TableCalendar(
-            headerStyle: HeaderStyle(
-              titleCentered: true,
-              titleTextStyle: TextStyles.boldS40017,
-              headerPadding: EdgeInsets.zero,
-              leftChevronIcon: const Icon(Icons.chevron_left, color: AppTheme.n900,),
-              rightChevronIcon: const Icon(Icons.chevron_right, color: AppTheme.n900,),
-            ),
+            headerStyle: AppTheme.calendarHeaderStyle,
             daysOfWeekStyle: DaysOfWeekStyle(
               weekdayStyle: TextStyles.semiBoldN90012,
               weekendStyle: TextStyles.semiBoldN90012,
@@ -211,34 +205,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
             lastDay: DateTime.now().add(const Duration(days: 1000)),
             focusedDay: _focusedDay,
             calendarFormat: CalendarFormat.month,
-            calendarStyle: CalendarStyle(
-              selectedTextStyle: TextStyles.semiBoldN90012,
-              rangeEndTextStyle: TextStyles.semiBoldN90012,
-              rangeStartTextStyle: TextStyles.semiBoldN90012,
-              todayTextStyle: TextStyles.semiBoldN90012,
-              defaultTextStyle: TextStyles.semiBoldN90012,
-              weekendTextStyle: TextStyles.semiBoldN90012,
-              withinRangeTextStyle: TextStyles.semiBoldN90012,
-              rangeHighlightColor: AppTheme.primaryColorOpacity,
-              isTodayHighlighted: true,
-              selectedDecoration:  const BoxDecoration(
-                color: AppTheme.primaryColor,
-                shape: BoxShape.circle,
-              ),
-              todayDecoration: const BoxDecoration(
-                color: AppTheme.primaryColorOpacity,
-                shape: BoxShape.circle,
-              ),
-              rangeStartDecoration: const BoxDecoration(
-                color: AppTheme.primaryColor,
-                shape: BoxShape.circle,
-              ),
-              rangeEndDecoration: const BoxDecoration(
-                color: AppTheme.primaryColor,
-                shape: BoxShape.circle,
-              ),
-              disabledTextStyle: const TextStyle(color: Color(0xFFBFBFBF), fontSize: 12, decoration: TextDecoration.lineThrough),
-            ),
+            calendarStyle:AppTheme.calendarStyle,
             selectedDayPredicate: (day) {
               return isSameDay(_selectedDay, day);
             },

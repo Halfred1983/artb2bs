@@ -7,8 +7,8 @@ import 'package:table_calendar/table_calendar.dart' as tc
     show StartingDayOfWeek;
 
 import '../app/resources/styles.dart';
-import '../app/resources/theme.dart';
 import '../injection.dart';
+import '../app/resources/theme.dart';
 import '../utils/common.dart';
 import 'booking_summary_card.dart';
 import 'common_card_widget.dart';
@@ -175,7 +175,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                                 bookedSpaces = bookedSpaces + int.parse(b.spaces!);
                               }
                               return Container(
-                                margin: const EdgeInsets.only(top: 40),
+                                margin: const EdgeInsets.only(top: 25),
                                 padding: const EdgeInsets.all(1),
                                 child: Text(bookedSpaces.toString(), style: TextStyles
                                     .semiBoldAccent14),
@@ -204,7 +204,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                               });
 
                               return Container(
-                                margin: const EdgeInsets.only(top: 40),
+                                margin: const EdgeInsets.only(top: 25),
                                 padding: const EdgeInsets.all(1),
                                 child: Text(freeSpaces.toString(), style: TextStyles
                                     .semiBoldAccent14),
@@ -221,19 +221,18 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                         eventLoader: (day) {
                           return _getEventsForDay(day);
                         },
-
                         locale: 'en_GB',
                         firstDay: calculateFirstDay(),
                         lastDay: DateTime.now().add(const Duration(days: 1000)),
                         focusedDay: _focusedDay,
                         calendarFormat: CalendarFormat.month,
-                        headerStyle: const HeaderStyle(
-                            leftChevronIcon: Icon(Icons.chevron_left, color: AppTheme.primaryColor,),
-                            rightChevronIcon: Icon(Icons.chevron_right, color: AppTheme.primaryColor,),
-                            titleTextStyle: TextStyle(fontSize: 17.0, color: AppTheme.primaryColor),
-                            titleCentered: true
-                        ),
+                        headerStyle: AppTheme.calendarHeaderStyle,
                         calendarStyle: AppTheme.calendarStyle,
+                        daysOfWeekStyle: DaysOfWeekStyle(
+                          weekdayStyle: TextStyles.semiBoldN90012,
+                          weekendStyle: TextStyles.semiBoldN90012,
+                        ),
+
                         selectedDayPredicate: (day) {
                           return isSameDay(_selectedDay, day);
                         },

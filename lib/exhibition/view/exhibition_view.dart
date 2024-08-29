@@ -1,5 +1,6 @@
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/calendar_availability/view/calendar_availability_page.dart';
+import 'package:artb2b/host/view/host_setting_page.dart';
 import 'package:artb2b/space_availability/view/space_availability_page.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:database_service/database.dart';
@@ -34,36 +35,36 @@ class ExhibitionView extends StatelessWidget {
               return Scaffold(
                 appBar: AppBar(
                   scrolledUnderElevation: 0,
-                  title: Text("Your Bookings", style: TextStyles.semiBoldAccent14,),
-                  centerTitle: true,
+                  title: Padding(
+                    padding: horizontalPadding12,
+                    child: Text('Your Bookings', style: TextStyles.boldN90029),
+                  ),
+                  centerTitle: false,
                 ),
                 body: SingleChildScrollView(
                   child: Padding(
-                    padding: horizontalPadding24,
-                    child: Column(
-                      children: [
-                        if(user!.userInfo!.userType == UserType.gallery) ...[
-                          TextButton(onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => CalendarAvailabilityPage(user: user!)),
-                          ),
-                            child: Text('Adjust your calendar availability' ,style: TextStyles.semiBoldAccent14.copyWith(
-                                decoration: TextDecoration.underline
-                            ),),
-                          ),
-                          verticalMargin12,
-                          TextButton(onPressed: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => SpaceAvailabilityPage(user: user!)),
-                          ),
-                            child: Text('Adjust your space availability' ,style: TextStyles.semiBoldAccent14.copyWith(
-                                decoration: TextDecoration.underline
-                            ),),
-                          ),
+                      padding: horizontalPadding24,
+                      child: Column(
+                        children: [
+                          if(user!.userInfo!.userType == UserType.gallery) ...[
+                            verticalMargin16,
+                            Text('You can adjust your availability in ',
+                              style: TextStyles.semiBoldN90017),
+                            verticalMargin12,
+                            InkWell(onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => HostSettingPage(initialIndex: 1)),
+                            ),
+                              child:  Text('listing settings.',
+                                style: TextStyles.semiBoldN90017.copyWith(decoration: TextDecoration.underline),
+                              ),
+                            ),
+                            verticalMargin24,
+
+                          ],
+                          ReservationCalendarWidget(user: user!),
                         ],
-                        ReservationCalendarWidget(user: user!),
-                      ],
-                    )
+                      )
                   ),
                 ),
 

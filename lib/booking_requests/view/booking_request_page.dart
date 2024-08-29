@@ -8,12 +8,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../injection.dart';
 
 class BookingRequestPage extends StatelessWidget {
+  final User user; // Add user property
 
-  BookingRequestPage({super.key, this.isEmbedded = false, this.choices});
+  BookingRequestPage({super.key, required this.user, this.isEmbedded = false, this.choices});
 
-  static Route<void> route(User host) {
-    return MaterialPageRoute<void>(builder: (_) => BookingRequestPage());
-  }
+  // static Route<void> route(User host) {
+  //   return MaterialPageRoute<void>(builder: (_) => BookingRequestPage(user: host));
+  // }
 
   bool isEmbedded = false;
   List<String>? choices;
@@ -23,14 +24,12 @@ class BookingRequestPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    return
-      BlocProvider<BookingRequestCubit>(
-        create: (context) => BookingRequestCubit(
-          databaseService: databaseService,
-          userId: authService.getUser().id,
-        ),
-        child:BookingRequestView(isEmbedded : isEmbedded, choices: choices,),
-      );
+    return BlocProvider<BookingRequestCubit>(
+      create: (context) => BookingRequestCubit(
+        databaseService: databaseService,
+        userId: authService.getUser().id,
+      ),
+      child: BookingRequestView(user: user, isEmbedded: isEmbedded, choices: choices),
+    );
   }
 }

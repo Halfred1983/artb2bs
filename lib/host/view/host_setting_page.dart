@@ -1,4 +1,5 @@
 import 'package:artb2b/app/resources/styles.dart';
+import 'package:artb2b/host/view/payout_info_page.dart';
 import 'package:artb2b/host/view/settings/host_venue_booking_setting_page.dart';
 import 'package:artb2b/host/view/settings/host_venue_info_page.dart';
 import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
@@ -198,6 +199,7 @@ class _HostSettingViewState extends State<HostSettingView> {
               break;
             case 2:
               isMissing = missingInfo.any((info) => info.category == VenueInformationMissingCategory.payout);
+              targetPage = PayoutInfoPage();
               break;
             case 3:
               isMissing = missingInfo.any((info) => info.category == VenueInformationMissingCategory.booking);

@@ -55,6 +55,18 @@ class Booking {
 
   Map<String, dynamic> toJson() => _$BookingToJson(this);
 
+
+  BookingStatus? getBookingStatusFromFilter(String filter) {
+    if (filter == 'All') return null;
+    return BookingStatus.values.firstWhere(
+          (status) => capitalize(status.name) == filter,
+      orElse: () => BookingStatus.accepted,
+    );
+  }
+
+  String capitalize(String s) {
+    return "${s[0].toUpperCase()}${s.substring(1).toLowerCase()}";
+  }
 }
 
 

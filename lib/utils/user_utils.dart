@@ -17,7 +17,12 @@ class UserUtils {
     }
 
     // Check if the user has payout settings
-    bool hasPayoutSettings = user.bookingSettings!.paypalAccount != null && user.bookingSettings!.paypalAccount!.isNotEmpty;
+    bool hasPayoutSettings = user.payoutInfo != null && user.payoutInfo!.iban != null
+        && user.payoutInfo!.accountHolder != null
+        && user.payoutInfo!.bankCountry != null
+    && user.payoutInfo!.bankCountryCode != null
+    && user.payoutInfo!.currency != null;
+
     if (!hasPayoutSettings) {
       missingInformation.add(VenueInformationMissing.payoutSettings);
     }
