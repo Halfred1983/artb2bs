@@ -63,6 +63,7 @@ class LoginCubit extends Cubit<LoginResult> {
     if (artb2bUserEntity == null) {
       User user = User.fromJson(userEntity.toJson())
           .copyWith(userStatus: userStatus ?? UserStatus.initialised)
+          .copyWith(createdAt: DateTime.now())
           .copyWith(bookingSettings: BookingSettings(active: true));
 
       await _databaseService.addUser(userEntity: user);

@@ -1,4 +1,5 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:database_service/database.dart';
 import 'package:database_service/src/models/payout_info.dart';
@@ -30,6 +31,8 @@ class User {
   BookingSettings? bookingSettings;
   int exhibitionCount = 0;
   String? balance;
+  @TimestampConverter()
+  DateTime? createdAt;
 
   User({
     required this.id,
@@ -49,7 +52,8 @@ class User {
     this.photos,
     this.bookingSettings,
     this.exhibitionCount = 0,
-    this.balance
+    this.balance,
+    this.createdAt
   });
 
   factory User.fromJson(Map<String, dynamic?> json) {

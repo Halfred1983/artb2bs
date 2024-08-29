@@ -54,13 +54,13 @@ class _MapViewState extends State<MapView> {
       _mapStyle = string;
     });
 
-    BitmapDescriptor.fromAssetImage(
+    BitmapDescriptor.asset(
         const ImageConfiguration(size: Size(40, 40)), 'assets/images/marker.png')
         .then((onValue) {
       markerArtistIcon = onValue;
     });
 
-    BitmapDescriptor.fromAssetImage(
+    BitmapDescriptor.asset(
         const ImageConfiguration(size: Size(40, 40)), 'assets/images/marker_gallery.png')
         .then((onValue) {
       markerGalleryIcon = onValue;

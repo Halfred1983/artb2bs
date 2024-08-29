@@ -85,6 +85,21 @@ class FirestoreDatabaseService implements DatabaseService {
   }
 
   @override
+  Future<User> getMostRecentHost() async {
+    Query<Map<String, dynamic>> collectionReference =
+
+    _firestore.collection('users')
+        .where('userInfo.userType', isEqualTo: 1)
+        .where('bookingSettings.active', isEqualTo: true)
+        .orderBy('createdAt', descending: true)
+        .limit(1);
+
+    var querySnapshot = await collectionReference.get();
+    return querySnapshot.docs.map((e) => User.fromJson(e.data()))
+        .first;
+  }
+
+  @override
   Stream<DocumentSnapshot> getUserStream(String userId) {
     var collectionReference = _firestore.collection('users');
 

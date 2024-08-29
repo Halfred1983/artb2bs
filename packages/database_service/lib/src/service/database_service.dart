@@ -68,6 +68,8 @@ abstract class DatabaseService {
       List<String> venueTypes,
       );
 
+  Future<User> getMostRecentHost();
+
   Future<User> updateUser({required User user});
 
   Future<Map<String, dynamic>> fetchConfigData();

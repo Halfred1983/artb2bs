@@ -35,6 +35,8 @@ abstract class _$UserCWProxy {
 
   User balance(String? balance);
 
+  User createdAt(DateTime? createdAt);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `User(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -56,6 +58,7 @@ abstract class _$UserCWProxy {
     BookingSettings? bookingSettings,
     int? exhibitionCount,
     String? balance,
+    DateTime? createdAt,
   });
 }
 
@@ -110,6 +113,9 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
   User balance(String? balance) => this(balance: balance);
 
   @override
+  User createdAt(DateTime? createdAt) => this(createdAt: createdAt);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `User(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -132,6 +138,7 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
     Object? bookingSettings = const $CopyWithPlaceholder(),
     Object? exhibitionCount = const $CopyWithPlaceholder(),
     Object? balance = const $CopyWithPlaceholder(),
+    Object? createdAt = const $CopyWithPlaceholder(),
   }) {
     return User(
       id: id == const $CopyWithPlaceholder() || id == null
@@ -191,6 +198,10 @@ class _$UserCWProxyImpl implements _$UserCWProxy {
           ? _value.balance
           // ignore: cast_nullable_to_non_nullable
           : balance as String?,
+      createdAt: createdAt == const $CopyWithPlaceholder()
+          ? _value.createdAt
+          // ignore: cast_nullable_to_non_nullable
+          : createdAt as DateTime?,
     );
   }
 }
@@ -233,6 +244,8 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
               json['bookingSettings'] as Map<String, dynamic>),
       exhibitionCount: (json['exhibitionCount'] as num?)?.toInt() ?? 0,
       balance: json['balance'] as String?,
+      createdAt: _$JsonConverterFromJson<Timestamp, DateTime>(
+          json['createdAt'], const TimestampConverter().fromJson),
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
@@ -250,6 +263,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'bookingSettings': instance.bookingSettings?.toJson(),
       'exhibitionCount': instance.exhibitionCount,
       'balance': instance.balance,
+      'createdAt': _$JsonConverterToJson<Timestamp, DateTime>(
+          instance.createdAt, const TimestampConverter().toJson),
     };
 
 const _$UserStatusEnumMap = {
@@ -270,3 +285,15 @@ const _$UserStatusEnumMap = {
   UserStatus.openingTimes: 15,
   UserStatus.spaceInfo: 16,
 };
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) =>
+    json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) =>
+    value == null ? null : toJson(value);
