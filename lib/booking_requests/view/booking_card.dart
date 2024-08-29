@@ -20,6 +20,7 @@ class BookingCard extends StatelessWidget {
   final User user;
   final ValueChanged<Booking> onTap;
   bool isEmbedded = false;
+  bool status = true;
 
   BookingCard({
     required this.booking,
@@ -28,6 +29,7 @@ class BookingCard extends StatelessWidget {
     required this.user,
     required this.onTap,
     this.isEmbedded = false,
+    this.status = true,
   });
 
   @override
@@ -77,7 +79,7 @@ class BookingCard extends StatelessWidget {
                               ],
                             ),
                             Expanded(child: Container()),
-                            StatusLabel(booking: booking),
+                            if(status) StatusLabel(booking: booking),
                           ],
                         ),
                         verticalMargin12,

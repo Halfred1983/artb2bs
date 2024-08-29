@@ -268,14 +268,14 @@ class AppTheme {
     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0), // Adjust padding to reduce height
 
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(50),
+      borderRadius: BorderRadius.circular(12),
       borderSide: const BorderSide(
         color: AppTheme.accentColor, // Color of the border
         width: 0.5, // Width of the border
       ),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(50),
+      borderRadius: BorderRadius.circular(12),
       borderSide: const BorderSide(
         color: AppTheme.accentColor, // Color when the TextField is focused
         width: 0.5, // Width when focused
@@ -283,7 +283,7 @@ class AppTheme {
     ),
     // Enabled border style
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(50),
+      borderRadius: BorderRadius.circular(12),
       borderSide: const BorderSide(
         color: AppTheme.accentColor, // Color when the TextField is enabled
         width: 0.5, // Width when enabled
@@ -298,14 +298,14 @@ class AppTheme {
     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12), // Adjust padding to reduce height
 
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: BorderRadius.circular(12),
       borderSide: const BorderSide(
         color: AppTheme.accentColor, // Color of the border
         width: 0.5, // Width of the border
       ),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: BorderRadius.circular(12),
       borderSide: const BorderSide(
         color: AppTheme.accentColor, // Color when the TextField is focused
         width: 0.5, // Width when focused
@@ -313,7 +313,7 @@ class AppTheme {
     ),
     // Enabled border style
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: BorderRadius.circular(12),
       borderSide: const BorderSide(
         color: AppTheme.accentColor, // Color when the TextField is enabled
         width: 0.5, // Width when enabled
@@ -332,21 +332,25 @@ class AppTheme {
           .n900,),
       titleTextStyle: TextStyle(
           fontSize: 17.0, color: AppTheme
-          .n900),
+          .n900, fontWeight: FontWeight.bold),
       titleCentered: true
 
   );
 
   static final calendarStyle = CalendarStyle(
-    todayTextStyle: TextStyle(
+    cellPadding: const EdgeInsets.only(top: 8, bottom: 8),
+    // rowDecoration: BoxDecoration(
+    //   border: Border.all(width: 0.3, color: Colors.grey), // Add border to each cell
+    // ),
+    todayTextStyle: const TextStyle(
         color: AppTheme.n900,
         fontWeight: FontWeight.bold),
-    selectedTextStyle: TextStyle(
+    selectedTextStyle: const TextStyle(
         color: AppTheme.n900,
     ),
     rangeHighlightColor: AppTheme.primaryColor,
     isTodayHighlighted: true,
-    selectedDecoration: BoxDecoration(
+    selectedDecoration: const BoxDecoration(
       color: AppTheme.primaryColor,
       shape: BoxShape.circle,
     ),
@@ -354,15 +358,15 @@ class AppTheme {
       color: AppTheme.primaryColor.withOpacity(0.4),
       shape: BoxShape.circle,
     ),
-    rangeStartDecoration: BoxDecoration(
+    rangeStartDecoration: const BoxDecoration(
       color: AppTheme.accentColor,
       shape: BoxShape.circle,
     ),
-    rangeEndDecoration: BoxDecoration(
+    rangeEndDecoration: const BoxDecoration(
       color: AppTheme.accentColor,
       shape: BoxShape.circle,
     ),
-    disabledTextStyle: TextStyle(color: Colors
+    disabledTextStyle: const TextStyle(color: Colors
         .black54,
         decoration: TextDecoration.lineThrough),
   );
@@ -379,7 +383,7 @@ class AppTheme {
   );
 
   static final numericPriceStyle = InputDecoration(
-      contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16), // Add padding to center the text
+      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16), // Add padding to center the text
       hintText: '0',
       hintStyle: TextStyles.boldN90029.copyWith(color: AppTheme.n100), // Set the custom hint text style
       border: OutlineInputBorder(

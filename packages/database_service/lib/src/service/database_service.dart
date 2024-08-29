@@ -38,7 +38,7 @@ abstract class DatabaseService {
   Stream<List<Booking>> findBookingsByUserStream(User user);
 
   Stream<List<DocumentSnapshot>> findBookingsByUserNordStream(User user, {int limit = 10,
-    DocumentSnapshot? startAfter, BookingStatus? status});
+    DocumentSnapshot? startAfter, BookingStatus? status, DateTime? startDate});
 
   Future<void> createAccepted(Accepted accepted);
 
@@ -69,5 +69,8 @@ abstract class DatabaseService {
       );
 
   Future<User> updateUser({required User user});
+
+  Future<Map<String, dynamic>> fetchConfigData();
+
 
 }

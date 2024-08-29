@@ -6,6 +6,7 @@ import 'package:artb2b/exhibition/view/exhibition_page.dart';
 import 'package:artb2b/home/bloc/user_cubit.dart';
 import 'package:artb2b/home/bloc/user_state.dart';
 import 'package:artb2b/home/view/home_list_view.dart';
+import 'package:artb2b/injection.dart';
 import 'package:artb2b/notification/bloc/notification_bloc.dart';
 import 'package:artb2b/onboard/view/10_venue_opening_time.dart';
 import 'package:artb2b/onboard/view/2_info_account.dart';
@@ -18,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 import '../../explore/view/explore_page.dart';
@@ -50,6 +52,13 @@ class _HomeViewState extends State<HomeView> {
   _HomeViewState(int? index) {
     _currentIndex = index ?? 0;
   }
+
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {

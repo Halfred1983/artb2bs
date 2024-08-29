@@ -1,16 +1,20 @@
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:table_calendar/table_calendar.dart' as tc
     show StartingDayOfWeek;
 
 import '../app/resources/styles.dart';
+import '../booking_requests/view/booking_card.dart';
 import '../injection.dart';
 import '../app/resources/theme.dart';
+import '../utils/booking_utils.dart';
 import '../utils/common.dart';
 import 'booking_summary_card.dart';
+import 'calendar_loader.dart';
 import 'common_card_widget.dart';
 
 class ReservationCalendarWidget extends StatefulWidget {
@@ -31,12 +35,13 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
   List<Booking> _bookings = [];
   List<DateTime> _unavailableDates = [];
   Map<DateTime, String> _unavailableDatesSpaces = {};
-
+  bool _isLoading = false;
   @override
   void initState() {
     super.initState();
     initializeDateFormatting();
 
+    _isLoading = true;
     firestoreDatabaseService.findBookingsByUser(widget.user).then((bookings) {
       _bookings = bookings;
       Future.wait([
@@ -44,12 +49,15 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
         firestoreDatabaseService.getDisabledDates(widget.user.id),
         firestoreDatabaseService.getDisabledSpaces(widget.user.id),
       ]).then((List<dynamic> results) {
-        // setState(() {
+
         _bookingDateRange = results[0];
         _unavailableDates = retrieveUnavailableDates(results[1]);
         _unavailableDatesSpaces = retrieveUnavailableSpaces(results[2]);
         _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
-        // });
+        setState(() {
+          _isLoading = false;
+        });
+
       }).catchError((error) {
         print('Error fetching data: $error');
       });
@@ -163,9 +171,102 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
               child: Column(
                   children: [
                     TableCalendar(
+                      daysOfWeekHeight:50,
+                      rowHeight: 64,
                         availableGestures: AvailableGestures.none,//this single code will solve
                         calendarBuilders: CalendarBuilders(
+                            selectedBuilder: (context, day, focusedDay) {
+                              return Container(
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primaryColor,
+                                  border: Border.all(width: 0.4, color: Colors.grey),
+                                ),
+                                child: Center(
+                                  child: ClipOval(
+                                    // color: AppTheme.primaryColor,
+                                    child: Text(
+                                      day.day.toString(),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          defaultBuilder: (context, day, focusedDay) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 0.4, color: Colors.grey),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  day.day.toString(),
+                                ),
+                              ),
+                            );
+                          },
+                          outsideBuilder: (context, day, focusedDay) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 0.4, color: Colors.grey),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  day.day.toString(),
+                                ),
+                              ),
+                            );
+                          },
+                          rangeEndBuilder: (context, day, focusedDay) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 0.4, color: Colors.grey),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  day.day.toString(),
+                                ),
+                              ),
+                            );
+                          },
+                          rangeStartBuilder: (context, day, focusedDay) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 0.4, color: Colors.grey),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  day.day.toString(),
+                                ),
+                              ),
+                            );
+                          },
+                          disabledBuilder: (context, day, focusedDay) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 0.4, color: Colors.grey),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  day.day.toString(),
+                                ),
+                              ),
+                            );
+                          },
+                          todayBuilder: (context, day, focusedDay) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 0.4, color: Colors.grey),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  day.day.toString(),
+                                ),
+                              ),
+                            );
+                          },
                           markerBuilder: (BuildContext context, date, events) {
+                            if(_isLoading) {
+                              return const CalendarLoader();
+                            }
                             if(widget.user.userInfo!.userType == UserType.artist) {
 
                               if (events.isEmpty) return const SizedBox();
@@ -274,12 +375,19 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                               snapshot.connectionState ==
                                   ConnectionState.done) {
                             User user = snapshot.data!;
-                            UserType userType = widget.user.userInfo!.userType!;
                             Booking booking = value[index];
 
                             return Padding(
                               padding: verticalPadding12,
-                              child: BookingSummaryCard(userType: userType, user: user, booking: booking),
+                              child: BookingCard(
+                                booking: booking,
+                                host: user,
+                                artist: user,
+                                user: widget.user,
+                                onTap: (booking) => BookingUtils.showBookingDetails(context, booking, widget.user),
+                                isEmbedded: true,
+                                status: false,
+                              )
                             );
                           }
                           else {
@@ -310,3 +418,4 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
     return DateTime.now();
   }
 }
+

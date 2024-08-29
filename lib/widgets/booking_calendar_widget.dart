@@ -1,4 +1,5 @@
 import 'package:artb2b/app/resources/styles.dart';
+import 'package:artb2b/widgets/calendar_loader.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -31,13 +32,14 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
   List<DateTime> _unavailableDates = [];
   List<Booking> _bookings = [];
   Map<DateTime, String> _unavailableDatesSpaces = {};
-
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     initializeDateFormatting();
 
+    _isLoading = true;
     firestoreDatabaseService.findBookingsByUser(widget.host).then((bookings) {
       _bookings = bookings;
       Future.wait([
@@ -47,6 +49,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
         firestoreDatabaseService.getDisabledSpaces(widget.host.id),
       ]).then((List<dynamic> results) {
         setState(() {
+          _isLoading = false;
           _disabledDates = results[0];
           _bookingDateRange = results[1];
           _unavailableDates = retrieveUnavailableDates(results[2]);
@@ -132,6 +135,8 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
         children: [
           widget.widget ?? Container(),
           TableCalendar(
+            daysOfWeekHeight:50,
+            rowHeight: 64,
             headerStyle: AppTheme.calendarHeaderStyle,
             daysOfWeekStyle: DaysOfWeekStyle(
               weekdayStyle: TextStyles.semiBoldN90012,
@@ -144,7 +149,114 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
             rangeEndDay: _rangeEnd,
             rangeSelectionMode: _rangeSelectionMode,
             calendarBuilders: CalendarBuilders(
+              selectedBuilder: (context, day, focusedDay) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor,
+                    border: Border.all(width: 0.4, color: Colors.grey),
+                  ),
+                  child: Center(
+                    child: ClipOval(
+                      // color: AppTheme.primaryColor,
+                      child: Text(
+                        day.day.toString(),
+                      ),
+                    ),
+                  ),
+                );
+              },
+              defaultBuilder: (context, day, focusedDay) {
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 0.4, color: Colors.grey),
+                  ),
+                  child: Center(
+                    child: Text(
+                      day.day.toString(),
+                    ),
+                  ),
+                );
+              },
+              outsideBuilder: (context, day, focusedDay) {
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 0.4, color: Colors.grey),
+                  ),
+                  child: Center(
+                    child: Text(
+                      day.day.toString(),
+                    ),
+                  ),
+                );
+              },
+              rangeEndBuilder: (context, day, focusedDay) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor,
+                    border: Border.all(width: 0.4, color: Colors.grey),
+                  ),
+                  child: Center(
+                    child: Text(
+                      day.day.toString(), style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                );
+              },
+              withinRangeBuilder: (context, day, focusedDay) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor,
+                    border: Border.all(width: 0.4, color: Colors.grey),
+                  ),
+                  child: Center(
+                    child: Text(
+                      day.day.toString(),
+                    ),
+                  ),
+                );
+              },
+              rangeStartBuilder: (context, day, focusedDay) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryColor,
+                    border: Border.all(width: 0.4, color: Colors.grey),
+                  ),
+                  child: Center(
+                    child: Text(
+                      day.day.toString(), style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                );
+              },
+              disabledBuilder: (context, day, focusedDay) {
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 0.4, color: Colors.grey),
+                  ),
+                  child: Center(
+                    child: Text(
+                      day.day.toString(), style: TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough),
+                    ),
+                  ),
+                );
+              },
+              todayBuilder: (context, day, focusedDay) {
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 0.4, color: Colors.grey),
+                  ),
+                  child: Center(
+                    child: Text(
+                      day.day.toString(),
+                    ),
+                  ),
+                );
+              },
               markerBuilder: (BuildContext context, date, events) {
+                if(_isLoading) {
+                  return const CalendarLoader();
+                }
+
                 int freeSpaces = int.parse(widget.host.venueInfo!.spaces!);
 
                 // if (events.isEmpty) {
@@ -170,7 +282,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
                   margin: const EdgeInsets.only(top: 35),
                   padding: const EdgeInsets.all(1),
                   child: Text(freeSpaces.toString(), style: TextStyles
-                      .semiBoldAccent12),
+                      .semiBoldN90012),
                 );
               },
             ),

@@ -10,6 +10,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../injection.dart';
 import '../../app/resources/theme.dart';
+import '../../utils/booking_utils.dart';
 import '../../widgets/scollable_chips.dart';
 import 'booking_card.dart';
 import 'booking_dialog.dart';
@@ -24,7 +25,7 @@ class BookingRequestView extends StatefulWidget {
     this.isEmbedded = false,
     List<String>? choices,
     required this.user,
-  }) : choices = choices ?? ['All'] + BookingStatus.values.map((e) => e.name.capitalize()).toList();
+  }) : choices = choices ?? ['All'] + BookingStatus.values.map((e) => e.name.capitalize()).toList() + ['Upcoming'];
 
   @override
   State<BookingRequestView> createState() => _BookingRequestViewState();
@@ -37,7 +38,7 @@ class _BookingRequestViewState extends State<BookingRequestView> {
 
   final PagingController<int, Booking> _pagingController =
   PagingController(firstPageKey: 0);
-
+  bool _isLoading = false;
   String _filter = 'All';
 
   @override
@@ -77,6 +78,9 @@ class _BookingRequestViewState extends State<BookingRequestView> {
         final nextPageKey = pageKey + newItems.length;
         _pagingController.appendPage(newItems, nextPageKey);
       }
+      setState(() {
+        _isLoading = false;
+      });
     } catch (error) {
       _pagingController.error = error;
     }
@@ -94,53 +98,57 @@ class _BookingRequestViewState extends State<BookingRequestView> {
 
 
             Widget body = Column(
-              children: [
-                _buildFilterSection(context, state.user),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      verticalMargin24,
-                      if (state.bookings.isEmpty || (_pagingController.itemList != null && _pagingController.itemList!.isEmpty))
-                        Padding(
-                          padding: horizontalPadding24,
-                          child: Text(
-                            'No bookings for the selected criteria',
-                            style: TextStyles.boldN90029,
-                          ),
-                        )
-                      else
-                        Expanded(
-                            child: Padding(
-                              padding: widget.isEmbedded
-                                  ? EdgeInsets.zero
-                                  : horizontalPadding32,
-                              child:
-                              PagedListView<int, Booking>(
-                                pagingController: _pagingController,
-                                builderDelegate: PagedChildBuilderDelegate<Booking>(
-                                    itemBuilder: (context, item, index) {
+                children: [
+                  _buildFilterSection(context, state.user),
+                  Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        verticalMargin24,
+                        if(_isLoading) ...[ const CircularProgressIndicator(color: AppTheme.accentColor,) ]
+                        else if  (state.bookings.isEmpty && (_pagingController.itemList != null
+                            && _pagingController.itemList!.isEmpty)) ... [
+                          Padding(
+                            padding: horizontalPadding24,
+                            child: Text(
+                              'No bookings for the selected criteria',
+                              style: TextStyles.boldN90029,
+                            ),
+                          ) ]
+                        else ...[
+                            Expanded(
+                                child: Padding(
+                                  padding: widget.isEmbedded
+                                      ? EdgeInsets.zero
+                                      : horizontalPadding32,
+                                  child:
+                                  PagedListView<int, Booking>(
 
-                                      final host = _userCache[item.hostId!];
-                                      final artist = _userCache[item.artistId!];
+                                    pagingController: _pagingController,
+                                    builderDelegate: PagedChildBuilderDelegate<Booking>(
+                                        itemBuilder: (context, item, index) {
 
-                                      return BookingCard(
-                                        booking: item,
-                                        host: host!,
-                                        artist: artist!,
-                                        user: widget.user,
-                                        onTap: (booking) => _showBookingDetails(context, booking, widget.user),
-                                        isEmbedded: widget.isEmbedded,
-                                      );
-                                    }
-                                ),
-                              ),
-                            )
-                        ),
-                    ],
+                                          final host = _userCache[item.hostId!];
+                                          final artist = _userCache[item.artistId!];
+
+                                          return BookingCard(
+                                            booking: item,
+                                            host: host!,
+                                            artist: artist!,
+                                            user: widget.user,
+                                            onTap: (booking) => BookingUtils.showBookingDetails(context, booking, widget.user),
+                                            isEmbedded: widget.isEmbedded,
+                                          );
+                                        }
+                                    ),
+                                  ),
+                                )
+                            ),
+                          ]
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ]
             );
 
             if (!widget.isEmbedded) {
@@ -188,6 +196,7 @@ class _BookingRequestViewState extends State<BookingRequestView> {
 
             //RESET FILTER ??
             setState(() {
+              _isLoading = true;
               _filter = selectedValue;
               _fetchPage(0, reset: true );
             });
@@ -219,35 +228,4 @@ class _BookingRequestViewState extends State<BookingRequestView> {
     );
   }
 
-  void _showBookingDetails(BuildContext context, Booking booking, User user) {
-    Future.delayed(Duration.zero, () {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return FutureBuilder<User?>(
-            future: locator<FirestoreDatabaseService>().getUser(userId: booking.hostId!),
-            builder: (context, hostSnapshot) {
-              if (hostSnapshot.connectionState == ConnectionState.done && hostSnapshot.hasData) {
-                return FutureBuilder<User?>(
-                  future: locator<FirestoreDatabaseService>().getUser(userId: booking.artistId!),
-                  builder: (context, artistSnapshot) {
-                    if (artistSnapshot.connectionState == ConnectionState.done && artistSnapshot.hasData) {
-                      return BookingDetailsDialog(
-                        booking: booking,
-                        host: hostSnapshot.data!,
-                        artist: artistSnapshot.data!,
-                        currentUser: user,
-                      );
-                    }
-                    return const LoadingScreen();
-                  },
-                );
-              }
-              return const LoadingScreen();
-            },
-          );
-        },
-      );
-    });
-  }
 }

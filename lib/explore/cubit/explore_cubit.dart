@@ -55,6 +55,14 @@ class ExploreCubit extends Cubit<ExploreState> {
     }
   }
 
+  void updateVenueVibes(List<String> venueVibes) {
+    if (state is LoadedState) {
+      LoadedState loadedState = state as LoadedState;
+      SearchFilter newFilter = loadedState.filter.copyWith(venueVibes: venueVibes);
+      emit(LoadedState(loadedState.user, loadedState.hosts, newFilter));
+    }
+  }
+
   void updateDaysInput(String daysInput) {
     if (state is LoadedState) {
       LoadedState loadedState = state as LoadedState;
@@ -99,7 +107,14 @@ class ExploreCubit extends Cubit<ExploreState> {
             filter.venueCategory!.contains(
                 venue)); // Add more conditions for other filters...
       }
-      return matchesSearchQuery && matchesPriceRange && matchesVenueCategory;
+      bool matchesVenueVibes = filter.venueVibes == null || filter.venueVibes!.isEmpty;
+      if(filter.venueVibes != null && filter.venueVibes!.isNotEmpty
+        && host.venueInfo!.vibes != null) {
+        matchesVenueCategory = host.venueInfo!.vibes!.any((venue) =>
+            filter.venueVibes!.contains(
+                venue)); // Add more conditions for other filters...
+      }
+      return matchesSearchQuery && matchesPriceRange && matchesVenueCategory && matchesVenueVibes;
       // Use logical AND or OR depending on your requirements
     }).toList();
     return filteredHosts;

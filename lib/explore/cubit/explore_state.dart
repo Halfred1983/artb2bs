@@ -46,7 +46,7 @@ class SearchFilter {
   final double? radius;
   final String? priceInput;
   final String? daysInput;
-  final List<String>? venueTypes;
+  final List<String>? venueVibes;
 
   SearchFilter({
     this.searchQuery,
@@ -55,7 +55,7 @@ class SearchFilter {
     this.radius,
     this.priceInput,
     this.daysInput,
-    this.venueTypes,
+    this.venueVibes,
   });
 
   SearchFilter copyWith({
@@ -65,7 +65,7 @@ class SearchFilter {
     double? radius,
     String? priceInput,
     String? daysInput,
-    List<String>? venueTypes,
+    List<String>? venueVibes,
   }) {
     return SearchFilter(
       searchQuery: searchQuery ?? this.searchQuery,
@@ -74,7 +74,7 @@ class SearchFilter {
       radius: radius ?? this.radius,
       priceInput: priceInput ?? this.priceInput,
       daysInput: daysInput ?? this.daysInput,
-      venueTypes: venueTypes ?? this.venueTypes,
+      venueVibes: venueVibes ?? this.venueVibes,
     );
   }
 }

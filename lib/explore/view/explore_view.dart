@@ -7,6 +7,7 @@ import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../app/resources/assets.dart';
@@ -31,7 +32,9 @@ class ExploreView extends StatefulWidget {
 class _ExploreViewState extends State<ExploreView> {
 
   FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
+  SharedPreferences prefs = locator.get<SharedPreferences>();
   bool _listView = true;
+  
   final controller = PageController(viewportFraction: 1, keepPage: true);
   List<int> currentIndices = [];
 
@@ -42,6 +45,8 @@ class _ExploreViewState extends State<ExploreView> {
   @override
   void initState() {
     super.initState();
+    _venueCategories = prefs.getStringList('VenueCategory')!;
+    _venueVibes = prefs.getStringList('Vibes')!;
     // firestoreDatabaseService.getHostsStream().listen((event) {
     //   _filteredStreamController.add(event);
     //   currentIndices = List<int>.generate(event.length, (index) => 0);
@@ -379,131 +384,140 @@ class _ExploreViewState extends State<ExploreView> {
 
 
   ///// FILTER MODAL
-  List<String> _artistTags = [];
+  List<String> _selectedVenueCategories = [];
+  List<String> _venueCategories = [];
+  List<String> _selectedVenueVibes = [];
+  List<String> _venueVibes = [];
   RangeValues _rangeValues = const RangeValues(20, 80);
 
   Future<bool> _showModalBottomSheet(BuildContext context, User user) async {
     final exploreCubit = context.read<ExploreCubit>();
 
     bool? result = await showModalBottomSheet<bool>(
-        context: context,
-        isScrollControlled: true,
-        builder: (BuildContext context) {
-          return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
-            child: Container(
-              padding: horizontalPadding32,
-              width: double.infinity,
-              height:  MediaQuery.of(context).size.height * 0.8,
-              clipBehavior: Clip.antiAlias,
-              decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
-                  ),
-                ),
-                shadows: [
-                  AppTheme.bottomBarShadow
-
-                ],
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            return ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: constraints.maxHeight * 0.8,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  verticalMargin32,
-                  Row(
-                    children: [
-                      GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context, false); // Close the modal bottom sheet
-                          },
-                          child: const Icon(Icons.clear, size: 20, color: AppTheme.n900,)
-                      ),
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                              'Filters',
-                              style: TextStyles.boldN90017
-                          ),
+              child: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 8.0, sigmaY: 8.0),
+                  child: Container(
+                    padding: horizontalPadding32,
+                    width: double.infinity,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: ShapeDecoration(
+                      color: Colors.white,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(24),
+                          topRight: Radius.circular(24),
                         ),
                       ),
-                    ],
+                      shadows: [
+                        AppTheme.bottomBarShadow
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        verticalMargin32,
+                        Row(
+                          children: [
+                            GestureDetector(
+                                onTap: () {
+                                  Navigator.pop(context, false); // Close the modal bottom sheet
+                                },
+                                child: const Icon(Icons.clear, size: 20, color: AppTheme.n900,)
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                    'Filters',
+                                    style: TextStyles.boldN90017
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        verticalMargin32,
+                        const Divider(height: 0.5, thickness: 0.5, color: AppTheme.n200,),
+                        verticalMargin32,
+                        Text(
+                            'Price range',
+                            style: TextStyles.boldN90017
+                        ),
+                        Text(
+                            'Price range space/day',
+                            style: TextStyles.regularN90014
+                        ),
+                        verticalMargin24,
+                        PriceSlider(user: user, rangeValues: _rangeValues, onChanged: (RangeValues priceRangeValues) {
+                          _rangeValues = priceRangeValues;
+                          exploreCubit.updatePriceRange(priceRangeValues);
+                        }),
+                        verticalMargin32,
+                        Text(
+                            'Venue category',
+                            style: TextStyles.boldN90017
+                        ),
+                        verticalMargin32,
+                        Tags(_venueCategories, _selectedVenueCategories, (artistTags) {
+                          setState(() {
+                            _selectedVenueCategories = artistTags;
+                          });
+                          exploreCubit.updateVenueCategory(artistTags);
+                        }),
+                        verticalMargin32,
+                        Text(
+                            'Venue vibes',
+                            style: TextStyles.boldN90017
+                        ),
+                        verticalMargin32,
+                        Tags(_venueVibes, _selectedVenueVibes, (artistTags) {
+                          setState(() {
+                            _selectedVenueVibes = artistTags;
+                          });
+                          exploreCubit.updateVenueVibes(artistTags);
+                        }),
+                        verticalMargin32,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                exploreCubit.restFilters();
+                                _selectedVenueCategories = [];
+                                _rangeValues = const RangeValues(20, 80);
+                                Navigator.pop(context, false);
+                              },
+                              child: Text('Reset Filters', style: TextStyles.semiBoldAccent14.copyWith(decoration: TextDecoration.underline)),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                exploreCubit.applyFilters();
+                                Navigator.pop(context, true);
+                              },
+                              child: Text('Apply', style: TextStyles.semiBoldPrimary14),
+                            ),
+                          ],
+                        ),
+                        verticalMargin48,
+                      ],
+                    ),
                   ),
-                  verticalMargin32,
-                  const Divider(height: 0.5, thickness: 0.5, color: AppTheme.n200,),
-                  verticalMargin32,
-                  // Text(
-                  //     'Date availability',
-                  //     style: TextStyles.boldN90017
-                  // ),
-                  // verticalMargin24,
-                  Text(
-                      'Price range',
-                      style: TextStyles.boldN90017
-                  ),
-                  Text(
-                      'Price range space/day',
-                      style: TextStyles.regularN90014
-                  ),
-                  verticalMargin24,
-                  PriceSlider(user: user,  rangeValues: _rangeValues, onChanged: (RangeValues priceRangeValues) {
-                    // Do something with the new range values
-                    print('Start value: ${priceRangeValues.start}, End value: ${priceRangeValues.end}');
-                    _rangeValues = priceRangeValues;
-                    exploreCubit.updatePriceRange(priceRangeValues);
-
-                  },
-                  ),
-                  verticalMargin32,
-                  Text(
-                      'Venue category',
-                      style: TextStyles.boldN90017
-                  ),
-                  verticalMargin32,
-                  Tags(const [
-                    'Arty', 'Commercial', 'Coffee', 'Abstract'
-                  ],
-                    _artistTags,
-                        (artistTags) {
-                      setState(() {
-                        _artistTags = artistTags;
-                      });
-                      exploreCubit.updateVenueCategory(artistTags);
-                    },
-                  ),
-                  verticalMargin32,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      GestureDetector(onTap: () {
-                        exploreCubit.restFilters();
-                        _artistTags = [];
-                        _rangeValues = const RangeValues(20, 80);
-                        Navigator.pop(context, false);
-                      },
-                        child: Text('Reset Filters', style: TextStyles.semiBoldAccent14.copyWith(decoration: TextDecoration.underline),),),
-
-                      ElevatedButton(
-                        onPressed:
-                            () {
-                          exploreCubit.applyFilters();
-                          Navigator.pop(context, true);
-                        },
-                        child: Text('Apply', style: TextStyles.semiBoldPrimary14,),),
-                    ],
-                  ),
-
-
-
-                ],
+                ),
               ),
-            ),
-          );
-        });
+            );
+          },
+        );
+      },
+    );
 
     return result ?? false; // Return false if result is null
-
-  }
-}
+  }}

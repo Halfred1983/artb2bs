@@ -58,6 +58,7 @@ class Booking {
 
   BookingStatus? getBookingStatusFromFilter(String filter) {
     if (filter == 'All') return null;
+    if (filter == 'Upcoming') return null;
     return BookingStatus.values.firstWhere(
           (status) => capitalize(status.name) == filter,
       orElse: () => BookingStatus.accepted,

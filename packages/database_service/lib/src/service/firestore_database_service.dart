@@ -506,16 +506,13 @@ class FirestoreDatabaseService implements DatabaseService {
   }
 
   Stream<List<DocumentSnapshot>> findBookingsByUserNordStream(User user, {int limit = 10,
-    DocumentSnapshot? startAfter, BookingStatus? status}) {
+    DocumentSnapshot? startAfter, BookingStatus? status, DateTime? startDate}) {
     var userId = user.userInfo!.userType == UserType.gallery ? 'hostId' : 'artistId';
 
     Query query = _firestore.collection('bookings')
         .where(userId, isEqualTo: user.id)
         .orderBy('from', descending: true)
         .limit(limit);
-
-    print('user Id '+userId);
-    print('user Id '+user.id);
 
     if (startAfter != null) {
       query = query.startAfterDocument(startAfter);
@@ -525,12 +522,29 @@ class FirestoreDatabaseService implements DatabaseService {
     query = query.where('bookingStatus', isEqualTo: status.index);
   }
 
+  if(startDate != null){
+    query = query.where('from', isGreaterThanOrEqualTo: startDate);
+  }
+
   return query.snapshots().map((querySnapshot) => querySnapshot.docs);
         // .map((querySnapshot) =>
         // querySnapshot.docs.map((document) {
         //   return Booking.fromJson(document.data() as Map<String, dynamic>);
         // })
         //     .toList());
+  }
+
+
+  @override
+  Future<Map<String, dynamic>> fetchConfigData() async {
+    DocumentSnapshot<Map<String, dynamic>> snapshot =
+    await FirebaseFirestore.instance.collection('config').doc('config').get();
+
+    if (snapshot.exists) {
+      return snapshot.data()!;
+    } else {
+      throw Exception('Config document not found');
+    }
   }
 
 }

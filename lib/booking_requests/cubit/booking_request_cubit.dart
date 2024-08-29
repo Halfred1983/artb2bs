@@ -51,6 +51,7 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
         startAfter: _lastDocument,
         limit: 10,
         status: Booking().getBookingStatusFromFilter(filter),
+        startDate: filter == 'Upcoming' ? DateTime.now() : null,
       );
 
       await for (var newDocuments in stream) {
@@ -98,6 +99,7 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
         startAfter: _lastDocument,
         limit: 10,
         status: Booking().getBookingStatusFromFilter(filter),
+        startDate: filter == 'Upcoming' ? DateTime.now() : null,
       );
 
       await for (var newDocuments in stream) {

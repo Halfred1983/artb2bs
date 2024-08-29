@@ -215,6 +215,8 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                             verticalMargin24,
                             CommonCard(
                               child: TableCalendar(
+                                daysOfWeekHeight:50,
+                                rowHeight: 64,
                                 availableGestures: AvailableGestures.none,//this single code will solve
                                 availableCalendarFormats: const {
                                   CalendarFormat.month: 'Month'
