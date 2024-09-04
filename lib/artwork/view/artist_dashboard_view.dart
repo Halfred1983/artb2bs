@@ -95,7 +95,7 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                         children: [
                                           Text(user!.artInfo!.artistName!, style: TextStyles.boldN90024,),
                                           verticalMargin4,
-                                          Text(user!.userInfo!.address!.address+','+user!.userInfo!.address!.city,
+                                          Text(user!.userInfo!.address!.city,
                                             style: TextStyles.boldN90014,),
                                         ],
                                       ),

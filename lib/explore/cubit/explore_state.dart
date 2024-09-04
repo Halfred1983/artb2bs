@@ -35,8 +35,11 @@ class LoadedState extends ExploreState {
 // }
 
 class ErrorState extends ExploreState {
+  final String message;
+
+  ErrorState({this.message = 'An error occurred'});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [message];
 }
 
 class SearchFilter {

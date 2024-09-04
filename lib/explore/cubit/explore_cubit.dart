@@ -19,7 +19,7 @@ class ExploreCubit extends Cubit<ExploreState> {
     try {
       emit(LoadingState());
       final user = await databaseService.getUser(userId: userId);
-      hosts = await databaseService.getHostsList();
+      hosts = await databaseService.getHostsList(nextToUser: user);
       emit(LoadedState(user!, hosts, SearchFilter()));
     } catch (e) {
       emit(ErrorState());
@@ -52,6 +52,27 @@ class ExploreCubit extends Cubit<ExploreState> {
       LoadedState loadedState = state as LoadedState;
       SearchFilter newFilter = loadedState.filter.copyWith(venueCategory: venueCategory);
       emit(LoadedState(loadedState.user, loadedState.hosts, newFilter));
+    }
+  }
+
+  Future<void> updateCity(User user, UserAddress address) async {
+    try{
+      if (state is LoadedState) {
+        LoadedState loadedState = state as LoadedState;
+
+        user = user.copyWith(userInfo:
+        user.userInfo != null ?
+        user.userInfo!.copyWith(address: address) :
+        UserInfo(address: address));
+
+
+        await databaseService.updateUser(user: user);
+        hosts = await databaseService.getHostsList(nextToUser: user);
+
+        emit(LoadedState(user, hosts, loadedState.filter));
+      }
+    } catch (e) {
+      emit(ErrorState(message:  "Error saving the art details"));
     }
   }
 
@@ -102,14 +123,14 @@ class ExploreCubit extends Cubit<ExploreState> {
       bool matchesPriceRange = basePrice >= startPrice && basePrice <= endPrice;
       bool matchesVenueCategory = filter.venueCategory == null || filter.venueCategory!.isEmpty;
       if(filter.venueCategory != null && filter.venueCategory!.isNotEmpty
-        && host.venueInfo!.typeOfVenue != null) {
+          && host.venueInfo!.typeOfVenue != null) {
         matchesVenueCategory = host.venueInfo!.typeOfVenue!.any((venue) =>
             filter.venueCategory!.contains(
                 venue)); // Add more conditions for other filters...
       }
       bool matchesVenueVibes = filter.venueVibes == null || filter.venueVibes!.isEmpty;
       if(filter.venueVibes != null && filter.venueVibes!.isNotEmpty
-        && host.venueInfo!.vibes != null) {
+          && host.venueInfo!.vibes != null) {
         matchesVenueCategory = host.venueInfo!.vibes!.any((venue) =>
             filter.venueVibes!.contains(
                 venue)); // Add more conditions for other filters...

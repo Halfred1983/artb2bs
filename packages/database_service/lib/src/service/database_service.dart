@@ -56,16 +56,15 @@ abstract class DatabaseService {
 
   Future<void> saveDisabledSpaces(String userId, List<UnavailableSpaces> unavailableList);
 
-  Stream<List<User>> getHostsStream();
+  Stream<List<User>> getHostsStream( {User? nextToUser});
 
-  Future<List<User>> getHostsList();
+  Future<List<User>> getHostsList({User? nextToUser});
 
   List<User> filterUsersByRadiusAndPriceAndDaysAndTypes(User user,
       List<User> users,
       double radius,
       String priceInput,
       String daysInput,
-      List<String> venueTypes,
       );
 
   Future<User> getMostRecentHost();

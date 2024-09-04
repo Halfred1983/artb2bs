@@ -12,13 +12,13 @@ class BookingService {
     return pricePerSpace * spaces;
   }
 
-  double calculateCommission(double price) {
-    return price * 0.15;
+  double calculateCommission(double price, double commissionRate) {
+    return price * commissionRate;
   }
 
-  double calculateGrandTotal(double price, double commission) {
-    return price + commission;
-  }
+  // double calculateGrandTotal(double price, double commission) {
+  //   return price + commission;
+  // }
 
   int daysBetween(DateTime from, DateTime to) {
     from = DateTime(from.year, from.month, from.day);

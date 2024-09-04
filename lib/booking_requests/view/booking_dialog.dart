@@ -60,7 +60,8 @@ class BookingDetailsDialog extends StatelessWidget {
                     ],
                   ),
                   verticalMargin16,
-                  SummaryCard(booking: booking, host: host, title: 'Booking details', padding: EdgeInsets.zero),
+                  SummaryCard(booking: booking, host: host, currentUser: currentUser,
+                      title: 'Booking details', padding: EdgeInsets.zero),
                   verticalMargin16,
                   const Divider(thickness: 0.5, color: AppTheme.divider),
 

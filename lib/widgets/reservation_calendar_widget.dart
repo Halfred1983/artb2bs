@@ -304,12 +304,15 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                                 }
                               });
 
-                              return Container(
-                                margin: const EdgeInsets.only(top: 25),
-                                padding: const EdgeInsets.all(1),
-                                child: Text(freeSpaces.toString(), style: TextStyles
-                                    .semiBoldAccent14),
-                              );
+                              return freeSpaces < int.parse(widget.user.venueInfo!.spaces!) ? Container(
+                                height: 8,
+                                width: 8,
+                                margin: const EdgeInsets.only(bottom: 10), // Adjust padding for better centering
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppTheme.accentColor, // Optional: Add a background color
+                                ),
+                              ) : Container();
                             }
                           },
                         ),
@@ -366,23 +369,25 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                   shrinkWrap: true,
                   itemCount: value.length,
                   itemBuilder: (context, index) {
-                    return FutureBuilder<User?>(
-                        future: widget.user.userInfo!.userType == UserType.gallery ?
-                        firestoreDatabaseService.getUser(userId: value[index].artistId!) :
-                        firestoreDatabaseService.getUser(userId: value[index].hostId!),
+                    return FutureBuilder<List<User?>>(
+                        future: Future.wait([
+                          firestoreDatabaseService.getUser(userId: value[index].hostId!),
+                          firestoreDatabaseService.getUser(userId: value[index].artistId!)
+                        ]),
                         builder: (context, snapshot) {
                           if (snapshot.hasData &&
                               snapshot.connectionState ==
                                   ConnectionState.done) {
-                            User user = snapshot.data!;
+                            User? host = snapshot.data![0];
+                            User? artist = snapshot.data![1];
                             Booking booking = value[index];
 
                             return Padding(
                               padding: verticalPadding12,
                               child: BookingCard(
                                 booking: booking,
-                                host: user,
-                                artist: user,
+                                host: host!,
+                                artist: artist!,
                                 user: widget.user,
                                 onTap: (booking) => BookingUtils.showBookingDetails(context, booking, widget.user),
                                 isEmbedded: true,

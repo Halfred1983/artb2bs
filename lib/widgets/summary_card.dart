@@ -17,12 +17,14 @@ class SummaryCard extends StatelessWidget {
     super.key,
     required this.booking,
     required this.host,
+    required this.currentUser,
     this.padding,
     this.title
   });
 
   final Booking? booking;
   final User host;
+  final User currentUser;
   EdgeInsets? padding;
   String? title;
 
@@ -167,16 +169,23 @@ class SummaryCard extends StatelessWidget {
                       style: TextStyles.boldN90016, ),
                   ],
                 ),
-
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Total', style: TextStyles.regularN10012),
-                    Text('${BookingService().calculateGrandTotal(BookingService().calculatePrice(booking!, host!),
-                        0)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
+                    Text('${BookingService().calculatePrice(booking!, host!)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
                       style: TextStyles.boldN90016, ),
+                    if(currentUser.id == booking!.hostId) ...[
+
+                    verticalMargin16,
+                    Text('ArtB2B Commission', style: TextStyles.regularN10012),
+                    Text('${double.parse(booking!.commission!)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
+                      style: TextStyles.boldN90016, ),
+                    ]
+
                   ],
                 ),
+
               ],
             ),
             verticalMargin16

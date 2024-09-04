@@ -6,6 +6,7 @@ import 'package:database_service/database.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:google_places_flutter/DioErrorHandler.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
@@ -16,8 +17,10 @@ import '../utils/currency/currency_helper.dart';
 
 
 class GoogleAddressLookup extends StatefulWidget {
-  const GoogleAddressLookup({Key? key}) : super(key: key);
+  final String hint;
+  final Function(UserAddress) onAddressChosen;
 
+  GoogleAddressLookup({Key? key, this.hint = 'Your location', required this.onAddressChosen} ) : super(key: key);
 
   @override
   _GoogleAddressLookupState createState() => _GoogleAddressLookupState();
@@ -25,15 +28,15 @@ class GoogleAddressLookup extends StatefulWidget {
 
 class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
   GeoFlutterFire geoFlutterFire = GeoFlutterFire();
-  String apiKey = 'AIzaSyACKPGCrcpyYx3w1PWxoaQhXOd0wGB7cSk';
+  late String apiKey;
   late var _dio;
-
   late final TextEditingController _placeController;
 
   @override
   void initState() {
     _dio = Dio();
     _placeController = TextEditingController(text: '');
+    apiKey = dotenv.env['const GOOGLE_API_KEY']!;
     super.initState();
   }
 
@@ -53,7 +56,7 @@ class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
         boxDecoration: const BoxDecoration(),
         textEditingController: _placeController,
         googleAPIKey: apiKey,
-        inputDecoration:AppTheme.textInputDecoration.copyWith(hintText: 'Your location'),
+        inputDecoration:AppTheme.textInputDecoration.copyWith(hintText: widget.hint),
         debounceTime: 400,
         isLatLngRequired: true,
         getPlaceDetailWithLatLng: (Prediction prediction) {
@@ -68,22 +71,22 @@ class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
 
           if(address != null) {
             if (!mounted) return;
-            context.read<OnboardingCubit>().chooseAddress(address);
+            widget.onAddressChosen(address);
           }
 
           // Navigator.of(context).pop(address);
         },
-        seperatedBuilder: Divider(),
+        seperatedBuilder: const Divider(),
         containerHorizontalPadding: 10,
 
         // OPTIONAL// If you want to customize list view item builder
         itemBuilder: (context, index, Prediction prediction) {
           return Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Row(
               children: [
-                Icon(Icons.location_on),
-                SizedBox(
+                const Icon(Icons.location_on),
+                const SizedBox(
                   width: 7,
                 ),
                 Expanded(child: Text("${prediction.description ?? ""}"))
@@ -132,15 +135,9 @@ class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
           if (element.types!.contains('street_number')) {
             _number = element.longName!;
           }
-          if (element.types!.contains('administrative_area_level_3')) {
-            _city = element.longName!;
-          }
-          if(_city.isEmpty && element.types!.contains('locality')) {
-            _city = element.longName!;
-          }
-          if (element.types!.contains('postal_town')) {
-            _city = element.longName!;
-          }
+
+          if(_city.isEmpty) _city = getCity(element);
+
           if (element.types!.contains('locality')) {
             _place = element.longName!;
           }
@@ -181,6 +178,20 @@ class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
       var errorHandler = ErrorHandler.internal().handleError(e);
       _showSnackBar("${errorHandler.message}");
     }
+  }
+
+  String getCity(AddressComponents element) {
+    String city = '';
+    if (element.types!.contains('administrative_area_level_3')) {
+      city = element.longName!;
+    }
+    if(city.isEmpty && element.types!.contains('locality')) {
+      city = element.longName!;
+    }
+    if (city.isEmpty && element.types!.contains('postal_town')) {
+      city = element.longName!;
+    }
+    return city;
   }
 
   _showSnackBar(String errorData) {

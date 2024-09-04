@@ -4,6 +4,7 @@ import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../app/resources/assets.dart';
 import '../../app/resources/styles.dart';
@@ -20,6 +21,7 @@ class BookingConfirmationView extends StatelessWidget {
   final User host;
   final Booking booking;
   FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
+  SharedPreferences prefs = locator.get<SharedPreferences>();
 
   BookingConfirmationView({super.key, required this.host, required this.booking});
 
@@ -136,11 +138,11 @@ class BookingConfirmationView extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('${double.parse(host.bookingSettings!.basePrice!)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}'
+                                  Text('${double.parse(host.bookingSettings!.basePrice!)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol} '
+                                      ' x ${booking.spaces} spaces'
                                       ' x ${BookingService().daysBetween(booking!.from!, booking!.to!).toString()} days',
                                     style: TextStyles.regularN90014,),
-                                  Text('${BookingService().calculateGrandTotal(BookingService().calculatePrice(booking!, host!),
-                                      0)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
+                                  Text('${BookingService().calculatePrice(booking!, host!)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
                                     style: TextStyles.regularN90014, ),
                                 ],
                               ),
@@ -150,8 +152,7 @@ class BookingConfirmationView extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text('Total ', style: TextStyles.boldN90012),
-                                  Text('${BookingService().calculateGrandTotal(BookingService().calculatePrice(booking!, host!),
-                                      0)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
+                                  Text('${BookingService().calculatePrice(booking!, host!)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
                                     style: TextStyles.semiBoldN90014, ),
                                 ],
                               )
@@ -190,8 +191,7 @@ class BookingConfirmationView extends StatelessWidget {
                                 Text('Total booking: ',
                                   style: TextStyles.boldN90014,),
 
-                                Text('${BookingService().calculateGrandTotal(BookingService().calculatePrice(booking!, host),
-                                    BookingService().calculateCommission(BookingService().calculatePrice(booking!, host)))} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
+                                Text('${BookingService().calculatePrice(booking!, host)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
                                   style: TextStyles.boldN90014, ),
                                 Expanded(child: Container()),
                               ],
@@ -204,9 +204,10 @@ class BookingConfirmationView extends StatelessWidget {
                                 Booking pendingBooking = context.read<BookingCubit>().finaliseBooking(booking,
                                     BookingService().calculatePrice(booking, host).toString(),
                                     BookingService().calculateCommission(
-                                        BookingService().calculatePrice(booking, host)).toString(),
-                                    BookingService().calculateGrandTotal(BookingService().calculatePrice(booking!, host),
-                                        BookingService().calculateCommission(BookingService().calculatePrice(booking!, host))).toString(),
+                                        BookingService().calculatePrice(booking, host), prefs.getDouble('Commission')!= null ?
+                                      prefs.getDouble('Commission')! : 0.2
+                                    ).toString(),
+                                    BookingService().calculatePrice(booking!, host).toString(),
                                     host
                                 );
 

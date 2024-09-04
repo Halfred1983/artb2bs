@@ -19,6 +19,7 @@ class BookingCard extends StatelessWidget {
   final User artist;
   final User user;
   final ValueChanged<Booking> onTap;
+  final VoidCallback? onActionCompleted; // New callback to notify parent
   bool isEmbedded = false;
   bool status = true;
 
@@ -29,6 +30,7 @@ class BookingCard extends StatelessWidget {
     required this.user,
     required this.onTap,
     this.isEmbedded = false,
+    this.onActionCompleted, // Required for refreshing
     this.status = true,
   });
 
@@ -36,14 +38,14 @@ class BookingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: verticalPadding8,
-      child: InkWell(
-        onTap: () => onTap(booking),
-        child: CommonCard(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Row(
+      child: CommonCard(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            InkWell(
+              onTap: () => onTap(booking),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
@@ -128,40 +130,46 @@ class BookingCard extends StatelessWidget {
                   ),
                 ],
               ),
-              if (booking.bookingStatus == BookingStatus.pending && user.userInfo!.userType == UserType.gallery)
-                Padding(
-                  padding: verticalPadding16,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: SizedBox(
-                          height: 30,
-                          child: OutlinedButton(
-                            onPressed: () => context.read<BookingRequestCubit>().rejectBooking(booking, user),
-                            child: Text(
-                              'Reject',
-                              style: TextStyles.semiBoldAccent14.copyWith(decoration: TextDecoration.underline),
-                            ),
+            ),
+            if (booking.bookingStatus == BookingStatus.pending && user.userInfo!.userType == UserType.gallery)
+              Padding(
+                padding: verticalPadding16,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        height: 30,
+                        child: OutlinedButton(
+                          onPressed: () async {
+                            await context.read<BookingRequestCubit>().rejectBooking(booking, user);
+                            onActionCompleted?.call();// Call refresh after reject
+                          },
+                          child: Text(
+                            'Reject',
+                            style: TextStyles.semiBoldAccent14.copyWith(decoration: TextDecoration.underline),
                           ),
                         ),
                       ),
-                      horizontalMargin12,
-                      Expanded(
-                        flex: 1,
-                        child: SizedBox(
-                          height: 30,
-                          child: ElevatedButton(
-                            onPressed: () => context.read<BookingRequestCubit>().acceptBooking(booking, user, artist),
-                            child: Text('Accept', style: TextStyles.semiBoldAccent14),
-                          ),
+                    ),
+                    horizontalMargin12,
+                    Expanded(
+                      flex: 1,
+                      child: SizedBox(
+                        height: 30,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            await context.read<BookingRequestCubit>().acceptBooking(booking, user, artist);
+                            onActionCompleted?.call(); // Call refresh after reject
+                          },
+                          child: Text('Accept', style: TextStyles.semiBoldAccent14),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-            ],
-          ),
+              ),
+          ],
         ),
       ),
     );

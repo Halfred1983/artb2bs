@@ -100,11 +100,9 @@ class _PaymentPageState extends State<PaymentPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('${double.parse(widget.host.bookingSettings!.basePrice!)} ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}'
-                                    ' x ${BookingService().daysBetween(widget.booking!.from!, widget.booking!.to!).toString()} days',
+                                Text('${double.parse(widget.host.bookingSettings!.basePrice!)} ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol} x ${widget.booking.spaces} spaces x ${BookingService().daysBetween(widget.booking!.from!, widget.booking!.to!).toString()} days',
                                   style: TextStyles.regularN90014,),
-                                Text('${BookingService().calculateGrandTotal(BookingService().calculatePrice(widget.booking!, widget.host!),
-                                    0)} ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}',
+                                Text('${BookingService().calculatePrice(widget.booking!, widget.host!)} ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}',
                                   style: TextStyles.regularN90014, ),
                               ],
                             ),
@@ -113,8 +111,7 @@ class _PaymentPageState extends State<PaymentPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text('Total ', style: TextStyles.boldN90012),
-                                Text('${BookingService().calculateGrandTotal(BookingService().calculatePrice(widget.booking!, widget.host!),
-                                    0)} ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}',
+                                Text('${BookingService().calculatePrice(widget.booking!, widget.host!)} ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}',
                                   style: TextStyles.semiBoldN90014, ),
                               ],
                             )
@@ -155,7 +152,7 @@ class _PaymentPageState extends State<PaymentPage> {
                               showCustomSnackBar('Please fill the info', context);
                               // context.read<BookingCubit>().save();
                             },
-                            child: Text("Pay", style: TextStyles.semiBoldAccent14,),),
+                            child: const Text('Pay'),),
                         ),
                         verticalMargin32
                       ],
@@ -166,10 +163,11 @@ class _PaymentPageState extends State<PaymentPage> {
             }
             if(state.status == PaymentStatus.success) {
               context.read<BookingCubit>().completeBooking(widget.booking, widget.user, widget.host, state.paymentIntentId!);
-
+              _controllerCenter.play();
               return BlocBuilder<BookingCubit, BookingState>(
                   builder: (context, state) {
                     if (state is PaymentLoadedState) {
+
                       // User user = state.props[0] as User;
                       Booking booking = state.props[1] as Booking;
 
@@ -216,7 +214,7 @@ class _PaymentPageState extends State<PaymentPage> {
                                     )
                                 ),
                                 verticalMargin32,
-                                SummaryCard(booking: booking, host: widget.host),
+                                SummaryCard(booking: booking, host: widget.host, currentUser: widget.user,),
                                 verticalMargin32,
                                 Container(
                                   padding: const EdgeInsets.fromLTRB(21, 15, 21, 15),
@@ -243,7 +241,7 @@ class _PaymentPageState extends State<PaymentPage> {
                               onPressed:
                                   () {
                                 _controllerCenter.stop();
-                                Navigator.push(
+                                Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(builder: (context) => HomePage(index: 3)),
                                 );

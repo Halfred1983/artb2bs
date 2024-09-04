@@ -11,6 +11,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import '../../../injection.dart';
 import '../../app/resources/theme.dart';
 import '../../utils/booking_utils.dart';
+import '../../widgets/custom_dialog.dart';
 import '../../widgets/scollable_chips.dart';
 import 'booking_card.dart';
 import 'booking_dialog.dart';
@@ -93,7 +94,13 @@ class _BookingRequestViewState extends State<BookingRequestView> {
           if (state is LoadingState && state.bookings.isEmpty) {
             return const LoadingScreen();
           } else if (state is ErrorState) {
-            return _buildErrorDialog(context, state.error, state.user);
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _showErrorDialog(context, state.error, state.user);
+            });
+          } else if (state is OverlapErrorState) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _showErrorDialog(context, state.message, state.user);
+            });
           } else if (state is LoadedState) {
 
 
@@ -138,6 +145,9 @@ class _BookingRequestViewState extends State<BookingRequestView> {
                                             user: widget.user,
                                             onTap: (booking) => BookingUtils.showBookingDetails(context, booking, widget.user),
                                             isEmbedded: widget.isEmbedded,
+                                            onActionCompleted: () {
+                                              _fetchPage(0, reset: true);
+                                            },
                                           );
                                         }
                                     ),
@@ -169,9 +179,7 @@ class _BookingRequestViewState extends State<BookingRequestView> {
 
             return body;
           }
-          else {
             return const LoadingScreen();
-          }
         }
     );
   }
@@ -210,22 +218,29 @@ class _BookingRequestViewState extends State<BookingRequestView> {
     );
   }
 
-  Widget _buildErrorDialog(BuildContext context, String message, User user) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-      title: Center(child: Text('Error', style: TextStyles.semiBoldAccent14)),
-      content: Text(message, textAlign: TextAlign.center, style: TextStyles.semiBoldAccent14),
-      actions: [
-        Center(
-          child: TextButton(
-            onPressed: () {
-              context.read<BookingRequestCubit>().exitAlert(user);
-            },
-            child: Text('OK', style: TextStyles.semiBoldAccent14),
-          ),
-        ),
-      ],
+  void _showErrorDialog(BuildContext context, String message, User user) {
+    showDialog(
+      context: context,
+      builder: (BuildContext _) {
+        return CustomAlertDialog(
+          title: 'Error',
+          content: message,
+          actions: [
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  context.read<BookingRequestCubit>().exitAlert(user);
+                },
+                child: const Text('OK'),
+              ),
+            ),
+          ],
+          type: AlertType.error,
+        );
+      },
     );
   }
-
 }
+
+

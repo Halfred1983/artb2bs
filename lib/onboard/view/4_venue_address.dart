@@ -130,7 +130,9 @@ class _SelectAddressViewState extends State<SelectAddressView> {
                           style: TextStyles.boldN90029),
                       verticalMargin48,
                     ],
-                    const GoogleAddressLookup(),
+                    GoogleAddressLookup(onAddressChosen: (address) {
+                      context.read<OnboardingCubit>().chooseAddress(address);
+                    },),
                     ...addressInfo
                   ],
                 ),

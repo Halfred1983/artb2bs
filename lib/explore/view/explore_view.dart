@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:artb2b/app/resources/theme.dart';
+import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
+import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,6 +18,8 @@ import '../../injection.dart';
 import '../../utils/common.dart';
 import '../../utils/currency/currency_helper.dart';
 import '../../widgets/common_card_widget.dart';
+import '../../widgets/google_places.dart';
+import '../../widgets/host_list_card_big.dart';
 import '../../widgets/map_view.dart';
 import '../../widgets/price_slider.dart';
 import '../../widgets/tags.dart';
@@ -34,9 +38,6 @@ class _ExploreViewState extends State<ExploreView> {
   FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
   SharedPreferences prefs = locator.get<SharedPreferences>();
   bool _listView = true;
-  
-  final controller = PageController(viewportFraction: 1, keepPage: true);
-  List<int> currentIndices = [];
 
   final TextEditingController _searchController = TextEditingController();
   // final StreamController<List<User>> _filteredStreamController = StreamController<List<User>>();
@@ -101,7 +102,29 @@ class _ExploreViewState extends State<ExploreView> {
                   resizeToAvoidBottomInset: false,
                   appBar: AppBar(
                     scrolledUnderElevation: 0,
-                    title: Text('Explore', style: TextStyles.boldN90029,),
+                    title: Padding(
+                      padding: _listView ? EdgeInsets.zero : horizontalPadding32,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Explore in, ', style: TextStyles.boldN90029,),
+                          verticalMargin4,
+                          InkWell(
+                            onTap: () {
+                              _showCitySearchBottomSheet(context, user!);
+                            },
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(" ${user!.userInfo!.address!.city}", style: TextStyles.boldAccent17),
+                                const Icon(Icons.arrow_drop_down_outlined, size: 20, color: AppTheme.accentColor,),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     centerTitle: false,
                     titleSpacing: 0,
                   ),
@@ -121,10 +144,16 @@ class _ExploreViewState extends State<ExploreView> {
                                 padding: verticalPadding24,
                                 height: MediaQuery.of(context).size.height -
                                     kBottomNavigationBarHeight - Assets.marginApppBar,
-                                child: Stack(children: [MapView(user: user!), Padding(
-                                  padding: _listView ? EdgeInsets.zero : horizontalPadding32,
-                                  child: buildSearch(user!),
-                                )])
+                                child: Stack(
+                                    children:
+                                    [
+                                      MapView(hosts: state.hosts, user: state.user,),
+                                      Padding(
+                                        padding: _listView ? EdgeInsets.zero : horizontalPadding32,
+                                        child: buildSearch(user!),
+                                      )
+                                    ]
+                                )
                             );
                             // }
                             // else { return Container(); }
@@ -224,162 +253,51 @@ class _ExploreViewState extends State<ExploreView> {
       scrollDirection: Axis.vertical,
       itemCount: snapshot.length,
       itemBuilder: (BuildContext context, int index) {
-        var user = snapshot[index];
-
-        List<Widget> photos = [];
-
-        if (user.photos != null && user.photos!.isNotEmpty) {
-          photos = List.generate(
-            user.photos!.length,
-                (index) => ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-              child: FadeInImage(
-                width: double.infinity,
-                placeholder: const AssetImage(Assets.logo),
-                image: NetworkImage(user.photos![index].url!),
-                fit: BoxFit.cover,
-              ),
-            ),
-          );
-        }
-
-        // Build your list item using the user data
-        return Container(
-          width: double.infinity,
-          padding: verticalPadding8,
-          child: InkWell(
-            onTap: () => context.pushNamed(
-              'profile',
-              pathParameters: {'userId': user.id},
-            ),
-            child: CommonCard(
-              padding: EdgeInsets.zero,
-              borderRadius: BorderRadius.circular(24),
-              child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-
-                    if(photos.isNotEmpty) ...[
-                      Stack(
-                        children: [
-                          SizedBox(
-                            height: 200,
-                            width: double.infinity,
-                            child: PageView.builder(
-                              onPageChanged: (pageId,) {
-                                setState(() {
-                                  currentIndices[
-                                  index] = pageId;
-                                });
-                              },
-                              padEnds: false,
-                              controller: controller,
-                              itemCount: photos.length,
-                              itemBuilder: (_, index) {
-                                return photos[index % photos.length];
-                              },
-                            ), // Select photo dynamically using index
-                          ),
-                          Positioned.fill(
-                            bottom: 12,
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: AnimatedSmoothIndicator(
-                                activeIndex: currentIndices.isNotEmpty ? currentIndices[
-                                index] : 0,
-                                count: photos.length,
-                                effect: const ExpandingDotsEffect(
-                                  spacing: 5,
-                                  dotHeight: 10,
-                                  dotWidth: 10,
-                                  dotColor: Colors.white,
-                                  activeDotColor: Colors.white,
-                                  // type: WormType.thin,
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ]
-                    else ... [
-                      const SizedBox(
-                        width: double.infinity,
-                        height: 200,
-                        child:FadeInImage(
-                          placeholder: AssetImage(Assets.logo),
-                          image: NetworkImage(Assets.logoUrl),
-                          fit: BoxFit.fitWidth,
-                        ),
-                      ),
-                    ],
-                    SizedBox(
-                      height: 100,
-                      child: Padding(
-                        padding: horizontalPadding24 + verticalPadding12,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(user.userInfo!.name!, style: TextStyles.boldN90017,),
-                                Row(
-                                  children: [
-                                    const Icon(Icons.location_pin, size: 10,),
-                                    Text(user.userInfo!.address!.city,
-                                      softWrap: true, style: TextStyles.regularN90010,),
-                                  ],
-                                ),
-                                Expanded(child: Container(),),
-                                Text(user.venueInfo!.typeOfVenue != null ?
-                                user.venueInfo!.typeOfVenue!.join(", ") :
-                                '', softWrap: true, style: TextStyles.semiBoldP40010,),
-                                verticalMargin24
-
-                              ],
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text('From', style: TextStyles.regularAccent12,),
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(24),
-                                    color: AppTheme.primaryColor,
-                                  ),
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(' ${user.bookingSettings!.basePrice!} '
-                                            '${CurrencyHelper.currency(user.userInfo!.address!.country).currencySymbol}',
-                                          style: TextStyles.semiBoldN90017,),
-
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )],
-                        ),
-
-                      ),
-                    )
-
-
-                  ]
-              ),
-            ),
-          ),
-        );
+        return HostListCardBig(user: snapshot[index]);
       },
     );
   }
 
+  /////CHANGE CITY
+  void _showCitySearchBottomSheet(BuildContext contexto, User user) {
+
+    final exploreCubit = context.read<ExploreCubit>();
+
+    showModalBottomSheet(
+        context: contexto,
+        isScrollControlled: true,
+        builder: (contexto) {
+          return DraggableScrollableSheet(
+            initialChildSize: 0.6, // The initial height is 50% of the parent container's height
+            minChildSize: 0.25,    // The minimum height is 25% of the parent container's height
+            maxChildSize: 0.7,    // The maximum height is 85% of the parent container's height
+            expand: false,
+            builder: (context, scrollController) {
+              return Padding(
+                padding: horizontalPadding24,
+                child: Column(
+                  children: [
+                    verticalMargin24,
+                    Text('When you chose a city you will see all the venues in it.',
+                      style: TextStyles.boldN90017,),
+                    verticalMargin12,
+                    GoogleAddressLookup(hint: 'Which city?',
+                      onAddressChosen: (address) async {
+                        await exploreCubit.updateCity(user, address);
+                        _searchController.text = '';
+
+                        Navigator.pop(context);
+                      },),
+                    Expanded(child: Container()),
+                  ],
+                ),
+              );
+            },
+          );
+
+        }
+    );
+  }
 
 
 
@@ -388,7 +306,7 @@ class _ExploreViewState extends State<ExploreView> {
   List<String> _venueCategories = [];
   List<String> _selectedVenueVibes = [];
   List<String> _venueVibes = [];
-  RangeValues _rangeValues = const RangeValues(20, 80);
+  RangeValues _rangeValues = const RangeValues(0, 300);
 
   Future<bool> _showModalBottomSheet(BuildContext context, User user) async {
     final exploreCubit = context.read<ExploreCubit>();
@@ -401,7 +319,7 @@ class _ExploreViewState extends State<ExploreView> {
           builder: (context, constraints) {
             return ConstrainedBox(
               constraints: BoxConstraints(
-                maxHeight: constraints.maxHeight * 0.8,
+                maxHeight: constraints.maxHeight * 0.9,
               ),
               child: SingleChildScrollView(
                 physics: AlwaysScrollableScrollPhysics(),

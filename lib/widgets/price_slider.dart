@@ -18,14 +18,14 @@ class PriceSlider extends StatefulWidget {
 }
 
 class _PriceSliderState extends State<PriceSlider> {
-  RangeValues _currentRangeValues = const RangeValues(20, 80);
+  RangeValues _currentRangeValues = const RangeValues(0, 300);
   final TextEditingController _minController = TextEditingController();
   final TextEditingController _maxController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _currentRangeValues = widget.rangeValues ?? const RangeValues(20, 80);
+    _currentRangeValues = widget.rangeValues ?? const RangeValues(0, 300);
     _minController.text = _currentRangeValues.start.round().toString();
     _maxController.text = _currentRangeValues.end.round().toString();
     _minController.addListener(_updateMinValue);

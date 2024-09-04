@@ -435,7 +435,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
 
 
-  void save(User user, [UserStatus? userStatus]) async {
+  Future<void> save(User user, [UserStatus? userStatus]) async {
     // User user = this.state.props[0] as User;
     emit(LoadingState());
 
@@ -444,8 +444,9 @@ class OnboardingCubit extends Cubit<OnboardingState> {
       if(userStatus != null) {
         user = user.copyWith(userStatus: userStatus);
       }
-
       await databaseService.updateUser(user: user);
+
+      // Your save logic here
       emit(DataSaved(user));
     } catch (e) {
       emit(ErrorState(user, "Error saving the art details"));

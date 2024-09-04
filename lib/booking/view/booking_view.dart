@@ -157,8 +157,7 @@ class BookingView extends StatelessWidget {
                                 Text('Total booking: ',
                                   style: TextStyles.semiBoldN10014,),
 
-                                Text('${BookingService().calculateGrandTotal(BookingService().calculatePrice(booking!, host),
-                                    BookingService().calculateCommission(BookingService().calculatePrice(booking!, host)))} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
+                                Text('${BookingService().calculatePrice(booking!, host)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
                                   style: TextStyles.boldN90014, ),
                                 Expanded(child: Container()),
                               ],

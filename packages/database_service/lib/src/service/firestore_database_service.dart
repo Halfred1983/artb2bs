@@ -55,32 +55,47 @@ class FirestoreDatabaseService implements DatabaseService {
   }
 
   @override
-  Stream<List<User>> getHostsStream() {
+  Stream<List<User>> getHostsStream( {User? nextToUser}) {
     var collectionReference = _firestore.collection('users');
 
     return collectionReference.snapshots().map((querySnapshot) {
       return querySnapshot.docs.map((e) => User.fromJson(e.data()))
           .where((user) {
+            bool isNextToUser = true;
+            if(nextToUser != null) {
+              isNextToUser = user.userInfo != null && user.userInfo!.address != null &&
+                  nextToUser.userInfo!.address!.city == (user.userInfo!.address!.city);
+            }
+
         return user.userInfo?.userType == UserType.gallery &&
             user.bookingSettings != null &&
             user.bookingSettings!.active != null &&
-            user.bookingSettings!.active == true;
+            user.bookingSettings!.active == true &&
+            isNextToUser;
       }).toList();
     });
   }
 
   @override
-  @override
-  Future<List<User>> getHostsList() async {
+  Future<List<User>> getHostsList({User? nextToUser}) async {
     var collectionReference = _firestore.collection('users');
 
     var querySnapshot = await collectionReference.get();
     return querySnapshot.docs.map((e) => User.fromJson(e.data()))
         .where((user) {
+
+      bool isNextToUser = true;
+      if(nextToUser != null) {
+        isNextToUser = user.userInfo != null && user.userInfo!.address != null &&
+            nextToUser.userInfo!.address!.city == (user.userInfo!.address!.city);
+      }
+
+
       return user.userInfo?.userType == UserType.gallery &&
           user.bookingSettings != null &&
           user.bookingSettings!.active != null &&
-          user.bookingSettings!.active == true;
+          user.bookingSettings!.active == true &&
+          isNextToUser;
     }).toList();
   }
 
@@ -139,7 +154,7 @@ class FirestoreDatabaseService implements DatabaseService {
       double? radius,
       String? priceInput,
       String? daysInput,
-      List<String>? venueTypes,) {
+      ) {
     final geo = GeoFlutterFire();
     final geoFirePoint = geo.point(
       latitude: user.userInfo!.address!.location!.latitude,
@@ -553,7 +568,7 @@ class FirestoreDatabaseService implements DatabaseService {
   @override
   Future<Map<String, dynamic>> fetchConfigData() async {
     DocumentSnapshot<Map<String, dynamic>> snapshot =
-    await FirebaseFirestore.instance.collection('config').doc('config').get();
+    await FirebaseFirestore.instance.collection('config').doc('config').get(const GetOptions(source: Source.server));
 
     if (snapshot.exists) {
       return snapshot.data()!;

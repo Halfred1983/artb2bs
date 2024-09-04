@@ -17,13 +17,13 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
     getUser(userId);
   }
 
-  void getUser(String userId) async {
+  Future<void> getUser(String userId) async {
     try {
       emit(LoadingState(user: User.empty(), bookings: [], filter: 'All'));
       final user = await databaseService.getUser(userId: userId);
       if (user != null) {
+        await fetchBookings(user: user, filter: 'All', reset: true);
         emit(LoadedState(user: user, bookings: [], filter: 'All', hasMoreData: true));
-        fetchBookings(user: user, filter: 'All', reset: true);
       } else {
         emit(ErrorState(user: User.empty(), bookings: [], filter: 'All', error: 'User not found'));
       }
@@ -128,7 +128,7 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
     emit(LoadedState(user: user, bookings: state.bookings, filter: state.filter, hasMoreData: _hasMoreData));
   }
 
-  void rejectBooking(Booking booking, User user) async {
+  Future<void> rejectBooking(Booking booking, User user) async {
     try {
       emit(LoadingState(user: User.empty(),bookings: [],filter:  'All'));
       booking = booking.copyWith(bookingStatus: BookingStatus.rejected , reviewdTime: DateTime.now());
@@ -137,13 +137,14 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
           artistId: booking.artistId, hostId: booking.hostId);
       await databaseService.updateBooking(booking: booking);
       await databaseService.createRefundRequest(refund);
-      emit(LoadedState(user: user, bookings: [], filter: 'All',));
+      List<Booking> pendingBookings = await fetchBookingList(user: user, filter: 'Pending', reset: false);
+      emit(LoadedState(user: user, bookings: pendingBookings, filter: 'Pending',));
     } catch (e) {
       emit(ErrorState(user: User.empty(), bookings: [], filter: 'All', error: e.toString()));
     }
   }
 
-  void acceptBooking(Booking booking, User host, User artist) async {
+  Future<void> acceptBooking(Booking booking, User host, User artist) async {
     try {
       emit(LoadingState(user: User.empty(),bookings: [],filter:  'All'));
 
@@ -175,17 +176,21 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
         host = host.copyWith(exhibitionCount: host.exhibitionCount + 1);
         artist = artist.copyWith(exhibitionCount: artist.exhibitionCount + 1);
 
-        //CALCULATE THE COMMISSION FOR THE HOST BASED ON THE BOOKING PRICE
-        //SET IT IN THE BALANCE OF THE HOST
+        //commission
+        host = host.copyWith(balance: (double.parse(host.balance != null ? host.balance! : '0') +
+            (double.parse(booking.totalPrice!) - double.parse(booking.commission!))).toString());
 
         await databaseService.updateUser(user: host);
         await databaseService.updateUser(user: artist);
+
         emit(LoadedState(user: host, bookings: [], filter: 'All',));
       }
     } catch (e) {
       emit(ErrorState(user: User.empty(), bookings: [], filter: 'All', error: e.toString()));
     }
   }
+
+
 
   void cancelBooking(Booking booking, User user) async {
     try {
