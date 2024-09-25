@@ -441,8 +441,8 @@ exports.createBankAccount = functions.https.onRequest(async (req, res) => {
 
 
 // Function to process monthly payouts for hosts
-exports.processMonthlyPayouts = functions.pubsub.schedule('0 16 1 * *')
-    .timeZone('Europe/London')
+exports.processMonthlyPayouts = functions.pubsub.schedule('0 14 * * *')
+    .timeZone('Europe/Rome')
     .onRun(async (context) => {
         const usersSnapshot = await admin.firestore().collection('users')
             .where('userInfo.userType', '==', 1)
@@ -520,6 +520,7 @@ exports.processMonthlyPayouts = functions.pubsub.schedule('0 16 1 * *')
                 await payoutRef.update({
                     transferId: transfer.id,
                     customerTransactionId: transfer.customerTransactionId,
+                    targetCurrency: transfer.targetCurrency,
                     payoutStatus: 1, // On Progress
                 });
 

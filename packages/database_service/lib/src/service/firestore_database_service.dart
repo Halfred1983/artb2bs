@@ -554,6 +554,7 @@ class FirestoreDatabaseService implements DatabaseService {
 
   if(startDate != null){
     query = query.where('from', isGreaterThanOrEqualTo: startDate);
+    query = query.where('bookingStatus', isEqualTo: BookingStatus.accepted.index);
   }
 
   return query.snapshots().map((querySnapshot) => querySnapshot.docs);

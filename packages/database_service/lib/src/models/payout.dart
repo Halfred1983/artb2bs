@@ -12,20 +12,23 @@ part 'payout.g.dart';
 class Payout {
 
   @JsonKey(
-      defaultValue: PayoutStatus.unknown,
-      unknownEnumValue: PayoutStatus.unknown
+      defaultValue: PayoutStatus.initialised,
+      unknownEnumValue: PayoutStatus.initialised
   )
   PayoutStatus? payoutStatus;
   @TimestampConverter()
-  DateTime? timestamp;
+  DateTime? createdAt;
   String? userId;
-  int? amount;
-  String? currencyCode; //to be added when locale
-  String? paypalAccount;
+  double? sourceAmount;
+  double? totalFee;
+  double? targetAmount;
+  String? targetCurrency; //to be added when locale
+  int? transferId;
+  String? quoteId;
+  String? customerTransactionId;
 
-
-  Payout(this.payoutStatus, this.timestamp, this.userId, this.amount,
-      this.currencyCode, this.paypalAccount);
+  Payout(this.payoutStatus, this.createdAt, this.userId, this.sourceAmount,
+      this.totalFee, this.targetAmount, this.targetCurrency, this.transferId);
 
   factory Payout.fromJson(Map<String, dynamic> json)
   => _$PayoutFromJson(json);
@@ -37,10 +40,12 @@ class Payout {
 
 enum PayoutStatus {
   @JsonValue(0)
-  success,
+  initialised,
   @JsonValue(1)
-  failed,
+  onProgress,
   @JsonValue(2)
-  unknown,
+  completed,
+  @JsonValue(4)
+  failed,
 }
 

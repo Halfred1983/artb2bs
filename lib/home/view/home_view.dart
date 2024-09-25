@@ -32,6 +32,7 @@ import '../../onboard/view/4_a_artist_address.dart';
 import '../../onboard/view/5_venue_spaces.dart';
 import '../../onboard/view/6_venue_price.dart';
 import '../../onboard/view/7_venue_photo.dart';
+import '../../user_profile/view/user_profile_page.dart';
 import 'home_venue_view.dart';
 
 class HomeView extends StatefulWidget {
@@ -147,42 +148,41 @@ class _HomeViewState extends State<HomeView> {
                   widget = HomeList(user: user!);
                 }
 
-                  if(user!.userInfo!.userType == UserType.artist) {
-                    _widgetOptions = <Widget>[
-                      widget,
-                      ExplorePage(),
-                      ArtistDashboardPage(),
-                      BookingRequestPage(user: user!),
-                      ExhibitionPage(),
-                      // UserProfilePage(),
-                    ];
-                  }
-                  else {
-                    _widgetOptions = <Widget>[
-                      widget,
-                      HostListingPage(),
-                      HostDashboardPage(),
-                      BookingRequestPage(user: user!),
-                      ExhibitionPage(),
-                      // UserProfilePage(),
-                    ];
-                  }
+                if(user!.userInfo!.userType == UserType.artist) {
+                  _widgetOptions = <Widget>[
+                    widget,
+                    ExplorePage(),
+                    ArtistDashboardPage(),
+                    BookingRequestPage(user: user!),
+                    ExhibitionPage(),
+                    // UserProfilePage(),
+                  ];
                 }
+                else {
+                  _widgetOptions = <Widget>[
+                    widget,
+                    HostListingPage(),
+                    BookingRequestPage(user: user!),
+                    ExhibitionPage(),
+                    UserProfilePage(),
+                  ];
+                }
+              }
               return Scaffold(
                 body: Stack(
                     children: [
                       // _currentIndex == 0 ? widget : _widgetOptions.elementAt(_currentIndex),
-                       _widgetOptions.elementAt(_currentIndex),
+                      _widgetOptions.elementAt(_currentIndex),
                     ]
                 ),
                 bottomNavigationBar:
                 StylishBottomBar(
                   option: BubbleBarOptions(
-                    unselectedIconColor: AppTheme.n200,
-                    barStyle: BubbleBarStyle.vertical,
-                    bubbleFillStyle: BubbleFillStyle.fill,
-                    opacity: 0.8,
-                    inkEffect: false
+                      unselectedIconColor: AppTheme.n200,
+                      barStyle: BubbleBarStyle.vertical,
+                      bubbleFillStyle: BubbleFillStyle.fill,
+                      opacity: 0.8,
+                      inkEffect: false
                   ),
                   items: [
                     BottomBarItem(
@@ -195,18 +195,20 @@ class _HomeViewState extends State<HomeView> {
                       icon: user!.userInfo!.userType == UserType.artist ? const Icon(Icons.search, size: 20, color: AppTheme.n200,) :
                       const Icon(FontAwesomeIcons.mapPin, size: 20, color: AppTheme.n200,),
                       title: user!.userInfo!.userType == UserType.artist ? Text("Explore", style: TextStyles.semiBoldN90012)
-                      : Text("Listings", style: TextStyles.semiBoldN90012),
+                          : Text("Listings", style: TextStyles.semiBoldN90012),
                       backgroundColor: AppTheme.primaryColor,
                       selectedIcon: user!.userInfo!.userType == UserType.artist ?
                       const Icon(Icons.search, size: 20, color: AppTheme.n900,) :
                       const Icon(FontAwesomeIcons.mapPin, size: 20, color: AppTheme.n900,),
                     ),
+                    user!.userInfo!.userType == UserType.artist ?
                     BottomBarItem(
-                      icon: const Icon(Icons.dashboard, size: 20, color: AppTheme.n200,),
-                      title: Text("Portfolio", style: TextStyles.semiBoldN90012),
-                      backgroundColor: AppTheme.primaryColor,
-                      selectedIcon: const Icon(Icons.dashboard, size: 20, color: AppTheme.n900,),
-                    ),
+                        icon: const Icon(Icons.dashboard, size: 20, color: AppTheme.n200,),
+                        title: Text('Portfolio', style: TextStyles.semiBoldN90012),
+                        backgroundColor: AppTheme.primaryColor,
+                        selectedIcon:
+                        const Icon(Icons.dashboard, size: 20, color: AppTheme.n900,)
+                    ) :
                     BottomBarItem(
                       icon: pendingRequests != null && pendingRequests! > 0 ?
                       Badge(
@@ -217,11 +219,33 @@ class _HomeViewState extends State<HomeView> {
                       backgroundColor: AppTheme.primaryColor,
                       selectedIcon: const Icon(Icons.add_alert_sharp, size: 20, color: AppTheme.n900,),
                     ),
+
+                    user!.userInfo!.userType == UserType.artist ?
                     BottomBarItem(
+                      icon: pendingRequests != null && pendingRequests! > 0 ?
+                      Badge(
+                          label: Text(pendingRequests!.toString()),
+                          child: const Icon(Icons.add_alert_sharp, size: 22)
+                      ) : const Icon(Icons.add_alert_sharp, size: 22,),
+                      title: Text("Bookings", style: TextStyles.semiBoldN90012),
+                      backgroundColor: AppTheme.primaryColor,
+                      selectedIcon: const Icon(Icons.add_alert_sharp, size: 20, color: AppTheme.n900,),
+                    ) : BottomBarItem(
                       icon: const Icon(Icons.calendar_month, size: 20, color: AppTheme.n200,),
                       title: Text("Calendar", style: TextStyles.semiBoldN90012),
                       backgroundColor: AppTheme.primaryColor,
                       selectedIcon: const Icon(Icons.calendar_month, size: 20, color: AppTheme.n900,),
+                    ),
+                    user!.userInfo!.userType == UserType.artist ?  BottomBarItem(
+                      icon: const Icon(Icons.calendar_month, size: 20, color: AppTheme.n200,),
+                      title: Text("Calendar", style: TextStyles.semiBoldN90012),
+                      backgroundColor: AppTheme.primaryColor,
+                      selectedIcon: const Icon(Icons.calendar_month, size: 20, color: AppTheme.n900,),
+                    ) : BottomBarItem(
+                      icon: const Icon(Icons.person, size: 20, color: AppTheme.n200,),
+                      title: Text("Profile", style: TextStyles.semiBoldN90012),
+                      backgroundColor: AppTheme.primaryColor,
+                      selectedIcon: const Icon(Icons.person, size: 20, color: AppTheme.n900,),
                     ),
                   ],
                   hasNotch: false,

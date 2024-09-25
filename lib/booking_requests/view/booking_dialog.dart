@@ -10,6 +10,7 @@ import 'package:artb2b/widgets/summary_card.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import 'package:map_launcher/map_launcher.dart';
@@ -37,108 +38,143 @@ class BookingDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-          padding: horizontalPadding24,
-          child: Container(
-            padding: verticalPadding32 + horizontalPadding24,
-            height: MediaQuery.of(context).size.height * 0.75,
-            decoration: const BoxDecoration(
-              color: AppTheme.white,
-              borderRadius: BorderRadius.all(Radius.circular(16)),
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+      padding: horizontalPadding24,
+      child: Container(
+        padding: verticalPadding32 + horizontalPadding24,
+        height: MediaQuery.of(context).size.height * 0.75,
+        decoration: const BoxDecoration(
+          color: AppTheme.white,
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      StatusLabel(booking: booking),
-                      IconButton(
-                        icon: const Icon(Icons.close),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                    ],
+                  StatusLabel(booking: booking),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.of(context).pop(),
                   ),
-                  verticalMargin16,
-                  SummaryCard(booking: booking, host: host, currentUser: currentUser,
-                      title: 'Booking details', padding: EdgeInsets.zero),
-                  verticalMargin16,
-                  const Divider(thickness: 0.5, color: AppTheme.divider),
-
-                  if (currentUser.id == booking.hostId) ...[
-                    verticalMargin16,
-                    Text('Requesting artist', style: TextStyles.boldN90017),
-                    verticalMargin8,
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Name: ${artist.artInfo!.artistName!}', style: TextStyles.semiBoldN90014),
-                        verticalMargin8,
-                        Text('Location: ${artist.userInfo!.address!.city}', style: TextStyles.semiBoldN90014),
-                        verticalMargin8,
-                        StreamBuilder(
-                          stream: locator<FirestoreDatabaseService>().findArtworkByUser(user: artist),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasError) {
-                              return const Text('Something went wrong');
-                            }
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Text("Loading");
-                            }
-                            if (snapshot.hasData) {
-                              User artistData = User.fromJson(snapshot.data!.data() as Map<String, dynamic>);
-                              var collectionWithPhotos = artistData.artInfo!.collections.firstWhere(
-                                    (collection) => collection.artworks.isNotEmpty,
-                                orElse: () => Collection(artworks: []),
-                              );
-                              if (collectionWithPhotos.artworks.isNotEmpty) {
-                                return PhotoGridWidget(
-                                  artworks: collectionWithPhotos.artworks,
-                                  moreCount: collectionWithPhotos.artworks.length > 4 ? collectionWithPhotos.artworks.length - 4 : 0,
-                                );
-                              } else {
-                                return Text('The artist has no artwork yet', style: TextStyles.semiBoldN90014);
-                              }
-                            }
-                            return Container();
-                          },
-                        ),
-                      ],
-                    )
-                  ] else...[
-                    verticalMargin16,
-                    Text('Venue details', style: TextStyles.boldN90017),
-                    verticalMargin16,
-                    GestureDetector(
-                      onTap: () async {
-                        final availableMaps = await MapLauncher.installedMaps;
-                        await availableMaps.first.showMarker(
-                          coords: Coords(host.userInfo!.address!.location!.latitude, host.userInfo!.address!.location!.longitude),
-                          title: host.userInfo!.name!,
-                        );
-                      },
-                      child: Text('📍 Venue location', style: TextStyles.semiBoldS40014),
-                    ),
-                    verticalMargin16,
-                    TextButton(
-                      onPressed: () {
-                        _whatsapp();
-                      },
-                      child: const Text('📞 Contact customer service'),
-                    ),
-                    verticalMargin16,
-                    GestureDetector(
-                      onTap: () {
-                        _launchUrl('https://www.google.com');
-                      },
-                      child: Text('📝 Read T&Cs', style: TextStyles.semiBoldS40014),
-                    ),
-                  ]
                 ],
               ),
-            ),
+              verticalMargin16,
+              SummaryCard(booking: booking, host: host, currentUser: currentUser,
+                  title: 'Booking details', padding: EdgeInsets.zero),
+              verticalMargin16,
+              const Divider(thickness: 0.5, color: AppTheme.divider),
+
+              if (currentUser.id == booking.hostId) ...[
+                verticalMargin16,
+                Text('Requesting artist', style: TextStyles.boldN90017),
+                verticalMargin8,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Name: ${artist.artInfo!.artistName!}', style: TextStyles.semiBoldN90014),
+                    verticalMargin8,
+                    Text('Location: ${artist.userInfo!.address!.city}', style: TextStyles.semiBoldN90014),
+                    verticalMargin8,
+                    StreamBuilder(
+                      stream: locator<FirestoreDatabaseService>().findArtworkByUser(user: artist),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return const Text('Something went wrong');
+                        }
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Text("Loading");
+                        }
+                        if (snapshot.hasData) {
+                          User artistData = User.fromJson(snapshot.data!.data() as Map<String, dynamic>);
+                          var collectionWithPhotos = artistData.artInfo!.collections.firstWhere(
+                                (collection) => collection.artworks.isNotEmpty,
+                            orElse: () => Collection(artworks: []),
+                          );
+                          if (collectionWithPhotos.artworks.isNotEmpty) {
+                            return PhotoGridWidget(
+                              artworks: collectionWithPhotos.artworks,
+                              moreCount: collectionWithPhotos.artworks.length > 4 ? collectionWithPhotos.artworks.length - 4 : 0,
+                            );
+                          } else {
+                            return Text('The artist has no artwork yet', style: TextStyles.semiBoldN90014);
+                          }
+                        }
+                        return Container();
+                      },
+                    ),
+                  ],
+                )
+              ] else...[
+                verticalMargin16,
+                Text('Venue details', style: TextStyles.boldN90017),
+                verticalMargin16,
+                GestureDetector(
+                  onTap: () async {
+                    openMapsSheet(context,
+                        Coords(host.userInfo!.address!.location!.latitude, host.userInfo!.address!.location!.longitude),
+                        host.userInfo!.name!);
+                  },
+                  child: Text('📍 Venue location', style: TextStyles.semiBoldS40014),
+                ),
+                verticalMargin16,
+                TextButton(
+                  onPressed: () {
+                    _whatsapp();
+                  },
+                  child: const Text('📞 Contact customer service'),
+                ),
+                verticalMargin16,
+                GestureDetector(
+                  onTap: () {
+                    _launchUrl('https://www.google.com');
+                  },
+                  child: Text('📝 Read T&Cs', style: TextStyles.semiBoldS40014),
+                ),
+              ]
+            ],
           ),
-        );
+        ),
+      ),
+    );
+  }
+
+  openMapsSheet(context, Coords coords, String title) async {
+    try {
+      final availableMaps = await MapLauncher.installedMaps;
+
+      showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return SafeArea(
+            child: SingleChildScrollView(
+              child: Container(
+                child: Wrap(
+                  children: <Widget>[
+                    for (var map in availableMaps)
+                      ListTile(
+                        onTap: () => map.showMarker(
+                          coords: coords,
+                          title: title,
+                        ),
+                        title: Text(map.mapName),
+                        leading: SvgPicture.asset(
+                          map.icon,
+                          height: 30.0,
+                          width: 30.0,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 }
 
@@ -202,7 +238,6 @@ class StatusLabel extends StatelessWidget {
             .withColor(booking.bookingStatus!.name.getColorForBookingStatus()),),
     );
   }
-
-
 }
+
 

@@ -17,6 +17,7 @@ import '../../app/resources/theme.dart';
 import '../../utils/common.dart';
 import '../../widgets/app_input_validators.dart';
 import '../../widgets/app_text_field.dart';
+import '../../widgets/custom_dialog.dart';
 import '../../widgets/input_text_widget.dart';
 import '../../widgets/loading_screen.dart';
 import '../cubit/photo_cubit.dart';
@@ -317,33 +318,9 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog( // <-- SEE HERE
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-          title: const Center(child: Text('Upload Successful')),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                      text: 'Your photo:\n\n',
-                      style: TextStyles.semiBoldAccent14,
-                      children: <TextSpan>[
-                        TextSpan(text: name ?? '',
-                          style: TextStyles.semiBoldAccent14,
-                        ),
-                        TextSpan(text: '\n\nwas uploaded successfully!',
-                          style: TextStyles.semiBoldAccent14,
-                        )
-                      ]
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actionsAlignment: MainAxisAlignment.center,
+        return CustomAlertDialog( // <-- SEE HERE
+          content: 'Your photo:\n\n$name\n\nwas uploaded successfully!',
+          title: 'Upload Successful',
           actions: <Widget>[
             TextButton(
               child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
@@ -356,7 +333,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                 );
               },
             ),
-          ],
+          ], type: AlertType.success,
         );
       },
     );

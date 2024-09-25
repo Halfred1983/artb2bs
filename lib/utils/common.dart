@@ -151,14 +151,31 @@ extension BookingStatusColorExtension on String {
 extension PayoutStatusColorExtension on String {
   Color getColorForPayoutStatus() {
     switch (toLowerCase()) {
-      case 'success':
+      case 'completed':
         return AppTheme.sv300; // Set the color for accepted status
-      case 'unknown':
+      case 'onProgress':
+        return AppTheme.wv500;
+      case 'initialised':
         return AppTheme.wv500; // Set the color for pending status
       case 'failed':
         return AppTheme.dv400; // Set the color for cancelled status
       default:
         return AppTheme.primaryColor; // Default color if status is not recognized
+    }
+  }
+
+  Color getBackgroundColorForPayoutStatus() {
+    switch (toLowerCase()) {
+      case 'completed':
+        return AppTheme.sv50; // Set the color for accepted status
+      case 'initialised':
+        return AppTheme.wv50; // Set the color for accepted status
+      case 'onProgress':
+        return AppTheme.wv50; // Set the color for pending status
+      case 'failed':
+        return AppTheme.dv50;
+      default:
+        return AppTheme.sv50; // Default color if status is not recognized
     }
   }
 }

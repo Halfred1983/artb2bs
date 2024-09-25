@@ -11,6 +11,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../login/cubit/login_cubit.dart';
 import '../../../login/view/login_page.dart';
@@ -21,7 +22,13 @@ import '../../widgets/loading_screen.dart';
 
 
 class UserProfileView extends StatelessWidget {
-  const UserProfileView({super.key});
+  UserProfileView({super.key}) {
+    getVersionInfo();
+  }
+
+
+  String _version = '';
+  String _buildNumber = '';
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +157,9 @@ class UserProfileView extends StatelessWidget {
                           )),
                         ),
                       ),
+                      verticalMargin24,
+                      Text('Version $_version', style: TextStyles.regularN90014,),
+                      Text('Build Number $_buildNumber', style: TextStyles.regularN90014,),
                       verticalMargin48,
                       verticalMargin48,
 
@@ -163,10 +173,16 @@ class UserProfileView extends StatelessWidget {
     );
   }
 
+  void getVersionInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    _version = packageInfo.version;
+    _buildNumber = packageInfo.buildNumber;
+  }
+
   Widget _buildUserSettings(User user) {
     final List<Map<String, dynamic>> tileData = [
       {'title': 'Personal Data', 'icon': Icons.person, 'targetPage': HostVenueInfoPage()},
-      {'title': 'Booking History', 'icon': Icons.history, 'targetPage': BookingHistory(user: user)},
+      // {'title': 'Booking History', 'icon': Icons.history, 'targetPage': BookingHistory(user: user)},
       if (user.userInfo!.userType != UserType.artist)
         {'title': 'Payout History', 'icon': Icons.payment, 'targetPage': PayoutHistory(user: user)},
       {'title': 'Help', 'icon': Icons.help, 'targetPage': Container()},

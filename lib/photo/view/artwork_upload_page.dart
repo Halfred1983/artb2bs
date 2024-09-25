@@ -20,6 +20,7 @@ import '../../app/resources/theme.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
 import '../../utils/currency/currency_helper.dart';
+import '../../widgets/custom_dialog.dart';
 import '../../widgets/input_text_widget.dart';
 import '../../widgets/loading_screen.dart';
 import '../cubit/photo_cubit.dart';
@@ -514,39 +515,14 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
     );
   }
 
-
   Future<void> _showAlertDialog(String name) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
-        return AlertDialog( // <-- SEE HERE
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-          title: const Center(child:Text('Upload Successful')),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                      text: 'Your artwork:\n\n',
-                      style: TextStyles.semiBoldAccent14,
-                      children: <TextSpan>[
-                        TextSpan(text: name,
-                          style:TextStyles.semiBoldAccent14,
-                        ),
-                        TextSpan(text: '\n\nwas uploaded successfully!',
-                          style:TextStyles.semiBoldAccent14,
-                        )
-                      ]
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actionsAlignment: MainAxisAlignment.center,
+        return CustomAlertDialog( // <-- SEE HERE
+          content: 'Your photo:\n\n$name\n\nwas uploaded successfully!',
+          title: 'Upload Successful',
           actions: <Widget>[
             TextButton(
               child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
@@ -561,10 +537,12 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
               },
             ),
           ],
-        );
+          type: AlertType.success,
+          );
       },
     );
   }
+
 
   static final List<String> _techniques = [
     'acrylic painting',

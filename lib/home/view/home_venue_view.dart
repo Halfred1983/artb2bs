@@ -39,9 +39,6 @@ class HomeVenue extends StatefulWidget {
 class _HomeVenueState extends State<HomeVenue> {
   final FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
 
-  final List<BookingStatus> _bookingStatus = BookingStatus.values;
-  String? _selectedStatus;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -98,7 +95,7 @@ class _HomeVenueState extends State<HomeVenue> {
                 return Center(child: Text('Error: ${snapshot.error}'));
               }
               if (!snapshot.hasData) {
-                return Center(child: Text('No data available'));
+                return const Center(child: Text('No data available'));
               }
               final user = User.fromJson(snapshot.data!.data() as Map<String, dynamic>);
               return Column(
@@ -163,10 +160,10 @@ class _HomeVenueState extends State<HomeVenue> {
                       ),
                     ],
                   ),
-
                   SizedBox(
                     height: 300,
-                    child: BookingRequestPage(user: user, isEmbedded: true, choices: [BookingStatus.pending.name.toString(), BookingStatus.accepted.name.toString()]),
+                    child: BookingRequestPage(user: user, isEmbedded: true, choices: [BookingStatus.pending.name.toString().capitalize(),
+                      'Upcoming']),
                   ),
                   verticalMargin32
                 ],

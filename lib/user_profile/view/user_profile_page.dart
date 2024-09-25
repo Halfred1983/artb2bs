@@ -25,7 +25,7 @@ class UserProfilePage extends StatelessWidget {
             databaseService: databaseService,
             userId: authService.getUser().id,
           ),
-          child:  const UserProfileView(),
+          child: UserProfileView(),
     );
   }
 }

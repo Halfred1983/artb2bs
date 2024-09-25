@@ -20,9 +20,7 @@ class PayoutHistory extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Payout>>(
-      future: databaseService.findPayoutsByUser(user).then((payouts) =>
-      payouts.where((payout) => payout.timestamp!.isBeforeWithoutTime(DateTime.now())).toList()
-        ..sort((a, b) => b.timestamp!.compareTo(a.timestamp!))),
+      future: databaseService.findPayoutsByUser(user),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
@@ -66,13 +64,12 @@ class PayoutHistory extends StatelessWidget {
           List<Payout> payouts = snapshot.data ?? [];
           return Scaffold(
             appBar: AppBar(
-              title: Text(
-                "Payout History",
-                style: TextStyles.boldAccent24,
-              ),
+              scrolledUnderElevation: 0,
+              title: Text('Payout History', style: TextStyles.boldN90017,),
               centerTitle: true,
+              backgroundColor: AppTheme.white,
               iconTheme: const IconThemeData(
-                color: AppTheme.primaryColor,
+                color: AppTheme.n900, //change your color here
               ),
             ),
             body: Padding(
@@ -86,16 +83,43 @@ class PayoutHistory extends StatelessWidget {
                     child: CommonCard(
                         child: Column(
                           children: [
+
                             Row(
                                 mainAxisAlignment: MainAxisAlignment
                                     .start,
                                 children: [
                                   Text('Amount: ',
                                     style: TextStyles
-                                        .semiBoldAccent14,),
-                                  Text('${payouts[index].amount!} ${payouts[index].currencyCode!}',
+                                        .regularN10012,),
+                                  Text('${payouts[index].sourceAmount!} ${payouts[index].targetCurrency!}',
                                     style: TextStyles
-                                        .semiBoldAccent14,),
+                                        .boldN90014,),
+                                ]
+                            ),
+                            verticalMargin12,
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .start,
+                                children: [
+                                  Text('Fees: ',
+                                    style: TextStyles
+                                        .regularN10012,),
+                                  Text('${payouts[index].totalFee!} ${payouts[index].targetCurrency!}',
+                                    style: TextStyles
+                                        .boldN90014,),
+                                ]
+                            ),
+                            verticalMargin12,
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment
+                                    .start,
+                                children: [
+                                  Text('Your payout: ',
+                                    style: TextStyles
+                                        .regularN10012,),
+                                  Text('${payouts[index].targetAmount!} ${payouts[index].targetCurrency!}',
+                                    style: TextStyles
+                                        .boldN90014,),
                                 ]
                             ),
                             verticalMargin12,
@@ -105,27 +129,26 @@ class PayoutHistory extends StatelessWidget {
                                 children: [
                                   Text('Date: ',
                                     style: TextStyles
-                                        .semiBoldAccent14,),
-                                  Text(DateFormat.yMMMEd().format(payouts[index].timestamp!),
+                                        .regularN10012,),
+                                  Text(DateFormat.yMMMEd().format(payouts[index].createdAt!),
                                     style: TextStyles
-                                        .semiBoldAccent14,),
+                                        .boldN90014,),
                                 ]
                             ),
                             verticalMargin12,
                             Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment
                                     .start,
                                 children: [
-                                  Text('Paypal Account: ',
+                                  Text('Transfer Id: ',
                                     style: TextStyles
-                                        .semiBoldAccent14,),
-                                  Expanded(
-                                    child: Text(payouts[index].paypalAccount!,
-                                      overflow: TextOverflow.clip, // Overflow handling strategy
-                                      maxLines: 2, // Maximum number of lines before text is truncated
-                                      style: TextStyles
-                                          .semiBoldAccent14,
-                                    softWrap: true,),
+                                        .regularN10012,),
+                                  SelectableText(payouts[index].transferId!.toString(),
+                                    // Overflow handling strategy
+                                    maxLines: 1, // Maximum number of lines before text is truncated
+                                    style: TextStyles
+                                        .boldN90014,
                                   ),
                                 ]
                             ),
@@ -134,14 +157,7 @@ class PayoutHistory extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment
                                     .start,
                                 children: [
-                                  Text('Status: ',
-                                    style: TextStyles
-                                        .semiBoldAccent14,),
-                                  Text(
-                                    payouts[index].payoutStatus!.name.capitalize(),
-                                    style: TextStyles
-                                        .semiBoldAccent14.withColor(payouts[index].payoutStatus!.name.getColorForPayoutStatus()),),
-                                ]
+                                  PayoutStatusLabel(payout: payouts[index]),                           ]
                             ),
                           ],
                         )
@@ -152,7 +168,7 @@ class PayoutHistory extends StatelessWidget {
                   : Center(
                 child: Text(
                   "No past payouts.",
-                  style: TextStyles.semiBoldAccent14,
+                  style: TextStyles.boldN90024,
                 ),
               ),
             ),
@@ -358,4 +374,32 @@ class PayoutHistory extends StatelessWidget {
                                             }
                                         );
    */
+}
+
+
+
+class PayoutStatusLabel extends StatelessWidget {
+  const PayoutStatusLabel({super.key, required this.payout});
+
+  final Payout payout;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 27,
+      margin: const EdgeInsets.all(5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      clipBehavior: Clip.antiAlias,
+      decoration: ShapeDecoration(
+        color: payout.payoutStatus!.name.getBackgroundColorForPayoutStatus(),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+      child: Text(payout.payoutStatus!.name.toString().capitalize(),
+        style:
+        TextStyles.semiBoldSV30014
+            .withColor(payout.payoutStatus!.name.getColorForPayoutStatus()),),
+    );
+  }
+
+
 }

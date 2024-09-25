@@ -9,15 +9,19 @@ part of 'payout.dart';
 abstract class _$PayoutCWProxy {
   Payout payoutStatus(PayoutStatus? payoutStatus);
 
-  Payout timestamp(DateTime? timestamp);
+  Payout createdAt(DateTime? createdAt);
 
   Payout userId(String? userId);
 
-  Payout amount(int? amount);
+  Payout sourceAmount(double? sourceAmount);
 
-  Payout currencyCode(String? currencyCode);
+  Payout totalFee(double? totalFee);
 
-  Payout paypalAccount(String? paypalAccount);
+  Payout targetAmount(double? targetAmount);
+
+  Payout targetCurrency(String? targetCurrency);
+
+  Payout transferId(int? transferId);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Payout(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -27,11 +31,13 @@ abstract class _$PayoutCWProxy {
   /// ````
   Payout call({
     PayoutStatus? payoutStatus,
-    DateTime? timestamp,
+    DateTime? createdAt,
     String? userId,
-    int? amount,
-    String? currencyCode,
-    String? paypalAccount,
+    double? sourceAmount,
+    double? totalFee,
+    double? targetAmount,
+    String? targetCurrency,
+    int? transferId,
   });
 }
 
@@ -46,20 +52,26 @@ class _$PayoutCWProxyImpl implements _$PayoutCWProxy {
       this(payoutStatus: payoutStatus);
 
   @override
-  Payout timestamp(DateTime? timestamp) => this(timestamp: timestamp);
+  Payout createdAt(DateTime? createdAt) => this(createdAt: createdAt);
 
   @override
   Payout userId(String? userId) => this(userId: userId);
 
   @override
-  Payout amount(int? amount) => this(amount: amount);
+  Payout sourceAmount(double? sourceAmount) => this(sourceAmount: sourceAmount);
 
   @override
-  Payout currencyCode(String? currencyCode) => this(currencyCode: currencyCode);
+  Payout totalFee(double? totalFee) => this(totalFee: totalFee);
 
   @override
-  Payout paypalAccount(String? paypalAccount) =>
-      this(paypalAccount: paypalAccount);
+  Payout targetAmount(double? targetAmount) => this(targetAmount: targetAmount);
+
+  @override
+  Payout targetCurrency(String? targetCurrency) =>
+      this(targetCurrency: targetCurrency);
+
+  @override
+  Payout transferId(int? transferId) => this(transferId: transferId);
 
   @override
 
@@ -71,37 +83,47 @@ class _$PayoutCWProxyImpl implements _$PayoutCWProxy {
   /// ````
   Payout call({
     Object? payoutStatus = const $CopyWithPlaceholder(),
-    Object? timestamp = const $CopyWithPlaceholder(),
+    Object? createdAt = const $CopyWithPlaceholder(),
     Object? userId = const $CopyWithPlaceholder(),
-    Object? amount = const $CopyWithPlaceholder(),
-    Object? currencyCode = const $CopyWithPlaceholder(),
-    Object? paypalAccount = const $CopyWithPlaceholder(),
+    Object? sourceAmount = const $CopyWithPlaceholder(),
+    Object? totalFee = const $CopyWithPlaceholder(),
+    Object? targetAmount = const $CopyWithPlaceholder(),
+    Object? targetCurrency = const $CopyWithPlaceholder(),
+    Object? transferId = const $CopyWithPlaceholder(),
   }) {
     return Payout(
       payoutStatus == const $CopyWithPlaceholder()
           ? _value.payoutStatus
           // ignore: cast_nullable_to_non_nullable
           : payoutStatus as PayoutStatus?,
-      timestamp == const $CopyWithPlaceholder()
-          ? _value.timestamp
+      createdAt == const $CopyWithPlaceholder()
+          ? _value.createdAt
           // ignore: cast_nullable_to_non_nullable
-          : timestamp as DateTime?,
+          : createdAt as DateTime?,
       userId == const $CopyWithPlaceholder()
           ? _value.userId
           // ignore: cast_nullable_to_non_nullable
           : userId as String?,
-      amount == const $CopyWithPlaceholder()
-          ? _value.amount
+      sourceAmount == const $CopyWithPlaceholder()
+          ? _value.sourceAmount
           // ignore: cast_nullable_to_non_nullable
-          : amount as int?,
-      currencyCode == const $CopyWithPlaceholder()
-          ? _value.currencyCode
+          : sourceAmount as double?,
+      totalFee == const $CopyWithPlaceholder()
+          ? _value.totalFee
           // ignore: cast_nullable_to_non_nullable
-          : currencyCode as String?,
-      paypalAccount == const $CopyWithPlaceholder()
-          ? _value.paypalAccount
+          : totalFee as double?,
+      targetAmount == const $CopyWithPlaceholder()
+          ? _value.targetAmount
           // ignore: cast_nullable_to_non_nullable
-          : paypalAccount as String?,
+          : targetAmount as double?,
+      targetCurrency == const $CopyWithPlaceholder()
+          ? _value.targetCurrency
+          // ignore: cast_nullable_to_non_nullable
+          : targetCurrency as String?,
+      transferId == const $CopyWithPlaceholder()
+          ? _value.transferId
+          // ignore: cast_nullable_to_non_nullable
+          : transferId as int?,
     );
   }
 }
@@ -118,30 +140,39 @@ extension $PayoutCopyWith on Payout {
 
 Payout _$PayoutFromJson(Map<String, dynamic> json) => Payout(
       $enumDecodeNullable(_$PayoutStatusEnumMap, json['payoutStatus'],
-              unknownValue: PayoutStatus.unknown) ??
-          PayoutStatus.unknown,
+              unknownValue: PayoutStatus.initialised) ??
+          PayoutStatus.initialised,
       _$JsonConverterFromJson<Timestamp, DateTime>(
-          json['timestamp'], const TimestampConverter().fromJson),
+          json['createdAt'], const TimestampConverter().fromJson),
       json['userId'] as String?,
-      (json['amount'] as num?)?.toInt(),
-      json['currencyCode'] as String?,
-      json['paypalAccount'] as String?,
-    );
+      (json['sourceAmount'] as num?)?.toDouble(),
+      (json['totalFee'] as num?)?.toDouble(),
+      (json['targetAmount'] as num?)?.toDouble(),
+      json['targetCurrency'] as String?,
+      (json['transferId'] as num?)?.toInt(),
+    )
+      ..quoteId = json['quoteId'] as String?
+      ..customerTransactionId = json['customerTransactionId'] as String?;
 
 Map<String, dynamic> _$PayoutToJson(Payout instance) => <String, dynamic>{
       'payoutStatus': _$PayoutStatusEnumMap[instance.payoutStatus],
-      'timestamp': _$JsonConverterToJson<Timestamp, DateTime>(
-          instance.timestamp, const TimestampConverter().toJson),
+      'createdAt': _$JsonConverterToJson<Timestamp, DateTime>(
+          instance.createdAt, const TimestampConverter().toJson),
       'userId': instance.userId,
-      'amount': instance.amount,
-      'currencyCode': instance.currencyCode,
-      'paypalAccount': instance.paypalAccount,
+      'sourceAmount': instance.sourceAmount,
+      'totalFee': instance.totalFee,
+      'targetAmount': instance.targetAmount,
+      'targetCurrency': instance.targetCurrency,
+      'transferId': instance.transferId,
+      'quoteId': instance.quoteId,
+      'customerTransactionId': instance.customerTransactionId,
     };
 
 const _$PayoutStatusEnumMap = {
-  PayoutStatus.success: 0,
-  PayoutStatus.failed: 1,
-  PayoutStatus.unknown: 2,
+  PayoutStatus.initialised: 0,
+  PayoutStatus.onProgress: 1,
+  PayoutStatus.completed: 2,
+  PayoutStatus.failed: 4,
 };
 
 Value? _$JsonConverterFromJson<Json, Value>(

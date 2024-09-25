@@ -57,6 +57,8 @@
 	<string>Your location is required so you can find artists and hosts around you</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Your location is required so you can find artists and hosts around you</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Your location is required so you can find artists and hosts around you</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Post videos to profile</string>
 	<key>NSPhotoLibraryUsageDescription</key>
