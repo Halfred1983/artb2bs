@@ -20,12 +20,10 @@ import '../cubit/photo_cubit.dart';
 import 'artwork_upload_page.dart';
 
 class CollectionPage extends StatelessWidget {
-  CollectionPage({super.key, required this.collectionId});
+  CollectionPage({super.key, required this.collectionId, required this.userId, required this.isViewer});
 
-
-  static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => CollectionPage(collectionId: '',));
-  }
+  String userId;
+  bool isViewer;
 
   final String collectionId;
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
@@ -40,9 +38,9 @@ class CollectionPage extends StatelessWidget {
         create: (context) => PhotoCubit(
           databaseService: databaseService,
           storageService: storageService,
-          userId: authService.getUser().id,
+          userId: userId,
         ),
-        child: CollectionView(collectionId: collectionId),
+        child: CollectionView(collectionId: collectionId, isViewer: isViewer),
       );
   }
 }
@@ -50,8 +48,9 @@ class CollectionPage extends StatelessWidget {
 
 
 class CollectionView extends StatefulWidget {
-  CollectionView({Key? key, required this.collectionId}) : super(key: key);
+  CollectionView({Key? key, required this.collectionId, required this.isViewer}) : super(key: key);
 
+  final bool isViewer;
   final String collectionId;
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
 
@@ -122,7 +121,7 @@ class _CollectionViewState extends State<CollectionView> {
                         if(index == 0) {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: AddPhotoButton(
+                            child: !widget.isViewer ? AddPhotoButton(
                                 action: () async {
                                   await Navigator.push(
                                     context,
@@ -132,13 +131,13 @@ class _CollectionViewState extends State<CollectionView> {
                                   );
                                   // context.read<OnboardingCubit>().getUser(_user!.id);
                                 }
-                            ),
+                            ) : Container(),
                           );
                         }
                         return InkWell(
                           onTap: () => Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => ArtworkDetails(artwork: collection.artworks[index - 1], isOwner: true)),
+                            MaterialPageRoute(builder: (context) => ArtworkDetails(artwork: collection.artworks[index - 1], isOwner: !widget.isViewer)),
                           ),
                           child: Stack(
                             children: [

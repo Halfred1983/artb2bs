@@ -1,32 +1,25 @@
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/artwork/cubit/artist_cubit.dart';
 import 'package:artb2b/artwork/cubit/artist_state.dart';
-import 'package:artb2b/widgets/fadingin_picture.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:artb2b/widgets/photo_grid.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:database_service/database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
+import '../../app/resources/assets.dart';
 import '../../app/resources/styles.dart';
 import '../../injection.dart';
-import '../../onboard/view/4_venue_address.dart';
-import '../../photo/view/artwork_upload_page.dart';
 import '../../photo/view/collection_page.dart';
 import '../../photo/view/new_collection_page.dart';
 import '../../user_profile/view/user_profile_page.dart';
 import '../../utils/common.dart';
-import '../../widgets/add_photo_button.dart';
-import '../../widgets/tags.dart';
-import 'artwork_details.dart';
 
 class ArtistDashboardView extends StatefulWidget {
-  const ArtistDashboardView({super.key});
+  ArtistDashboardView({super.key, required this.isViewer});
 
+  bool isViewer;
   @override
   State<ArtistDashboardView> createState() => _ArtistDashboardViewState();
 }
@@ -50,6 +43,13 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
 
               return Scaffold(
                 backgroundColor: AppTheme.white,
+                appBar: widget.isViewer ? AppBar(
+                  scrolledUnderElevation: 0,
+                  title: Text(user!.artInfo!.artistName!, style: TextStyles.boldN90017,),
+                  centerTitle: true,
+                  iconTheme: const IconThemeData(
+                    color: AppTheme.n900, //change your color here
+                  )) : null,
                 body: SingleChildScrollView(
                   physics: const ClampingScrollPhysics(),
                   child: SafeArea(
@@ -81,11 +81,11 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                               height: 60,
                                               placeholder: (context, url) =>
                                                   Image.asset(
-                                                      user!.userInfo!.userType! ==
-                                                          UserType.gallery
-                                                          ?
-                                                      'assets/images/gallery.png'
-                                                          : 'assets/images/artist.png'),
+                                                    Assets.logo,
+                                                    fit: BoxFit.cover,
+                                                    width: 60,
+                                                    height: 60,
+                                                  ),
                                               imageUrl: user!.imageUrl
                                           )
                                       ),
@@ -100,7 +100,7 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                         ],
                                       ),
                                       Expanded(child: Container()),
-                                      InkWell(
+                                      !widget.isViewer ? InkWell(
                                           onTap: () {
                                             // Add your action here
                                             Navigator.push(
@@ -117,7 +117,7 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                             ),
                                             child: const Icon(Icons.edit, size: 12,),
                                           )
-                                      )
+                                      ) : Container(),
                                     ],
                                   ),
                                   verticalMargin24,
@@ -230,13 +230,13 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                      builder: (context) => CollectionPage(collectionId: collection.name!),
+                                                      builder: (context) => CollectionPage(collectionId: collection.name!, userId: user.id, isViewer: widget.isViewer),
                                                     ),
                                                   );
                                                 },
                                                 child: Container(
                                                   margin: EdgeInsets.only(bottom: 24),
-                                                  height: 220,
+                                                  height: 250,
                                                   width: double.infinity,
                                                   child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -273,7 +273,7 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                     ),
                   ),
                 ),
-                floatingActionButton: Container(
+                floatingActionButton: !widget.isViewer ? Container(
                   padding: horizontalPadding32,
                   width: 200,
                   child: FloatingActionButton(
@@ -303,7 +303,7 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                         ],
                       )
                   ),
-                ),
+                ) : null,
                 floatingActionButtonLocation: FloatingActionButtonLocation
                     .centerDocked,
               );

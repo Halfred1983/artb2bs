@@ -1,26 +1,19 @@
 import 'dart:io';
 
 import 'package:artb2b/app/resources/styles.dart';
-import 'package:artb2b/booking/service/booking_service.dart';
-import 'package:artb2b/booking_requests/cubit/booking_request_cubit.dart';
-import 'package:artb2b/booking_requests/cubit/booking_request_state.dart';
-import 'package:artb2b/widgets/common_card_widget.dart';
-import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:artb2b/widgets/summary_card.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart';
-import 'package:lottie/lottie.dart';
 import 'package:map_launcher/map_launcher.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../injection.dart';
 import '../../../utils/common.dart';
 import '../../app/resources/theme.dart';
+import '../../artwork/view/artist_dashboard_page.dart';
+import '../../user_profile/view/user_profile_page.dart';
 import '../../widgets/photo_grid.dart';
-import '../../widgets/scollable_chips.dart';
 
 class BookingDetailsDialog extends StatelessWidget {
   final Booking booking;
@@ -73,7 +66,22 @@ class BookingDetailsDialog extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Name: ${artist.artInfo!.artistName!}', style: TextStyles.semiBoldN90014),
+                    Material(
+                      child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ArtistDashboardPage(userId: artist.id,)),
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              Text('Name: ', style: TextStyles.semiBoldN90014),
+                              Text(artist.artInfo!.artistName!, style: TextStyles.semiBoldN90017.copyWith(decoration: TextDecoration.underline)),
+                            ],
+                          )
+                      ),
+                    ),
                     verticalMargin8,
                     Text('Location: ${artist.userInfo!.address!.city}', style: TextStyles.semiBoldN90014),
                     verticalMargin8,

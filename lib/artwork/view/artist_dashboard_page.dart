@@ -8,9 +8,12 @@ import '../cubit/artist_cubit.dart';
 import 'artist_dashboard_view.dart';
 
 class ArtistDashboardPage extends StatelessWidget {
+  final String? userId;
 
-  static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => ArtistDashboardPage());
+  ArtistDashboardPage({this.userId});
+
+  static Route<void> route({String? userId}) {
+    return MaterialPageRoute<void>(builder: (_) => ArtistDashboardPage(userId: userId));
   }
 
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
@@ -18,14 +21,18 @@ class ArtistDashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String effectiveUserId = userId ?? authService.getUser().id;
+    bool isViewer = false;
+    if(userId != null && authService.getUser().id != userId) {
+      isViewer = true;
+    }
 
-    return
-      BlocProvider<ArtistCubit>(
-        create: (context) => ArtistCubit(
-          databaseService: databaseService,
-          userId: authService.getUser().id,
-        ),
-        child: const ArtistDashboardView(),
-      );
+    return BlocProvider<ArtistCubit>(
+      create: (context) => ArtistCubit(
+        databaseService: databaseService,
+        userId: effectiveUserId,
+      ),
+      child: ArtistDashboardView(isViewer: isViewer),
+    );
   }
 }

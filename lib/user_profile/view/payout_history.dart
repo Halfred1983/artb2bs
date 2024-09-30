@@ -130,7 +130,7 @@ class PayoutHistory extends StatelessWidget {
                                   Text('Date: ',
                                     style: TextStyles
                                         .regularN10012,),
-                                  Text(DateFormat.yMMMEd().format(payouts[index].createdAt!),
+                                  Text(DateFormat('d MMM yyyy').format(payouts[index].createdAt!),
                                     style: TextStyles
                                         .boldN90014,),
                                 ]

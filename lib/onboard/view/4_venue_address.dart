@@ -158,7 +158,7 @@ class _SelectAddressViewState extends State<SelectAddressView> {
                     }
                     else {
                       context.read<OnboardingCubit>().save(user!);
-                      Navigator.of(context)..pop()..pop()..pop();
+                      Navigator.of(context)..pop()..pop();
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => HostSettingPage()),
