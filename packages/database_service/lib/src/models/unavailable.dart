@@ -14,11 +14,29 @@ class Unavailable {
   DateTime? from;
   @TimestampConverter()
   DateTime? to;
+  String id;
 
   Unavailable({
+    required this.id,
     this.from,
     this.to,
   });
+
+  // Override == and hashCode to compare by 'id'
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is Unavailable &&
+              runtimeType == other.runtimeType &&
+              id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  String toString() {
+    return 'Unavailable{id: $id, from: $from, to: $to}';
+  }
 
 
   factory Unavailable.fromJson(Map<String, dynamic> json)

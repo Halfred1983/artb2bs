@@ -9,6 +9,7 @@ import 'package:table_calendar/table_calendar.dart' as tc
 
 import '../app/resources/theme.dart';
 import '../injection.dart';
+import '../utils/calendar_utils.dart';
 import '../utils/common.dart';
 import 'common_card_widget.dart';
 
@@ -148,145 +149,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
             rangeStartDay: _rangeStart,
             rangeEndDay: _rangeEnd,
             rangeSelectionMode: _rangeSelectionMode,
-            calendarBuilders: CalendarBuilders(
-              selectedBuilder: (context, day, focusedDay) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryColor,
-                    border: Border.all(width: 0.4, color: Colors.grey),
-                  ),
-                  child: Center(
-                    child: ClipOval(
-                      // color: AppTheme.primaryColor,
-                      child: Text(
-                        day.day.toString(),
-                      ),
-                    ),
-                  ),
-                );
-              },
-              defaultBuilder: (context, day, focusedDay) {
-                return Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 0.4, color: Colors.grey),
-                  ),
-                  child: Center(
-                    child: Text(
-                      day.day.toString(),
-                    ),
-                  ),
-                );
-              },
-              outsideBuilder: (context, day, focusedDay) {
-                return Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 0.4, color: Colors.grey),
-                  ),
-                  child: Center(
-                    child: Text(
-                      day.day.toString(),
-                    ),
-                  ),
-                );
-              },
-              rangeEndBuilder: (context, day, focusedDay) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryColor,
-                    border: Border.all(width: 0.4, color: Colors.grey),
-                  ),
-                  child: Center(
-                    child: Text(
-                      day.day.toString(), style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                );
-              },
-              withinRangeBuilder: (context, day, focusedDay) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryColor,
-                    border: Border.all(width: 0.4, color: Colors.grey),
-                  ),
-                  child: Center(
-                    child: Text(
-                      day.day.toString(),
-                    ),
-                  ),
-                );
-              },
-              rangeStartBuilder: (context, day, focusedDay) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryColor,
-                    border: Border.all(width: 0.4, color: Colors.grey),
-                  ),
-                  child: Center(
-                    child: Text(
-                      day.day.toString(), style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                );
-              },
-              disabledBuilder: (context, day, focusedDay) {
-                return Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 0.4, color: Colors.grey),
-                  ),
-                  child: Center(
-                    child: Text(
-                      day.day.toString(), style: TextStyle(color: Colors.grey, decoration: TextDecoration.lineThrough),
-                    ),
-                  ),
-                );
-              },
-              todayBuilder: (context, day, focusedDay) {
-                return Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 0.4, color: Colors.grey),
-                  ),
-                  child: Center(
-                    child: Text(
-                      day.day.toString(),
-                    ),
-                  ),
-                );
-              },
-              markerBuilder: (BuildContext context, date, events) {
-                if(_isLoading) {
-                  return const CalendarLoader();
-                }
-
-                int freeSpaces = int.parse(widget.host.venueInfo!.spaces!);
-
-                // if (events.isEmpty) {
-                //   return Container(
-                //     margin: const EdgeInsets.only(top: 40),
-                //     padding: const EdgeInsets.all(1),
-                //     child: Text(freeSpaces.toString(), style: TextStyles
-                //         .semiBoldViolet12),
-                //   );
-                // }
-                for(Object? e in events) {
-                  Booking b = e as Booking;
-                  freeSpaces = freeSpaces - int.parse(b.spaces!);
-                }
-
-                _unavailableDatesSpaces.forEach((day, spaces) {
-                  if (isSameDay(day, date)) {
-                    freeSpaces = freeSpaces - int.parse(spaces);
-                  }
-                });
-
-                return Container(
-                  margin: const EdgeInsets.only(top: 35),
-                  padding: const EdgeInsets.all(1),
-                  child: Text(freeSpaces.toString(), style: TextStyles
-                      .semiBoldN90012),
-                );
-              },
-            ),
-
+            calendarBuilders: CalendarUtils.buildCalendarBuilders(_isLoading, widget.host, _unavailableDatesSpaces, []),
             eventLoader: (day) {
               return _getEventsForDay(day);
             },

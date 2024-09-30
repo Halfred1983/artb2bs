@@ -31,7 +31,7 @@ abstract class DatabaseService {
 
   Future<void> createRefundRequest(Refund refundRequest);
 
-  Future<List<Booking>> findBookingsByUser(User user);
+  Future<List<Booking>> findBookingsByUser(User user,  [List<BookingStatus>? filters]);
 
   Future<List<Payout>> findPayoutsByUser(User user);
 

@@ -86,6 +86,7 @@ dependencies:
   infinite_scroll_pagination: ^4.0.0
   flutter_dotenv: ^5.1.0
   package_info_plus: ^8.0.2
+  uuid: ^3.0.4
 
 
   #  firebase_messaging: ^14.2.0

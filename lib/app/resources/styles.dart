@@ -59,6 +59,7 @@ class TextStyles {
   static final semiBoldN90012 = _baseSemiBold[TextSize.size12].withColor(AppTheme.n900);
   static final semiBoldS40012 = _baseSemiBold[TextSize.size12].withColor(AppTheme.s400);
   static final semiBoldS40014 = _baseSemiBold[TextSize.size14].withColor(AppTheme.s400);
+  static final semiBoldSD20014 = _baseSemiBold[TextSize.size14].withColor(AppTheme.d200);
   static final semiBoldP40012 = _baseSemiBold[TextSize.size12].withColor(AppTheme.p400);
   static final semiBoldN90014 = _baseSemiBold[TextSize.size14].withColor(AppTheme.n900);
   static final semiBoldN20014 = _baseSemiBold[TextSize.size14].withColor(AppTheme.n200);

@@ -7,6 +7,8 @@ part of 'unavailable.dart';
 // **************************************************************************
 
 abstract class _$UnavailableCWProxy {
+  Unavailable id(String id);
+
   Unavailable from(DateTime? from);
 
   Unavailable to(DateTime? to);
@@ -18,6 +20,7 @@ abstract class _$UnavailableCWProxy {
   /// Unavailable(...).copyWith(id: 12, name: "My name")
   /// ````
   Unavailable call({
+    String? id,
     DateTime? from,
     DateTime? to,
   });
@@ -28,6 +31,9 @@ class _$UnavailableCWProxyImpl implements _$UnavailableCWProxy {
   const _$UnavailableCWProxyImpl(this._value);
 
   final Unavailable _value;
+
+  @override
+  Unavailable id(String id) => this(id: id);
 
   @override
   Unavailable from(DateTime? from) => this(from: from);
@@ -44,10 +50,15 @@ class _$UnavailableCWProxyImpl implements _$UnavailableCWProxy {
   /// Unavailable(...).copyWith(id: 12, name: "My name")
   /// ````
   Unavailable call({
+    Object? id = const $CopyWithPlaceholder(),
     Object? from = const $CopyWithPlaceholder(),
     Object? to = const $CopyWithPlaceholder(),
   }) {
     return Unavailable(
+      id: id == const $CopyWithPlaceholder() || id == null
+          ? _value.id
+          // ignore: cast_nullable_to_non_nullable
+          : id as String,
       from: from == const $CopyWithPlaceholder()
           ? _value.from
           // ignore: cast_nullable_to_non_nullable
@@ -71,6 +82,7 @@ extension $UnavailableCopyWith on Unavailable {
 // **************************************************************************
 
 Unavailable _$UnavailableFromJson(Map<String, dynamic> json) => Unavailable(
+      id: json['id'] as String,
       from: _$JsonConverterFromJson<Timestamp, DateTime>(
           json['from'], const TimestampConverter().fromJson),
       to: _$JsonConverterFromJson<Timestamp, DateTime>(
@@ -83,6 +95,7 @@ Map<String, dynamic> _$UnavailableToJson(Unavailable instance) =>
           instance.from, const TimestampConverter().toJson),
       'to': _$JsonConverterToJson<Timestamp, DateTime>(
           instance.to, const TimestampConverter().toJson),
+      'id': instance.id,
     };
 
 Value? _$JsonConverterFromJson<Json, Value>(

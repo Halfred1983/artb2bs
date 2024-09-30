@@ -42,7 +42,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
     initializeDateFormatting();
 
     _isLoading = true;
-    firestoreDatabaseService.findBookingsByUser(widget.user).then((bookings) {
+    firestoreDatabaseService.findBookingsByUser(widget.user, [BookingStatus.accepted, BookingStatus.pending]).then((bookings) {
       _bookings = bookings;
       Future.wait([
         generateDateTimeRage(),
@@ -53,7 +53,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
         _bookingDateRange = results[0];
         _unavailableDates = retrieveUnavailableDates(results[1]);
         _unavailableDatesSpaces = retrieveUnavailableSpaces(results[2]);
-        _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+        _selectedEvents = ValueNotifier(_getBookingsForDay(_selectedDay!));
         setState(() {
           _isLoading = false;
         });
@@ -102,7 +102,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
   }
 
 
-  List<Booking> _getEventsForDay(DateTime day) {
+  List<Booking> _getBookingsForDay(DateTime day) {
     List<Booking> result = [];
     _bookingDateRange.forEach((bookingId, dateRange) {
       if(day.isDateTimeWithinRange(dateRange)) {
@@ -134,7 +134,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
         _rangeSelectionMode = RangeSelectionMode.toggledOff;
       });
 
-      _selectedEvents.value = _getEventsForDay(selectedDay);
+      _selectedEvents.value = _getBookingsForDay(selectedDay);
     }
   }
 
@@ -323,7 +323,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                         rangeSelectionMode: _rangeSelectionMode,
                         onDaySelected: _onDaySelected,
                         eventLoader: (day) {
-                          return _getEventsForDay(day);
+                          return _getBookingsForDay(day);
                         },
                         locale: 'en_GB',
                         firstDay: calculateFirstDay(),
@@ -336,7 +336,6 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                           weekdayStyle: TextStyles.semiBoldN90012,
                           weekendStyle: TextStyles.semiBoldN90012,
                         ),
-
                         selectedDayPredicate: (day) {
                           return isSameDay(_selectedDay, day);
                         },

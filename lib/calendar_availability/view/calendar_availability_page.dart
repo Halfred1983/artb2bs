@@ -13,9 +13,11 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart' as tc
     show StartingDayOfWeek;
 import 'package:table_calendar/table_calendar.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../injection.dart';
 import '../../../utils/common.dart';
+import '../../utils/calendar_utils.dart';
 
 class CalendarAvailabilityPage extends StatelessWidget {
 
@@ -66,7 +68,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
       .toggledOn; // Can be toggled on/off by longpressing a date
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
-
+  bool _isLoading = false;
   List<Booking> _bookings = [];
   String _errorMessage = '';
 
@@ -76,14 +78,16 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
   void initState() {
     super.initState();
     initializeDateFormatting();
+    _isLoading = true;
 
-    firestoreDatabaseService.findBookingsByUser(widget.user).then((bookings) {
+    firestoreDatabaseService.findBookingsByUser(widget.user, [BookingStatus.accepted, BookingStatus.pending]).then((bookings) {
       _bookings = bookings;
       Future.wait([
         retrieveBookedDates(),
         firestoreDatabaseService.getDisabledDates(widget.user.id),
       ]).then((List<dynamic> results) {
         setState(() {
+          _isLoading = false;
           _bookedDates = results[0];
           _unavailableList = results[1];
           _unavailableDates = retrieveUnavailableDates(results[1]);
@@ -211,7 +215,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                       child: Column(
                           children: [
                             Text('Add dates when your venue can not take any bookings',
-                                style: TextStyles.boldN90029),
+                                style: TextStyles.boldN90020),
                             verticalMargin24,
                             CommonCard(
                               child: TableCalendar(
@@ -221,6 +225,8 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                                 availableCalendarFormats: const {
                                   CalendarFormat.month: 'Month'
                                 },
+                                calendarBuilders: CalendarUtils.buildCalendarBuilders(_isLoading, widget.user, {}, _unavailableDates, false),
+
                                 startingDayOfWeek: tc.StartingDayOfWeek.monday,
                                 rangeStartDay: _rangeStart,
                                 rangeEndDay: _rangeEnd,
@@ -247,11 +253,11 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                                   if (_unavailableDates.isEmpty) return true;
 
                                   bool isEnabled = true;
-                                  _unavailableDates.forEach((date) {
-                                    if (isSameDay(day, date)) {
-                                      isEnabled = false;
-                                    }
-                                  });
+                                  // _unavailableDates.forEach((date) {
+                                  //   if (isSameDay(day, date)) {
+                                  //     isEnabled = false;
+                                  //   }
+                                  // });
 
                                   return isEnabled;
                                 },
@@ -273,75 +279,66 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                             verticalMargin16,
                             _errorMessage.length > 1 ? Text(
                               _errorMessage, textAlign: TextAlign.center,
-                              style: TextStyles.semiBoldAccent14,) : Container(),
+                              style: TextStyles.semiBoldSD20014,) : Container(),
                             verticalMargin16,
                             _errorMessage.length < 1 && _rangeStart != null &&
                                 _rangeEnd != null ?
                             CommonCard(child:
                             Column(
                               children: [
-                                Text("Add Unavailable Dates",
-                                  style: TextStyles.semiBoldAccent14,),
+                                Text("Do you want to these dates ? ",
+                                  style: TextStyles.semiBoldN90017,),
                                 verticalMargin16,
                                 Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text('From: ', style: TextStyles
-                                          .semiBoldAccent14,),
-                                      Text(
-                                        DateFormat.yMMMEd().format(
-                                            _rangeStart!),
-                                        style: TextStyles
-                                            .semiBoldAccent14,),
-                                    ]
-                                ),
-                                verticalMargin12,
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text('To: ', style: TextStyles
-                                        .semiBoldAccent14,),
-                                    Text(DateFormat.yMMMEd().format(
+                                    Text(
+                                    DateFormat('d MMM').format(
+                                          _rangeStart!),
+                                      style: TextStyles
+                                          .semiBoldN90014,),
+                                    verticalMargin12,
+                                    Text(' - ', style: TextStyles
+                                        .regularN90014,),
+                                    Text(DateFormat('d MMM').format(
                                         _rangeEnd!),
                                       style: TextStyles
-                                          .semiBoldAccent14,),
+                                          .semiBoldN90014,),
                                   ],
                                 ),
                               ],
                             ),
                             ) : Container(),
-                            verticalMargin24,
-                            Text("Existing Unavailable Dates",
-                              style: TextStyles.semiBoldAccent14,),
                             verticalMargin12,
                             getExistingUnavailableDateList(user!)
                           ]
                       )
                   ),
                 ),
-                bottomNavigationBar: Container(
+                bottomNavigationBar: _errorMessage.length < 2 && _rangeStart != null
+                    && _rangeEnd != null ? Container(
                     padding: buttonPadding,
                     child: ElevatedButton(
-                      onPressed: _errorMessage.length < 2 && _rangeStart != null
-                          && _rangeEnd != null ? () {
+                      onPressed: () {
 
+                        Unavailable unavialable = Unavailable(id: const Uuid().v4(), from: _rangeStart!, to: _rangeEnd!);
                         context.read<CalendarAvailabilityCubit>()
                             .setDates(user!,
-                            Unavailable(from: _rangeStart, to: _rangeEnd))
+                            unavialable)
                             .then((value) =>
                         {
 
                           setState(() {
                             _unavailableDates.addAll(
                                 generateDateList(_rangeStart!, _rangeEnd!));
-                            _unavailableList.add(Unavailable(from: _rangeStart!, to: _rangeEnd!));
+                            _unavailableList.add(unavialable);
                             _rangeStart = null; // Important to clean those
                             _rangeEnd = null;
                           })
                         });
-                      } : null,
+                      },
                       child: Text("Save", style: TextStyles.semiBoldAccent14,),)
-                ),
+                ) : null,
               );
             }
             return Container();
@@ -356,60 +353,63 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
       itemCount: _unavailableList.length,
       itemBuilder: (context, index) {
         _unavailableList.sort((a, b) => a.from!.compareTo(b.from!));
-        return Padding(
-          padding: verticalPadding12,
-          child: CommonCard(
-            child: ListTile(
-              title: Column(
-                  children: [Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+        return Column(
+          children: [
+            Text("Your blocked dates",
+              style: TextStyles.semiBoldN90017,),
+            verticalMargin12,
+            Padding(
+              padding: verticalPadding12,
+              child: CommonCard(
+                child: ListTile(
+                  // padding: horizontalPadding16,
+                  // width: double.infinity,
+                  title: Column(
                       children: [
-                        Text('From: ', style: TextStyles
-                            .semiBoldAccent14,),
-                        Text(
-                          DateFormat.yMMMEd().format(
-                              _unavailableList[index].from!),
-                          style: TextStyles
-                              .semiBoldAccent14,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              DateFormat('d MMM').format(
+                                  _unavailableList[index].from!),
+                              style: TextStyles
+                                  .semiBoldN90014,),
+                            verticalMargin12,
+                            Text(' - ', style: TextStyles
+                                .regularN90014,),
+                            Text(DateFormat('d MMM').format(
+                                _unavailableList[index].to!),
+                              style: TextStyles
+                                  .semiBoldN90014,),
+                          ],
+                        )
                       ]
                   ),
-                    verticalMargin12,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text('To: ', style: TextStyles
-                            .semiBoldAccent14,),
-                        Text(DateFormat.yMMMEd().format(
-                            _unavailableList[index].to!),
-                          style: TextStyles
-                              .semiBoldAccent14,),
-                      ],
-                    )
-                  ]
-              ),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
-                  removeUnavailableDate(user, index);
-                },
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () {
+                      removeUnavailableDate(user, _unavailableList[index]);
+                    },
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         );
       },
     );
   }
 
 
-  void removeUnavailableDate(User user, int index) {
+  void removeUnavailableDate(User user, Unavailable unavailable) {
     setState(() {
 
-      generateDateList(_unavailableList.elementAt(index).from!,
-          _unavailableList.elementAt(index).to!).forEach((element) {
+      generateDateList(unavailable.from!,
+          unavailable.to!).forEach((element) {
         _unavailableDates.remove(element);
       });
 
-      _unavailableList.removeAt(index);
+      _unavailableList.remove(unavailable);
 
       context.read<CalendarAvailabilityCubit>().saveDates(
           user, _unavailableList);

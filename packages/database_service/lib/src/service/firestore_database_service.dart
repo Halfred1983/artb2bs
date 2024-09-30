@@ -467,17 +467,20 @@ class FirestoreDatabaseService implements DatabaseService {
   }
 
   @override
-  Future<List<Booking>> findBookingsByUser(User user) async {
+  Future<List<Booking>> findBookingsByUser(User user, [List<BookingStatus>? filters]) async {
     List<Booking> bookings = [];
-    var userId = user.userInfo!.userType == UserType.gallery
-        ? 'hostId'
-        : 'artistId';
+    var userId = user.userInfo!.userType == UserType.gallery ? 'hostId' : 'artistId';
 
     try {
-      final QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firestore
-          .collection('bookings')
-          .where(userId, isEqualTo: user.id)
-          .get();
+      Query query = _firestore.collection('bookings')
+          .where(userId, isEqualTo: user.id);
+
+      if (filters != null && filters.isNotEmpty) {
+        List<int> statusIndexes = filters.map((status) => status.index).toList();
+        query = query.where('bookingStatus', whereIn: statusIndexes);
+      }
+
+      final QuerySnapshot<Map<String, dynamic>> querySnapshot = await query.get() as QuerySnapshot<Map<String, dynamic>>;
 
       if (querySnapshot.docs.isNotEmpty) {
         bookings = querySnapshot.docs.map((document) {
@@ -490,7 +493,6 @@ class FirestoreDatabaseService implements DatabaseService {
 
     return bookings;
   }
-
   @override
   Future<List<Payout>> findPayoutsByUser(User user) async {
     List<Payout> payouts = [];
