@@ -162,8 +162,8 @@ class BookingRequestCubit extends Cubit<BookingRequestState> {
 
       if(freeSpaces < 0) {
         emit(OverlapErrorState(user: host, bookings: bookings, filter: 'All', message: 'There are not enough free spaces for '
-            'the dates:\n from ${DateFormat.yMMMEd().format(booking.from!)} \n'
-            'to ${DateFormat.yMMMEd().format(booking.to!)}' ));
+            'the dates:\n ${DateFormat('d MMM').format(booking.from!)} '
+            '- ${DateFormat('d MMM').format(booking.to!)}.' ));
       }
       else {
         booking = booking.copyWith(bookingStatus: BookingStatus.accepted , reviewdTime: DateTime.now());

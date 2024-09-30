@@ -36,20 +36,31 @@ class _PaymentPageState extends State<PaymentPage> {
 
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
   late ConfettiController _controllerCenter;
+  late CardFormEditController _controller;
+  bool _isCardValid = false;
 
   @override
   void initState() {
     super.initState();
+    _controller = CardFormEditController();
+    _controller.addListener(_onCardDetailsChanged);
     _controllerCenter =
         ConfettiController(duration: const Duration(seconds: 10));
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_onCardDetailsChanged);
+    _controller.dispose();
     _controllerCenter.dispose();
     super.dispose();
   }
 
+  void _onCardDetailsChanged() {
+    setState(() {
+      _isCardValid = _controller.details.complete;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,81 +92,83 @@ class _PaymentPageState extends State<PaymentPage> {
                     color: AppTheme.n900, //change your color here
                   ),
                 ),
-                body: Container(
-                  margin: verticalPadding24,
-                  padding: horizontalPadding32,
-                  color: AppTheme.white,
-                  width: MediaQuery.of(context).size.width,
-                  height: 700,
-                  child: Center(
-                    child: Column(
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            verticalMargin24,
-                            Text('Price Details', style: TextStyles.boldN90017),
-                            verticalMargin24,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('${double.parse(widget.host.bookingSettings!.basePrice!)} ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol} x ${widget.booking.spaces} spaces x ${BookingService().daysBetween(widget.booking!.from!, widget.booking!.to!).toString()} days',
-                                  style: TextStyles.regularN90014,),
-                                Text('${BookingService().calculatePrice(widget.booking!, widget.host!)} ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}',
-                                  style: TextStyles.regularN90014, ),
-                              ],
-                            ),
-                            verticalMargin24,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Total ', style: TextStyles.boldN90012),
-                                Text('${BookingService().calculatePrice(widget.booking!, widget.host!)} ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}',
-                                  style: TextStyles.semiBoldN90014, ),
-                              ],
-                            )
-                          ],
-                        ),
-                        verticalMargin32,
-                        CardFormField(
-                          controller: controller,
-                          style: CardFormStyle(
-                              borderColor: AppTheme.primaryColor,
-                              cursorColor: AppTheme.accentColor,
-                              textColor: AppTheme.primaryColor,
-                              textErrorColor: AppTheme.accentColor,
-                              fontSize: 16
+                body: SingleChildScrollView(
+                  child: Container(
+                    margin: verticalPadding24,
+                    padding: horizontalPadding32,
+                    color: AppTheme.white,
+                    width: MediaQuery.of(context).size.width,
+                    height: 700,
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              verticalMargin24,
+                              Text('Price Details', style: TextStyles.boldN90017),
+                              verticalMargin24,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('${double.parse(widget.host.bookingSettings!.basePrice!)} ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol} x ${widget.booking.spaces} spaces x ${BookingService().daysBetween(widget.booking!.from!, widget.booking!.to!).toString()} days',
+                                    style: TextStyles.regularN90014,),
+                                  Text('${BookingService().calculatePrice(widget.booking!, widget.host!)} ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}',
+                                    style: TextStyles.regularN90014, ),
+                                ],
+                              ),
+                              verticalMargin24,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Total ', style: TextStyles.boldN90012),
+                                  Text('${BookingService().calculatePrice(widget.booking!, widget.host!)} ${CurrencyHelper.currency(widget.host.userInfo!.address!.country).currencySymbol}',
+                                    style: TextStyles.semiBoldN90014, ),
+                                ],
+                              )
+                            ],
                           ),
-                          countryCode: 'en_${widget.host.userInfo!.address!.country}',
-                        ),
-                        verticalMargin24,
-                        Text('Once your booking is finalised the host will have 48h to accept or reject your request.\n\n'+
-                            'If the 48h expire or the request is rejected\nwe will refund you within 3 business days.',
-                          style: TextStyles.regularN90014,),
-                        Expanded(child: Container()),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed:
-                                () {
-                              (controller.details.complete) ?
-                              context.read<PaymentBloc>().add(
-                                PaymentCreateIntent(
-                                    billingDetails: BillingDetails(
-                                      email: widget.user.email,
-                                    ),
-                                    grandTotal: BookingService().toStripeInt(widget.booking.totalPrice!).toString(),
-                                    currency: CurrencyHelper.currency(widget.host.userInfo!.address!.country)
-                                ),
-                              ) :
-                              showCustomSnackBar('Please fill the info', context);
-                              // context.read<BookingCubit>().save();
-                            },
-                            child: const Text('Pay'),),
-                        ),
-                        verticalMargin32
-                      ],
+                          verticalMargin32,
+                          CardFormField(
+                            controller: _controller,
+                            style: CardFormStyle(
+                                borderColor: AppTheme.primaryColor,
+                                cursorColor: AppTheme.accentColor,
+                                textColor: AppTheme.primaryColor,
+                                textErrorColor: AppTheme.accentColor,
+                                fontSize: 16
+                            ),
+                            countryCode: 'en_${widget.host.userInfo!.address!.country}',
+                          ),
+                          verticalMargin24,
+                          Text('Once your booking is finalised the host will have 48h to accept or reject your request.\n\n'+
+                              'If the 48h expire or the request is rejected\nwe will refund you within 3 business days.',
+                            style: TextStyles.regularN90014,),
+                          Expanded(child: Container()),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed:
+                                  () {
+                                (_isCardValid) ?
+                                context.read<PaymentBloc>().add(
+                                  PaymentCreateIntent(
+                                      billingDetails: BillingDetails(
+                                        email: widget.user.email,
+                                      ),
+                                      grandTotal: BookingService().toStripeInt(widget.booking.totalPrice!).toString(),
+                                      currency: CurrencyHelper.currency(widget.host.userInfo!.address!.country)
+                                  ),
+                                ) :
+                                showCustomSnackBar('Please fill the info', context);
+                                // context.read<BookingCubit>().save();
+                              },
+                              child: const Text('Pay'),),
+                          ),
+                          verticalMargin32
+                        ],
+                      ),
                     ),
                   ),
                 ),

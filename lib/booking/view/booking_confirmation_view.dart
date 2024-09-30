@@ -112,7 +112,7 @@ class BookingConfirmationView extends StatelessWidget {
                               verticalMargin24,
                               Text('Dates', style: TextStyles.boldN90017),
                               Text(
-                                '${DateFormat.MMMEd().format(booking.from!)} - ${DateFormat.yMMMEd().format(booking.to!)}',
+                                '${DateFormat('d MMM').format(booking.from!)} - ${DateFormat('d MMM').format(booking.to!)}',
                                 style: TextStyles.regularN90012, ),
                               verticalMargin24,
                               Text('Spaces', style: TextStyles.boldN90017),
@@ -140,7 +140,7 @@ class BookingConfirmationView extends StatelessWidget {
                                 children: [
                                   Text('${double.parse(host.bookingSettings!.basePrice!)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol} '
                                       ' x ${booking.spaces} spaces'
-                                      ' x ${BookingService().daysBetween(booking!.from!, booking!.to!).toString()} days',
+                                      ' x ${BookingService().daysBetweenWithOpeningTimes(booking!.from!, booking!.to!, host).toString()} days',
                                     style: TextStyles.regularN90014,),
                                   Text('${BookingService().calculatePrice(booking!, host!)} ${CurrencyHelper.currency(host.userInfo!.address!.country).currencySymbol}',
                                     style: TextStyles.regularN90014, ),
@@ -158,6 +158,11 @@ class BookingConfirmationView extends StatelessWidget {
                               )
                             ],
                           ),
+                        ),
+                        verticalMargin12,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text('*Remember that when the venue is closed you won\'t be charged for those days.', style: TextStyles.regularN90014,),
                         ),
                         // SummaryCard(booking: booking, host: host),
                         verticalMargin32

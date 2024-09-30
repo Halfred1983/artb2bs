@@ -31,7 +31,7 @@ class BookingCubit extends Cubit<BookingState> {
     Booking booking = this.state.props[1] as Booking;
     User user = this.state.props[0] as User;
 
-    if(dateRangeChosen.dateTimeRange.duration.inDays < int.parse(host.bookingSettings!.minLength!) ) {
+    if(dateRangeChosen.dateTimeRange.duration.inDays + 1  < int.parse(host.bookingSettings!.minLength!) ) {
       emit(DateRangeErrorState(user, booking, 'You need to book at least ${host.bookingSettings!.minLength!} days'));
     }
     else {
@@ -40,7 +40,12 @@ class BookingCubit extends Cubit<BookingState> {
           to: dateRangeChosen.dateTimeRange.end
       );
 
-      emit(DateRangeChosen(user, booking, dateRangeChosen.maxSpacesAvailable));
+      if( dateRangeChosen.maxSpacesAvailable < int.parse(host.bookingSettings!.minSpaces!) ) {
+        emit(SpacesErrorState(user, booking, 'Not enough spaces available for the selected dates.'));
+      }
+      else {
+        emit(DateRangeChosen(user, booking, dateRangeChosen.maxSpacesAvailable));
+      }
     }
   }
 

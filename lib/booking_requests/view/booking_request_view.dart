@@ -109,9 +109,9 @@ class _BookingRequestViewState extends State<BookingRequestView> {
                   _buildFilterSection(context, state.user),
                   Expanded(
                     child: Column(
-                      mainAxisSize: MainAxisSize.max,
+                      // mainAxisSize: MainAxisSize.max,
                       children: [
-                        verticalMargin24,
+                        // verticalMargin24,
                         if(_isLoading) ...[ const CircularProgressIndicator(color: AppTheme.accentColor,) ]
                         else if  (state.bookings.isEmpty && (_pagingController.itemList != null
                             && _pagingController.itemList!.isEmpty)) ... [

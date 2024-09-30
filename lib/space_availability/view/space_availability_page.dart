@@ -484,6 +484,12 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                               '${_unavailableSpacesList[index].spaces!} blocked spaces',
                               style: TextStyles
                                   .semiBoldN90014,),
+
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
                             Text(
                               ' on ',
                               style: TextStyles
@@ -501,7 +507,7 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                               style: TextStyles
                                   .semiBoldN90014,),
                           ],
-                        ),
+                        )
                       ]
                   ),
                   trailing: IconButton(

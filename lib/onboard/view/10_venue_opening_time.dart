@@ -119,8 +119,10 @@ class _VenueOpeningTimeViewState extends State<VenueOpeningTimeView> {
                               fontSize: 29, fontWeight: FontWeight.bold)),
                       verticalMargin24,
                     ],
-                    Text('Set your venue\'s capacity by choosing the amount of people that fits into your venue.',
-                        style: TextStyles.semiBoldN90014),
+                    Text('Choose your venue\'s opening times.', style: TextStyles.semiBoldN90014),
+                    Text('Remember, when your venue is closed you won\'t be able to receive bookings that day.',
+                        style: TextStyles.boldN90014),
+
                     verticalMargin24,
                     Tags(
                       _businessDays.map((day) =>

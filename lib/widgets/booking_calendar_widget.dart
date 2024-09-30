@@ -3,11 +3,13 @@ import 'package:artb2b/widgets/calendar_loader.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:table_calendar/table_calendar.dart' as tc
     show StartingDayOfWeek;
 
 import '../app/resources/theme.dart';
+import '../booking/service/booking_service.dart';
 import '../injection.dart';
 import '../utils/calendar_utils.dart';
 import '../utils/common.dart';
@@ -174,6 +176,11 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
                 }
               });
 
+              // Check if the day is within the user's opening times
+              if (!BookingService().isDayWithinOpeningTimes(day, widget.host)) {
+                isEnabled = false;
+              }
+
               return isEnabled;
             },
             locale: 'en_GB',
@@ -251,7 +258,6 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
           DateTimeRange(start: booking.from!, end: booking.to!);
     }
     return bookingDateRange;
-
   }
 
   List<Booking> _getEventsForDay(DateTime day) {
@@ -283,7 +289,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
       datesBookedSpaces.forEach((dateTime, value) {
         if (dateTime.isAfterWithoutTime(startDate) && dateTime.isBeforeWithoutTime(endDate)) {
           // Check if the DateTime is within the specified range
-          if (minValue == null || value < minValue) {
+          if (value < minValue) {
             minValue = value;
           }
         }

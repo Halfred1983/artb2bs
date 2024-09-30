@@ -53,7 +53,7 @@ class _ScrollableChipsState extends State<ScrollableChips> {
         spacing: 10,
         padding: const EdgeInsets.symmetric(
           horizontal: 20,
-          vertical: 25,
+          vertical: 15,
         ),
       ),
     );
