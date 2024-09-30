@@ -13,7 +13,6 @@ import '../../app/resources/theme.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
 import '../../utils/currency/currency_helper.dart';
-import '../../widgets/input_text_widget.dart';
 import '../../widgets/summary_card.dart';
 import '../cubit/booking_cubit.dart';
 import '../cubit/booking_state.dart';

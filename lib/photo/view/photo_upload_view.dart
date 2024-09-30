@@ -18,7 +18,6 @@ import '../../utils/common.dart';
 import '../../widgets/app_input_validators.dart';
 import '../../widgets/app_text_field.dart';
 import '../../widgets/custom_dialog.dart';
-import '../../widgets/input_text_widget.dart';
 import '../../widgets/loading_screen.dart';
 import '../cubit/photo_cubit.dart';
 import '../cubit/photo_state.dart';

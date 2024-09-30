@@ -3,7 +3,6 @@ import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/space_availability/cubit/space_availability_cubit.dart';
 import 'package:artb2b/space_availability/cubit/space_availability_state.dart';
 import 'package:artb2b/widgets/common_card_widget.dart';
-import 'package:artb2b/widgets/input_text_widget.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
@@ -61,8 +60,8 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
   List<DateTime> _bookedDates = [];
   Map<DateTime, String> _unavailableDates = {};
   List<UnavailableSpaces> _unavailableSpacesList = [];
-  late DateTime? _selectedDay = calculateFirstDay();
-  late DateTime _focusedDay = calculateFirstDay();
+  late DateTime? _selectedDay = DateTime.now();
+  late DateTime _focusedDay = DateTime.now();
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
       .toggledOn; // Can be toggled on/off by longpressing a date
   DateTime? _rangeStart;
@@ -73,6 +72,7 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
   bool _isLoading = false;
   Map<String, DateTimeRange> _bookingDateRange = {};
   final TextEditingController _spacesController = TextEditingController();
+  Map<DateTime, int> _disabledDates = {};
 
   _SpaceAvailabilityViewState();
 
@@ -84,24 +84,26 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
     firestoreDatabaseService.findBookingsByUser(widget.user, [BookingStatus.accepted, BookingStatus.pending]).then((bookings) {
       _bookings = bookings;
 
-    Future.wait([
-      retrieveBookedDates(),
-      firestoreDatabaseService.getDisabledSpaces(widget.user.id),
-      generateDateTimeRage(),
+      Future.wait([
+        retrieveBookedDates(),
+        firestoreDatabaseService.getDisabledSpaces(widget.user.id),
+        generateDateTimeRage(),
+        generateDisabledDates()
 
-    ]).then((List<dynamic> results) {
-      setState(() {
-        _isLoading = false;
+      ]).then((List<dynamic> results) {
+        setState(() {
+          _isLoading = false;
 
-        _bookedDates = results[0];
-        _unavailableSpacesList = results[1];
-        _unavailableDates = retrieveUnavailableSpaces(results[1]);
-        _bookingDateRange = results[2];
+          _bookedDates = results[0];
+          _unavailableSpacesList = results[1];
+          _unavailableDates = retrieveUnavailableSpaces(results[1]);
+          _bookingDateRange = results[2];
+          _disabledDates = results[3];
 
+        });
+      }).catchError((error) {
+        print('Error fetching data: $error');
       });
-    }).catchError((error) {
-      print('Error fetching data: $error');
-    });
     });
   }
 
@@ -112,19 +114,19 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
   }
 
 
-  List<bool> _isBooked(DateTime day) {
-    for (var date in _bookedDates) {
-      if (date.isSameDay(day)) {
-        return [true];
-      }
-    }
-    return [];
-  }
+  // List<bool> _isBooked(DateTime day) {
+  //   for (var date in _bookedDates) {
+  //     if (date.isSameDay(day)) {
+  //       return [true];
+  //     }
+  //   }
+  //   return [];
+  // }
 
 
-  DateTime calculateFirstDay() {
-    return DateTime.now();
-  }
+  // DateTime calculateFirstDay() {
+  //   return DateTime.now();
+  // }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
@@ -254,7 +256,7 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                                 eventLoader: (day) {
                                   return _getEventsForDay(day);
                                 },
-                                firstDay: calculateFirstDay(),
+                                firstDay: DateTime.now(),
                                 lastDay: DateTime.now().add(
                                     const Duration(days: 1000)),
                                 focusedDay: _focusedDay,
@@ -329,54 +331,75 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                             verticalMargin16,
                             _errorMessage.length > 1 ? Text(
                               _errorMessage, textAlign: TextAlign.center,
-                              style: TextStyles.semiBoldAccent14,) : Container(),
+                              style: TextStyles.semiBoldSD20014,) : Container(),
                             verticalMargin16,
-                            _errorMessage.length < 1 && _rangeStart != null &&
-                                _rangeEnd != null ?
-                            CommonCard(child:
-                            Column(
-                              children: [
-                                Text("How many spaces you want to make unavailable? ",
-                                  style: TextStyles.semiBoldN90017,),
-                                verticalMargin16,
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      DateFormat('d MMM').format(
-                                          _rangeStart!),
-                                      style: TextStyles
-                                          .semiBoldN90014,),
-                                    verticalMargin12,
-                                    Text(' - ', style: TextStyles
-                                        .regularN90014,),
-                                    Text(DateFormat('d MMM').format(
-                                        _rangeEnd!),
-                                      style: TextStyles
-                                          .semiBoldN90014,),
-                                  ],
-                                ),
-                                verticalMargin12,
+                            if(_rangeStart != null && _rangeEnd != null) ...[
+                              CommonCard(
+                                child: Column(
+                                children: [
+                                  Text("How many spaces you want to make unavailable? ",
+                                    style: TextStyles.semiBoldN90017,),
+                                  verticalMargin16,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        DateFormat('d MMM').format(
+                                            _rangeStart!),
+                                        style: TextStyles
+                                            .semiBoldN90014,),
+                                      verticalMargin12,
+                                      Text(' - ', style: TextStyles
+                                          .regularN90014,),
+                                      Text(DateFormat('d MMM').format(
+                                          _rangeEnd!),
+                                        style: TextStyles
+                                            .semiBoldN90014,),
+                                    ],
+                                  ),
+                                  verticalMargin12,
 
-                                TextField(
-                                  controller: _spacesController,
-                                  autofocus: false,
-                                  style: TextStyles.semiBoldN90014,
-                                  onChanged: (String value) {
-                                    setState(() {
+                                  TextField(
+                                    controller: _spacesController,
+                                    autofocus: false,
+                                    style: TextStyles.semiBoldN90014,
+                                    onChanged: (String value) {
+                                      value = value.isEmpty ? '0' : value;
                                       _unavailableSpaces = value;
-                                    });
-                                  },
-                                  autocorrect: false,
-                                  enableSuggestions: false,
-                                  decoration: AppTheme.textInputDecoration.copyWith(
-                                    hintText: 'Number of spaces unavailable',
-                                    hintStyle: TextStyles.semiBoldN90014,),
-                                  keyboardType: TextInputType.number,
-                                ),
-                              ],
-                            ),
-                            ) : Container(),
+
+                                      setState(() {
+                                        int maxSpacesToBlockForRange = findMaximumValueInDateRange(
+                                            _disabledDates, _unavailableDates,
+                                            _rangeStart, _rangeEnd);
+
+                                        if(maxSpacesToBlockForRange < int.parse(value)) {
+                                          _errorMessage =
+                                          'You can only block $maxSpacesToBlockForRange spaces';
+                                        }
+                                        else if(int.parse(_unavailableSpaces) == 0) {
+                                          _errorMessage =
+                                          'Enter at least 1 to $maxSpacesToBlockForRange spaces to block';
+                                        }
+                                        else if (maxSpacesToBlockForRange == 0) {
+                                          _errorMessage =
+                                          'No spaces available to block';
+                                        }
+                                        else {
+                                          _errorMessage = '';
+                                        }
+                                      });
+                                    },
+                                    autocorrect: false,
+                                    enableSuggestions: false,
+                                    decoration: AppTheme.textInputDecoration.copyWith(
+                                      hintText: 'Number of spaces unavailable',
+                                      hintStyle: TextStyles.semiBoldN90014,),
+                                    keyboardType: TextInputType.number,
+                                  ),
+                                ],
+                              ),
+                              ),
+                            ],
                             verticalMargin12,
                             getExistingUnavailableDateList(user!)
                           ]
@@ -384,7 +407,7 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                   ),
                 ),
                 bottomNavigationBar: _errorMessage.length < 2 && _rangeStart != null
-                    && _rangeEnd != null ? Container(
+                    && _rangeEnd != null && _unavailableSpaces.isNotEmpty ? Container(
                     padding: buttonPadding,
                     child: ElevatedButton(
                       onPressed: () {
@@ -404,7 +427,7 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                           })
                         });
                       },
-                      child: Text("Save",),)
+                      child: const Text('Save',),)
                 ) : null,
               );
             }
@@ -495,6 +518,57 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
       },
     );
   }
+
+  int findMaximumValueInDateRange(
+      Map<DateTime, int> datesBookedSpaces,
+      Map<DateTime, String> datesUnavailableSpaces,
+      DateTime? startDate,
+      DateTime? endDate) {
+
+    int totalSpaces = int.parse(widget.user.venueInfo!.spaces!);
+    int unavailableSpaces = 0;
+    int bookedSpaces = 0;
+
+    if (startDate != null && endDate != null) {
+      datesUnavailableSpaces.forEach((dateTime, value) {
+        if (dateTime.isAfterWithoutTime(startDate) && dateTime.isBeforeWithoutTime(endDate)) {
+          unavailableSpaces += int.parse(value);
+        }
+      });
+
+      datesBookedSpaces.forEach((dateTime, value) {
+        if (dateTime.isAfterWithoutTime(startDate) && dateTime.isBeforeWithoutTime(endDate)) {
+          bookedSpaces += value;
+        }
+      });
+    }
+
+    int maxSpacesToBlock = totalSpaces - (unavailableSpaces + bookedSpaces);
+    return maxSpacesToBlock > 0 ? maxSpacesToBlock : 0;
+  }
+
+  Future<Map<DateTime, int>> generateDisabledDates() async {
+
+    Map<DateTime, int> dateSpaces = {};
+    int availableSpaces = int.parse(widget.user.venueInfo!.spaces!);
+
+    for (var booking in _bookings) {
+      if(booking.bookingStatus == BookingStatus.accepted) {
+
+        generateDateList(booking.from!, booking.to!).forEach((dateTime) {
+          if(dateSpaces.containsKey(dateTime)) {
+            dateSpaces[dateTime] = dateSpaces[dateTime]! - int.parse(booking.spaces!);
+          }
+          else {
+            dateSpaces[dateTime] = availableSpaces - int.parse(booking.spaces!);
+          }
+        });
+      }
+    }
+
+    return dateSpaces;
+  }
+
 
   void removeUnavailableDate(User user, int index) {
     setState(() {

@@ -66,12 +66,13 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
   List<DateTimeRange> converted = [];
 
   Future<Map<DateTime, int>> generateDisabledDates() async {
-    List<Booking> bookings = await firestoreDatabaseService.findBookingsByUser(widget.host);
+    //use the one loaded at the beginning
+    // List<Booking> bookings = await firestoreDatabaseService.findBookingsByUser(widget.host);
 
     Map<DateTime, int> dateSpaces = {};
     int availableSpaces = int.parse(widget.host.venueInfo!.spaces!);
 
-    for (var booking in bookings) {
+    for (var booking in _bookings) {
       if(booking.bookingStatus == BookingStatus.accepted) {
 
         generateDateList(booking.from!, booking.to!).forEach((dateTime) {

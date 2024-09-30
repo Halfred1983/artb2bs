@@ -21,7 +21,6 @@ import '../../injection.dart';
 import '../../utils/common.dart';
 import '../../utils/currency/currency_helper.dart';
 import '../../widgets/custom_dialog.dart';
-import '../../widgets/input_text_widget.dart';
 import '../../widgets/loading_screen.dart';
 import '../cubit/photo_cubit.dart';
 import '../cubit/photo_state.dart';

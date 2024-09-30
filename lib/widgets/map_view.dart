@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:artb2b/utils/common.dart';
-import 'package:artb2b/widgets/input_text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/foundation.dart';
