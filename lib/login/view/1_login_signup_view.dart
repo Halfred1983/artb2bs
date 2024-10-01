@@ -9,6 +9,7 @@ import '../../app/resources/styles.dart';
 import '../../widgets/google_sign_in_button.dart';
 import '../../widgets/snackbar.dart';
 import '2_signup_view.dart';
+import 'forgot_password.dart';
 
 
 class LoginSignUpView extends StatelessWidget {
@@ -233,6 +234,13 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             keyboardType: TextInputType.text,
             obscureText: true,
+          ),
+          verticalMargin4,
+          InkWell(onTap: () {
+            // Navigator.pushNamed(context, '/forgot_password');
+            Navigator.push(context, MaterialPageRoute(builder: (context) => ForgotPassword()));
+          },
+              child: Text('Forgot password?', style: TextStyles.boldAccent14, )
           ),
           verticalMargin48,
           SizedBox(

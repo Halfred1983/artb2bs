@@ -11,6 +11,11 @@ abstract class AuthService {
     required String password,
   });
 
+  Future<void> forgotPassword({
+    required String email,
+  });
+
+
   Future<UserEntity> signInWithGoogle();
 
   Future<void> logOut();

@@ -124,6 +124,17 @@ class FirebaseAuthService implements AuthService {
   }
 
   @override
+  Future<void> forgotPassword({
+    required String email,
+  }) async {
+    try {
+      await _firebaseAuth!.sendPasswordResetEmail(email: email);
+    } on auth.FirebaseAuthException catch (e) {
+      throw _determineError(e);
+    }
+  }
+
+  @override
   Future<UserEntity> createUserWithEmailAndPassword({
     required String email,
     required String password,

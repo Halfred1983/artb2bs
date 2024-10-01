@@ -41,6 +41,18 @@ class LoginCubit extends Cubit<LoginResult> {
     }
   }
 
+  Future<void> forgotPassword(String email) async {
+    try {
+      await _authService.forgotPassword(email: email);
+
+      emit(LoginResult(status: AuthStatus.unauthenticated));
+
+    } on AuthError catch(e) {
+      emit(LoginError(e));
+    }
+  }
+
+
   registerWithUsernameAndPassword(String email, String password) async {
     try {
       UserEntity userEntity = await _authService.createUserWithEmailAndPassword(email: email, password: password);
@@ -64,7 +76,7 @@ class LoginCubit extends Cubit<LoginResult> {
       User user = User.fromJson(userEntity.toJson())
           .copyWith(userStatus: userStatus ?? UserStatus.initialised)
           .copyWith(createdAt: DateTime.now())
-          .copyWith(bookingSettings: BookingSettings(active: true));
+          .copyWith(bookingSettings: BookingSettings(active: false));
 
       await _databaseService.addUser(userEntity: user);
     }

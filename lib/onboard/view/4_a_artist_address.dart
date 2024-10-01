@@ -5,7 +5,9 @@ import 'package:artb2b/widgets/google_places.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
@@ -14,7 +16,6 @@ import '../../injection.dart';
 import '../../utils/common.dart';
 import '../../widgets/loading_screen.dart';
 import '11_a_artist_onboard_end.dart';
-import '5_venue_spaces.dart';
 
 
 class ArtistAddressPage extends StatelessWidget {
@@ -55,6 +56,31 @@ class _SelectAddressViewState extends State<SelectAddressView> {
   final TextEditingController _aptBuilding = TextEditingController();
 
   User? user;
+  GoogleMapController? _mapController;
+  LatLng? _selectedLocation; // For storing the selected location
+
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
+  late BitmapDescriptor markerGalleryIcon;
+
+  String _mapStyle = '';
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    rootBundle.loadString('assets/googleMapsStyle.json').then((string) {
+      _mapStyle = string;
+    });
+
+    BitmapDescriptor.asset(
+        const ImageConfiguration(size: Size(30, 30)),
+        'assets/images/marker_gallery.png'
+    ).then((onValue) {
+      markerGalleryIcon = onValue;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,27 +102,27 @@ class _SelectAddressViewState extends State<SelectAddressView> {
               verticalMargin8,
               InactiveTextField(label: address!.country,),
               verticalMargin16,
-              Text('Address', style: TextStyles.boldN90016),
-              verticalMargin8,
-              InactiveTextField(label: address!.address+address!.number,),
-              TextField(
-                controller: _aptBuilding,
-                autofocus: false,
-                style: TextStyles.semiBoldN90014,
-                onChanged: (String value) {
-                  address = address!.copyWith(aptBuilding: value);
-                  context.read<OnboardingCubit>().chooseAddress(address!);
-                },
-                autocorrect: false,
-                enableSuggestions: false,
-                decoration: AppTheme.textInputDecoration.copyWith(hintText: 'Apt/Building',),
-                keyboardType: TextInputType.text,
-              ),
-              verticalMargin16,
-              Text('Province', style: TextStyles.boldN90016),
-              verticalMargin8,
-              InactiveTextField(label: address!.province,),
-              verticalMargin16,
+              // Text('Address', style: TextStyles.boldN90016),
+              // verticalMargin8,
+              // InactiveTextField(label: address!.address+address!.number,),
+              // TextField(
+              //   controller: _aptBuilding,
+              //   autofocus: false,
+              //   style: TextStyles.semiBoldN90014,
+              //   onChanged: (String value) {
+              //     address = address!.copyWith(aptBuilding: value);
+              //     context.read<OnboardingCubit>().chooseAddress(address!);
+              //   },
+              //   autocorrect: false,
+              //   enableSuggestions: false,
+              //   decoration: AppTheme.textInputDecoration.copyWith(hintText: 'Apt/Building',),
+              //   keyboardType: TextInputType.text,
+              // ),
+              // verticalMargin16,
+              // Text('Province', style: TextStyles.boldN90016),
+              // verticalMargin8,
+              // InactiveTextField(label: address!.province,),
+              // verticalMargin16,
               Text('City', style: TextStyles.boldN90016),
               verticalMargin8,
               InactiveTextField(label: address!.city,),
@@ -113,6 +139,7 @@ class _SelectAddressViewState extends State<SelectAddressView> {
             ),
           ) : null,
           body: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Padding(
               padding: horizontalPadding32 + (widget.isOnboarding ? verticalPadding48 : EdgeInsets.zero),
               child: Center(
@@ -134,7 +161,20 @@ class _SelectAddressViewState extends State<SelectAddressView> {
                     GoogleAddressLookup(
                       onAddressChosen: (address) {
                         context.read<OnboardingCubit>().chooseAddress(address);
+                        setState(() {
+                          _selectedLocation = LatLng(
+                            address.location!.latitude,
+                            address.location!.longitude,
+                          );
+                        });
+
+                        _animateToLocation(_selectedLocation!);
                       },
+                    ),
+                    verticalMargin12,
+                    SizedBox(
+                      height: 300, // Height for the Google Map
+                      child: _buildGoogleMap(),
                     ),
                     ...addressInfo
                   ],
@@ -178,6 +218,48 @@ class _SelectAddressViewState extends State<SelectAddressView> {
         );
       },
     );
+  }
+
+  // Build the Google Map widget
+  Widget _buildGoogleMap() {
+    return GoogleMap(
+      myLocationButtonEnabled: false,
+      zoomControlsEnabled: false,
+      zoomGesturesEnabled: true,
+      scrollGesturesEnabled: true,
+      mapToolbarEnabled: false,
+      rotateGesturesEnabled: false,
+      tiltGesturesEnabled: false,
+      myLocationEnabled: false,
+      mapType: MapType.normal,
+      compassEnabled: false,
+      onMapCreated: (controller) {
+        _mapController = controller;
+        controller.setMapStyle(_mapStyle);
+      },
+      initialCameraPosition: CameraPosition(
+        target: _selectedLocation ?? const LatLng(51.4975, 0.2000), // Default to (0, 0) if no location is chosen
+        zoom: 10.0,
+      ),
+      markers: _selectedLocation != null
+          ? {
+        Marker(
+          markerId: MarkerId('selected-location'),
+          position: _selectedLocation!,
+          icon: markerGalleryIcon,
+        ),
+      }
+          : {},
+    );
+  }
+
+  // Animate the camera to the selected location
+  Future<void> _animateToLocation(LatLng location) async {
+    if (_mapController != null) {
+      await _mapController!.animateCamera(
+        CameraUpdate.newLatLngZoom(location, 14.0),
+      );
+    }
   }
 
   bool _canContinue() {

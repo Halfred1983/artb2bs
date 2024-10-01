@@ -51,8 +51,6 @@ class _MapViewState extends State<MapView> {
 
   final FirestoreDatabaseService firebaseDatabaseService = locator<FirestoreDatabaseService>();
 
-  late BitmapDescriptor markerGalleryIcon;
-
   late Stream<List<User>> usersStream;
 
   final radiusInputSubject = BehaviorSubject<double>.seeded(50.0);
@@ -61,6 +59,8 @@ class _MapViewState extends State<MapView> {
   late BehaviorSubject<User> userLatLngSubject = BehaviorSubject<User>.seeded(widget.user);
 
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
+  late BitmapDescriptor markerGalleryIcon;
 
   @override
   void initState() {

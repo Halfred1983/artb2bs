@@ -86,7 +86,7 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                                     width: 60,
                                                     height: 60,
                                                   ),
-                                              imageUrl: user!.imageUrl
+                                              imageUrl: user!.imageUrl.isNotEmpty ? user!.imageUrl : Assets.logoUrl
                                           )
                                       ),
                                       horizontalMargin8,

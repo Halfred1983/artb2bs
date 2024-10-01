@@ -16,7 +16,7 @@ class UserCubit extends Cubit<UserState> {
       emit(LoadingState());
       int pendingRequests = 0;
       final user = await databaseService.getUser(userId: userId);
-      if(user!.userStatus != null && user.userInfo!.userType == UserType.gallery) {
+      if(user!.userStatus != null && user.userInfo != null && user.userInfo!.userType == UserType.gallery) {
         databaseService.findBookingsByUserStream(user!).listen((bookings) {
           pendingRequests = bookings
               .where((booking) =>

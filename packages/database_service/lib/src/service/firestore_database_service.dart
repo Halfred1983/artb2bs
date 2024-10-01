@@ -55,47 +55,68 @@ class FirestoreDatabaseService implements DatabaseService {
   }
 
   @override
-  Stream<List<User>> getHostsStream( {User? nextToUser}) {
+  Stream<List<User>> getHostsStream({User? nextToUser}) {
     var collectionReference = _firestore.collection('users');
 
-    return collectionReference.snapshots().map((querySnapshot) {
-      return querySnapshot.docs.map((e) => User.fromJson(e.data()))
-          .where((user) {
-            bool isNextToUser = true;
-            if(nextToUser != null) {
-              isNextToUser = user.userInfo != null && user.userInfo!.address != null &&
-                  nextToUser.userInfo!.address!.city == (user.userInfo!.address!.city);
-            }
+    if (nextToUser != null) {
+      final geo = GeoFlutterFire();
+      final geoFirePoint = geo.point(
+        latitude: nextToUser.userInfo!.address!.location!.latitude,
+        longitude: nextToUser.userInfo!.address!.location!.longitude,
+      );
 
-        return user.userInfo?.userType == UserType.gallery &&
-            user.bookingSettings != null &&
-            user.bookingSettings!.active != null &&
-            user.bookingSettings!.active == true &&
-            isNextToUser;
-      }).toList();
-    });
+      return geo.collection(collectionRef: collectionReference).within(
+        center: geoFirePoint,
+        radius: 60, // 60 km radius
+        field: 'userInfo.address.location',
+      ).map((querySnapshot) {
+        return querySnapshot.map((document) {
+          return User.fromJson(document.data() as Map<String, dynamic>);
+        }).where((user) {
+          return user.userInfo?.userType == UserType.gallery &&
+              user.bookingSettings != null &&
+              user.bookingSettings!.active == true;
+        }).toList();
+      });
+    } else {
+      return collectionReference.snapshots().map((querySnapshot) {
+        return querySnapshot.docs.map((e) => User.fromJson(e.data())).where((user) {
+          return user.userInfo?.userType == UserType.gallery &&
+              user.bookingSettings != null &&
+              user.bookingSettings!.active == true;
+        }).toList();
+      });
+    }
   }
-
   @override
   Future<List<User>> getHostsList({User? nextToUser}) async {
     var collectionReference = _firestore.collection('users');
+    List<User> users = [];
 
-    var querySnapshot = await collectionReference.get();
-    return querySnapshot.docs.map((e) => User.fromJson(e.data()))
-        .where((user) {
+    if (nextToUser != null) {
+      final geo = GeoFlutterFire();
+      final geoFirePoint = geo.point(
+        latitude: nextToUser.userInfo!.address!.location!.latitude,
+        longitude: nextToUser.userInfo!.address!.location!.longitude,
+      );
 
-      bool isNextToUser = true;
-      if(nextToUser != null) {
-        isNextToUser = user.userInfo != null && user.userInfo!.address != null &&
-            nextToUser.userInfo!.address!.city == (user.userInfo!.address!.city);
-      }
+      var query = geo.collection(collectionRef: collectionReference).within(
+        center: geoFirePoint,
+        radius: 60, // 60 km radius
+        field: 'userInfo.address.location',
+      );
 
+      var querySnapshot = await query.first;
+      users = querySnapshot.map((document) => User.fromJson(document.data() as Map<String, dynamic>)).toList();
+    } else {
+      var querySnapshot = await collectionReference.get();
+      users = querySnapshot.docs.map((e) => User.fromJson(e.data())).toList();
+    }
 
+    return users.where((user) {
       return user.userInfo?.userType == UserType.gallery &&
           user.bookingSettings != null &&
-          user.bookingSettings!.active != null &&
-          user.bookingSettings!.active == true &&
-          isNextToUser;
+          user.bookingSettings!.active == true;
     }).toList();
   }
 

@@ -23,8 +23,6 @@ class RegistrationResult extends LoginResult {
   List<Object?> get props => [status];
 }
 
-
-
 class LoginError extends LoginResult {
   final AuthError error;
 
