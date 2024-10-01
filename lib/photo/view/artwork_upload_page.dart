@@ -523,17 +523,19 @@ class _ArtworkUploadViewState extends State<ArtworkUploadView> {
           content: 'Your photo:\n\n$name\n\nwas uploaded successfully!',
           title: 'Upload Successful',
           actions: <Widget>[
-            TextButton(
-              child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
-                  decoration: TextDecoration.underline
-              ),),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) =>
-                      HomePage(index: 2,)), // Replace NewPage with the actual class of your new page
-                );
-              },
+            Center(
+              child: TextButton(
+                child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
+                    decoration: TextDecoration.underline
+                ),),
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) =>
+                        HomePage(index: 2,)), // Replace NewPage with the actual class of your new page
+                  );
+                },
+              ),
             ),
           ],
           type: AlertType.success,

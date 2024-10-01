@@ -129,6 +129,7 @@ class _SelectAddressViewState extends State<SelectAddressView> {
           }
         }
         return Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: !widget.isOnboarding ? AppBar(
             scrolledUnderElevation: 0,
             title: Text(user!.userInfo!.name!, style: TextStyles.boldN90017,),
@@ -159,13 +160,24 @@ class _SelectAddressViewState extends State<SelectAddressView> {
                     ],
                     GoogleAddressLookup(onAddressChosen: (address) {
                       context.read<OnboardingCubit>().chooseAddress(address);
+                      setState(() {
+                        _selectedLocation = LatLng(
+                          address.location!.latitude,
+                          address.location!.longitude,
+                        );
+                      });
+
+                      _animateToLocation(_selectedLocation!);
+
                     },),
                     verticalMargin12,
                     SizedBox(
                       height: 300, // Height for the Google Map
                       child: _buildGoogleMap(),
                     ),
-                    ...addressInfo
+                    ...addressInfo,
+                    verticalMargin48,
+                    verticalMargin24
                   ],
                 ),
               ),

@@ -162,7 +162,7 @@ class _SelectPhotoViewState extends State<SelectPhotoView> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          PhotoUploadPage()),
+                                          PhotoUploadPage(isOnboarding: widget.isOnboarding)),
                                 );
                                 context.read<OnboardingCubit>().getUser(_user!.id);
                               }

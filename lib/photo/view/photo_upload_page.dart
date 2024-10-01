@@ -9,11 +9,15 @@ import '../../injection.dart';
 import '../cubit/photo_cubit.dart';
 
 class PhotoUploadPage extends StatelessWidget {
+  final bool isOnboarding;
 
-  static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => PhotoUploadPage());
+  PhotoUploadPage({this.isOnboarding = false});
+
+  static Route<void> route({bool isOnboarding = false}) {
+    return MaterialPageRoute<void>(
+      builder: (_) => PhotoUploadPage(isOnboarding: isOnboarding),
+    );
   }
-
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
   final FirestoreStorageService storageService = locator<FirestoreStorageService>();
@@ -28,7 +32,7 @@ class PhotoUploadPage extends StatelessWidget {
           storageService: storageService,
           userId: authService.getUser().id,
         ),
-        child: const PhotoUploadView(),
+        child: PhotoUploadView(isOnboarding: isOnboarding),
       );
   }
 }

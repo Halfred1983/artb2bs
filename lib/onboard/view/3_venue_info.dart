@@ -76,6 +76,7 @@ class _SelectAccountViewState extends State<SelectAccountView> {
           }
         }
         return Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: !widget.isOnboarding ? AppBar(
             scrolledUnderElevation: 0,
             title: Text(user!.userInfo!.name!, style: TextStyles.boldN90017,),
@@ -163,7 +164,7 @@ class _SelectAccountViewState extends State<SelectAccountView> {
                   if(_canContinue()) {
 
                     if(widget.isOnboarding) {
-                      context.read<OnboardingCubit>().save(user!, UserStatus.spaceInfo);
+                      context.read<OnboardingCubit>().save(user!, UserStatus.venueInfo);
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => VenueAddressPage()), // Replace NewPage with the actual class of your new page

@@ -23,7 +23,9 @@ import '../cubit/photo_cubit.dart';
 import '../cubit/photo_state.dart';
 
 class PhotoUploadView extends StatefulWidget {
-  const PhotoUploadView({Key? key}) : super(key: key);
+  final bool isOnboarding;
+
+  const PhotoUploadView({Key? key, this.isOnboarding = false}) : super(key: key);
 
   @override
   State<PhotoUploadView> createState() => _PhotoUploadViewState();
@@ -134,7 +136,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                                     });
                                   },
                                   child: const Icon(FontAwesomeIcons.trash,
-                                      color: AppTheme.white, size: 20,),
+                                    color: AppTheme.white, size: 20,),
                                 ),
                               ),
                             ),
@@ -193,51 +195,51 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
             bottomNavigationBar: Container(
                 padding: buttonPadding,
                 child: ElevatedButton(
-                  onPressed: _imageFile != null ? ()  {
-                    final uploadTask = context.read<PhotoCubit>()
-                        .storePhoto(
-                        user!.id + '/photos/' + path.basename(_imageFile!.path),
-                        _imageFile);
+                    onPressed: _imageFile != null ? ()  {
+                      final uploadTask = context.read<PhotoCubit>()
+                          .storePhoto(
+                          user!.id + '/photos/' + path.basename(_imageFile!.path),
+                          _imageFile);
 
-                    // Listen for state changes, errors, and completion of the upload.
-                    uploadTask.snapshotEvents.listen((
-                        TaskSnapshot taskSnapshot) async {
-                      switch (taskSnapshot.state) {
-                        case TaskState.running:
-                          _progress =
-                              100.0 * (taskSnapshot.bytesTransferred /
-                                  taskSnapshot.totalBytes);
-                          if (context.mounted) {
-                            setState(() {
+                      // Listen for state changes, errors, and completion of the upload.
+                      uploadTask.snapshotEvents.listen((
+                          TaskSnapshot taskSnapshot) async {
+                        switch (taskSnapshot.state) {
+                          case TaskState.running:
+                            _progress =
+                                100.0 * (taskSnapshot.bytesTransferred /
+                                    taskSnapshot.totalBytes);
+                            if (context.mounted) {
+                              setState(() {
 
-                            });
-                          }
-                          print("Upload is $_progress% complete.");
-                          break;
-                        case TaskState.paused:
-                          print("Upload is paused.");
-                          break;
-                        case TaskState.canceled:
-                          print("Upload was canceled");
-                          break;
-                        case TaskState.error:
-                        // Handle unsuccessful uploads
-                          break;
-                        case TaskState.success:
-                          _downloadUrl =
-                          await taskSnapshot.ref.getDownloadURL();
-                          if (context.mounted) {
-                            Photo photo = Photo(
-                                url: _downloadUrl!,
-                                description: _photoDescription);
-                            context.read<PhotoCubit>().savePhoto(photo,
-                                _downloadUrl!, user!);
-                          }
-                          break;
-                      }
-                    });
-                  } : null,
-                  child: const Text('Upload',)
+                              });
+                            }
+                            print("Upload is $_progress% complete.");
+                            break;
+                          case TaskState.paused:
+                            print("Upload is paused.");
+                            break;
+                          case TaskState.canceled:
+                            print("Upload was canceled");
+                            break;
+                          case TaskState.error:
+                          // Handle unsuccessful uploads
+                            break;
+                          case TaskState.success:
+                            _downloadUrl =
+                            await taskSnapshot.ref.getDownloadURL();
+                            if (context.mounted) {
+                              Photo photo = Photo(
+                                  url: _downloadUrl!,
+                                  description: _photoDescription);
+                              context.read<PhotoCubit>().savePhoto(photo,
+                                  _downloadUrl!, user!);
+                            }
+                            break;
+                        }
+                      });
+                    } : null,
+                    child: const Text('Upload',)
                 )
             )
         );
@@ -265,32 +267,22 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
         showDialog<void>(
             context: context,
             barrierDismissible: false, // user must tap button!
-            builder: (BuildContext context) { // <-- See this
-              return AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                title: const Center(child: Text('Error')),
-                content: const SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      Text(
-                          'Please chose a valid image.'),
-                    ],
-                  ),
-                ),
-                actionsAlignment: MainAxisAlignment.center,
+            builder: (BuildContext context) {
+              return CustomAlertDialog( // <-- SEE HERE
+                content: 'Chose a valid photo.',
+                title: 'Upload Failed',
                 actions: <Widget>[
                   TextButton(
-                    child: const Text('OK', style: TextStyle(
+                    child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
                         decoration: TextDecoration.underline
                     ),),
                     onPressed: () {
                       Navigator.of(context)
-                        .pop();
+                          .pop();
                     },
                   ),
                 ],
+                type: AlertType.error,
               );
             });
       }
@@ -321,16 +313,18 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
           content: 'Your photo:\n\n$name\n\nwas uploaded successfully!',
           title: 'Upload Successful',
           actions: <Widget>[
-            TextButton(
-              child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
-                  decoration: TextDecoration.underline
-              ),),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => VenuePhotoPage(isOnboarding: false,)), // Replace NewPage with the actual class of your new page
-                );
-              },
+            Center(
+              child: TextButton(
+                child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
+                    decoration: TextDecoration.underline
+                ),),
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => VenuePhotoPage(isOnboarding: widget.isOnboarding,)), // Replace NewPage with the actual class of your new page
+                  );
+                },
+              ),
             ),
           ], type: AlertType.success,
         );

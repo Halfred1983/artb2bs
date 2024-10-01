@@ -79,6 +79,7 @@ class _ArtistInfoViewState extends State<ArtistInfoView> {
           }
         }
         return Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: !widget.isOnboarding ? AppBar(
             scrolledUnderElevation: 0,
             title: Text(user!.artInfo!.artistName!, style: TextStyles.boldN90017,),

@@ -65,6 +65,7 @@ class _SelectPriceViewState extends State<SelectPriceView> {
           user = state.user;
         }
         return Scaffold(
+          resizeToAvoidBottomInset: false,
           body: SingleChildScrollView(
             child: Padding(
               padding: horizontalPadding32 + verticalPadding48,

@@ -130,6 +130,7 @@ class _SelectAddressViewState extends State<SelectAddressView> {
           }
         }
         return Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: !widget.isOnboarding ? AppBar(
             scrolledUnderElevation: 0,
             title: Text(user!.userInfo!.name!, style: TextStyles.boldN90017,),

@@ -283,7 +283,7 @@ const _$UserStatusEnumMap = {
   UserStatus.notVerified: 13,
   UserStatus.completed: 14,
   UserStatus.openingTimes: 15,
-  UserStatus.spaceInfo: 16,
+  UserStatus.spacesInfo: 17,
 };
 
 Value? _$JsonConverterFromJson<Json, Value>(

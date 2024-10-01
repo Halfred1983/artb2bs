@@ -109,6 +109,6 @@ enum UserStatus {
   completed,
   @JsonValue(15)
   openingTimes,
-  @JsonValue(16)
-  spaceInfo,
+  @JsonValue(17)
+  spacesInfo,
 }

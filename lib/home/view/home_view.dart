@@ -112,16 +112,13 @@ class _HomeViewState extends State<HomeView> {
                 if (user!.userStatus == UserStatus.artInfo && user!.userInfo!.userType == UserType.artist) {
                   return ArtistAddressPage();
                 }
-                // if (user!.userStatus == UserStatus.locationInfo && user!.userInfo!.userType == UserType.artist) {
-                //   return ArtistOnboardEnd();
-                // }
                 if (user!.userStatus == UserStatus.venueInfo && user!.userInfo!.userType == UserType.gallery) {
                   return VenueAddressPage();
                 }
                 if (user!.userStatus == UserStatus.locationInfo && user!.userInfo!.userType == UserType.gallery) {
                   return VenueSpacesPage();
                 }
-                if (user!.userStatus == UserStatus.spaceInfo && user!.userInfo!.userType == UserType.gallery) {
+                if (user!.userStatus == UserStatus.spacesInfo && user!.userInfo!.userType == UserType.gallery) {
                   return VenuePricePage();
                 }
                 if (user!.userStatus == UserStatus.priceInfo && user!.userInfo!.userType == UserType.gallery) {
