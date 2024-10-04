@@ -16,6 +16,7 @@ import '../../widgets/dot_indicator.dart';
 import '../../widgets/dropdown_box.dart';
 import '../../widgets/loading_screen.dart';
 import '../../widgets/tags.dart';
+import '4_a_artist_address.dart';
 
 
 class ArtistInfoPage extends StatelessWidget {
@@ -177,7 +178,7 @@ class _ArtistInfoViewState extends State<ArtistInfoView> {
                       context.read<OnboardingCubit>().save(user!, UserStatus.artInfo);
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => VenueAddressPage()), // Replace NewPage with the actual class of your new page
+                        MaterialPageRoute(builder: (context) => ArtistAddressPage()), // Replace NewPage with the actual class of your new page
                       );
                     }
                     else {

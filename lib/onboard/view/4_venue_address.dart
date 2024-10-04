@@ -13,6 +13,7 @@ import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
 import '../../host/view/host_setting_page.dart';
 import '../../injection.dart';
+import '../../utils/bitmap_descriptor_utils.dart';
 import '../../utils/common.dart';
 import '../../widgets/loading_screen.dart';
 import '5_venue_spaces.dart';
@@ -62,7 +63,7 @@ class _SelectAddressViewState extends State<SelectAddressView> {
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
   late BitmapDescriptor markerGalleryIcon;
-
+  LatLng _initialCoordinates = LatLng(51.4975, 0.2000);
   String _mapStyle = '';
 
   @override
@@ -73,9 +74,8 @@ class _SelectAddressViewState extends State<SelectAddressView> {
       _mapStyle = string;
     });
 
-    BitmapDescriptor.asset(
-        const ImageConfiguration(size: Size(30, 30)),
-        'assets/images/marker_gallery.png'
+    BitmapDescriptorHelper.getBitmapDescriptorFromSvgAsset(
+        'assets/icons/location.svg'
     ).then((onValue) {
       markerGalleryIcon = onValue;
     });
@@ -94,7 +94,11 @@ class _SelectAddressViewState extends State<SelectAddressView> {
           UserAddress? address = user!.userInfo!.address;
           if(address != null) {
             _aptBuilding.text = user!.userInfo!.address!.aptBuilding ?? '';
-
+            _initialCoordinates = LatLng(
+              address.location!.latitude,
+              address.location!.longitude,
+            );
+            _selectedLocation = _initialCoordinates;
             addressInfo = [
               verticalMargin16,
               Text('Country', style: TextStyles.boldN90016),
@@ -240,8 +244,8 @@ class _SelectAddressViewState extends State<SelectAddressView> {
         controller.setMapStyle(_mapStyle);
       },
       initialCameraPosition: CameraPosition(
-        target: _selectedLocation ?? const LatLng(51.4975, 0.2000), // Default to (0, 0) if no location is chosen
-        zoom: 10.0,
+        target: _selectedLocation ?? _initialCoordinates, // Default to (0, 0) if no location is chosen
+        zoom: 16.0,
       ),
       markers: _selectedLocation != null
           ? {
@@ -259,7 +263,7 @@ class _SelectAddressViewState extends State<SelectAddressView> {
   Future<void> _animateToLocation(LatLng location) async {
     if (_mapController != null) {
       await _mapController!.animateCamera(
-        CameraUpdate.newLatLngZoom(location, 14.0),
+        CameraUpdate.newLatLngZoom(location, 16.0),
       );
     }
   }

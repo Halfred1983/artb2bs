@@ -50,8 +50,8 @@ class _HostBookingAvailabilityViewState extends State<HostBookingAvailabilityVie
   FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
 
   final List<String> tileTitles = [
-    'Venue booking availability',
-    'Venue booking availablity',
+    'Venue dates availability',
+    'Venue spaces availability',
   ];
 
   @override

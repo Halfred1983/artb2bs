@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/login/cubit/login_cubit.dart';
 import 'package:artb2b/utils/common.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../app/resources/styles.dart';
+import '../../widgets/apple_sign_in_button.dart';
 import '../../widgets/google_sign_in_button.dart';
 import '../../widgets/snackbar.dart';
 import '2_signup_view.dart';
@@ -63,7 +66,15 @@ class _LoginForm extends StatelessWidget {
                 ],
               ),
               verticalMargin48,
-              GoogleLoginButton(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GoogleLoginButton(),
+                  horizontalMargin12,
+                  if (Platform.isIOS || Platform.isMacOS) AppleSigninButton(),
+                ],
+              ),
               verticalMargin48,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

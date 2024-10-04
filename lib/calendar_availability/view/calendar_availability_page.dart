@@ -286,7 +286,7 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                             CommonCard(child:
                             Column(
                               children: [
-                                Text("Do you want to these dates ? ",
+                                Text("Do you want to block these dates ? ",
                                   style: TextStyles.semiBoldN90017,),
                                 verticalMargin16,
                                 Row(

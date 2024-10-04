@@ -104,6 +104,7 @@ class _ExploreViewState extends State<ExploreView> {
                     scrolledUnderElevation: 0,
                     title: Padding(
                       padding: _listView ? EdgeInsets.zero : horizontalPadding32,
+
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

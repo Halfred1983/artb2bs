@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/login/cubit/login_cubit.dart';
 import 'package:artb2b/utils/common.dart';
+import 'package:artb2b/widgets/apple_sign_in_button.dart';
 import 'package:artb2b/widgets/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +28,14 @@ class _LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppTheme.n900,),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
       body: Center(
         child: Padding(
           padding: horizontalPadding32,
@@ -61,10 +72,15 @@ class _LoginForm extends StatelessWidget {
                 ],
               ),
               verticalMargin48,
-              GoogleLoginButton(),
-
-
-
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GoogleLoginButton(),
+                  horizontalMargin12,
+                  if (Platform.isIOS || Platform.isMacOS) AppleSigninButton(),
+                ],
+              ),
             ],
           ),
         ),

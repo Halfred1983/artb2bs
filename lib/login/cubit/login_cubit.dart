@@ -28,6 +28,20 @@ class LoginCubit extends Cubit<LoginResult> {
     }
   }
 
+  Future<void> loginWithApple() async {
+    try {
+      UserEntity userEntity = await _authService.signInWithApple();
+
+     await fetchAndCreateUser(userEntity);
+
+      emit(LoginResult(status: AuthStatus.authenticated));
+
+    }
+    catch (e) {
+      print('error in the login of the user');
+    }
+  }
+
   Future<void> loginUsernamePassword(String email, String password) async {
     try {
       UserEntity userEntity = await _authService.signInWithEmailAndPassword(email: email, password: password);
@@ -98,5 +112,6 @@ class LoginCubit extends Cubit<LoginResult> {
       // emit(state.copyWith(message: e.toString(), status: LoginStatus.failure));
     }
   }
+
 
 }

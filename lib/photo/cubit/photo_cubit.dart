@@ -156,6 +156,14 @@ class PhotoCubit extends Cubit<PhotoState> {
     emit(PhotoUploadedState(photo));
   }
 
+  void saveProfilePhoto(String downloadUrl, User user) async {
+    user = user.copyWith(imageUrl: downloadUrl);
+
+    await databaseService.updateUser(user: user);
+
+    emit(LoadedState(user));
+  }
+
   Future<void> deleteArtwork(String imageUrl) async {
     final User user = state.props[0] as User;
     // Update the user in the database by removing the artwork

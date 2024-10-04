@@ -123,6 +123,8 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                   verticalMargin24,
                                   Text(user!.artInfo!.biography!, style: TextStyles.regularN90014, textAlign: TextAlign.justify,),
                                   verticalMargin24,
+                                  Text('Main technique: ${user!.artInfo!.artStyle!.name.capitalize()}', style: TextStyles.regularN90014, textAlign: TextAlign.justify,),
+                                  verticalMargin24,
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [

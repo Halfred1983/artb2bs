@@ -18,9 +18,10 @@ abstract class AuthService {
 
   Future<UserEntity> signInWithGoogle();
 
+  Future<UserEntity> signInWithApple();
+
   Future<void> logOut();
 
   UserEntity getUser();
 
-
-  }
+}

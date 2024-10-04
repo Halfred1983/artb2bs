@@ -337,7 +337,7 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                               CommonCard(
                                 child: Column(
                                 children: [
-                                  Text("How many spaces you want to make unavailable? ",
+                                  Text("How many spaces you want to block? ",
                                     style: TextStyles.semiBoldN90017,),
                                   verticalMargin16,
                                   Row(

@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 @injectable
 class FirebaseAuthService implements AuthService {
@@ -94,6 +95,25 @@ class FirebaseAuthService implements AuthService {
     return UserEntity.fromJson(map);
   }
 
+  UserEntity _mapFirebaseUserFromApple(Map<String, dynamic> user) {
+    if (user.isEmpty) {
+      return UserEntity.empty();
+    }
+
+    final map = <String, dynamic>{
+      'id': user['userIdentifier'],
+      'firstName': user['givenName'],
+      'lastName': user['familyName'],
+      'email': user['email'] ?? '',
+      'emailVerified': true,
+      'imageUrl': '',
+      'isAnonymous': user['email'] != null ? true : false,
+      'creationDate': DateTime.now().toString(),
+      'lastSignIn': DateTime.now().toString(),
+    };
+    return UserEntity.fromJson(map);
+  }
+
   @override
   Future<UserEntity> signInWithEmailAndPassword({
     required String email,
@@ -163,13 +183,7 @@ class FirebaseAuthService implements AuthService {
   Future<UserEntity> signInWithGoogle() async {
     try {
       late final AuthCredential credential;
-      // if (isWeb) {
-      //   final googleProvider = firebase_auth.GoogleAuthProvider();
-      //   final userCredential = await _firebaseAuth.signInWithPopup(
-      //     googleProvider,
-      //   );
-      //   credential = userCredential.credential!;
-      // } else {
+
       final googleUser = await _googleSignIn.signIn();
       final googleAuth = await googleUser!.authentication;
       credential = GoogleAuthProvider.credential(
@@ -185,6 +199,49 @@ class FirebaseAuthService implements AuthService {
       return userEntity;
     } on FirebaseAuthException catch (e) {
       throw throw _determineError(e);
+    }
+  }  /// Starts the Sign In with Google Flow.
+
+
+  @override
+  Future<UserEntity> signInWithApple() async {
+    try {
+      AuthorizationCredentialAppleID credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      // Obtain the user identity information
+      final user = {
+        'userIdentifier': credential.userIdentifier,
+        'email': credential.email,
+        'givenName': credential.givenName,
+        'familyName': credential.familyName,
+      };
+
+      // Authenticate with Firebase using the OAuth credential
+      final oAuthProvider = OAuthProvider('apple.com');
+      final firebaseCredential = oAuthProvider.credential(
+        idToken: credential.identityToken,
+        accessToken: credential.authorizationCode,
+      );
+
+      // Sign in to Firebase with the Apple credential
+      final authResult = await _firebaseAuth!.signInWithCredential(firebaseCredential);
+
+      // User is now signed in to Firebase and can write to the Firebase database
+      final firebaseUser = authResult.user;
+
+      UserEntity userEntity = _mapFirebaseUserFromApple(user);
+
+      SharedPreferences.getInstance().then((cache) => cache.setString(userCacheKey, json.encode(userEntity.toJson())));
+      return userEntity;
+    } catch (e) {
+      // Handle error
+      print('Error during Sign in with Apple: $e');
+      rethrow;
     }
   }
 
@@ -251,6 +308,7 @@ class FirebaseAuthService implements AuthService {
         );
     }
   }
+
 }
 class LogOutFailure implements Exception {}
 

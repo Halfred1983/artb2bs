@@ -6,8 +6,6 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_chip_tags/flutter_chip_tags.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
@@ -15,8 +13,6 @@ import 'package:path/path.dart' as path;
 import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
 import '../../utils/common.dart';
-import '../../widgets/app_input_validators.dart';
-import '../../widgets/app_text_field.dart';
 import '../../widgets/custom_dialog.dart';
 import '../../widgets/loading_screen.dart';
 import '../cubit/photo_cubit.dart';
@@ -272,14 +268,19 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                 content: 'Chose a valid photo.',
                 title: 'Upload Failed',
                 actions: <Widget>[
-                  TextButton(
-                    child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
-                        decoration: TextDecoration.underline
-                    ),),
-                    onPressed: () {
-                      Navigator.of(context)
-                          .pop();
-                    },
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
+                            decoration: TextDecoration.underline
+                        ),),
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pop();
+                        },
+                      ),
+                    ],
                   ),
                 ],
                 type: AlertType.error,
@@ -313,18 +314,21 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
           content: 'Your photo:\n\n$name\n\nwas uploaded successfully!',
           title: 'Upload Successful',
           actions: <Widget>[
-            Center(
-              child: TextButton(
-                child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
-                    decoration: TextDecoration.underline
-                ),),
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => VenuePhotoPage(isOnboarding: widget.isOnboarding,)), // Replace NewPage with the actual class of your new page
-                  );
-                },
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
+                      decoration: TextDecoration.underline
+                  ),),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => VenuePhotoPage(isOnboarding: widget.isOnboarding,)), // Replace NewPage with the actual class of your new page
+                    );
+                  },
+                ),
+              ],
             ),
           ], type: AlertType.success,
         );

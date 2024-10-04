@@ -1,34 +1,59 @@
+import 'dart:io';
+
 import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/home/bloc/user_cubit.dart';
 import 'package:artb2b/host/cubit/host_cubit.dart';
 import 'package:artb2b/host/cubit/host_state.dart';
 import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
+import 'package:artb2b/photo/view/photo_upload_page.dart';
 import 'package:artb2b/user_profile/view/booking_history.dart';
 import 'package:artb2b/user_profile/view/payout_history.dart';
 import 'package:artb2b/widgets/common_card_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:database_service/database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path/path.dart' as path;
+
 
 import '../../../login/cubit/login_cubit.dart';
 import '../../../login/view/login_page.dart';
 import '../../../utils/common.dart';
 import '../../app/resources/assets.dart';
 import '../../host/view/settings/host_venue_info_page.dart';
+import '../../photo/cubit/photo_cubit.dart';
+import '../../widgets/custom_dialog.dart';
 import '../../widgets/loading_screen.dart';
 
 
-class UserProfileView extends StatelessWidget {
-  UserProfileView({super.key}) {
+class UserProfileView extends StatefulWidget {
+
+  @override
+  State<UserProfileView> createState() => _UserProfileViewState();
+}
+
+class _UserProfileViewState extends State<UserProfileView> {
+  _UserProfileViewState() {
     getVersionInfo();
   }
 
-
   String _version = '';
+
   String _buildNumber = '';
+
+  GlobalKey<FormState> key = GlobalKey();
+
+  File? _imageFile;
+
+  String? _downloadUrl;
+
+  String imageUrl = '';
+
+  bool _isUploading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +78,7 @@ class UserProfileView extends StatelessWidget {
                   ),
                 ),
                 body: Container(
+                  height: double.infinity,
                   color: AppTheme.backgroundGrey,
                   child: Column(
                     children: [
@@ -61,17 +87,86 @@ class UserProfileView extends StatelessWidget {
                         child: Column(
                           children: [
                             verticalMargin24,
-                            ClipRRect(
-                                borderRadius: BorderRadius.circular(30.0),
-                                child: CachedNetworkImage(
-                                    fit: BoxFit.cover,
-                                    width: 63,
-                                    height: 63,
-                                    placeholder: (context, url) =>
-                                        Image.asset(
-                                            Assets.logo),
-                                    imageUrl: user!.imageUrl.isNotEmpty ? user!.imageUrl : Assets.logoUrl,
-                                )
+                            InkWell(
+                              onTap: () async {
+                                await _getFromGallery();
+
+                                final uploadTask = context.read<PhotoCubit>()
+                                    .storePhoto(
+                                    user!.id + '/photos/' + path.basename(_imageFile!.path),
+                                    _imageFile);
+
+                                // Listen for state changes, errors, and completion of the upload.
+                                uploadTask.snapshotEvents.listen((
+                                    TaskSnapshot taskSnapshot) async {
+                                  switch (taskSnapshot.state) {
+                                    case TaskState.running:
+                                      _isUploading = true;
+                                      if (context.mounted) {
+                                        setState(() {
+
+                                        });
+                                      }
+                                      break;
+                                    case TaskState.paused:
+                                      print("Upload is paused.");
+                                      break;
+                                    case TaskState.canceled:
+                                      _isUploading = false;
+                                      print("Upload was canceled");
+                                      break;
+                                    case TaskState.error:
+                                    // Handle unsuccessful uploads
+                                      break;
+                                    case TaskState.success:
+                                      _isUploading = false;
+                                      _downloadUrl =
+                                      await taskSnapshot.ref.getDownloadURL();
+                                      if (context.mounted) {
+                                        context.read<PhotoCubit>().saveProfilePhoto(
+                                            _downloadUrl!, user!);
+                                      }
+                                      break;
+                                  }
+                                });
+                              },
+                              child: Stack(
+                                children: [
+                                  ClipRRect(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      child:  _imageFile != null ?
+                                      CircleAvatar(
+                                        radius: 33,
+                                        backgroundImage: FileImage(_imageFile!) as ImageProvider,
+                                      )
+                                       : CachedNetworkImage(
+                                          fit: BoxFit.cover,
+                                          width: 66,
+                                          height: 66,
+                                          placeholder: (context, url) =>
+                                              Image.asset(
+                                                  Assets.logo),
+                                          imageUrl: user!.imageUrl.isNotEmpty ? user!.imageUrl : Assets.logoUrl,
+                                      )
+                                  ),
+                                  Container(
+                                    width: 66,
+                                    height: 66,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.black.withOpacity(0.4), // semi-transparent overlay
+                                    ),
+                                    child: Center(
+                                      child: !_isUploading ? const Icon(Icons.camera_alt, color: Colors.white, size: 20,)
+                                      :  const Center(
+                                        child: CircularProgressIndicator(
+                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                             verticalMargin16,
                             if(user!.userInfo!.userType == UserType.artist) ...[
@@ -227,6 +322,53 @@ class UserProfileView extends StatelessWidget {
     context.read<LoginCubit>().logout();
     Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
   }
+
+  /// Get from gallery
+  _getFromGallery() async {
+    try {
+      XFile? pickedFile = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1800,
+        maxHeight: 1800,
+      );
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = File(pickedFile.path);
+        });
+      }
+    }
+    catch (e) {
+      if (mounted) {
+        showDialog<void>(
+            context: context,
+            barrierDismissible: false, // user must tap button!
+            builder: (BuildContext context) {
+              return CustomAlertDialog( // <-- SEE HERE
+                content: 'Chose a valid photo.',
+                title: 'Upload Failed',
+                actions: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
+                            decoration: TextDecoration.underline
+                        ),),
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pop();
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+                type: AlertType.error,
+              );
+            });
+      }
+    }
+  }
+
 }
 
 
