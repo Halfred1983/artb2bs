@@ -6,7 +6,6 @@ import 'package:artb2b/exhibition/view/exhibition_page.dart';
 import 'package:artb2b/home/bloc/user_cubit.dart';
 import 'package:artb2b/home/bloc/user_state.dart';
 import 'package:artb2b/home/view/home_list_view.dart';
-import 'package:artb2b/injection.dart';
 import 'package:artb2b/notification/bloc/notification_bloc.dart';
 import 'package:artb2b/onboard/view/10_venue_opening_time.dart';
 import 'package:artb2b/onboard/view/2_info_account.dart';
@@ -19,13 +18,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
 import '../../explore/view/explore_page.dart';
-import '../../host/view/host_dashboard_page.dart';
 import '../../host/view/host_listing_page.dart';
-import '../../onboard/view/11_a_artist_onboard_end.dart';
 import '../../onboard/view/1_select_account.dart';
 import '../../onboard/view/2_a_info_account.dart';
 import '../../onboard/view/4_a_artist_address.dart';
@@ -65,6 +61,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     User? user;
     int? pendingRequests;
+    String? nextExhibition;
     return  BlocListener<NotificationBloc, NotificationState>(
         listenWhen: (previous, current) {
           return previous != current &&
@@ -98,6 +95,7 @@ class _HomeViewState extends State<HomeView> {
               if (state is LoadedState) {
                 user = state.user;
                 pendingRequests = state.pendingRequests;
+                nextExhibition = state.nextExhibition;
 
                 //ONBOARDING FOR NEW USERS
                 if ( user!.userStatus == null || user!.userStatus == UserStatus.initialised ) {
@@ -139,10 +137,10 @@ class _HomeViewState extends State<HomeView> {
 
 
                 if(user!.userInfo!.userType == UserType.gallery) {
-                  widget = HomeVenue(user: user!);
+                  widget = HomeVenue(user: user!, nextExhibition: nextExhibition);
                 }
                 else {
-                  widget = HomeList(user: user!);
+                  widget = HomeList(user: user!, nextExhibition: nextExhibition);
                 }
 
                 if(user!.userInfo!.userType == UserType.artist) {

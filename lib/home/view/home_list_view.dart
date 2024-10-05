@@ -43,8 +43,9 @@ import '../../widgets/google_places.dart';
 import '../../widgets/loading_screen.dart';
 
 class HomeList extends StatefulWidget {
-  HomeList({super.key, required this.user});
+  HomeList({super.key, required this.user, this.nextExhibition});
   final User user;
+  String? nextExhibition;
 
   @override
   State<HomeList> createState() => _HomeListState();
@@ -215,6 +216,22 @@ class _HomeListState extends State<HomeList> {
                               ],
                             ),
                           ),
+                          if(widget.nextExhibition != null && widget.nextExhibition!.isNotEmpty) ... [
+                            verticalMargin12,
+                            Container(
+                              padding: horizontalPadding16,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(color: AppTheme.n100, width: 0.5),
+                              ),
+                              height: 60,
+                              width: double.infinity,
+                              child: Center(
+                                child: Text(widget.nextExhibition!, style: TextStyles.regularN90012,),
+                              ),
+                            ),
+                          ],
+                          verticalMargin12,
                           verticalMargin24,
                           _buildSearchBar(),
                           verticalMargin24,
@@ -282,7 +299,7 @@ class _HomeListState extends State<HomeList> {
                   MaterialPageRoute(builder: (context) => HomeList(user: _currentUser)),
                 );
               },
-              child: Text('See All', style: TextStyles.semiBoldS40012,),
+              child: Text('See All', style: TextStyles.semiBoldAccent14,),
             ),
           ],
         ),

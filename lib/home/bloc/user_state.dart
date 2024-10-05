@@ -15,13 +15,14 @@ class LoadingState extends UserState {
 }
 
 class LoadedState extends UserState {
-  LoadedState(this.user, {this.pendingRequests});
+  LoadedState(this.user, {this.pendingRequests, this.nextExhibition});
 
   final User user;
   int? pendingRequests;
+  String? nextExhibition;
 
   @override
-  List<Object> get props => [user, pendingRequests ?? 0];
+  List<Object> get props => [user, pendingRequests ?? 0, nextExhibition ?? ''];
 }
 
 class ErrorState extends UserState {

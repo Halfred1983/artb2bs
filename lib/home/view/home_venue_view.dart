@@ -29,9 +29,10 @@ import '../../widgets/exclamation_icon.dart';
 import '../../widgets/tags.dart';
 
 class HomeVenue extends StatefulWidget {
-  HomeVenue({super.key, required this.user});
-  final User user;
+  HomeVenue({super.key, required this.user, this.nextExhibition});
 
+  final User user;
+  final String? nextExhibition;
   @override
   State<HomeVenue> createState() => _HomeVenueState();
 }
@@ -52,7 +53,7 @@ class _HomeVenueState extends State<HomeVenue> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               verticalMargin12,
-              Text("Hello, ${widget.user.userInfo!.name!}", style: TextStyles.semiBoldS40014,),
+              Text("Hello, ${widget.user.userInfo!.name!}", style: TextStyles.semiBoldAccent14,),
               Text("Welcome back!", style: TextStyles.boldN90029,),
             ],
           ),
@@ -140,6 +141,21 @@ class _HomeVenueState extends State<HomeVenue> {
                       ),
                     ),
                     verticalMargin32,
+                  ],
+                  if(widget.nextExhibition != null && widget.nextExhibition!.isNotEmpty) ... [
+                    Container(
+                      padding: horizontalPadding16,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppTheme.n100, width: 0.5),
+                      ),
+                      height: 60,
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(widget.nextExhibition!, style: TextStyles.regularN90012,),
+                      ),
+                    ),
+                    verticalMargin12
                   ],
                   Text('Current Listings', style: TextStyles.boldN90014,),
                   verticalMargin16,
