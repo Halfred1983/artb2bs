@@ -56,6 +56,10 @@ class PhotoCubit extends Cubit<PhotoState> {
     }
   }
 
+  void loadArtwork(Artwork artwork) {
+    this.artwork = artwork;
+  }
+
   void chooseName(String name) {
     artwork = artwork.copyWith(name: name);
     emit(ArtworkUpdatedState(artwork));
@@ -164,11 +168,86 @@ class PhotoCubit extends Cubit<PhotoState> {
     emit(LoadedState(user));
   }
 
-  Future<void> deleteArtwork(String imageUrl) async {
+  Future<void> updateArtwork(User user, Artwork artwork, Collection collection) async {
+    // update artwork in the collection with the new artwork
+    final updatedArtworks = collection.artworks
+      ..removeWhere((element) => element.url == artwork.url)
+      ..add(artwork);
+
+    // update the collection with the new list of artworks
+    final updatedCollection = Collection(name: collection.name, collectionVibes:
+    collection.collectionVibes, artworks: updatedArtworks);
+
+    // update the user's collections
+    final updatedCollections = List.of(user.artInfo!.collections)
+      ..removeWhere((c) => c.name == collection.name)
+      ..add(updatedCollection);
+
+    // update the user with the new collections
+    final updatedUser = user.copyWith(
+      artInfo: user.artInfo!.copyWith(collections: updatedCollections),
+    );
+
+    // save the updated user to the database
+    await databaseService.updateUser(user: updatedUser);
+
+    // emit the updated state
+    emit(ArtworkUpdatedState(artwork));
+  }
+
+
+  Future<void> deleteArtwork(Artwork artwork, Collection collection) async {
     final User user = state.props[0] as User;
-    // Update the user in the database by removing the artwork
-    databaseService.updateUser(user: user);
-    await storageService.deletePhoto(imageUrl: imageUrl);
+
+    // Remove the artwork from the collection
+    final updatedArtworks = List.of(collection.artworks)
+      ..removeWhere((element) => element.name == artwork.name);
+
+    // Update the collection with the new list of artworks
+    final updatedCollection = collection.copyWith(artworks: updatedArtworks);
+
+    // Update the user's collections
+    final updatedCollections = List.of(user.artInfo!.collections)
+      ..removeWhere((c) => c.name == collection.name)
+      ..add(updatedCollection);
+
+    // Update the user with the new collections
+    final updatedUser = user.copyWith(
+      artInfo: user.artInfo!.copyWith(collections: updatedCollections),
+    );
+
+    // Save the updated user to the database
+    await databaseService.updateUser(user: updatedUser);
+
+    // Delete the artwork photo from storage
+    await storageService.deletePhoto(imageUrl: artwork.url!);
+
+    // Emit the updated state
+    emit(LoadedState(updatedUser));
+  }
+
+  Future<void> deleteCollection(Collection collection) async {
+    final User user = state.props[0] as User;
+
+    //delete photos from storage
+    collection.artworks.forEach((element) async {
+      await storageService.deletePhoto(imageUrl: element.url!);
+    });
+
+    // Update the user's collections
+    final updatedCollections = List.of(user.artInfo!.collections)
+      ..removeWhere((c) => c.name == collection.name);
+
+    // Update the user with the new collections
+    final updatedUser = user.copyWith(
+      artInfo: user.artInfo!.copyWith(collections: updatedCollections),
+    );
+
+    // Save the updated user to the database
+    await databaseService.updateUser(user: updatedUser);
+
+    // Emit the updated state
+    emit(LoadedState(updatedUser));
   }
 
   Future<void> deletePhoto(String imageUrl) async {

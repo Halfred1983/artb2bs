@@ -59,8 +59,13 @@ class PhotoDetails extends StatelessWidget {
                         icon: const Icon(Icons.more_vert),
                         onSelected: (item) => handleClick(item, context),
                         itemBuilder: (context) => [
-                          const PopupMenuItem<int>(value: 0, child: Text('Delete')),
-                          // const PopupMenuItem<int>(value: 1, child: Text('Edit')),
+                          const PopupMenuItem<int>(
+                            value: 0,
+                            child: ListTile(
+                              leading: Icon(Icons.delete, color: Colors.black),
+                              title: Text('Delete'),
+                            ),
+                          ),
                         ],
                       ),
                     ] : [],

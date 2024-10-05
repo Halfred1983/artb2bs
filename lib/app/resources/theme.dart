@@ -58,6 +58,7 @@ class AppTheme {
     return ThemeData(
         primaryColor: primaryColor,
         canvasColor: Colors.white,
+        cardColor: Colors.white, // Set the background color to white
         fontFamily: 'OpenSans',
         visualDensity: VisualDensity.adaptivePlatformDensity,
         scaffoldBackgroundColor: backgroundColor,

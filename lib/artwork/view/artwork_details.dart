@@ -1,3 +1,5 @@
+import 'package:artb2b/photo/view/artwork_edit_page.dart';
+import 'package:artb2b/widgets/custom_dialog.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,7 @@ import '../../photo/cubit/photo_state.dart';
 import '../../utils/common.dart';
 
 class ArtworkDetails extends StatelessWidget {
-  ArtworkDetails({super.key, required this.artwork, this.isOwner = false});
+  ArtworkDetails({super.key, required this.artwork, this.isOwner = false, required this.collection});
 
   final FirebaseAuthService authService = locator<FirebaseAuthService>();
   final FirestoreDatabaseService databaseService = locator<FirestoreDatabaseService>();
@@ -21,6 +23,7 @@ class ArtworkDetails extends StatelessWidget {
 
 
   final Artwork artwork;
+  final Collection collection;
   final bool isOwner;
 
 
@@ -30,7 +33,12 @@ class ArtworkDetails extends StatelessWidget {
         _showAlertDialog(context);
         break;
       case 1:
-        break;
+    Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => ArtworkEditPage(artwork: artwork,
+        collection: collection)),
+    );
+    break;
     }
   }
 
@@ -56,11 +64,24 @@ class ArtworkDetails extends StatelessWidget {
                     ),
                     actions: isOwner == true ? [
                       PopupMenuButton<int>(
+                        color: AppTheme.white,
                         icon: const Icon(Icons.more_vert),
                         onSelected: (item) => handleClick(item, context),
-                        itemBuilder: (context) => [
-                          const PopupMenuItem<int>(value: 0, child: Text('Delete')),
-                          const PopupMenuItem<int>(value: 1, child: Text('Edit')),
+                        itemBuilder: (context) => const [
+                          PopupMenuItem<int>(
+                            value: 0,
+                            child: ListTile(
+                              leading: Icon(Icons.delete, color: Colors.black),
+                              title: Text('Delete'),
+                            ),
+                          ),
+                          PopupMenuItem<int>(
+                            value: 1,
+                            child: ListTile(
+                              leading: Icon(Icons.edit, color: Colors.black),
+                              title: Text('Edit'),
+                            ),
+                          ),
                         ] ,
                       ),
                     ] : [],
@@ -139,47 +160,36 @@ class ArtworkDetails extends StatelessWidget {
         builder: (_) {
           return BlocProvider.value(
               value: context.read<PhotoCubit>(),
-              child: AlertDialog( // <-- SEE HERE
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                title: const Center(child:Text('Confirm delete ?')),
-                content: SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                            text: 'Tap OK to delete your artwork:\n\n',
-                            style: TextStyles.semiBoldAccent14,
-                            children: <TextSpan>[
-                              TextSpan(text: artwork.name,
-                                style:TextStyles.semiBoldAccent14,
-                              ),
-                            ]
+              child: CustomAlertDialog( //
+                type: AlertType.confirmation,// <-- SEE HERE
+                title: 'Confirm delete ?',
+                content: 'Tap OK to delete your artwork:\n\n${artwork.name}',
+                actions: <Widget>[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: InkWell(
+                          child: Text('Cancel', style: TextStyles.regularAccent14.copyWith(
+                              decoration: TextDecoration.underline
+                          ),),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                      horizontalMargin24,
+                      Flexible(
+                        child: TextButton(
+                          child: const Text('OK'),
+                          onPressed: () async {
+                            await context.read<PhotoCubit>().deleteArtwork(artwork, collection);
+                            Navigator.of(context)..pop()..pop();
+                          },
                         ),
                       ),
                     ],
-                  ),
-                ),
-                actionsAlignment: MainAxisAlignment.center,
-                actions: <Widget>[
-                  TextButton(
-                    child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
-                        decoration: TextDecoration.underline
-                    ),),
-                    onPressed: () {
-                      context.read<PhotoCubit>().deleteArtwork(artwork.url!);
-                      Navigator.of(context)..pop()..pop();
-                    },
-                  ),
-                  TextButton(
-                    child: Text('Cancel', style: TextStyles.semiBoldAccent14.copyWith(
-                        decoration: TextDecoration.underline
-                    ),),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
                   ),
                 ],
               )

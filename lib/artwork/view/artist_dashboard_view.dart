@@ -251,7 +251,7 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                                       ),
                                                       verticalMargin8,
                                                       Text(collection.name!, style: TextStyles.boldN90017,),
-                                                      Text(collection.collectionVibes!, style: TextStyles.semiBoldN90014,
+                                                      Text(collection.collectionVibes != null ? collection.collectionVibes! : '', style: TextStyles.semiBoldN90014,
                                                         maxLines: 1, // Set the maximum number of lines to display
                                                         overflow: TextOverflow.ellipsis,),
 

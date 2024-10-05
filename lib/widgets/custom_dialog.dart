@@ -50,6 +50,8 @@ class CustomAlertDialog extends StatelessWidget {
       ),
       content: Text(content, textAlign: TextAlign.center, style: TextStyle(fontSize: 16)),
       actions: actions,
+      actionsAlignment: MainAxisAlignment.center,
+
       shadowColor: Colors.black,
       elevation: 24,
     );
