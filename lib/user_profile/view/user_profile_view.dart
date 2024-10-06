@@ -276,7 +276,7 @@ class _UserProfileViewState extends State<UserProfileView> {
 
   Widget _buildUserSettings(User user) {
     final List<Map<String, dynamic>> tileData = [
-      {'title': 'Personal Data', 'icon': Icons.person, 'targetPage': HostVenueInfoPage()},
+      // {'title': 'Personal Data', 'icon': Icons.person, 'targetPage': HostVenueInfoPage()},
       // {'title': 'Booking History', 'icon': Icons.history, 'targetPage': BookingHistory(user: user)},
       if (user.userInfo!.userType != UserType.artist)
         {'title': 'Payout History', 'icon': Icons.payment, 'targetPage': PayoutHistory(user: user)},
