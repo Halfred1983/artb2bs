@@ -27,7 +27,10 @@ class HomePage extends StatelessWidget {
           databaseService: databaseService,
           userId: authService.getUser().id,
         ),
-        child:  HomeView(index: index ?? 0),
+        child:  PopScope(
+            canPop : false,
+            child:HomeView(index: index ?? 0)
+        ),
       );
   }
 

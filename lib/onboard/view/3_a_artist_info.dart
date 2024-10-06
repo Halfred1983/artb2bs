@@ -1,3 +1,5 @@
+import 'package:artb2b/home/view/home_page.dart';
+import 'package:artb2b/home/view/home_view.dart';
 import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/onboard/cubit/onboarding_state.dart';
 import 'package:auth_service/auth.dart';
@@ -183,7 +185,10 @@ class _ArtistInfoViewState extends State<ArtistInfoView> {
                     }
                     else {
                       await context.read<OnboardingCubit>().save(user!);
-                      Navigator.of(context)..pop();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomePage(index: 2,)), // Replace NewPage with the actual class of your new page
+                      );
                     }
 
                   }
