@@ -129,8 +129,9 @@ class _SelectPhotoViewState extends State<SelectPhotoView> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    PhotoUploadPage()),
+                                                    PhotoUploadPage(isOnboarding: widget.isOnboarding)),
                                           );
+
                                           context.read<OnboardingCubit>().getUser(_user!.id);
                                         }
                                     ),
@@ -139,7 +140,8 @@ class _SelectPhotoViewState extends State<SelectPhotoView> {
                                 return InkWell(
                                   onTap: () => Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => PhotoDetails(photo: _user!.photos![index - 1], isOwner: true)),
+                                    MaterialPageRoute(builder: (context) => PhotoDetails(photo: _user!.photos![index - 1],
+                                        isOwner: true, isOnboarding: widget.isOnboarding)),
                                   ),
                                   child: Stack(
                                     children: [
