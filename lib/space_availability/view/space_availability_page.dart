@@ -460,55 +460,63 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
   }
 
   Widget getExistingUnavailableDateList(User user) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: _unavailableSpacesList.length,
-      itemBuilder: (context, index) {
-        _unavailableSpacesList.sort((a, b) => a.from!.compareTo(b.from!));
-        return Column(
-          children: [
-            Text("Your blocked spaces",
-              style: TextStyles.semiBoldN90017,),
-            verticalMargin12,
-            Padding(
+    if (_unavailableSpacesList.isEmpty) {
+      return Container(); // Return an empty container if the list is empty
+    }
+
+    List<Widget> columns = [
+      Text(
+        "Your blocked spaces",
+        style: TextStyles.semiBoldN90017,
+      ),
+      verticalMargin12,
+    ];
+
+    _unavailableSpacesList.sort((a, b) => a.from!.compareTo(b.from!));
+
+    return Column(
+      children: [
+        ...columns,
+        ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: _unavailableSpacesList.length,
+          itemBuilder: (context, index) {
+            return Padding(
               padding: verticalPadding12,
               child: CommonCard(
                 child: ListTile(
                   title: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '${_unavailableSpacesList[index].spaces!} blocked spaces',
-                              style: TextStyles
-                                  .semiBoldN90014,),
-
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              ' on ',
-                              style: TextStyles
-                                  .semiBoldN90014,),
-                            Text(
-                              DateFormat('d MMM').format(
-                                  _unavailableSpacesList[index].from!),
-                              style: TextStyles
-                                  .semiBoldN90014,),
-                            verticalMargin12,
-                            Text(' - ', style: TextStyles
-                                .regularN90014,),
-                            Text(DateFormat('d MMM').format(
-                                _unavailableSpacesList[index].to!),
-                              style: TextStyles
-                                  .semiBoldN90014,),
-                          ],
-                        )
-                      ]
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            '${_unavailableSpacesList[index].spaces!} blocked spaces',
+                            style: TextStyles.semiBoldN90014,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            ' on ',
+                            style: TextStyles.semiBoldN90014,
+                          ),
+                          Text(
+                            DateFormat('d MMM').format(_unavailableSpacesList[index].from!),
+                            style: TextStyles.semiBoldN90014,
+                          ),
+                          verticalMargin12,
+                          Text(' - ', style: TextStyles.regularN90014),
+                          Text(
+                            DateFormat('d MMM').format(_unavailableSpacesList[index].to!),
+                            style: TextStyles.semiBoldN90014,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
@@ -518,10 +526,10 @@ class _SpaceAvailabilityViewState extends State<SpaceAvailabilityView> {
                   ),
                 ),
               ),
-            ),
-          ],
-        );
-      },
+            );
+          },
+        ),
+      ],
     );
   }
 

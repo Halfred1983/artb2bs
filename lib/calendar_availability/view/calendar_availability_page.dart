@@ -348,42 +348,49 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
 
 
   Widget getExistingUnavailableDateList(User user) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: _unavailableList.length,
-      itemBuilder: (context, index) {
-        _unavailableList.sort((a, b) => a.from!.compareTo(b.from!));
-        return Column(
-          children: [
-            Text("Your blocked dates",
-              style: TextStyles.semiBoldN90017,),
-            verticalMargin12,
-            Padding(
+    if (_unavailableList.isEmpty) {
+      return Container(); // Return an empty container if the list is empty
+    }
+
+    List<Widget> columns = [
+      Text(
+        "Your blocked dates",
+        style: TextStyles.semiBoldN90017,
+      ),
+      verticalMargin12,
+    ];
+
+    _unavailableList.sort((a, b) => a.from!.compareTo(b.from!));
+
+    return Column(
+      children: [
+        ...columns,
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: _unavailableList.length,
+          itemBuilder: (context, index) {
+            return Padding(
               padding: verticalPadding12,
               child: CommonCard(
                 child: ListTile(
-                  // padding: horizontalPadding16,
-                  // width: double.infinity,
                   title: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              DateFormat('d MMM').format(
-                                  _unavailableList[index].from!),
-                              style: TextStyles
-                                  .semiBoldN90014,),
-                            verticalMargin12,
-                            Text(' - ', style: TextStyles
-                                .regularN90014,),
-                            Text(DateFormat('d MMM').format(
-                                _unavailableList[index].to!),
-                              style: TextStyles
-                                  .semiBoldN90014,),
-                          ],
-                        )
-                      ]
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            DateFormat('d MMM').format(_unavailableList[index].from!),
+                            style: TextStyles.semiBoldN90014,
+                          ),
+                          verticalMargin12,
+                          Text(' - ', style: TextStyles.regularN90014),
+                          Text(
+                            DateFormat('d MMM').format(_unavailableList[index].to!),
+                            style: TextStyles.semiBoldN90014,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                   trailing: IconButton(
                     icon: const Icon(Icons.delete),
@@ -393,13 +400,12 @@ class _CalendarAvailabilityViewState extends State<CalendarAvailabilityView> {
                   ),
                 ),
               ),
-            ),
-          ],
-        );
-      },
+            );
+          },
+        ),
+      ],
     );
   }
-
 
   void removeUnavailableDate(User user, Unavailable unavailable) {
     setState(() {

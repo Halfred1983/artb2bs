@@ -1,21 +1,19 @@
 import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/onboard/cubit/onboarding_state.dart';
-import 'package:artb2b/onboard/view/4_venue_address.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
 import '../../host/view/host_setting_page.dart';
 import '../../injection.dart';
 import '../../utils/common.dart';
-import '../../utils/user_utils.dart';
 import '../../widgets/dot_indicator.dart';
 import '../../widgets/dropdown_box.dart';
 import '../../widgets/loading_screen.dart';
-import '../../widgets/tags.dart';
 import '4_a_artist_address.dart';
 
 
@@ -58,6 +56,7 @@ class _ArtistInfoViewState extends State<ArtistInfoView> {
   String _artStyle = 'Art Style';
   String _bio = '';
   String _artistName = '';
+  SharedPreferences prefs = locator.get<SharedPreferences>();
 
   final List<String> _artStyles = ['Art Style'] + ArtStyle.values.map((style) => style.toString().split('.').last.capitalize()).toList();
 
@@ -75,8 +74,9 @@ class _ArtistInfoViewState extends State<ArtistInfoView> {
           if(!widget.isOnboarding) {
             _artistName = user!.artInfo!.artistName!;
             _artistController.text = _artistName;
-            _artStyle = user.artInfo!.artStyle.toString().capitalize()!;
-            _bio = user.artInfo!.biography!;
+            _artStyle = user.artInfo!.artStyle.toString().split('.').last.capitalize();
+            _biotController.text = user.artInfo!.biography!;
+            _bio = _biotController.text;
           }
         }
         return Scaffold(
@@ -127,7 +127,7 @@ class _ArtistInfoViewState extends State<ArtistInfoView> {
                     Text('Primary art style', style: TextStyles.boldN90016),
                     verticalMargin4,
                     DropdownBox(
-                      items: _artStyles,
+                      items:  _artStyles,
                       selectedItem: _artStyle ?? 'Art Style',
                       onChanged: (value) {
                         if(value != null) {
@@ -171,7 +171,7 @@ class _ArtistInfoViewState extends State<ArtistInfoView> {
             child: FloatingActionButton(
                 backgroundColor:  _canContinue() ? AppTheme.n900 : AppTheme.disabledButton,
                 foregroundColor: _canContinue() ? AppTheme.primaryColor : AppTheme.n900,
-                onPressed: () {
+                onPressed: () async {
                   if(_canContinue()) {
 
                     if(widget.isOnboarding) {
@@ -182,12 +182,8 @@ class _ArtistInfoViewState extends State<ArtistInfoView> {
                       );
                     }
                     else {
-                      context.read<OnboardingCubit>().save(user!);
-                      Navigator.of(context)..pop()..pop()..pop();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => HostSettingPage()),
-                      );
+                      await context.read<OnboardingCubit>().save(user!);
+                      Navigator.of(context)..pop();
                     }
 
                   }
@@ -195,7 +191,7 @@ class _ArtistInfoViewState extends State<ArtistInfoView> {
                     return;
                   }
                 },
-                child: const Text('Continue',)
+                child: Text(widget.isOnboarding ? 'Continue' : 'Save',)
             ),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation

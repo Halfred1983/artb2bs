@@ -9,8 +9,9 @@ import 'artist_dashboard_view.dart';
 
 class ArtistDashboardPage extends StatelessWidget {
   final String? userId;
+  int? pastExhibitions;
 
-  ArtistDashboardPage({this.userId});
+  ArtistDashboardPage({this.userId, this.pastExhibitions});
 
   static Route<void> route({String? userId}) {
     return MaterialPageRoute<void>(builder: (_) => ArtistDashboardPage(userId: userId));
@@ -32,7 +33,7 @@ class ArtistDashboardPage extends StatelessWidget {
         databaseService: databaseService,
         userId: effectiveUserId,
       ),
-      child: ArtistDashboardView(isViewer: isViewer),
+      child: ArtistDashboardView(isViewer: isViewer, pastExhibitions:pastExhibitions),
     );
   }
 }

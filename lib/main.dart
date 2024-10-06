@@ -102,7 +102,7 @@ class _Artb2bState extends State<Artb2b> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               // Show loading indicator while config is being loaded
-              return MaterialApp(
+              return const MaterialApp(
                 home: Scaffold(
                   body: Center(
                     child: CircularProgressIndicator(),
@@ -111,7 +111,7 @@ class _Artb2bState extends State<Artb2b> {
               );
             } else if (snapshot.hasError) {
               // Handle any errors that occurred during the config fetch
-              return MaterialApp(
+              return const MaterialApp(
                 home: Scaffold(
                   body: Center(
                     child: Text('Error loading configuration.'),

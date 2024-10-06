@@ -1,6 +1,7 @@
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/artwork/cubit/artist_cubit.dart';
 import 'package:artb2b/artwork/cubit/artist_state.dart';
+import 'package:artb2b/onboard/view/3_a_artist_info.dart';
 import 'package:artb2b/widgets/loading_screen.dart';
 import 'package:artb2b/widgets/photo_grid.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -17,8 +18,9 @@ import '../../user_profile/view/user_profile_page.dart';
 import '../../utils/common.dart';
 
 class ArtistDashboardView extends StatefulWidget {
-  ArtistDashboardView({super.key, required this.isViewer});
+  ArtistDashboardView({super.key, required this.isViewer, this.pastExhibitions});
 
+  int? pastExhibitions;
   bool isViewer;
   @override
   State<ArtistDashboardView> createState() => _ArtistDashboardViewState();
@@ -105,7 +107,7 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                             // Add your action here
                                             Navigator.push(
                                               context,
-                                              MaterialPageRoute(builder: (context) => UserProfilePage()),
+                                              MaterialPageRoute(builder: (context) => ArtistInfoPage(isOnboarding: false,)),
                                             );
                                           },
                                           child: Container(
@@ -123,7 +125,7 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                   verticalMargin24,
                                   Text(user!.artInfo!.biography!, style: TextStyles.regularN90014, textAlign: TextAlign.justify,),
                                   verticalMargin24,
-                                  Text('Main technique: ${user!.artInfo!.artStyle!.name.capitalize()}', style: TextStyles.regularN90014, textAlign: TextAlign.justify,),
+                                  Text('Main technique: ${user!.artInfo!.artStyle!.name.capitalize()}', style: TextStyles.semiBoldN10014, textAlign: TextAlign.justify,),
                                   verticalMargin24,
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -158,7 +160,8 @@ class _ArtistDashboardViewState extends State<ArtistDashboardView> {
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(user!.artInfo!.collections.length.toString(), style: TextStyles.boldN90024,),
+                                            Text(widget.pastExhibitions != null ?
+                                            widget.pastExhibitions .toString() : '0', style: TextStyles.boldN90024,),
                                             verticalMargin4,
                                             Text('Exhibitions', style: TextStyles.regularN90014.copyWith(color: AppTheme.n300),),
                                           ],

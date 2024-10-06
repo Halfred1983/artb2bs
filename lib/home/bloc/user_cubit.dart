@@ -17,6 +17,8 @@ class UserCubit extends Cubit<UserState> {
     try {
       emit(LoadingState());
       int pendingRequests = 0;
+      int pastExhibitions = 0;
+
       final user = await databaseService.getUser(userId: userId);
       if(user!.userStatus != null && user.userInfo != null) {
         databaseService.findBookingsByUserStream(user!).listen((bookings) {
@@ -24,6 +26,11 @@ class UserCubit extends Cubit<UserState> {
           pendingRequests = bookings
               .where((booking) =>
           booking.bookingStatus == BookingStatus.pending)
+              .length;
+
+          pastExhibitions = bookings
+              .where((booking) => booking.bookingStatus == BookingStatus.accepted
+              && booking.to!.isBefore(DateTime.now()))
               .length;
 
           List<Booking> nextBookings = bookings
@@ -38,7 +45,8 @@ class UserCubit extends Cubit<UserState> {
           }
 
           if(user.userInfo!.userType == UserType.gallery) {
-            emit(LoadedState(user, pendingRequests: pendingRequests, nextExhibition: nextExhibition));
+            emit(LoadedState(user, pendingRequests: pendingRequests,
+                nextExhibition: nextExhibition, pastExhibitions: pastExhibitions));
           }
           else {
             emit(LoadedState(user, pendingRequests: 0, nextExhibition: nextExhibition));

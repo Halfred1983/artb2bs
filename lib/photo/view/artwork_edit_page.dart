@@ -14,6 +14,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:storage_service/storage.dart';
 
 import '../../app/resources/styles.dart';
@@ -79,7 +80,17 @@ class _ArtworkEditViewState extends State<ArtworkEditView> {
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _widthController = TextEditingController();
   Artwork artwork = Artwork.empty();
+  SharedPreferences prefs = locator.get<SharedPreferences>();
 
+  static List<String> _techniques = [];
+  static List<String> _artworkTypes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _techniques = prefs.getStringList('Techniques')!;
+    _artworkTypes = prefs.getStringList('ArtworkTypes')!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -354,7 +365,7 @@ class _ArtworkEditViewState extends State<ArtworkEditView> {
     return
         artwork.name != null && artwork.name!.isNotEmpty &&
         artwork.type != null && artwork.type!.isNotEmpty &&
-          _types.contains(artwork.type!) &&
+          _artworkTypes.contains(artwork.type!) &&
         artwork.technique != null && artwork.technique!.isNotEmpty &&
           _techniques.contains(artwork.technique!) &&
         artwork.year != null && artwork.year!.isNotEmpty &&
@@ -363,41 +374,6 @@ class _ArtworkEditViewState extends State<ArtworkEditView> {
         artwork.width != null && artwork.width!.isNotEmpty;
   }
 
-  static final List<String> _techniques = [
-    'acrylic painting',
-    'action painting',
-    'aerial perspective',
-    'anamorphosis',
-    'camaieu',
-    'casein painting',
-    'chiaroscuro',
-    'divisionism',
-    'easel painting',
-    'encaustic painting',
-    'foreshortening',
-    'fresco painting',
-    'gouache',
-    'graffiti',
-    'grisaille',
-    'impasto',
-    'miniature painting',
-    'mural',
-    'oil painting',
-    'panel painting',
-    'panorama',
-    'perspective',
-    'plein-air painting',
-    'sand painting',
-    'scroll painting',
-    'sfumato',
-    'sgraffito',
-    'sotto in su',
-    'tachism',
-    'tempera painting',
-    'tenebrism',
-    'tromp l’oeil',
-  ];
-
   static List<String> _getTechniques(String query) {
     List<String> matches = List.empty(growable: true);
     matches.addAll(_techniques);
@@ -405,24 +381,10 @@ class _ArtworkEditViewState extends State<ArtworkEditView> {
     return matches;
   }
 
-  static final List<String> _types = [
-    'Portrait',
-    'Landscape',
-    'Still life',
-    'Abstract',
-    'Surrealism',
-    'Impressionism',
-    'Expressionism',
-    'Realism',
-    'History painting',
-    'Genre painting',
-  ];
-
   static List<String> _getTypes(String query) {
     List<String> matches = List.empty(growable: true);
-    matches.addAll(_types);
+    matches.addAll(_artworkTypes);
     matches.retainWhere((s) => s.toLowerCase().contains(query.toLowerCase()));
     return matches;
   }
-
 }

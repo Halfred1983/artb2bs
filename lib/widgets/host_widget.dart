@@ -1,7 +1,6 @@
 import 'package:artb2b/utils/common.dart';
 import 'package:artb2b/widgets/audience.dart';
 import 'package:database_service/database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 

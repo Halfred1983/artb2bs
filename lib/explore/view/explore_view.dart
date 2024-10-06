@@ -48,11 +48,6 @@ class _ExploreViewState extends State<ExploreView> {
     super.initState();
     _venueCategories = prefs.getStringList('VenueCategory')!;
     _venueVibes = prefs.getStringList('Vibes')!;
-    // firestoreDatabaseService.getHostsStream().listen((event) {
-    //   _filteredStreamController.add(event);
-    //   currentIndices = List<int>.generate(event.length, (index) => 0);
-    // });
-    // _searchController.addListener(_filterUsers);
   }
 
   @override

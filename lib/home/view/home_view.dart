@@ -61,6 +61,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     User? user;
     int? pendingRequests;
+    int? pastExhibitions;
     String? nextExhibition;
     return  BlocListener<NotificationBloc, NotificationState>(
         listenWhen: (previous, current) {
@@ -96,6 +97,7 @@ class _HomeViewState extends State<HomeView> {
                 user = state.user;
                 pendingRequests = state.pendingRequests;
                 nextExhibition = state.nextExhibition;
+                pastExhibitions = state.pastExhibitions;
 
                 //ONBOARDING FOR NEW USERS
                 if ( user!.userStatus == null || user!.userStatus == UserStatus.initialised ) {
@@ -140,14 +142,15 @@ class _HomeViewState extends State<HomeView> {
                   widget = HomeVenue(user: user!, nextExhibition: nextExhibition);
                 }
                 else {
-                  widget = HomeList(user: user!, nextExhibition: nextExhibition);
+                  widget = HomeList(user: user!,
+                      nextExhibition: nextExhibition );
                 }
 
                 if(user!.userInfo!.userType == UserType.artist) {
                   _widgetOptions = <Widget>[
                     widget,
                     ExplorePage(),
-                    ArtistDashboardPage(),
+                    ArtistDashboardPage(pastExhibitions:pastExhibitions),
                     BookingRequestPage(user: user!),
                     ExhibitionPage(),
                     // UserProfilePage(),
