@@ -39,7 +39,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
   String imageUrl = '';
   User? user;
   double _progress = 0;
-
+  bool _loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
         }
         if (state is PhotoUploadedState) {
           WidgetsBinding.instance.addPostFrameCallback((_) =>
-              _showAlertDialog(state.photo.description!));
+              _showAlertDialog(state.photo.description!, widget.isOnboarding));
         }
         if (state is LoadedState) {
           user = state.user;
@@ -191,7 +191,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
             bottomNavigationBar: Container(
                 padding: buttonPadding,
                 child: ElevatedButton(
-                    onPressed: _imageFile != null ? ()  {
+                    onPressed: _imageFile != null && !_loading ? ()  {
                       final uploadTask = context.read<PhotoCubit>()
                           .storePhoto(
                           user!.id + '/photos/' + path.basename(_imageFile!.path),
@@ -202,6 +202,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                           TaskSnapshot taskSnapshot) async {
                         switch (taskSnapshot.state) {
                           case TaskState.running:
+                            _loading = true;
                             _progress =
                                 100.0 * (taskSnapshot.bytesTransferred /
                                     taskSnapshot.totalBytes);
@@ -216,12 +217,14 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                             print("Upload is paused.");
                             break;
                           case TaskState.canceled:
+                            _loading = false;
                             print("Upload was canceled");
                             break;
                           case TaskState.error:
                           // Handle unsuccessful uploads
                             break;
                           case TaskState.success:
+                            _loading = false;
                             _downloadUrl =
                             await taskSnapshot.ref.getDownloadURL();
                             if (context.mounted) {
@@ -305,7 +308,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
   }
 
 
-  Future<void> _showAlertDialog(String name) async {
+  Future<void> _showAlertDialog(String name, bool isOnboarding) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -324,7 +327,7 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                   onPressed: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => VenuePhotoPage(isOnboarding: widget.isOnboarding,)), // Replace NewPage with the actual class of your new page
+                      MaterialPageRoute(builder: (context) => VenuePhotoPage(isOnboarding: isOnboarding,)), // Replace NewPage with the actual class of your new page
                     );
                   },
                 ),

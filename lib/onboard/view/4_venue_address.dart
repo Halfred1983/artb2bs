@@ -13,6 +13,7 @@ import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
 import '../../host/view/host_setting_page.dart';
 import '../../injection.dart';
+import '../../main.dart';
 import '../../utils/bitmap_descriptor_utils.dart';
 import '../../utils/common.dart';
 import '../../widgets/loading_screen.dart';
@@ -62,23 +63,12 @@ class _SelectAddressViewState extends State<SelectAddressView> {
 
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
-  late BitmapDescriptor markerGalleryIcon;
   LatLng _initialCoordinates = LatLng(51.4975, 0.2000);
-  String _mapStyle = '';
 
   @override
   void initState() {
     super.initState();
 
-    rootBundle.loadString('assets/googleMapsStyle.json').then((string) {
-      _mapStyle = string;
-    });
-
-    BitmapDescriptorHelper.getBitmapDescriptorFromSvgAsset(
-        'assets/icons/location.svg'
-    ).then((onValue) {
-      markerGalleryIcon = onValue;
-    });
   }
 
   @override
@@ -241,7 +231,7 @@ class _SelectAddressViewState extends State<SelectAddressView> {
       compassEnabled: false,
       onMapCreated: (controller) {
         _mapController = controller;
-        controller.setMapStyle(_mapStyle);
+        controller.setMapStyle(mapStyle);
       },
       initialCameraPosition: CameraPosition(
         target: _selectedLocation ?? _initialCoordinates, // Default to (0, 0) if no location is chosen

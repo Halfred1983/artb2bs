@@ -14,6 +14,7 @@ import 'package:rxdart/rxdart.dart';
 import '../app/resources/styles.dart';
 import '../booking/view/booking_page.dart';
 import '../injection.dart';
+import '../main.dart';
 import 'host_list_card_big.dart';
 
 class MapView extends StatefulWidget {
@@ -38,19 +39,9 @@ class _MapViewState extends State<MapView> {
 
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
-  late Future<BitmapDescriptor> markerGalleryIconFuture;
-
   @override
   void initState() {
     super.initState();
-
-    rootBundle.loadString('assets/googleMapsStyle.json').then((string) {
-      _mapStyle = string;
-    });
-
-    markerGalleryIconFuture = BitmapDescriptorHelper.getBitmapDescriptorFromSvgAsset(
-        'assets/icons/location.svg'
-    );
 
     usersStream = Stream.value(widget.hosts);
     _subscribeToUpdatedStream();
@@ -70,7 +61,7 @@ class _MapViewState extends State<MapView> {
 
   void _subscribeToUpdatedStream() {
     usersStream.listen((List<User> documentList) {
-      _updateMarkers(documentList);
+      _updateMarkersWithIcon(documentList);
     });
   }
 
@@ -93,55 +84,42 @@ class _MapViewState extends State<MapView> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<BitmapDescriptor>(
-      future: markerGalleryIconFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error loading map icon'));
-        } else {
-          final BitmapDescriptor markerGalleryIcon = snapshot.data!;
-          return GoogleMap(
-            gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
-              Factory<PanGestureRecognizer>(() => PanGestureRecognizer()),
-              Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()),
-              Factory<TapGestureRecognizer>(() => TapGestureRecognizer()),
-              Factory<VerticalDragGestureRecognizer>(() => VerticalDragGestureRecognizer()),
-            },
-            myLocationButtonEnabled: false,
-            zoomControlsEnabled: false,
-            zoomGesturesEnabled: true,
-            scrollGesturesEnabled: true,
-            mapToolbarEnabled: false,
-            rotateGesturesEnabled: false,
-            tiltGesturesEnabled: false,
-            myLocationEnabled: false,
-            mapType: MapType.normal,
-            compassEnabled: false,
-            onMapCreated: (GoogleMapController controller) {
-              _onMapCreated(controller);
-              _updateMarkersWithIcon(widget.hosts, markerGalleryIcon); // Add markers after icon is loaded
-            },
-            initialCameraPosition: CameraPosition(
-              target: LatLng(
-                widget.user.userInfo!.address!.location!.latitude,
-                widget.user.userInfo!.address!.location!.longitude,
-              ),
-              zoom: 12.0,
-            ),
-            markers: Set<Marker>.of(markers.values),
-          );
-        }
+    return GoogleMap(
+      gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
+        Factory<PanGestureRecognizer>(() => PanGestureRecognizer()),
+        Factory<ScaleGestureRecognizer>(() => ScaleGestureRecognizer()),
+        Factory<TapGestureRecognizer>(() => TapGestureRecognizer()),
+        Factory<VerticalDragGestureRecognizer>(() => VerticalDragGestureRecognizer()),
       },
+      myLocationButtonEnabled: false,
+      zoomControlsEnabled: false,
+      zoomGesturesEnabled: true,
+      scrollGesturesEnabled: true,
+      mapToolbarEnabled: false,
+      rotateGesturesEnabled: false,
+      tiltGesturesEnabled: false,
+      myLocationEnabled: false,
+      mapType: MapType.normal,
+      compassEnabled: false,
+      onMapCreated: (GoogleMapController controller) {
+        _onMapCreated(controller);
+        _updateMarkersWithIcon(widget.hosts); // Add markers after icon is loaded
+      },
+      initialCameraPosition: CameraPosition(
+        target: LatLng(
+          widget.user.userInfo!.address!.location!.latitude,
+          widget.user.userInfo!.address!.location!.longitude,
+        ),
+        zoom: 12.0,
+      ),
+      markers: Set<Marker>.of(markers.values),
     );
   }
 
-  String _mapStyle = '';
 
   void _onMapCreated(GoogleMapController controller) {
     _mapController.complete(controller);
-    controller.setMapStyle(_mapStyle);
+    controller.setMapStyle(mapStyle);
   }
 
   void _addMarker(User user, int index, BitmapDescriptor icon) {
@@ -166,19 +144,13 @@ class _MapViewState extends State<MapView> {
     }
   }
 
-  void _updateMarkers(List<User> documentList) {
-    markerGalleryIconFuture.then((icon) {
-      _updateMarkersWithIcon(documentList, icon);
-    });
-  }
-
-  void _updateMarkersWithIcon(List<User> documentList, BitmapDescriptor icon) {
+  void _updateMarkersWithIcon(List<User> documentList) {
     if(mounted) {
       setState(() {
         markers.clear();
         var index = 0;
         for (User user in documentList) {
-          _addMarker(user, index, icon);
+          _addMarker(user, index, markerGalleryIcon);
           index++;
         }
       });

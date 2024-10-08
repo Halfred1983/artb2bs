@@ -1,4 +1,5 @@
 import 'package:artb2b/home/bloc/user_state.dart';
+import 'package:artb2b/utils/common.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -35,13 +36,19 @@ class UserCubit extends Cubit<UserState> {
 
           List<Booking> nextBookings = bookings
               .where((booking) => booking.bookingStatus == BookingStatus.accepted
-              && booking.from!.isAfter(DateTime.now()))
+              && ( booking.from!.isAfter(DateTime.now()) || booking.from!.isSameDay(DateTime.now())))
               .toList();
 
           String nextExhibition = '';
           if (nextBookings.isNotEmpty) {
             nextBookings.sort((a, b) => a.from!.compareTo(b.from!));
-            nextExhibition = 'Your next exhibition is on ${DateFormat('EEE dd MMMM').format(nextBookings.first.from!)}, get ready!';
+
+            DateTime today = DateTime.now();
+              if (nextBookings.first.from!.isSameDay(today)) {
+                nextExhibition = 'today';
+              } else {
+                nextExhibition = DateFormat('EEE dd MMMM').format(nextBookings.first.from!);
+              }
           }
 
           if(user.userInfo!.userType == UserType.gallery) {

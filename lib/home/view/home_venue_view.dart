@@ -152,7 +152,24 @@ class _HomeVenueState extends State<HomeVenue> {
                       height: 60,
                       width: double.infinity,
                       child: Center(
-                        child: Text(widget.nextExhibition!, style: TextStyles.regularN90012,),
+                          child: Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Your next exhibition is on ',
+                                  style: TextStyles.regularN90012,
+                                ),
+                                TextSpan(
+                                  text: widget.nextExhibition, // Extract the date part dynamically
+                                  style: TextStyles.boldN90012, // Make the date bold
+                                ),
+                                TextSpan(
+                                  text: ', get ready!',
+                                  style: TextStyles.regularN90012,
+                                ),
+                              ],
+                            ),
+                          )
                       ),
                     ),
                     verticalMargin12

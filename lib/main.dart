@@ -1,4 +1,5 @@
 import 'package:artb2b/ui/routing/app_router.dart';
+import 'package:artb2b/utils/bitmap_descriptor_utils.dart';
 import 'package:artb2b/widgets/dismiss_keyboard.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:notification_service/notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,12 +19,18 @@ import 'injection.dart';
 import 'login/cubit/login_cubit.dart';
 import 'notification/bloc/notification_bloc.dart';
 
+late BitmapDescriptor markerGalleryIcon;
+late String mapStyle;
+
+
 void main() async {
   // debugPaintSizeEnabled=true;
 
   WidgetsFlutterBinding.ensureInitialized();
   Stripe.publishableKey = stripePublishableKey;
   await Stripe.instance.applySettings();
+  markerGalleryIcon = await BitmapDescriptorHelper.getBitmapDescriptorFromSvgAsset('assets/icons/location.svg');
+  mapStyle = await rootBundle.loadString('assets/googleMapsStyle.json');
 
   await configureDependencies();
   await SystemChrome.setPreferredOrientations([
