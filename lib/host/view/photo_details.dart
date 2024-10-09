@@ -148,10 +148,7 @@ class PhotoDetails extends StatelessWidget {
                           onPressed: () async {
                             await context.read<PhotoCubit>().deletePhoto(photo
                                 .url!);
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => VenuePhotoPage(isOnboarding: isOnboarding,)), // Replace NewPage with the actual class of your new page
-                            );
+                            Navigator.of(context)..pop()..pop();
                           },
                         ),
                       ),

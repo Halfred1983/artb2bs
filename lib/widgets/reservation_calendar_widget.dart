@@ -31,6 +31,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
 
   FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
   ValueNotifier<List<Booking>> _selectedEvents = ValueNotifier([]);
+  ValueNotifier<bool> _blockedEvents = ValueNotifier(false);
   Map<String, DateTimeRange> _bookingDateRange = {};
   List<Booking> _bookings = [];
   List<DateTime> _unavailableDates = [];
@@ -86,6 +87,7 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
   @override
   void dispose() {
     _selectedEvents.dispose();
+    _blockedEvents.dispose();
     super.dispose();
   }
 
@@ -112,6 +114,10 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
     return result;
   }
 
+  bool _isBlocked(DateTime day) {
+    return _unavailableDates.any((unavailableDate) => unavailableDate.isSameDay(day));
+  }
+
   Map<DateTime, String> retrieveUnavailableSpaces(List<UnavailableSpaces> unavailableDates) {
     Map<DateTime, String> unavailableDateList = {};
 
@@ -135,6 +141,9 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
       });
 
       _selectedEvents.value = _getBookingsForDay(selectedDay);
+      _blockedEvents.value = _isBlocked(selectedDay);
+
+
     }
   }
 
@@ -173,187 +182,202 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                     TableCalendar(
                       daysOfWeekHeight:50,
                       rowHeight: 64,
-                        availableGestures: AvailableGestures.none,//this single code will solve
-                        calendarBuilders: CalendarBuilders(
-                            selectedBuilder: (context, day, focusedDay) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  color: AppTheme.primaryColor,
-                                  border: Border.all(width: 0.4, color: Colors.grey),
-                                ),
-                                child: Center(
-                                  child: ClipOval(
-                                    // color: AppTheme.primaryColor,
-                                    child: Text(
-                                      day.day.toString(),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          defaultBuilder: (context, day, focusedDay) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(width: 0.4, color: Colors.grey),
-                              ),
-                              child: Center(
+                      availableGestures: AvailableGestures.none,//this single code will solve
+                      calendarBuilders: CalendarBuilders(
+                        selectedBuilder: (context, day, focusedDay) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: AppTheme.primaryColor,
+                              border: Border.all(width: 0.4, color: Colors.grey),
+                            ),
+                            child: Center(
+                              child: ClipOval(
+                                // color: AppTheme.primaryColor,
                                 child: Text(
                                   day.day.toString(),
                                 ),
                               ),
-                            );
-                          },
-                          outsideBuilder: (context, day, focusedDay) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(width: 0.4, color: Colors.grey),
+                            ),
+                          );
+                        },
+                        defaultBuilder: (context, day, focusedDay) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 0.4, color: Colors.grey),
+                            ),
+                            child: Center(
+                              child: Text(
+                                day.day.toString(),
                               ),
-                              child: Center(
-                                child: Text(
-                                  day.day.toString(),
-                                ),
+                            ),
+                          );
+                        },
+                        outsideBuilder: (context, day, focusedDay) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 0.4, color: Colors.grey),
+                            ),
+                            child: Center(
+                              child: Text(
+                                day.day.toString(),
                               ),
-                            );
-                          },
-                          rangeEndBuilder: (context, day, focusedDay) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(width: 0.4, color: Colors.grey),
+                            ),
+                          );
+                        },
+                        rangeEndBuilder: (context, day, focusedDay) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 0.4, color: Colors.grey),
+                            ),
+                            child: Center(
+                              child: Text(
+                                day.day.toString(),
                               ),
-                              child: Center(
-                                child: Text(
-                                  day.day.toString(),
-                                ),
+                            ),
+                          );
+                        },
+                        rangeStartBuilder: (context, day, focusedDay) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 0.4, color: Colors.grey),
+                            ),
+                            child: Center(
+                              child: Text(
+                                day.day.toString(),
                               ),
-                            );
-                          },
-                          rangeStartBuilder: (context, day, focusedDay) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(width: 0.4, color: Colors.grey),
+                            ),
+                          );
+                        },
+                        disabledBuilder: (context, day, focusedDay) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 0.4, color: Colors.grey),
+                            ),
+                            child: Center(
+                              child: Text(
+                                day.day.toString(),
                               ),
-                              child: Center(
-                                child: Text(
-                                  day.day.toString(),
-                                ),
+                            ),
+                          );
+                        },
+                        todayBuilder: (context, day, focusedDay) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 0.4, color: Colors.grey),
+                            ),
+                            child: Center(
+                              child: Text(
+                                day.day.toString(),
                               ),
-                            );
-                          },
-                          disabledBuilder: (context, day, focusedDay) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(width: 0.4, color: Colors.grey),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  day.day.toString(),
-                                ),
-                              ),
-                            );
-                          },
-                          todayBuilder: (context, day, focusedDay) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(width: 0.4, color: Colors.grey),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  day.day.toString(),
-                                ),
-                              ),
-                            );
-                          },
-                          markerBuilder: (BuildContext context, date, events) {
-                            if(_isLoading) {
-                              return const CalendarLoader();
+                            ),
+                          );
+                        },
+                        markerBuilder: (BuildContext context, date, events) {
+                          if(_isLoading) {
+                            return const CalendarLoader();
+                          }
+                          if(widget.user.userInfo!.userType == UserType.artist) {
+
+                            if (events.isEmpty) return const SizedBox();
+                            int bookedSpaces = 0;
+                            for(Object? e in events) {
+                              Booking b = e as Booking;
+                              bookedSpaces = bookedSpaces + int.parse(b.spaces!);
                             }
-                            if(widget.user.userInfo!.userType == UserType.artist) {
+                            return Container(
+                              margin: const EdgeInsets.only(top: 25),
+                              padding: const EdgeInsets.all(1),
+                              child: Text(bookedSpaces.toString(), style: TextStyles
+                                  .semiBoldAccent14),
+                            );
+                          }
+                          else {
+                            int freeSpaces = int.parse(widget.user.venueInfo!.spaces!);
 
-                              if (events.isEmpty) return const SizedBox();
-                              int bookedSpaces = 0;
-                              for(Object? e in events) {
-                                Booking b = e as Booking;
-                                bookedSpaces = bookedSpaces + int.parse(b.spaces!);
-                              }
-                              return Container(
-                                margin: const EdgeInsets.only(top: 25),
-                                padding: const EdgeInsets.all(1),
-                                child: Text(bookedSpaces.toString(), style: TextStyles
-                                    .semiBoldAccent14),
-                              );
+                            // if (events.isEmpty) {
+                            //   return Container(
+                            //     margin: const EdgeInsets.only(top: 40),
+                            //     padding: const EdgeInsets.all(1),
+                            //     child: Text(freeSpaces.toString(), style: TextStyles
+                            //         .semiBoldAccent14),
+                            //   );
+                            // }
+                            for(Object? e in events) {
+                              Booking b = e as Booking;
+                              freeSpaces = freeSpaces - int.parse(b.spaces!);
                             }
-                            else {
-                              int freeSpaces = int.parse(widget.user.venueInfo!.spaces!);
 
-                              // if (events.isEmpty) {
-                              //   return Container(
-                              //     margin: const EdgeInsets.only(top: 40),
-                              //     padding: const EdgeInsets.all(1),
-                              //     child: Text(freeSpaces.toString(), style: TextStyles
-                              //         .semiBoldAccent14),
-                              //   );
-                              // }
-                              for(Object? e in events) {
-                                Booking b = e as Booking;
-                                freeSpaces = freeSpaces - int.parse(b.spaces!);
+                            _unavailableDatesSpaces.forEach((day, spaces) {
+                              if (isSameDay(day, date)) {
+                                freeSpaces = freeSpaces - int.parse(spaces);
                               }
+                            });
 
-                              _unavailableDatesSpaces.forEach((day, spaces) {
+                            if (_unavailableDates.isNotEmpty) {
+                              for (var day in _unavailableDates) {
                                 if (isSameDay(day, date)) {
-                                  freeSpaces = freeSpaces - int.parse(spaces);
-                                }
-                              });
+                                  return Container(
+                                      height: 8,
+                                      width: 8,
+                                      margin: const EdgeInsets.only(bottom: 10),
+                                      // Adjust padding for better centering
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: AppTheme.d200, // Optional: Add a background color
+                                      )
+                                  );
+                                }}}
 
-                              return freeSpaces < int.parse(widget.user.venueInfo!.spaces!) ? Container(
-                                height: 8,
-                                width: 8,
-                                margin: const EdgeInsets.only(bottom: 10), // Adjust padding for better centering
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: AppTheme.accentColor, // Optional: Add a background color
-                                ),
-                              ) : Container();
-                            }
-                          },
-                        ),
-                        availableCalendarFormats: const {CalendarFormat.month: 'Month'},
-                        startingDayOfWeek: tc.StartingDayOfWeek.monday,
-                        rangeStartDay: _rangeStart,
-                        rangeEndDay: _rangeEnd,
-                        rangeSelectionMode: _rangeSelectionMode,
-                        onDaySelected: _onDaySelected,
-                        eventLoader: (day) {
-                          return _getBookingsForDay(day);
+                            return freeSpaces < int.parse(widget.user.venueInfo!.spaces!) ? Container(
+                              height: 8,
+                              width: 8,
+                              margin: const EdgeInsets.only(bottom: 10), // Adjust padding for better centering
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppTheme.accentColor, // Optional: Add a background color
+                              ),
+                            ) : Container();
+                          }
                         },
-                        locale: 'en_GB',
-                        firstDay: calculateFirstDay(),
-                        lastDay: DateTime.now().add(const Duration(days: 1000)),
-                        focusedDay: _focusedDay,
-                        calendarFormat: CalendarFormat.month,
-                        headerStyle: AppTheme.calendarHeaderStyle,
-                        calendarStyle: AppTheme.calendarStyle,
-                        daysOfWeekStyle: DaysOfWeekStyle(
-                          weekdayStyle: TextStyles.semiBoldN90012,
-                          weekendStyle: TextStyles.semiBoldN90012,
-                        ),
-                        selectedDayPredicate: (day) {
-                          return isSameDay(_selectedDay, day);
-                        },
-                        onPageChanged: (focusedDay) {
-                          _focusedDay = focusedDay;
-                        },
-                        enabledDayPredicate: (day) {
-                          if (_unavailableDates.isEmpty) return true;
-
-                          bool isEnabled = true;
-                          _unavailableDates.forEach((date) {
-                            if (isSameDay(day, date)) {
-                              isEnabled = false;
-                            }
-                          });
-
-                          return isEnabled;
-                        }
+                      ),
+                      availableCalendarFormats: const {CalendarFormat.month: 'Month'},
+                      startingDayOfWeek: tc.StartingDayOfWeek.monday,
+                      rangeStartDay: _rangeStart,
+                      rangeEndDay: _rangeEnd,
+                      rangeSelectionMode: _rangeSelectionMode,
+                      onDaySelected: _onDaySelected,
+                      eventLoader: (day) {
+                        return _getBookingsForDay(day);
+                      },
+                      locale: 'en_GB',
+                      firstDay: calculateFirstDay(),
+                      lastDay: DateTime.now().add(const Duration(days: 1000)),
+                      focusedDay: _focusedDay,
+                      calendarFormat: CalendarFormat.month,
+                      headerStyle: AppTheme.calendarHeaderStyle,
+                      calendarStyle: AppTheme.calendarStyle,
+                      daysOfWeekStyle: DaysOfWeekStyle(
+                        weekdayStyle: TextStyles.semiBoldN90012,
+                        weekendStyle: TextStyles.semiBoldN90012,
+                      ),
+                      selectedDayPredicate: (day) {
+                        return isSameDay(_selectedDay, day);
+                      },
+                      onPageChanged: (focusedDay) {
+                        _focusedDay = focusedDay;
+                      },
+                      // enabledDayPredicate: (day) {
+                      //   if (_unavailableDates.isEmpty) return true;
+                      //
+                      //   bool isEnabled = true;
+                      //   _unavailableDates.forEach((date) {
+                      //     if (isSameDay(day, date)) {
+                      //       isEnabled = false;
+                      //     }
+                      //   });
+                      //
+                      //   return isEnabled;
+                      // }
                     ),
                   ]
               )
@@ -382,16 +406,16 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                             Booking booking = value[index];
 
                             return Padding(
-                              padding: verticalPadding12,
-                              child: BookingCard(
-                                booking: booking,
-                                host: host!,
-                                artist: artist!,
-                                user: widget.user,
-                                onTap: (booking) => BookingUtils.showBookingDetails(context, booking, widget.user),
-                                isEmbedded: true,
-                                status: false,
-                              )
+                                padding: verticalPadding12,
+                                child: BookingCard(
+                                  booking: booking,
+                                  host: host!,
+                                  artist: artist!,
+                                  user: widget.user,
+                                  onTap: (booking) => BookingUtils.showBookingDetails(context, booking, widget.user),
+                                  isEmbedded: true,
+                                  status: false,
+                                )
                             );
                           }
                           else {
@@ -406,6 +430,17 @@ class _ReservationCalendarWidgetState extends State<ReservationCalendarWidget> {
                   });
             },
           ),
+          ValueListenableBuilder<bool>(
+            valueListenable: _blockedEvents,
+            builder: (context, value, _) {
+              return value ? const Padding(
+                  padding: verticalPadding12,
+                  child: CommonCard(
+                      child: Text('This day is blocked')
+                  )
+              ) : const SizedBox();
+            },
+          )
         ],
       ),
     );

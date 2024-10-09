@@ -29,6 +29,7 @@ class PhotoUploadView extends StatefulWidget {
 
 class _PhotoUploadViewState extends State<PhotoUploadView> {
   final TextEditingController _photoDescriptionController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   String _photoDescription = '';
 
@@ -50,13 +51,14 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
         }
         if (state is PhotoUploadedState) {
           WidgetsBinding.instance.addPostFrameCallback((_) =>
-              _showAlertDialog(state.photo.description!, widget.isOnboarding));
+              _showAlertDialog(_scaffoldKey.currentContext!, state.photo.description!, widget.isOnboarding));
         }
         if (state is LoadedState) {
           user = state.user;
         }
 
         return Scaffold(
+          key: _scaffoldKey,
             appBar: AppBar(
               scrolledUnderElevation: 0,
               title: Text("Add a photo", style: TextStyles.boldN90017,),
@@ -308,11 +310,11 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
   }
 
 
-  Future<void> _showAlertDialog(String name, bool isOnboarding) async {
+  Future<void> _showAlertDialog(BuildContext context, String name, bool isOnboarding) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return CustomAlertDialog( // <-- SEE HERE
           content: 'Your photo:\n\n$name\n\nwas uploaded successfully!',
           title: 'Upload Successful',
@@ -324,11 +326,9 @@ class _PhotoUploadViewState extends State<PhotoUploadView> {
                   child: Text('OK', style: TextStyles.semiBoldAccent14.copyWith(
                       decoration: TextDecoration.underline
                   ),),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => VenuePhotoPage(isOnboarding: isOnboarding,)), // Replace NewPage with the actual class of your new page
-                    );
+                  onPressed: () async {
+                    Navigator.of(dialogContext).pop();
+                    if (mounted)  Navigator.of(context).pop(); // Pop to previous page
                   },
                 ),
               ],

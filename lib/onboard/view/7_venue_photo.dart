@@ -80,10 +80,7 @@ class _SelectPhotoViewState extends State<SelectPhotoView> {
               icon: const Icon(Icons.arrow_back),
               onPressed: () {
                 // Define your navigation action here
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => HostSettingPage()), // Replace YourTargetPage with the actual target page
-                );
+                Navigator.of(context).pop();
               },
             ),
           ) : null,
