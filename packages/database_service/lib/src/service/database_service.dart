@@ -60,12 +60,12 @@ abstract class DatabaseService {
 
   Future<List<User>> getHostsList({User? nextToUser});
 
-  List<User> filterUsersByRadiusAndPriceAndDaysAndTypes(User user,
-      List<User> users,
-      double radius,
-      String priceInput,
-      String daysInput,
-      );
+  // List<User> filterUsersByRadiusAndPriceAndDaysAndTypes(User user,
+  //     List<User> users,
+  //     double radius,
+  //     String priceInput,
+  //     String daysInput,
+  //     );
 
   Future<User> getMostRecentHost();
 

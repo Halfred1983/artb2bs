@@ -4,6 +4,7 @@ import 'package:database_service/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../app/resources/styles.dart';
 import '../../app/resources/theme.dart';
@@ -209,16 +210,41 @@ class _VenueOpeningTimeViewState extends State<VenueOpeningTimeView> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('Open to public:', style: TextStyles.semiBoldN90017),
-            Switch(
-              value: businessDay.open ?? false,
-              activeColor: AppTheme.accentColor,
-              inactiveThumbColor: AppTheme.n500,
-              onChanged: (bool value) {
+            ToggleButtons(
+              isSelected: [
+                businessDay.open == true,
+                businessDay.open == false,
+              ],
+              onPressed: (int index) {
                 setState(() {
-                  businessDay.open = value;
+                  if (index == 0) {
+                    businessDay.open = true;
+                  } else if (index == 1) {
+                    businessDay.open = false;
+                  } else {
+                    businessDay.open = null;
+                  }
                 });
                 context.read<OnboardingCubit>().updateBusinessDay(businessDay);
               },
+              children: [
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                  child: SvgPicture.asset(
+                    'assets/icons/open.svg',
+                    color: businessDay.open == true ? AppTheme.accentColor : AppTheme.n500,
+                  ),
+                ),
+                SizedBox(
+                  width: 40,
+                  height: 40,
+                child: SvgPicture.asset(
+                  'assets/icons/closed.svg',
+                  color: businessDay.open == false ? AppTheme.accentColor : AppTheme.n500,
+                ),
+                )
+              ],
             ),
           ],
         ),
@@ -378,6 +404,6 @@ class _VenueOpeningTimeViewState extends State<VenueOpeningTimeView> {
   }
 
   bool _canContinue() {
-    return _businessDays.any((day) => day.open ?? false);
+    return _businessDays.every((day) => day.open != null);
   }
 }

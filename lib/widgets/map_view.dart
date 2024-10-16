@@ -1,13 +1,11 @@
 import 'dart:async';
 
-import 'package:artb2b/utils/bitmap_descriptor_utils.dart';
 import 'package:artb2b/utils/common.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:database_service/database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -69,8 +67,8 @@ class _MapViewState extends State<MapView> {
     final GoogleMapController controller = await _mapController.future;
     controller.animateCamera(CameraUpdate.newLatLng(
       LatLng(
-        user.userInfo!.address!.location!.latitude,
-        user.userInfo!.address!.location!.longitude,
+        user.userInfo!.address!.location!.geopoint.latitude,
+        user.userInfo!.address!.location!. geopoint.longitude,
       ),
     ));
   }
@@ -107,8 +105,8 @@ class _MapViewState extends State<MapView> {
       },
       initialCameraPosition: CameraPosition(
         target: LatLng(
-          widget.user.userInfo!.address!.location!.latitude,
-          widget.user.userInfo!.address!.location!.longitude,
+          widget.user.userInfo!.address!.location!.geopoint.latitude,
+          widget.user.userInfo!.address!.location!.geopoint.longitude,
         ),
         zoom: 12.0,
       ),
@@ -123,7 +121,7 @@ class _MapViewState extends State<MapView> {
   }
 
   void _addMarker(User user, int index, BitmapDescriptor icon) {
-    final GeoPoint point = user.userInfo!.address!.location!.geoPoint;
+    final GeoPoint point = user.userInfo!.address!.location!.geopoint;
     double offset = 0.00010 * index;
 
     final id = MarkerId(point.latitude.toString() + point.longitude.toString() + index.toString());

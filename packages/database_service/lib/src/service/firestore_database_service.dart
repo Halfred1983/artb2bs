@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:database_service/src/models/models.dart';
 import 'package:database_service/src/service/database_service.dart';
-import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:uuid/uuid.dart';
+import 'package:geoflutterfire_plus/geoflutterfire_plus.dart';
 
 
 class FirestoreDatabaseService implements DatabaseService {
@@ -12,7 +12,6 @@ class FirestoreDatabaseService implements DatabaseService {
   }) : _firestore = database;
 
   final firestore.FirebaseFirestore _firestore;
-  final geoLocation = GeoFlutterFire();
 
 
   @override
@@ -59,19 +58,21 @@ class FirestoreDatabaseService implements DatabaseService {
     var collectionReference = _firestore.collection('users');
 
     if (nextToUser != null) {
-      final geo = GeoFlutterFire();
-      final geoFirePoint = geo.point(
-        latitude: nextToUser.userInfo!.address!.location!.latitude,
-        longitude: nextToUser.userInfo!.address!.location!.longitude,
+      final geoPoint = GeoPoint(
+        nextToUser.userInfo!.address!.location!.geopoint.latitude,
+        nextToUser.userInfo!.address!.location!.geopoint.longitude,
       );
 
-      return geo.collection(collectionRef: collectionReference).within(
-        center: geoFirePoint,
-        radius: 60, // 60 km radius
-        field: 'userInfo.address.location',
+      final GeoFirePoint center = GeoFirePoint(geoPoint);
+
+      return GeoCollectionReference<Map<String, dynamic>>(collectionReference).subscribeWithin(
+          center: center,
+          radiusInKm: 60, // 60 km radius
+          field: 'userInfo.address.location',
+          geopointFrom: geopointFrom
       ).map((querySnapshot) {
-        return querySnapshot.map((document) {
-          return User.fromJson(document.data() as Map<String, dynamic>);
+        return querySnapshot.map((doc) {
+          return User.fromJson(doc.data() as Map<String, dynamic>);
         }).where((user) {
           return user.userInfo?.userType == UserType.gallery &&
               user.bookingSettings != null &&
@@ -80,7 +81,9 @@ class FirestoreDatabaseService implements DatabaseService {
       });
     } else {
       return collectionReference.snapshots().map((querySnapshot) {
-        return querySnapshot.docs.map((e) => User.fromJson(e.data())).where((user) {
+        return querySnapshot.docs.map((doc) {
+          return User.fromJson(doc.data());
+        }).where((user) {
           return user.userInfo?.userType == UserType.gallery &&
               user.bookingSettings != null &&
               user.bookingSettings!.active == true;
@@ -88,25 +91,28 @@ class FirestoreDatabaseService implements DatabaseService {
       });
     }
   }
+
   @override
   Future<List<User>> getHostsList({User? nextToUser}) async {
     var collectionReference = _firestore.collection('users');
     List<User> users = [];
 
     if (nextToUser != null) {
-      final geo = GeoFlutterFire();
-      final geoFirePoint = geo.point(
-        latitude: nextToUser.userInfo!.address!.location!.latitude,
-        longitude: nextToUser.userInfo!.address!.location!.longitude,
+      final geoPoint = GeoPoint(
+        nextToUser.userInfo!.address!.location!.geopoint.latitude,
+        nextToUser.userInfo!.address!.location!.geopoint.longitude,
       );
 
-      var query = geo.collection(collectionRef: collectionReference).within(
-        center: geoFirePoint,
-        radius: 60, // 60 km radius
-        field: 'userInfo.address.location',
+      final GeoFirePoint center = GeoFirePoint(geoPoint);
+
+      var query = GeoCollectionReference<Map<String, dynamic>>(collectionReference).fetchWithin(
+          center: center,
+          radiusInKm: 60, // 60 km radius
+          field: 'userInfo.address.location',
+          geopointFrom: geopointFrom
       );
 
-      var querySnapshot = await query.first;
+      var querySnapshot = await query;
       users = querySnapshot.map((document) => User.fromJson(document.data() as Map<String, dynamic>)).toList();
     } else {
       var querySnapshot = await collectionReference.get();
@@ -169,51 +175,51 @@ class FirestoreDatabaseService implements DatabaseService {
   //
   // }
 
-  @override
-  List<User> filterUsersByRadiusAndPriceAndDaysAndTypes(User user,
-      List<User> users,
-      double? radius,
-      String? priceInput,
-      String? daysInput,
-      ) {
-    final geo = GeoFlutterFire();
-    final geoFirePoint = geo.point(
-      latitude: user.userInfo!.address!.location!.latitude,
-      longitude: user.userInfo!.address!.location!.longitude,
-    );
-
-    return users.where((user) {
-      if (user.bookingSettings != null &&
-          user.bookingSettings!.active != null &&
-          user.bookingSettings!.active == false) {
-        return false; // Skip non-artist users
-      }
-
-      if (priceInput != null && priceInput.isNotEmpty) {
-        int price = int.parse(priceInput);
-        if (int.parse(user.bookingSettings!.basePrice!) > price) {
-          return false; // Price is not within the specified range
-        }
-      }
-
-      if (daysInput != null && daysInput.isNotEmpty) {
-        int days = int.parse(daysInput);
-        if (int.parse(user.bookingSettings!.minLength!) > days) {
-          return false; // User is not available for the specified number of days
-        }
-      }
-
-      if (radius != null) {
-        // Check if the user is within the specified radius
-        final distance = geoFirePoint.distance(
-            lat: user.userInfo!.address!.location!.latitude,
-            lng: user.userInfo!.address!.location!.longitude);
-        return distance <= radius;
-      }
-
-      return true;
-    }).toList();
-  }
+  // @override
+  // List<User> filterUsersByRadiusAndPriceAndDaysAndTypes(User user,
+  //     List<User> users,
+  //     double? radius,
+  //     String? priceInput,
+  //     String? daysInput,
+  //     ) {
+  //   final geo = GeoFlutterFire();
+  //   final geoFirePoint = geo.point(
+  //     latitude: user.userInfo!.address!.location!.latitude,
+  //     longitude: user.userInfo!.address!.location!.longitude,
+  //   );
+  //
+  //   return users.where((user) {
+  //     if (user.bookingSettings != null &&
+  //         user.bookingSettings!.active != null &&
+  //         user.bookingSettings!.active == false) {
+  //       return false; // Skip non-artist users
+  //     }
+  //
+  //     if (priceInput != null && priceInput.isNotEmpty) {
+  //       int price = int.parse(priceInput);
+  //       if (int.parse(user.bookingSettings!.basePrice!) > price) {
+  //         return false; // Price is not within the specified range
+  //       }
+  //     }
+  //
+  //     if (daysInput != null && daysInput.isNotEmpty) {
+  //       int days = int.parse(daysInput);
+  //       if (int.parse(user.bookingSettings!.minLength!) > days) {
+  //         return false; // User is not available for the specified number of days
+  //       }
+  //     }
+  //
+  //     if (radius != null) {
+  //       // Check if the user is within the specified radius
+  //       final distance = geoFirePoint.distance(
+  //           lat: user.userInfo!.address!.location!.latitude,
+  //           lng: user.userInfo!.address!.location!.longitude);
+  //       return distance <= radius;
+  //     }
+  //
+  //     return true;
+  //   }).toList();
+  // }
 
 
   @override
@@ -571,21 +577,21 @@ class FirestoreDatabaseService implements DatabaseService {
       query = query.startAfterDocument(startAfter);
     }
 
-  if (status != null) {
-    query = query.where('bookingStatus', isEqualTo: status.index);
-  }
+    if (status != null) {
+      query = query.where('bookingStatus', isEqualTo: status.index);
+    }
 
-  if(startDate != null){
-    query = query.where('from', isGreaterThanOrEqualTo: startDate);
-    query = query.where('bookingStatus', isEqualTo: BookingStatus.accepted.index);
-  }
+    if(startDate != null){
+      query = query.where('from', isGreaterThanOrEqualTo: startDate);
+      query = query.where('bookingStatus', isEqualTo: BookingStatus.accepted.index);
+    }
 
-  return query.snapshots().map((querySnapshot) => querySnapshot.docs);
-        // .map((querySnapshot) =>
-        // querySnapshot.docs.map((document) {
-        //   return Booking.fromJson(document.data() as Map<String, dynamic>);
-        // })
-        //     .toList());
+    return query.snapshots().map((querySnapshot) => querySnapshot.docs);
+    // .map((querySnapshot) =>
+    // querySnapshot.docs.map((document) {
+    //   return Booking.fromJson(document.data() as Map<String, dynamic>);
+    // })
+    //     .toList());
   }
 
 
@@ -599,6 +605,10 @@ class FirestoreDatabaseService implements DatabaseService {
     } else {
       throw Exception('Config document not found');
     }
+  }
+
+  static GeoPoint geopointFrom(Map<String, dynamic> data) {
+    return (data['userInfo']?['address']?['location']?['geopoint'] as GeoPoint);
   }
 
 }

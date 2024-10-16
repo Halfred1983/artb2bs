@@ -121,7 +121,7 @@ class BookingDetailsDialog extends StatelessWidget {
                 GestureDetector(
                   onTap: () async {
                     openMapsSheet(context,
-                        Coords(host.userInfo!.address!.location!.latitude, host.userInfo!.address!.location!.longitude),
+                        Coords(host.userInfo!.address!.location!.geopoint.latitude, host.userInfo!.address!.location!.geopoint.longitude),
                         host.userInfo!.name!);
                   },
                   child: Text('📍 Venue location', style: TextStyles.semiBoldS40014),

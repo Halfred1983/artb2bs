@@ -2,12 +2,13 @@ import 'package:artb2b/app/resources/styles.dart';
 import 'package:artb2b/app/resources/theme.dart';
 import 'package:artb2b/onboard/cubit/onboarding_cubit.dart';
 import 'package:artb2b/utils/common.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dart_geohash/dart_geohash.dart';
 import 'package:database_service/database.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:google_places_flutter/DioErrorHandler.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/place_details.dart';
@@ -27,7 +28,6 @@ class GoogleAddressLookup extends StatefulWidget {
 }
 
 class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
-  GeoFlutterFire geoFlutterFire = GeoFlutterFire();
   late String apiKey;
   late var _dio;
   late final TextEditingController _placeController;
@@ -151,13 +151,15 @@ class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
         });
         String? formattedAddress = placeDetails.result?.formattedAddress;
 
-        GeoFirePoint location;
+        GeoPoint location;
         // if(result.result != null && result.result?.geometry != null ) {
         double? lat = placeDetails.result?.geometry?.location?.lat;
         double? lng = placeDetails.result?.geometry?.location?.lng;
 
-        location = geoFlutterFire.point(latitude: lat!, longitude: lng!);
-        // }
+        location = GeoPoint(lat!, lng!);
+        // Generate geohash from latitude and longitude
+        String geohash = GeoHasher().encode(location.latitude, location.longitude);
+
 
         return UserAddress(address: _address,
             place: _place,
@@ -170,7 +172,7 @@ class _GoogleAddressLookupState extends State<GoogleAddressLookup> {
             currencyCode: CurrencyHelper
                 .currency(_country)
                 .currencyName!,
-            location: location,
+            location: Geo(geohash: geohash, geopoint: location),
             formattedAddress: formattedAddress ?? "");
       }
     }

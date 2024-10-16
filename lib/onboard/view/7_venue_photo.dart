@@ -104,7 +104,25 @@ class _SelectPhotoViewState extends State<SelectPhotoView> {
                 Text('Upload high-quality photos of your venue to attract artists and event organisers.',
                     style: TextStyles.semiBoldN90014),
                 verticalMargin24,
-                if(_user != null) ... [
+                if( (_user == null || _user!.photos == null || _user!.photos!.isEmpty)
+                    && widget.isOnboarding ) ... [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(onTap:()  {
+                        context.read<OnboardingCubit>().save(_user!, UserStatus.photoInfo);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => VenueDescription()), // Replace NewPage with the actual class of your new page
+                        );
+                      },
+                        child:Text('Skip this step and add photos later.', style: TextStyles.semiBoldN90014.copyWith(decoration: TextDecoration.underline),),
+                      )
+                    ],
+                  ),
+                ],
+                // verticalMargin24,
+                if(_user != null ) ... [
                   Expanded(
                     child: ReorderableGridView.count(
                       crossAxisCount: 2, // Set the number of columns
@@ -136,28 +154,12 @@ class _SelectPhotoViewState extends State<SelectPhotoView> {
                         ),
                       )],
                       children: _user!.photos != null && _user!.photos!.isNotEmpty ?
-                      _user!.photos!.map((photo) => _buildPhoto(photo)).toList() : [Container()],
+                      _user!.photos!.map((photo) => _buildPhoto(photo)).toList() : [Container(key: ValueKey('empty'),)],
                     ),
                   ),
                 ],
-                verticalMargin48,
-                if( (_user == null || _user!.photos == null || _user!.photos!.isEmpty)
-                    && widget.isOnboarding ) ... [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(onTap:()  {
-                        context.read<OnboardingCubit>().save(_user!, UserStatus.photoInfo);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => VenueDescription()), // Replace NewPage with the actual class of your new page
-                        );
-                      },
-                        child:Text('Skip this step and add photos later.', style: TextStyles.semiBoldN90014.copyWith(decoration: TextDecoration.underline),),
-                      )
-                    ],
-                  ),
-                ],
+                // verticalMargin48,
+
               ],
             ),
           ),

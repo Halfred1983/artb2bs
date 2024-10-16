@@ -1,6 +1,6 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 
@@ -23,7 +23,7 @@ class UserAddress {
   @JsonKey(
       fromJson: _fromJson,
       toJson: _toJson)
-  GeoFirePoint? location;
+  Geo? location;
 
   UserAddress({
     required this.address,
@@ -45,18 +45,17 @@ class UserAddress {
 
   Map<String, dynamic> toJson() => _$UserAddressToJson(this);
 
-  static GeoFirePoint? _fromJson(Map<String, dynamic> location) {
+  static Geo? _fromJson(Map<String, dynamic> location) {
     try {
-      return GeoFirePoint(
-          location['geopoint']['latitude'], location['geopoint']['longitude']);
+      return Geo.fromJson(location);
     }
-    catch (e){
-      return GeoFirePoint(location['geopoint'].latitude, location['geopoint'].longitude);
+    catch (e) {
+      return Geo.fromJson(location);
     }
   }
 
-  static Map<String, dynamic> _toJson(GeoFirePoint? location) {
-    return location!.data;
+  static Map<String, dynamic> _toJson(Geo? location) {
+    return location!.toJson();
   }
 
   @override
@@ -66,3 +65,22 @@ class UserAddress {
 
 }
 
+class Geo {
+  Geo({
+    required this.geohash,
+    required this.geopoint,
+  });
+
+  factory Geo.fromJson(Map<String, dynamic> json) => Geo(
+    geohash: json['geohash'] as String,
+    geopoint: json['geopoint'] as GeoPoint,
+  );
+
+  final String geohash;
+  final GeoPoint geopoint;
+
+  Map<String, dynamic> toJson() => <String, dynamic>{
+    'geohash': geohash,
+    'geopoint': geopoint,
+  };
+}

@@ -14,6 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../injection.dart';
 import '../../app/resources/theme.dart';
 import '../../onboard/cubit/onboarding_state.dart';
+import '../../widgets/custom_dialog.dart';
 import '../../widgets/exclamation_icon.dart';
 import '../../widgets/host_widget.dart';
 import '../../widgets/loading_screen.dart';
@@ -129,9 +130,10 @@ class _HostSettingViewState extends State<HostSettingView> {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('Incomplete Information'),
-                                    content: Text('You need to fix the errors before setting your venue as active.'),
+                                  return CustomAlertDialog(
+                                    type: AlertType.error,
+                                    title: 'Incomplete Information',
+                                    content: 'You need to fix the errors before setting your venue as active.',
                                     actions: <Widget>[
                                       TextButton(
                                         child: Text('OK'),

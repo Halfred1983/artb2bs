@@ -29,7 +29,7 @@ abstract class _$UserAddressCWProxy {
 
   UserAddress formattedAddress(String formattedAddress);
 
-  UserAddress location(GeoFirePoint? location);
+  UserAddress location(Geo? location);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `UserAddress(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -49,7 +49,7 @@ abstract class _$UserAddressCWProxy {
     String? number,
     String? aptBuilding,
     String? formattedAddress,
-    GeoFirePoint? location,
+    Geo? location,
   });
 }
 
@@ -96,7 +96,7 @@ class _$UserAddressCWProxyImpl implements _$UserAddressCWProxy {
       this(formattedAddress: formattedAddress);
 
   @override
-  UserAddress location(GeoFirePoint? location) => this(location: location);
+  UserAddress location(Geo? location) => this(location: location);
 
   @override
 
@@ -170,7 +170,7 @@ class _$UserAddressCWProxyImpl implements _$UserAddressCWProxy {
       location: location == const $CopyWithPlaceholder()
           ? _value.location
           // ignore: cast_nullable_to_non_nullable
-          : location as GeoFirePoint?,
+          : location as Geo?,
     );
   }
 }

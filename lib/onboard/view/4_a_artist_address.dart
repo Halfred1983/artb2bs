@@ -85,8 +85,8 @@ class _SelectAddressViewState extends State<SelectAddressView> {
           if(address != null) {
             _aptBuilding.text = user!.userInfo!.address!.aptBuilding ?? '';
             _initialCoordinates = LatLng(
-              address.location!.latitude,
-              address.location!.longitude,
+              address.location!.geopoint.latitude,
+              address.location!.geopoint.longitude,
             );
             _selectedLocation = _initialCoordinates;
             addressInfo = [
@@ -157,8 +157,8 @@ class _SelectAddressViewState extends State<SelectAddressView> {
                         context.read<OnboardingCubit>().chooseAddress(address);
                         setState(() {
                           _selectedLocation = LatLng(
-                            address.location!.latitude,
-                            address.location!.longitude,
+                            address.location!.geopoint.latitude,
+                            address.location!.geopoint.longitude,
                           );
                         });
 

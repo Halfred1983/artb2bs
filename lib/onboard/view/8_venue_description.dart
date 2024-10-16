@@ -107,6 +107,19 @@ class _VenueDescriptionViewState extends State<VenueDescriptionView> {
                         style: TextStyles.semiBoldN90014),
                     verticalMargin24,
                     TextFormField(
+                      buildCounter: (
+                          BuildContext context, {
+                            required int currentLength,
+                            required bool isFocused,
+                            required int? maxLength,
+                          })
+                      {
+                        return Text(
+                          '$currentLength characters',
+                          style: currentLength < 50 ?
+                          TextStyles.regularN90014 : TextStyles.boldN90014,
+                        );
+                      },
                       controller: _venueDescriptionController,
                       autofocus: false,
                       style: TextStyles.semiBoldN90014,

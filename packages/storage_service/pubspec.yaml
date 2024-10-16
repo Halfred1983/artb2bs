@@ -7,13 +7,13 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  firebase_storage: ^11.2.5
+  firebase_storage: ^12.3.3
 
   flutter:
     sdk: flutter
 
 dev_dependencies:
-  flutter_lints: ^2.0.0
+  flutter_lints: ^5.0.0
 #  freezed: ^2.3.2
 #  copy_with_extension_gen: ^5.0.0
   build_runner:

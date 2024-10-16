@@ -276,6 +276,10 @@ class OnboardingCubit extends Cubit<OnboardingState> {
         );
       }
 
+      if(updatedDay.hourInterval.isEmpty) {
+        updatedDay.open = false;
+      }
+
       // Update the business days list
       updatedBusinessDays = user.venueInfo!.openingTimes!
           .map((day) {
