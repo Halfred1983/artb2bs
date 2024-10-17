@@ -3,6 +3,8 @@ import 'package:artb2b/utils/bitmap_descriptor_utils.dart';
 import 'package:artb2b/widgets/dismiss_keyboard.dart';
 import 'package:auth_service/auth.dart';
 import 'package:database_service/database.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,7 +39,17 @@ void main() async {
     DeviceOrientation.portraitUp,
   ]);
   await dotenv.load(fileName: "lib/.env");
-
+  // await Firebase.initializeApp(
+  //   options: FirebaseOptions(
+  //       apiKey: "AIzaSyBs4KlKc1pY8VY1dk76-nGYVcEjAPz8DvA",
+  //       authDomain: "artb2b-34af2.firebaseapp.com",
+  //       projectId: "artb2b-34af2",
+  //       storageBucket: "artb2b-34af2.appspot.com",
+  //       messagingSenderId: "87564667765",
+  //       appId: "1:87564667765:web:a79bb580a3b607b374213c",
+  //       measurementId: "G-H38Y4J9G2Y"
+  //   ),
+  // ); // Initialize Firebase for web
   runApp(Artb2b());
 }
 

@@ -46,7 +46,17 @@ class FirebaseService {
 
 
   static Future<FirebaseService> init() async {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      // options: FirebaseOptions(
+      //     apiKey: "AIzaSyBs4KlKc1pY8VY1dk76-nGYVcEjAPz8DvA",
+      //     authDomain: "artb2b-34af2.firebaseapp.com",
+      //     projectId: "artb2b-34af2",
+      //     storageBucket: "artb2b-34af2.appspot.com",
+      //     messagingSenderId: "87564667765",
+      //     appId: "1:87564667765:web:a79bb580a3b607b374213c",
+      //     measurementId: "G-H38Y4J9G2Y"
+      // ),
+    );
     // await FirebaseService._messaging.requestPermission(
     //   alert: true,
     //   announcement: false,
