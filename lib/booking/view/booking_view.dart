@@ -24,6 +24,7 @@ class BookingView extends StatelessWidget {
   final User host;
   FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
 
+  bool _isLoading = false;
   BookingView({super.key, required this.host});
 
   @override
@@ -119,7 +120,12 @@ class BookingView extends StatelessWidget {
                               children: [
                                 Text('When is your exhibition?', style: TextStyles.semiBoldN90014,),
                                 verticalMargin24
-                              ],),
+                              ],
+                            ),
+                            onLoadingChanged: (isLoading) {
+                              // Handle loading status change
+                              _isLoading = isLoading;
+                            },
                           ),
                           verticalMargin12,
 
@@ -168,7 +174,7 @@ class BookingView extends StatelessWidget {
                                     booking!.to != null &&
                                     dataRangeError.isEmpty &&
                                     spaceError.isEmpty &&
-                                    booking!.spaces != null ?
+                                    booking!.spaces != null && !_isLoading ?
                                     () {
 
                                   Navigator.push(

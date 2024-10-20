@@ -16,11 +16,12 @@ import '../utils/common.dart';
 import 'common_card_widget.dart';
 
 class BookingCalendarWidget extends StatefulWidget {
-  BookingCalendarWidget(this.rangeStartChanged, {super.key, required this.host, this.widget});
+  BookingCalendarWidget(this.rangeStartChanged, {super.key, required this.host, this.widget, required this.onLoadingChanged});
 
   final ValueChanged<DateTimeRangeWithInt> rangeStartChanged;
   final User host;
   final Widget? widget;
+  final ValueChanged<bool> onLoadingChanged;
 
   @override
   State<BookingCalendarWidget> createState() => _BookingCalendarWidgetState(rangeStartChanged);
@@ -29,20 +30,24 @@ class BookingCalendarWidget extends StatefulWidget {
 class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
   final now = DateTime.now();
 
+  final ValueNotifier<bool> _isLoadingNotifier = ValueNotifier<bool>(false);
   _BookingCalendarWidgetState(this._rangeStartChanged);
   FirestoreDatabaseService firestoreDatabaseService = locator<FirestoreDatabaseService>();
   Map<String, DateTimeRange> _bookingDateRange = {};
   List<DateTime> _unavailableDates = [];
   List<Booking> _bookings = [];
   Map<DateTime, String> _unavailableDatesSpaces = {};
-  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
     initializeDateFormatting();
 
-    _isLoading = true;
+    _isLoadingNotifier.addListener(() {
+      widget.onLoadingChanged(_isLoadingNotifier.value);
+    });
+
+    _isLoadingNotifier.value = true;
     firestoreDatabaseService.findBookingsByUser(widget.host).then((bookings) {
       _bookings = bookings;
       Future.wait([
@@ -52,7 +57,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
         firestoreDatabaseService.getDisabledSpaces(widget.host.id),
       ]).then((List<dynamic> results) {
         setState(() {
-          _isLoading = false;
+          _isLoadingNotifier.value = false;
           _disabledDates = results[0];
           _bookingDateRange = results[1];
           _unavailableDates = retrieveUnavailableDates(results[2]);
@@ -64,6 +69,11 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
     });
   }
 
+  @override
+  void dispose() {
+    _isLoadingNotifier.dispose();
+    super.dispose();
+  }
 
   List<DateTimeRange> converted = [];
 
@@ -152,7 +162,7 @@ class _BookingCalendarWidgetState extends State<BookingCalendarWidget> {
             rangeStartDay: _rangeStart,
             rangeEndDay: _rangeEnd,
             rangeSelectionMode: _rangeSelectionMode,
-            calendarBuilders: CalendarUtils.buildCalendarBuilders(_isLoading, widget.host, _unavailableDatesSpaces, []),
+            calendarBuilders: CalendarUtils.buildCalendarBuilders(_isLoadingNotifier.value, widget.host, _unavailableDatesSpaces, []),
             eventLoader: (day) {
               return _getEventsForDay(day);
             },
