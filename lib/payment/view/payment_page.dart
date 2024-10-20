@@ -282,15 +282,19 @@ class _PaymentPageState extends State<PaymentPage> {
                   padding: horizontalPadding24,
                   child: Column(
                     children: [
-                      Text('Sorry, the payment failed!', style:TextStyles.semiBoldAccent14 ,),
+                      Center(child: Text('Sorry, the payment failed!', style:TextStyles.semiBoldN90024 ,)),
                       verticalMargin24,
                       verticalMargin24,
-                      ElevatedButton(
-                        onPressed:
-                            () {
-                          context.read<PaymentBloc>().add(PaymentStart());
-                        },
-                        child: Text("Try again", style: TextStyles.semiBoldAccent14,),)
+                      Container(
+                        width: double.infinity,
+                        padding: horizontalPadding32,
+                        child: ElevatedButton(
+                          onPressed:
+                              () {
+                            context.read<PaymentBloc>().add(PaymentStart());
+                          },
+                          child: Text("Try again", style: TextStyles.semiBoldAccent14,),),
+                      )
                     ],
                   ),
                 ),

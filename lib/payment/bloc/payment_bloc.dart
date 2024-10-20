@@ -112,7 +112,7 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     required String currency,
     String? grandTotal}) async {
 
-    final url = Uri.parse('https://us-central1-artb2b-34af2.cloudfunctions.net/StripePayEndpointMethodId');
+    final url = Uri.parse('https://stripepayendpointmethodid-ef32w6irta-uc.a.run.app');
 
     final response = await http.post(
         url,
